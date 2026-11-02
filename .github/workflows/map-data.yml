@@ -1,0 +1,28 @@
+name: Update map data
+
+# Downloads the Tagus coastline from OpenStreetMap and commits the game's map files.
+# Run it by hand (Actions -> Update map data -> Run workflow) when the map area changes.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  map:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/fetch-map.mjs
+      - name: Commit the map
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/assets/map
+          if git diff --cached --quiet; then echo "Map unchanged"; else
+            git commit -m "Update Tagus map from OpenStreetMap"
+            git push
+          fi

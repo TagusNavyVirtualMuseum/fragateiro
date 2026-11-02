@@ -50,7 +50,7 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
     unit: 0.01,
     scale: 1.34, // model hull is 10.4 m; the physics uses 14 m
     cgX: -0.6,
-    waterline: -0.25,
+    waterline: -0.32, // same share of hull under water as the Muleta (this model has no red bottom paint)
     singleSidedSails: true,
     sails: [
       {
@@ -74,7 +74,7 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
     unit: 0.01,
     scale: 1,
     cgX: 0.56,
-    waterline: 0.05,
+    waterline: -0.5, // top 20 % of the red bottom paint shows (red spans -0.86..-0.41 at midships)
     sails: [
       {
         sail: 'main',
