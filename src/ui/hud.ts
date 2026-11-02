@@ -53,7 +53,7 @@ export class SailingHud {
 
     // --- Top left: boat, mode, description
     const info = el('section', 'panel info');
-    info.append(el('h1', '', '<a href="../../" title="All games">⟵</a> Sailing the Tagus'), this.boatBar, this.modeBar, this.about);
+    info.append(el('h1', '', '<a href="../../" title="All games">⟵</a> Sailing the Tagus'), this.boatBar, this.modeBar, this.about, this.mapSlot);
     for (const b of boats) {
       const btn = el('button', '', b.name);
       btn.dataset.id = b.id;
@@ -200,7 +200,10 @@ export class SailingHud {
     }
   }
 
-  update(state: BoatState, controls: Controls, report: ForceReport, wind: TrueWind, paused: boolean): void {
+  /** Panel where a game can put a map. */
+  readonly mapSlot = el('div', 'map-slot');
+
+  update(state: BoatState, controls: Controls, report: ForceReport, wind: TrueWind, paused: boolean, aground = false): void {
     const heading = (rad2deg(state.heading) + 360) % 360;
     const twa = Math.abs(report.trueWindAngleDeg);
     const pointOfSail =
@@ -225,7 +228,9 @@ export class SailingHud {
     const luffing = report.sails.filter((s) => s.active && s.luffing).length;
     const msg = paused
       ? 'Paused (P)'
-      : Math.abs(state.heel) > 0.45
+      : aground
+        ? 'Aground! Turn the bow to open water with the rudder.'
+        : Math.abs(state.heel) > 0.45
         ? 'Heeling a lot — ease the sheets!'
         : luffing > 0 && twa > 45
           ? 'Sails flapping — haul in the sheets'

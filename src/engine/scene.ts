@@ -19,11 +19,14 @@ export interface SailingScene {
   camera: ArcRotateCamera;
   water: Water;
   sunDirection: Vector3;
+  skyColor: Color3;
+  fogDensity: number;
 }
 
 const HORIZON = new Color3(0.78, 0.85, 0.9);
 const ZENITH = new Color3(0.35, 0.55, 0.8);
-const FOG_DENSITY = 0.0016;
+// Light haze: the far shore (a few km away) stays visible.
+const FOG_DENSITY = 0.00012;
 
 Effect.ShadersStore.skyVertexShader = /* glsl */ `
 precision highp float;
@@ -63,7 +66,7 @@ export function createSailingScene(canvas: HTMLCanvasElement): SailingScene {
   sky.intensity = 0.9;
   sky.groundColor = new Color3(0.25, 0.3, 0.32);
 
-  const dome = MeshBuilder.CreateSphere('skyDome', { diameter: 3000, segments: 16, sideOrientation: 1 }, scene);
+  const dome = MeshBuilder.CreateSphere('skyDome', { diameter: 30000, segments: 16, sideOrientation: 1 }, scene);
   const skyMat = new ShaderMaterial('skyMat', scene, { vertex: 'sky', fragment: 'sky' }, {
     attributes: ['position'],
     uniforms: ['worldViewProjection', 'horizon', 'zenith', 'sunDirection'],
@@ -86,10 +89,10 @@ export function createSailingScene(canvas: HTMLCanvasElement): SailingScene {
   camera.lowerBetaLimit = 0.2;
   camera.wheelDeltaPercentage = 0.01;
   camera.minZ = 0.5;
-  camera.maxZ = 4000;
+  camera.maxZ = 40000;
 
   const water = createWater(scene, HORIZON, sunDirection, FOG_DENSITY);
 
   window.addEventListener('resize', () => engine.resize());
-  return { engine, scene, camera, water, sunDirection };
+  return { engine, scene, camera, water, sunDirection, skyColor: HORIZON, fogDensity: FOG_DENSITY };
 }

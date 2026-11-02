@@ -5,20 +5,24 @@ import { BoatView } from '../../src/engine/boatView';
 import { CAMERA_VIEWS, CameraRig } from '../../src/engine/cameraRig';
 import { ForceArrows } from '../../src/engine/forceArrows';
 import { Input } from '../../src/engine/input';
-import { Marks } from '../../src/engine/marks';
+import { createMapView, loadTagusMask, type MapView } from '../../src/engine/mapView';
 import { NetView } from '../../src/engine/netView';
 import { createSailingScene } from '../../src/engine/scene';
 import { SailingHud } from '../../src/ui/hud';
+import { Minimap } from '../../src/ui/minimap';
+import { hullAfloat, type LandMask } from '../../src/world/landMask';
 
 const RUDDER_RATE = 1.6; // full travel per second
 const RUDDER_RETURN = 1.2;
 const SHEET_RATE = 0.35;
+/** Turning rate when aground (pushing off with an oar), rad/s. */
+const PUSH_OFF_RATE = 0.25;
+const START_HEADING = deg2rad(90);
 
 const canvas = document.getElementById('scene') as HTMLCanvasElement;
 const loading = document.getElementById('loading')!;
-const { engine, scene, camera, water } = createSailingScene(canvas);
+const { engine, scene, camera, water, skyColor, sunDirection, fogDensity } = createSailingScene(canvas);
 const cameraRig = new CameraRig(camera);
-const marks = new Marks(scene);
 const arrows = new ForceArrows(scene);
 const netView = new NetView(scene);
 const input = new Input();
@@ -27,8 +31,13 @@ const wind = new GustyWind(0, 6, 0, 0);
 let gusty = false;
 const views = new Map<string, BoatView>();
 let spec: BoatSpec = BOATS[0];
-let sim = new SailboatSim(spec, wind, { heading: deg2rad(90) });
+let sim = new SailboatSim(spec, wind, { heading: START_HEADING });
 let view: BoatView;
+let mask: LandMask;
+let mapView: MapView;
+let minimap: Minimap;
+let start = { x: 0, y: 0 };
+let aground = false;
 let paused = false;
 let time = 0;
 
@@ -76,8 +85,28 @@ function cycleMode(): void {
 }
 
 function restart(): void {
-  sim = new SailboatSim(spec, wind, { heading: deg2rad(90) });
+  sim = new SailboatSim(spec, wind, { ...start, heading: START_HEADING });
+  aground = false;
   hud.setBoat(spec, sim.controls);
+}
+
+/**
+ * Advance the boat, but never onto land. When a step would put the hull on land the boat
+ * stays where it was, stopped; the rudder keys then turn it in place (like pushing off with
+ * an oar) until the wind can carry it back into open water.
+ */
+function stepWithLand(dt: number): void {
+  const s = sim.state;
+  const before = { x: s.x, y: s.y, heading: s.heading };
+  sim.step(dt);
+  if (hullAfloat(mask, s.x, s.y, s.heading, spec.length)) {
+    aground = false;
+    return;
+  }
+  aground = true;
+  Object.assign(s, before, { u: 0, v: 0, r: 0 });
+  const turn = sim.controls.rudder * PUSH_OFF_RATE * dt;
+  if (turn && hullAfloat(mask, s.x, s.y, s.heading + turn, spec.length)) s.heading += turn;
 }
 
 input.onPress('KeyM', cycleMode);
@@ -110,7 +139,16 @@ function applyInput(dt: number): void {
 }
 
 async function main(): Promise<void> {
-  const loaded = await Promise.all(BOATS.map((b) => BoatView.load(scene, b, BOAT_VISUALS[b.id])));
+  const [loaded, map] = await Promise.all([Promise.all(BOATS.map((b) => BoatView.load(scene, b, BOAT_VISUALS[b.id]))), loadTagusMask()]);
+  mask = map.mask;
+  mapView = createMapView(scene, mask, skyColor, sunDirection, fogDensity);
+  minimap = new Minimap(hud.mapSlot, mask);
+  const credit = document.createElement('div');
+  credit.className = 'credit';
+  credit.textContent = 'Map: © OpenStreetMap contributors';
+  hud.mapSlot.append(credit);
+  start = mask.nearestWater(0, 0);
+  restart();
   for (const v of loaded) {
     views.set(v.spec.id, v);
     v.setVisible(false);
@@ -120,13 +158,13 @@ async function main(): Promise<void> {
   hud.setBoat(spec, sim.controls);
   loading.classList.add('done');
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig } });
+  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
     if (!paused) {
       applyInput(dt);
-      sim.step(dt);
+      stepWithLand(dt);
       time += dt;
     }
     const s = sim.state;
@@ -134,10 +172,11 @@ async function main(): Promise<void> {
     view.update(s, sim.report, sim.controls.rudder, time, dt);
     arrows.update(view.root, sim.report, w, s.heading, 12);
     netView.update(view.root, spec.net, !!sim.mode.net, s);
-    marks.update(time);
+    mapView.update(time, camera);
+    minimap.draw(s.x, s.y, s.heading);
     cameraRig.update(s.x, s.y, s.heading, dt);
     water.update(time, camera.target, camera.position);
-    hud.update(s, sim.controls, sim.report, w, paused);
+    hud.update(s, sim.controls, sim.report, w, paused, aground);
     scene.render();
   });
 }

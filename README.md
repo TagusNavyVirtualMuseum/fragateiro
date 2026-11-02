@@ -5,9 +5,10 @@ Browser mini-games with the traditional sailing boats of the Tagus River: the **
 *A sailing simulator for the revival of the Tagus River nautical heritage* (Fazenda et al., 2025),
 built to be easy to maintain and to grow into several small games.
 
-- **Sailing the Tagus** (`games/sailing/`): free sailing. Switch boats at any time; the Muleta
-  has two modes: *regular sailing* (main and front sails) and *lateral fishing* (all sails set,
-  net out, drifting sideways).
+- **Sailing the Tagus** (`games/sailing/`): free sailing on a map of the estuary (Lisbon,
+  Almada, Seixal, Barreiro, Moita, Montijo) with the real channel buoys. Switch boats at any
+  time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
+  fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
 
 ## Run it
 
@@ -42,7 +43,8 @@ src/physics/    Sailing physics in plain TypeScript. No 3D, no browser: tested w
   boats/        One file per boat: dimensions, sails, modes (all the numbers live here).
 src/engine/     Babylon.js pieces shared by every game: scene, water, boat view, arrows…
 src/ui/         HTML/CSS overlay (instruments, sliders).
-src/assets/     Boat models (.glb).
+src/world/      Game rules that need no 3D (land / water lookup).
+src/assets/     Boat models (.glb) and the estuary map (map/).
 games/<name>/   One folder per mini-game: an index.html and a main.ts.
 tests/          Physics tests.
 docs/           PHYSICS.md (the model and its equations), MODELS.md (3D model pipeline).
@@ -64,6 +66,14 @@ explained on its own. See [docs/PHYSICS.md](docs/PHYSICS.md).
 2. Describe it in `src/physics/boats/<boat>.ts` and add it to `BOATS` in `src/physics/index.ts`.
 3. Map its sails and rudder to model nodes in `src/engine/boatVisuals.ts`.
 4. Run `npm run polar` and adjust until the speeds look right; add it to the tests.
+
+## The map
+
+`src/assets/map/` holds a land/water mask of the estuary (10 m cells) plus town names and sea
+marks, built from OpenStreetMap by `scripts/fetch-map.mjs`; the buoys are the same data that
+OpenSeaMap shows. To change the area, edit `BBOX` in that script and run the **Update map
+data** workflow (Actions tab); it downloads the data and commits the new files. Map data
+© OpenStreetMap contributors, ODbL.
 
 ## Deploy
 

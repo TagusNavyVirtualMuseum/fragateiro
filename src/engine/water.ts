@@ -9,6 +9,7 @@ attribute vec3 position;
 uniform mat4 world;
 uniform mat4 viewProjection;
 uniform float time;
+uniform float waveScale;
 uniform vec4 dirK[${N}];
 uniform vec2 ampPhase[${N}];
 varying vec3 vWorld;
@@ -22,7 +23,7 @@ void main() {
     vec2 d = dirK[i].xy;
     float k = dirK[i].z;
     float w = dirK[i].w;
-    float a = ampPhase[i].x;
+    float a = ampPhase[i].x * waveScale;
     float th = k * dot(d, wp.xz) - w * time + ampPhase[i].y;
     h += a * sin(th);
     grad += a * k * cos(th) * d;
@@ -77,8 +78,9 @@ export function createWater(scene: Scene, skyColor: Color3, sunDirection: Vector
   const mesh = MeshBuilder.CreateGround('water', { width: size, height: size, subdivisions: 240 }, scene);
   const mat = new ShaderMaterial('waterMat', scene, { vertex: 'water', fragment: 'water' }, {
     attributes: ['position'],
-    uniforms: ['world', 'viewProjection', 'time', 'dirK', 'ampPhase', 'cameraPosition', 'sunDirection', 'deepColor', 'shallowColor', 'skyColor', 'fogDensity'],
+    uniforms: ['world', 'viewProjection', 'time', 'waveScale', 'dirK', 'ampPhase', 'cameraPosition', 'sunDirection', 'deepColor', 'shallowColor', 'skyColor', 'fogDensity'],
   });
+  mat.setFloat('waveScale', 1);
   const { dirK, ampPhase } = waveUniforms();
   mat.setArray4('dirK', dirK);
   mat.setArray2('ampPhase', ampPhase);
@@ -92,10 +94,23 @@ export function createWater(scene: Scene, skyColor: Color3, sunDirection: Vector
   mesh.isPickable = false;
   mesh.alwaysSelectAsActiveMesh = true;
 
+  // Beyond the detailed patch: a big flat sheet just below the wave troughs.
+  const far = MeshBuilder.CreateGround('waterFar', { width: 60000, height: 60000, subdivisions: 1 }, scene);
+  const farMat = mat.clone('waterFarMat');
+  farMat.setFloat('waveScale', 0);
+  far.material = farMat;
+  far.position.y = -0.45;
+  far.isPickable = false;
+  far.alwaysSelectAsActiveMesh = true;
+
   const step = size / 240;
   return {
     mesh,
     update(time, centre, cameraPosition) {
+      far.position.x = centre.x;
+      far.position.z = centre.z;
+      farMat.setFloat('time', time);
+      farMat.setVector3('cameraPosition', cameraPosition);
       // Snap to the grid so the vertices don't "swim" as the patch follows the boat.
       mesh.position.x = Math.round(centre.x / step) * step;
       mesh.position.z = Math.round(centre.z / step) * step;
