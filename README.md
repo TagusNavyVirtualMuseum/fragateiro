@@ -30,7 +30,9 @@ Node 22 or newer.
 | Change mode (Muleta) | M | mode buttons |
 | Change boat | B | boat buttons |
 | Show forces | F | checkbox |
-| Follow boat | C | button (dragging the view stops following) |
+| Camera view: behind, ahead, port, starboard, top, free | 1–6 (C = behind) | camera buttons |
+| Camera distance and height | mouse wheel / pinch | sliders |
+| Orbit freely | drag the view (switches to *free*) | |
 | Pause / restart | P / R | |
 
 ## How it is organised

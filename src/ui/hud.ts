@@ -1,6 +1,7 @@
 // On-screen display for the sailing games: plain HTML/CSS on top of the 3D canvas.
 import './hud.css';
 import { groupsInMode, rad2deg, toKnots, type BoatSpec, type Controls, type ForceReport, type BoatState, type TrueWind } from '../physics';
+import { CAMERA_VIEWS, DISTANCE_RANGE, type CameraView } from '../engine/cameraRig';
 
 export interface HudCallbacks {
   onBoat(id: string): void;
@@ -8,7 +9,9 @@ export interface HudCallbacks {
   onSheet(group: string, value: number): void;
   onWind(fromDeg: number, speed: number, gusty: boolean): void;
   onForces(visible: boolean): void;
-  onChase(): void;
+  onCameraView(view: CameraView): void;
+  onCameraDistance(metres: number): void;
+  onCameraHeight(degrees: number): void;
 }
 
 const GROUP_NAMES: Record<string, string> = { fore: 'Fore sail', main: 'Main sail', front: 'Front sails', rear: 'Rear sails' };
@@ -34,6 +37,10 @@ export class SailingHud {
   private readonly rudderNeedle = el('div', 'rudder-needle');
   private readonly warning = el('div', 'warning');
   private readonly forcesBox: HTMLInputElement;
+  private readonly camButtons = el('div', 'buttons');
+  private readonly camDistance: HTMLInputElement;
+  private readonly camHeight: HTMLInputElement;
+  private readonly camHeightLabel: HTMLLabelElement;
   private sliders = new Map<string, HTMLInputElement>();
 
   constructor(
@@ -46,7 +53,7 @@ export class SailingHud {
 
     // --- Top left: boat, mode, description
     const info = el('section', 'panel info');
-    info.append(el('h1', '', 'Sailing the Tagus'), this.boatBar, this.modeBar, this.about);
+    info.append(el('h1', '', '<a href="../../" title="All games">⟵</a> Sailing the Tagus'), this.boatBar, this.modeBar, this.about);
     for (const b of boats) {
       const btn = el('button', '', b.name);
       btn.dataset.id = b.id;
@@ -87,9 +94,11 @@ export class SailingHud {
       <label>From <input type="range" min="0" max="355" step="5" name="dir"> <output name="dirOut"></output></label>
       <label>Speed <input type="range" min="1" max="14" step="0.5" name="speed"> <output name="speedOut"></output></label>
       <label class="check"><input type="checkbox" name="gusty"> Gusts and shifts</label>
-      <h2>View</h2>
+      <h2>Camera <small>keys 1–6 · drag to orbit · wheel to zoom</small></h2>
+      <div class="cam-buttons"></div>
+      <label>Distance <input type="range" min="${DISTANCE_RANGE.min}" max="${DISTANCE_RANGE.max}" step="1" name="camDist"> <output name="camDistOut"></output></label>
+      <label class="cam-height">Height <input type="range" min="3" max="85" step="1" name="camHeight"> <output name="camHeightOut"></output></label>
       <label class="check"><input type="checkbox" name="forces"> Show forces <small>(F)</small></label>
-      <button name="chase">Follow boat <small>(C)</small></button>
       <p class="keys">M: change mode · B: change boat · P: pause · R: restart</p>`;
     const dir = opts.querySelector<HTMLInputElement>('[name=dir]')!;
     const speed = opts.querySelector<HTMLInputElement>('[name=speed]')!;
@@ -109,11 +118,50 @@ export class SailingHud {
     windChanged();
     forces.addEventListener('change', () => cb.onForces(forces.checked));
     this.forcesBox = forces;
-    opts.querySelector<HTMLButtonElement>('[name=chase]')!.onclick = () => cb.onChase();
+
+    opts.querySelector('.cam-buttons')!.replaceWith(this.camButtons);
+    for (const v of CAMERA_VIEWS) {
+      const btn = el('button', '', v.label);
+      btn.dataset.view = v.id;
+      btn.title = `Key ${v.key}`;
+      btn.onclick = () => cb.onCameraView(v.id);
+      this.camButtons.append(btn);
+    }
+    this.camDistance = opts.querySelector<HTMLInputElement>('[name=camDist]')!;
+    this.camHeight = opts.querySelector<HTMLInputElement>('[name=camHeight]')!;
+    this.camHeightLabel = opts.querySelector<HTMLLabelElement>('.cam-height')!;
+    const distOut = opts.querySelector<HTMLOutputElement>('[name=camDistOut]')!;
+    const heightOut = opts.querySelector<HTMLOutputElement>('[name=camHeightOut]')!;
+    this.camDistance.addEventListener('input', () => {
+      distOut.textContent = `${this.camDistance.value} m`;
+      cb.onCameraDistance(Number(this.camDistance.value));
+    });
+    this.camHeight.addEventListener('input', () => {
+      heightOut.textContent = `${this.camHeight.value}°`;
+      cb.onCameraHeight(Number(this.camHeight.value));
+    });
+    this.camOutputs = { distOut, heightOut };
+
     // Let the arrow keys steer the boat instead of moving a focused slider.
     opts.addEventListener('change', (e) => (e.target as HTMLElement).blur());
 
-    root.append(info, inst, sails, helm, opts);
+    // On small screens the options panel opens from a button.
+    const toggle = el('button', 'panel settings-toggle', '⚙ Wind & camera');
+    toggle.onclick = () => opts.classList.toggle('open');
+
+    root.append(info, inst, sails, helm, opts, toggle);
+  }
+
+  private camOutputs!: { distOut: HTMLOutputElement; heightOut: HTMLOutputElement };
+
+  /** Show the current camera settings (also after the mouse or keys changed them). */
+  setCamera(view: CameraView, distance: number, elevation: number): void {
+    for (const b of this.camButtons.querySelectorAll('button')) b.classList.toggle('active', b.dataset.view === view);
+    if (document.activeElement !== this.camDistance) this.camDistance.value = String(Math.round(distance));
+    if (document.activeElement !== this.camHeight) this.camHeight.value = String(Math.round(elevation));
+    this.camOutputs.distOut.textContent = `${Math.round(distance)} m`;
+    this.camOutputs.heightOut.textContent = `${Math.round(elevation)}°`;
+    this.camHeightLabel.hidden = view === 'top' || view === 'free';
   }
 
   setForces(visible: boolean): void {

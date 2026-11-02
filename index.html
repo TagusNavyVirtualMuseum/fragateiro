@@ -17,7 +17,13 @@
       .card h2 { margin: 0 0 6px; font-size: 18px; }
       .card p { margin: 0; font-size: 14px; }
       .soon { opacity: .55; }
-      footer { margin-top: 40px; font-size: 13px; color: #7d9099; }
+      .links { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 36px; font-size: 15px; }
+      .links a { color: #e3a33b; text-decoration: none; }
+      .links a:hover { text-decoration: underline; }
+      .partners { margin-top: 32px; padding: 18px 20px; border-radius: 12px; background: #fff; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: 20px 28px; }
+      .partners a { display: block; }
+      .partners img { height: 56px; width: auto; display: block; }
+      footer { margin-top: 28px; font-size: 13px; color: #7d9099; line-height: 1.5; }
       footer a { color: #a9b8bf; }
     </style>
   </head>
@@ -43,9 +49,21 @@
           <p>Drag the net sideways and fill it with fish. Coming soon.</p>
         </div>
       </div>
+      <nav class="links">
+        <a href="https://tagusnavyvirtualmuseum.github.io/about.html">About the project →</a>
+        <a href="https://doi.org/10.1016/j.daach.2025.e00475">Read the paper →</a>
+        <a href="https://tagusnavyvirtualmuseum.github.io/">Tagus Navy Virtual Museum →</a>
+      </nav>
+      <div class="partners">
+        <a href="https://tecnico.ulisboa.pt/" title="Instituto Superior Técnico"><img src="./src/assets/logos/ist.png" alt="Instituto Superior Técnico" /></a>
+        <a href="https://www.inesc-id.pt/" title="INESC-ID"><img src="./src/assets/logos/inesc-id.png" alt="INESC-ID Lisboa" /></a>
+        <a href="https://www.isel.pt/" title="Instituto Superior de Engenharia de Lisboa"><img src="./src/assets/logos/isel.png" alt="ISEL" /></a>
+        <a href="https://ccm.marinha.pt/pt/museu" title="Museu de Marinha"><img src="./src/assets/logos/museu-marinha.png" alt="Museu de Marinha" style="height: 76px" /></a>
+      </div>
       <footer>
-        Based on <em>A sailing simulator for the revival of the Tagus River nautical heritage</em>
-        (Digital Applications in Archaeology and Cultural Heritage, 2025). Open source, CC0.
+        Based on P. Fazenda, R. S. Modeliar, N. Covão, L. Baeta, M. Lopes,
+        <a href="https://doi.org/10.1016/j.daach.2025.e00475"><em>A sailing simulator for the revival of the Tagus River nautical heritage</em></a>,
+        Digital Applications in Archaeology and Cultural Heritage 39 (2025) e00475. Open source, CC0.
       </footer>
     </main>
   </body>

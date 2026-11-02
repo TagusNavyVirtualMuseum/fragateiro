@@ -9,7 +9,7 @@ import {
 } from '@babylonjs/core';
 import '@babylonjs/loaders/glTF';
 import type { BoatSpec, BoatState, ForceReport } from '../physics';
-import type { BoatVisual } from './boatVisuals';
+import type { BoatVisual, PartVisual } from './boatVisuals';
 import { waveHeight } from './waves';
 
 interface Pivot {
@@ -17,6 +17,10 @@ interface Pivot {
   sail?: string;
   /** Model nodes moved by this pivot (a node may be a mesh or a group of meshes). */
   parts: TransformNode[];
+  /** Rotation axis in the glTF root's space (unit vector). */
+  axis: Vector3;
+  /** 0..1, eases the flapping in and out. */
+  flap: number;
 }
 
 /**
@@ -56,16 +60,22 @@ export class BoatView {
     for (const n of [...container.meshes, ...container.transformNodes]) byName.set(n.name, n);
 
     // Pivots live in the glTF root's space, so re-parenting keeps the meshes exactly in place.
-    // In that space +x is aft and -z is starboard; rotating by +angle about y swings
-    // an aft-pointing boom (or rudder blade) to starboard.
-    const makePivot = (name: string, nodes: string[], pivot: [number, number, number]): Pivot => {
+    // In that space +x is aft and -z is starboard; rotating by +angle about an upward axis
+    // swings an aft-pointing boom (or rudder blade) to starboard.
+    const makePivot = (name: string, part: PartVisual): Pivot => {
       const node = new TransformNode(name, scene);
       node.parent = gltfRoot;
-      node.position.set(pivot[0] / visual.unit, pivot[1] / visual.unit, pivot[2] / visual.unit);
+      // A raked mast: turn about the mast's own axis, pivoting at the masthead.
+      const [px, py, pz] = part.axis ? part.axis.top : part.pivot;
+      node.position.set(px / visual.unit, py / visual.unit, pz / visual.unit);
+      node.rotationQuaternion = Quaternion.Identity();
+      const axis = part.axis
+        ? Vector3.FromArray(part.axis.top).subtract(Vector3.FromArray(part.axis.base)).normalize()
+        : Vector3.Up();
       gltfRoot.computeWorldMatrix(true);
       node.computeWorldMatrix(true);
       const parts: TransformNode[] = [];
-      for (const n of nodes) {
+      for (const n of part.nodes) {
         const found = byName.get(n);
         if (!found) {
           console.warn(`[${spec.id}] model has no node named "${n}"`);
@@ -74,23 +84,35 @@ export class BoatView {
         (found as TransformNode).setParent(node);
         parts.push(found as TransformNode);
       }
-      return { node, parts };
+      return { node, parts, axis, flap: 0 };
     };
 
     for (const sv of visual.sails) {
-      const p = makePivot(`${spec.id}-sail-${sv.sail}`, sv.nodes, sv.pivot);
+      const p = makePivot(`${spec.id}-sail-${sv.sail}`, sv);
       p.sail = sv.sail;
       this.sails.set(sv.sail, p);
     }
-    this.rudder = makePivot(`${spec.id}-rudder`, visual.rudder.nodes, visual.rudder.pivot);
+    this.rudder = makePivot(`${spec.id}-rudder`, visual.rudder);
+
+    for (const n of visual.hiddenNodes ?? []) byName.get(n)?.setEnabled(false);
+
+    // Sails modelled as a single plane must be drawn from both sides. (Sails that already
+    // have two faces must not: the faces would fight and flicker.)
+    if (visual.singleSidedSails) {
+      for (const sv of visual.sails) {
+        const found = byName.get(sv.nodes[0]) as TransformNode | undefined;
+        for (const m of found ? [found, ...found.getChildMeshes(false)] : []) {
+          const mat = (m as { material?: { backFaceCulling: boolean } | null }).material;
+          if (mat) mat.backFaceCulling = false;
+        }
+      }
+    }
   }
 
   static async load(scene: Scene, spec: BoatSpec, visual: BoatVisual): Promise<BoatView> {
     const container = await LoadAssetContainerAsync(visual.url, scene);
     container.addAllToScene();
     for (const m of container.meshes) m.isPickable = false;
-    // Sails are single planes: draw both faces.
-    for (const mat of container.materials) mat.backFaceCulling = false;
     return new BoatView(spec, visual, container, scene);
   }
 
@@ -133,11 +155,14 @@ export class BoatView {
       const r = reports.get(id);
       const active = r?.active ?? true;
       for (const m of p.parts) m.setEnabled(active);
-      const flap = r?.luffing ? 0.06 * Math.sin(time * 17 + i * 1.3) : 0;
-      p.node.rotation.y = (state.sailAngles[id] ?? 0) + flap;
+      p.flap += ((r?.luffing && active ? 1 : 0) - p.flap) * Math.min(1, dt / 0.5);
+      const flap = p.flap * 0.045 * Math.sin(time * 7 + i * 1.3) * (0.7 + 0.3 * Math.sin(time * 2.3 + i));
+      Quaternion.RotationAxisToRef(p.axis, (state.sailAngles[id] ?? 0) + flap, p.node.rotationQuaternion!);
       i++;
     }
-    if (this.rudder) this.rudder.node.rotation.y = rudder * (spec.rudder.maxAngleDeg * Math.PI) / 180;
+    if (this.rudder) {
+      Quaternion.RotationAxisToRef(this.rudder.axis, (rudder * spec.rudder.maxAngleDeg * Math.PI) / 180, this.rudder.node.rotationQuaternion!);
+    }
   }
 
   dispose(): void {

@@ -1,8 +1,8 @@
 // Free sailing on the Tagus: switch between the Falua and the Muleta.
-import { Vector3 } from '@babylonjs/core';
 import { BOATS, GustyWind, SailboatSim, defaultControls, deg2rad, groupsInMode, type BoatSpec } from '../../src/physics';
 import { BOAT_VISUALS } from '../../src/engine/boatVisuals';
 import { BoatView } from '../../src/engine/boatView';
+import { CAMERA_VIEWS, CameraRig } from '../../src/engine/cameraRig';
 import { ForceArrows } from '../../src/engine/forceArrows';
 import { Input } from '../../src/engine/input';
 import { Marks } from '../../src/engine/marks';
@@ -17,6 +17,7 @@ const SHEET_RATE = 0.35;
 const canvas = document.getElementById('scene') as HTMLCanvasElement;
 const loading = document.getElementById('loading')!;
 const { engine, scene, camera, water } = createSailingScene(canvas);
+const cameraRig = new CameraRig(camera);
 const marks = new Marks(scene);
 const arrows = new ForceArrows(scene);
 const netView = new NetView(scene);
@@ -29,7 +30,6 @@ let spec: BoatSpec = BOATS[0];
 let sim = new SailboatSim(spec, wind, { heading: deg2rad(90) });
 let view: BoatView;
 let paused = false;
-let chase = true;
 let time = 0;
 
 const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
@@ -44,7 +44,9 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
     wind.shiftDeg = g ? 15 : 0;
   },
   onForces: (v) => (arrows.visible = v),
-  onChase: () => (chase = true),
+  onCameraView: (v) => cameraRig.setView(v),
+  onCameraDistance: (d) => cameraRig.setDistance(d),
+  onCameraHeight: (h) => cameraRig.setElevation(h),
 }, { fromDeg: wind.fromDeg, speed: wind.speed, gusty });
 input.bindHoldButton(hud.rudderLeft, 'KeyA');
 input.bindHoldButton(hud.rudderRight, 'KeyD');
@@ -82,12 +84,14 @@ input.onPress('KeyM', cycleMode);
 input.onPress('KeyB', () => switchBoat(BOATS[(BOATS.indexOf(spec) + 1) % BOATS.length].id));
 input.onPress('KeyP', () => (paused = !paused));
 input.onPress('KeyR', restart);
-input.onPress('KeyC', () => (chase = true));
+for (const v of CAMERA_VIEWS) input.onPress(`Digit${v.key}`, () => cameraRig.setView(v.id));
+input.onPress('KeyC', () => cameraRig.setView('back'));
+cameraRig.onChange = () => hud.setCamera(cameraRig.view, cameraRig.distance, cameraRig.elevation);
+hud.setCamera(cameraRig.view, cameraRig.distance, cameraRig.elevation);
 input.onPress('KeyF', () => {
   arrows.visible = !arrows.visible;
   hud.setForces(arrows.visible);
 });
-canvas.addEventListener('pointerdown', () => (chase = false));
 
 function applyInput(dt: number): void {
   const c = sim.controls;
@@ -105,19 +109,6 @@ function applyInput(dt: number): void {
   }
 }
 
-function followCamera(dt: number): void {
-  const s = sim.state;
-  const target = new Vector3(s.x, 3, s.y);
-  camera.target = Vector3.Lerp(camera.target, target, Math.min(1, dt * 6));
-  if (chase) {
-    // Sit behind the boat, a little to windward of straight astern.
-    const want = Math.atan2(-Math.cos(s.heading), -Math.sin(s.heading));
-    let d = want - camera.alpha;
-    d = Math.atan2(Math.sin(d), Math.cos(d));
-    camera.alpha += d * Math.min(1, dt * 1.5);
-  }
-}
-
 async function main(): Promise<void> {
   const loaded = await Promise.all(BOATS.map((b) => BoatView.load(scene, b, BOAT_VISUALS[b.id])));
   for (const v of loaded) {
@@ -129,7 +120,7 @@ async function main(): Promise<void> {
   hud.setBoat(spec, sim.controls);
   loading.classList.add('done');
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, setChase: (v: boolean) => (chase = v) } });
+  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -144,7 +135,7 @@ async function main(): Promise<void> {
     arrows.update(view.root, sim.report, w, s.heading, 12);
     netView.update(view.root, spec.net, !!sim.mode.net, s);
     marks.update(time);
-    followCamera(dt);
+    cameraRig.update(s.x, s.y, s.heading, dt);
     water.update(time, camera.target, camera.position);
     hud.update(s, sim.controls, sim.report, w, paused);
     scene.render();

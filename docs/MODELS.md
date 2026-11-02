@@ -28,9 +28,15 @@ named nodes. (The Muleta in the repo was made with 1024 px textures.)
 
 - `unit`, `scale`, `cgX`, `waterline`: how to place the model (units are metres in the model
   frame: bow towards −x, y up);
-- for each physics sail, the model nodes that turn with it (sail, yard, ropes) and the pivot
-  (the mast);
-- the rudder nodes and pivot.
+- for each physics sail, the model nodes that turn with it (sail, yard, ropes) and the pivot.
+  The masts of both boats are raked, so main sails turn about the mast's own axis
+  (`axis: { base, top }`, measured on the mast mesh), pivoting at the masthead; otherwise
+  the yard would swing away from the mast;
+- the rudder nodes and pivot;
+- `hiddenNodes`: parts never shown (the Muleta's fishing-sail halyards and sheets, which are
+  fixed in the model and would hang in the air once the sails turn);
+- `singleSidedSails`: the Falua's sails are single planes and are drawn from both sides. The
+  Muleta's sails already have two faces; drawing both sides again makes them flicker.
 
 To find node names and positions, print the bounding box of every node, for example with a
 small `@gltf-transform/core` script, or open the `.glb` in https://gltf.report or the
@@ -40,8 +46,8 @@ Babylon.js sandbox.
 
 | Part | Nodes | Pivot x |
 |---|---|---|
-| Fore sail | `Vela Frente`, yard `Mastro03`, `Cordas_Mastro01` | −3.53 (mast `Mastro01`) |
-| Main sail | `Vela Principal`, yard `Mastro04`, `Cordas_Mastro02` | 0.05 (mast `Mastro02`) |
+| Fore sail | `Vela Frente`, yard `Mastro03`, `Cordas_Mastro01` | mast `Mastro01` axis |
+| Main sail | `Vela Principal`, yard `Mastro04`, `Cordas_Mastro02` | mast `Mastro02` axis |
 | Rudder | `Leme01–03` | 4.05 |
 
 ### Muleta (model frame, metres)
