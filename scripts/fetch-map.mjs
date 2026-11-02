@@ -7,7 +7,8 @@
 // Output (committed to the repo, so the game never calls OpenStreetMap):
 //   src/assets/map/tagus-mask.png  R = water (255) / land (0), slightly blurred for smooth shores
 //                                  G = the same, blurred wide (used to colour beaches inland)
-//   src/assets/map/tagus.json      grid size, origin, place names
+//   src/assets/map/tagus.json      grid size, origin, place names, sea marks (buoys and
+//                                  beacons, as shown on OpenSeaMap)
 //
 // How: draw the coastline into a grid, flood-fill the sea from a point in the river,
 // then add lakes and rivers (natural=water). Data © OpenStreetMap contributors (ODbL).
@@ -56,6 +57,7 @@ async function download() {
   way["waterway"="riverbank"](${b});
   relation["waterway"="riverbank"](${b});
   node["place"](${b});
+  node["seamark:type"](${b});
 );
 out geom;`;
   for (const url of OVERPASS) {
@@ -271,6 +273,19 @@ for (const el of elements) {
 }
 places.sort((a, b) => a.name.localeCompare(b.name));
 
+// Sea marks (the OpenSeaMap layer is drawn from these OpenStreetMap tags).
+const seamarks = [];
+for (const el of elements) {
+  const t = el.tags ?? {};
+  const type = t['seamark:type'];
+  if (el.type !== 'node' || !type || !/buoy|beacon|light/.test(type)) continue;
+  const colour = t[`seamark:${type}:colour`] ?? t['seamark:light:colour'] ?? '';
+  const category = t[`seamark:${type}:category`] ?? '';
+  const [x, y] = toXY(el.lat, el.lon);
+  seamarks.push({ type, category, colour, name: t['seamark:name'] ?? t.name ?? '', x: Math.round(x), y: Math.round(y) });
+}
+console.log(`sea marks: ${seamarks.length}`);
+
 mkdirSync(OUT_DIR, { recursive: true });
 writeFileSync(new URL('tagus-mask.png', OUT_DIR), png(W, H, rgb));
 writeFileSync(
@@ -287,9 +302,10 @@ writeFileSync(
       /** World position (metres east, north of the origin) of the mask's north-west corner. */
       northWest: { x: Number(minX.toFixed(2)), y: Number(maxY.toFixed(2)) },
       places,
+      seamarks,
     },
     null,
     2,
   ) + '\n',
 );
-console.log(`wrote tagus-mask.png (${W} x ${H}) and tagus.json with ${places.length} places`);
+console.log(`wrote tagus-mask.png (${W} x ${H}) and tagus.json with ${places.length} places and ${seamarks.length} sea marks`);
