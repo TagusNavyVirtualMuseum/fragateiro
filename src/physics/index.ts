@@ -8,7 +8,11 @@ export * from './simulator';
 export * from './polar';
 export { FALUA } from './boats/falua';
 export { MULETA } from './boats/muleta';
+export { FRAGATA } from './boats/fragata';
+export { CATRAIO } from './boats/catraio';
 
+import { CATRAIO } from './boats/catraio';
 import { FALUA } from './boats/falua';
+import { FRAGATA } from './boats/fragata';
 import { MULETA } from './boats/muleta';
-export const BOATS = [FALUA, MULETA];
+export const BOATS = [FALUA, MULETA, FRAGATA, CATRAIO];

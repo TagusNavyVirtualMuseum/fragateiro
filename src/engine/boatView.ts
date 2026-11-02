@@ -51,9 +51,11 @@ export class BoatView {
     // Model frame -> boat frame (see the comment above BOAT_VISUALS).
     const model = new TransformNode(`${spec.id}-model`, scene);
     model.parent = this.root;
-    model.rotation.y = -Math.PI / 2;
+    // Turn the model so its bow points along the boat's +z (forward).
+    const bow = visual.bowPositiveX ? 1 : -1;
+    model.rotation.y = (bow * Math.PI) / 2;
     model.scaling.setAll(visual.unit * s);
-    model.position.set(0, -visual.waterline * s, visual.cgX * s);
+    model.position.set(0, -visual.waterline * s, bow * -visual.cgX * s);
     gltfRoot.parent = model;
 
     const byName = new Map<string, Node>();

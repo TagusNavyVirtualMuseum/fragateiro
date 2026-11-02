@@ -83,7 +83,8 @@ at that speed.
 Mass, stability and resistance values are estimates. `npm run polar [wind m/s]` prints the
 best speed at each wind angle for every boat and mode. At 6 m/s (the paper's test wind) the
 current values give, for the Falua: nothing below about 42°, 2.4 kn at 45°, 5.4 kn on a beam
-reach and 5 kn running. These are more realistic than the Unity version (which
+reach and 5 kn running. The Fragata: 2.2 kn at 45°, 6 kn on a beam reach; the Catraio:
+2.2 kn at 45°, 4.9 kn on a beam reach. These are more realistic than the Unity version (which
 had copied yacht parameters), but should be checked with people who sail these boats. The
 tests in `tests/physics.test.ts` check behaviour (no-go zone, sheet settings, steering,
 heel, fishing drift), not exact numbers, so tuning does not break them.

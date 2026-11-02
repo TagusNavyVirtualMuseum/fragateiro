@@ -4,6 +4,8 @@
 
 import faluaUrl from '../assets/models/falua.glb?url';
 import muletaUrl from '../assets/models/muleta.glb?url';
+import fragataUrl from '../assets/models/fragata.glb?url';
+import catraioUrl from '../assets/models/catraio.glb?url';
 
 type V3 = [number, number, number];
 
@@ -41,6 +43,8 @@ export interface BoatVisual {
   hiddenNodes?: string[];
   /** The sails are single planes and must be drawn from both sides. */
   singleSidedSails?: boolean;
+  /** The model's bow points towards +x (most of our models point towards -x). */
+  bowPositiveX?: boolean;
 }
 
 export const BOAT_VISUALS: Record<string, BoatVisual> = {
@@ -119,4 +123,77 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       'Cylinder.022', 'Cylinder.023', 'Cylinder.024', 'Torus.001', 'Torus.002', 'Torus.003', 'Torus.004', 'Torus.005', 'Torus.013',
     ],
   },
+  fragata: {
+    boat: 'fragata',
+    url: fragataUrl,
+    unit: 0.01,
+    scale: 1,
+    bowPositiveX: true,
+    cgX: -0.8,
+    waterline: -0.6,
+    singleSidedSails: true,
+    sails: [
+      {
+        sail: 'jib',
+        nodes: ['Vela Frontal.001'],
+        pivot: [9.32, 3.06, 0],
+        axis: { base: [9.32, 3.06, 0.02], top: [2.09, 15.53, 0.04] }, // the stay: tack to head
+      },
+      {
+        sail: 'main',
+        // Mainsail and gaff (Circle.001 was split into pieces; part69 is the gaff).
+        nodes: ['vela_Trazeira.001', 'Circle.001_part69'],
+        pivot: [4.5, 0, 0],
+        axis: { base: [5.174, -0.854, 0.016], top: [0.413, 18.184, 0.007] }, // mast, Circle.001_part52
+      },
+    ],
+    // Rudder blade and tiller (pieces of the hull mesh Corpo), about the hinge line.
+    rudder: {
+      nodes: ['Corpo_part9', 'Corpo_part23'],
+      pivot: [-10, 0, 0],
+      axis: { base: [-9.941, -1.684, 0], top: [-10.662, 2.314, 0] },
+    },
+  },
+  catraio: {
+    boat: 'catraio',
+    url: catraioUrl,
+    unit: 0.01,
+    scale: 1,
+    cgX: -0.55,
+    waterline: -0.32, // same hull as the Falua
+    singleSidedSails: true,
+    sails: [
+      {
+        sail: 'jib',
+        nodes: ['Vela.001'],
+        pivot: [-7.26, 1.28, 0],
+        axis: { base: [-7.26, 1.28, 0.13], top: [-2.72, 7.64, 0.08] }, // the stay: bowsprit end to mast
+      },
+      {
+        sail: 'main',
+        // Spritsail, its sprit (Mastro_part4) and the lacing along the sprit.
+        nodes: ['Vela', 'Mastro_part4', ...range('CordasMastro.', 13, 30)],
+        pivot: [-3.3, 0, 0],
+        axis: { base: [-3.894, 0.53, 0], top: [-2.408, 8.014, 0] }, // main mast, Mastro_part1
+      },
+      {
+        sail: 'mizzen',
+        nodes: ['Vela.002', 'Mastro_part3', ...range('CordasMastro.', 31, 50)],
+        pivot: [4.0, 0, 0],
+        axis: { base: [3.716, 0.965, 0.673], top: [4.304, 3.201, 0.677] }, // mizzen mast, Mastro_part2
+      },
+    ],
+    rudder: {
+      nodes: ['Leme01', 'Leme01.001', 'Leme02', 'Leme02.001'],
+      pivot: [4, 0, 0],
+      axis: { base: [3.614, -0.739, 0], top: [4.434, 1.003, 0] }, // node Pin
+    },
+  },
 };
+
+/** ['CordasMastro.013', ...] style node name lists. */
+function range(prefix: string, from: number, to: number): string[] {
+  const out: string[] = [];
+  for (let i = from; i <= to; i++) out.push(`${prefix}${String(i).padStart(3, '0')}`);
+  return out;
+}

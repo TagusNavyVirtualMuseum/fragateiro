@@ -7,7 +7,26 @@ The boats come from the MiraroTejo project (the lighter versions made for the vi
 | Falua | `MiraroTejo/Assets/Embarcações/Falua/falua.fbx` (7.5 MB + textures) | `src/assets/models/falua.glb` | 6.9 MB |
 | Muleta | `MiraroTejo/Assets/Embarcações/Muleta/Muleta.fbx` (2.8 MB + textures) | `src/assets/models/muleta.glb` | 2.7 MB |
 
+| Fragata | `MiraroTejo/Assets/Embarcações/Fragata/Fragata.fbx` (4.7 MB + textures) | `src/assets/models/fragata.glb` | 3.8 MB |
+| Catraio | `MiraroTejo/Assets/Embarcações/Catraio/catraio.fbx` (55 MB, textures inside) | `src/assets/models/catraio.glb` | 3.2 MB |
+
 The SingraroTejo versions (184 MB and 290 MB) are too heavy for the web.
+
+### Merged parts
+
+Some models have parts that must move modelled as one mesh: the Fragata's mast, topmast,
+gaff and fittings are one mesh (`Circle.001`), and its rudder and tiller are inside the hull
+(`Corpo`); the Catraio's masts, sprits and bowsprit are one mesh (`Mastro`). After
+converting, split them into connected pieces and use the pieces' names in `boatVisuals.ts`:
+
+```bash
+node scripts/split-mesh.mjs fragata.glb fragata-split.glb Circle.001 Corpo
+npx @gltf-transform/cli@4.5.1 prune fragata-split.glb src/assets/models/fragata.glb
+node scripts/split-mesh.mjs catraio.glb catraio-split.glb Mastro
+npx @gltf-transform/cli@4.5.1 prune catraio-split.glb src/assets/models/catraio.glb
+```
+
+The Fragata's bow points to +x (`bowPositiveX: true` in `boatVisuals.ts`).
 
 ## Converting
 
@@ -63,3 +82,20 @@ Babylon.js sandbox.
 | Net booms | `Mastro_rede_frente`, `mastro_rede_tras` | always shown |
 
 Sails that are not set in the current mode are hidden.
+
+### Fragata
+
+| Part | Nodes | Turns about |
+|---|---|---|
+| Jib | `Vela Frontal.001` | its stay (tack to head) |
+| Mainsail and gaff | `vela_Trazeira.001`, `Circle.001_part69` | the mast `Circle.001_part52` |
+| Rudder and tiller | `Corpo_part9`, `Corpo_part23` | the rudder's hinge line |
+
+### Catraio
+
+| Part | Nodes | Turns about |
+|---|---|---|
+| Jib | `Vela.001` | its stay (bowsprit end to mast) |
+| Spritsail, sprit, lacing | `Vela`, `Mastro_part4`, `CordasMastro.013–030` | the main mast `Mastro_part1` |
+| Mizzen, its sprit, lacing | `Vela.002`, `Mastro_part3`, `CordasMastro.031–050` | the mizzen mast `Mastro_part2` |
+| Rudder and tiller | `Leme01`, `Leme01.001`, `Leme02`, `Leme02.001` | the pin `Pin` |

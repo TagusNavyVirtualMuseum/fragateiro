@@ -2,7 +2,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  CATRAIO,
   FALUA,
+  FRAGATA,
   MULETA,
   SailboatSim,
   SteadyWind,
@@ -51,6 +53,8 @@ describe('wrapPi', () => {
 for (const [boat, mode] of [
   [FALUA, 'sailing'],
   [MULETA, 'regular'],
+  [FRAGATA, 'sailing'],
+  [CATRAIO, 'sailing'],
 ] as const) {
   describe(`${boat.name} (${mode}) points of sail`, () => {
     const angles = [30, 45, 90, 180];
