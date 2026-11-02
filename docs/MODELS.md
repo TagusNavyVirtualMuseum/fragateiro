@@ -52,6 +52,9 @@ named nodes. (The Muleta in the repo was made with 1024 px textures.)
   (`axis: { base, top }`, measured on the mast mesh), pivoting at the masthead; otherwise
   the yard would swing away from the mast;
 - the rudder nodes and pivot;
+- `hullNodes`: the hull's outer planking. When the model loads, the game measures where it
+  crosses the waterline (24 slices along the hull) and draws no water inside that shape, so
+  open holds stay dry whatever the waves do;
 - `hiddenNodes`: parts never shown (the Muleta's fishing-sail halyards and sheets, which are
   fixed in the model and would hang in the air once the sails turn);
 - sails modelled as a single plane (the Falua's) are drawn from both sides; sails that already

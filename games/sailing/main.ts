@@ -5,6 +5,7 @@ import { BoatView } from '../../src/engine/boatView';
 import { CAMERA_VIEWS, CameraRig } from '../../src/engine/cameraRig';
 import { ForceArrows } from '../../src/engine/forceArrows';
 import { Input } from '../../src/engine/input';
+import { TouchControls, isTouchDevice } from '../../src/engine/touchControls';
 import { createMapView, loadTagusMask, type MapView } from '../../src/engine/mapView';
 import { NetView } from '../../src/engine/netView';
 import { createSailingScene } from '../../src/engine/scene';
@@ -67,6 +68,17 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onCameraHeight: (h) => cameraRig.setElevation(h),
   onTimeScale: (k) => (timeScale = k),
 }, { fromDeg: wind.fromDeg, speed: wind.speed, gusty });
+// Phones and tablets: gestures on the 3D view steer and trim; the camera keeps its views
+// (buttons) but does not orbit with one finger.
+const touch = new TouchControls(canvas, {
+  onSheets: (delta) => {
+    for (const g of groupsInMode(spec, sim.controls.mode)) {
+      sim.controls.sheets[g] = Math.max(0, Math.min(1, (sim.controls.sheets[g] ?? 0.5) + delta));
+    }
+  },
+  onZoom: (factor) => cameraRig.setDistance(cameraRig.distance * factor),
+});
+if (isTouchDevice()) camera.inputs.removeByType('ArcRotateCameraPointersInput');
 input.bindHoldButton(hud.rudderLeft, 'KeyA');
 input.bindHoldButton(hud.rudderRight, 'KeyD');
 
@@ -149,7 +161,8 @@ function applyInput(dt: number): void {
   const c = sim.controls;
   const left = input.held('KeyA', 'ArrowLeft');
   const right = input.held('KeyD', 'ArrowRight');
-  if (left !== right) c.rudder = Math.max(-1, Math.min(1, c.rudder + (right ? 1 : -1) * RUDDER_RATE * dt));
+  if (touch.rudder !== null) c.rudder = touch.rudder;
+  else if (left !== right) c.rudder = Math.max(-1, Math.min(1, c.rudder + (right ? 1 : -1) * RUDDER_RATE * dt));
   else c.rudder -= Math.sign(c.rudder) * Math.min(Math.abs(c.rudder), RUDDER_RETURN * dt);
 
   const haul = input.held('KeyW', 'ArrowUp');
@@ -196,7 +209,7 @@ async function main(): Promise<void> {
   hud.setBoat(spec, sim.controls);
   loading.classList.add('done');
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport } });
+  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -228,6 +241,8 @@ async function main(): Promise<void> {
     }
     cameraRig.update(s.x, s.y, s.heading, dt);
     water.update(time, camera.target, camera.position);
+    // Keep the water out of the hull, so open holds stay dry.
+    water.setHull({ ...view.hullProfile, x: s.x, y: s.y, heading: s.heading });
     hud.update(s, sim.controls, sim.report, w, paused, aground, nav);
     scene.render();
   });

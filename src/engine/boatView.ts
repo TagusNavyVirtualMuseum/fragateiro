@@ -12,6 +12,7 @@ import {
 import '@babylonjs/loaders/glTF';
 import type { BoatSpec, BoatState, ForceReport } from '../physics';
 import type { BoatVisual, PartVisual } from './boatVisuals';
+import { HULL_BINS, type HullProfile } from './water';
 import { waveHeight } from './waves';
 
 interface Pivot {
@@ -34,6 +35,8 @@ interface Pivot {
  */
 export class BoatView {
   readonly root: TransformNode;
+  /** The hull's shape at the waterline (for keeping water out of the hull). */
+  readonly hullProfile: HullProfile;
   private readonly sails = new Map<string, Pivot>();
   private rudder?: Pivot;
   private heave = 0;
@@ -99,6 +102,7 @@ export class BoatView {
     this.rudder = makePivot(`${spec.id}-rudder`, visual.rudder);
 
     for (const n of visual.hiddenNodes ?? []) byName.get(n)?.setEnabled(false);
+    this.hullProfile = this.measureWaterline(visual.hullNodes.map((n) => byName.get(n)).filter((n): n is Node => !!n));
 
     // A sail modelled as a single plane must be drawn from both sides; a sail that already
     // has both faces must not (the faces would fight and flicker). Decide from the normals.
@@ -112,6 +116,55 @@ export class BoatView {
         }
       }
     }
+  }
+
+  /**
+   * Half-width of the hull at the waterline in slices along its length: where the planking's
+   * triangles cross a plane just below the waterline (boat frame: x starboard, y up,
+   * z forward). Slightly inset so no gap shows between hull and water.
+   */
+  private measureWaterline(nodes: Node[]): HullProfile {
+    this.root.computeWorldMatrix(true);
+    const LEVEL = -0.05;
+    const pts: [number, number][] = [];
+    for (const n of nodes) {
+      for (const m of [n, ...(n as TransformNode).getChildMeshes(false)] as AbstractMesh[]) {
+        if (!('getVerticesData' in m)) continue;
+        const pos = m.getVerticesData(VertexBuffer.PositionKind);
+        const idx = m.getIndices();
+        if (!pos || !idx) continue;
+        const wm = m.computeWorldMatrix(true);
+        const w: Vector3[] = [];
+        for (let i = 0; i < pos.length; i += 3) w.push(Vector3.TransformCoordinatesFromFloatsToRef(pos[i], pos[i + 1], pos[i + 2], wm, new Vector3()));
+        for (let t = 0; t < idx.length; t += 3) {
+          // Where the triangle crosses the plane: a segment between two edge crossings.
+          const cross: [number, number][] = [];
+          for (let e = 0; e < 3; e++) {
+            const a = w[idx[t + e]];
+            const b = w[idx[t + ((e + 1) % 3)]];
+            if ((a.y - LEVEL) * (b.y - LEVEL) > 0 || a.y === b.y) continue;
+            const k = (LEVEL - a.y) / (b.y - a.y);
+            cross.push([a.z + (b.z - a.z) * k, Math.abs(a.x + (b.x - a.x) * k)]);
+          }
+          if (cross.length < 2) continue;
+          const [p, q] = cross;
+          for (let j = 0; j <= 12; j++) pts.push([p[0] + ((q[0] - p[0]) * j) / 12, p[1] + ((q[1] - p[1]) * j) / 12]);
+        }
+      }
+    }
+    if (!pts.length) return { fwdStart: 0, step: 0, halfWidths: new Array(HULL_BINS).fill(0) };
+    const zs = pts.map((p) => p[0]);
+    const fwdStart = Math.min(...zs);
+    const step = (Math.max(...zs) - fwdStart) / HULL_BINS;
+    const halfWidths = new Array(HULL_BINS).fill(0);
+    for (const [z, x] of pts) {
+      const b = Math.min(HULL_BINS - 1, Math.floor((z - fwdStart) / step));
+      halfWidths[b] = Math.max(halfWidths[b], x);
+    }
+    // Each slice takes the narrower of itself and its neighbours (the hull tapers within a
+    // slice), minus a small margin.
+    const inset = halfWidths.map((x, i) => Math.max(0, Math.min(x, halfWidths[i - 1] ?? 0, halfWidths[i + 1] ?? 0) * 0.94 - 0.05));
+    return { fwdStart, step, halfWidths: inset };
   }
 
   static async load(scene: Scene, spec: BoatSpec, visual: BoatVisual): Promise<BoatView> {

@@ -95,7 +95,7 @@ canvas { width: 100%; height: 100%; display: block; touch-action: none; outline:
 .hud .buttons button { padding: 4px 8px; }
 .settings-toggle { display: none; }
 @media (max-width: 900px) {
-  .settings-toggle { display: block; top: 100px; bottom: auto; right: 16px; left: auto; padding: 8px 10px; }
+  .settings-toggle { display: block; top: 16px; bottom: auto; right: 16px; left: auto; padding: 6px 10px; font-size: 20px; line-height: 1; color: var(--parchment) !important; }
   .options.open { display: block; top: 16px; bottom: auto; right: 16px; left: 16px; width: auto; max-height: calc(100vh - 32px); overflow-y: auto; z-index: 2; }
 }
 
@@ -154,3 +154,30 @@ canvas { width: 100%; height: 100%; display: block; touch-action: none; outline:
 .rudder-bar { background: linear-gradient(180deg, #2a180b, #4a2c17); border: 1px solid var(--brass-dark); }
 .rudder-needle { background: var(--brass); box-shadow: 0 0 4px rgba(0, 0, 0, 0.6); }
 .loading { background: radial-gradient(circle, #5d3a1f, #2a180b); font-family: 'IM Fell English', Georgia, serif; font-size: 24px; color: var(--parchment); }
+
+/* ---- Touch screens and phones ------------------------------------------------------------ */
+.touch-hint { display: none; }
+@media (pointer: coarse) {
+  .touch-hint { display: inline; }
+  .keys-hint { display: none; }
+}
+@media (max-width: 900px) {
+  /* Commands on the left, compass and speed on the right of them. */
+  .sails { bottom: 92px; left: 16px; width: calc(100vw - 32px - 128px); padding: 8px 10px; }
+  .helm { bottom: 16px; left: 16px; width: calc(100vw - 32px - 128px); padding: 8px 10px; }
+  .helm button.hold { padding: 8px 6px; font-size: 13px; }
+  .sheet .name { width: 64px; }
+  .sheet .end { display: none; }
+  .instruments { top: auto; bottom: 16px; right: 16px; width: 120px; padding: 8px; }
+  .compass { width: 64px; height: 64px; }
+  .readout .big { font-size: 22px; }
+  .readout dl { display: none; }
+  .nav { font-size: 11px; padding: 4px 6px; }
+  .nav span:nth-of-type(3) { display: none; }
+  .hud h2 { margin-bottom: 4px; }
+}
+
+.hud [hidden] { display: none !important; }
+@media (max-width: 900px) {
+  .info { width: calc(100vw - 32px - 56px); }
+}

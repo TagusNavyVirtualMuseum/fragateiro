@@ -43,11 +43,17 @@ export interface BoatVisual {
   hiddenNodes?: string[];
   /** The model's bow points towards +x (most of our models point towards -x). */
   bowPositiveX?: boolean;
+  /**
+   * The hull's outer planking. Its shape at the waterline is measured when the model loads,
+   * and no water is drawn inside it (so open holds stay dry).
+   */
+  hullNodes: string[];
 }
 
 export const BOAT_VISUALS: Record<string, BoatVisual> = {
   falua: {
     boat: 'falua',
+    hullNodes: ['Casco'],
     url: faluaUrl,
     unit: 0.01,
     scale: 1.34, // model hull is 10.4 m; the physics uses 14 m
@@ -78,6 +84,7 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
   },
   muleta: {
     boat: 'muleta',
+    hullNodes: ['casco.001', 'casco.002'],
     url: muletaUrl,
     unit: 0.01,
     scale: 1,
@@ -122,6 +129,7 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
   },
   fragata: {
     boat: 'fragata',
+    hullNodes: ['Corpo_part12'],
     url: fragataUrl,
     unit: 0.01,
     scale: 1,
@@ -158,6 +166,7 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
   },
   catraio: {
     boat: 'catraio',
+    hullNodes: ['Casco'],
     url: catraioUrl,
     unit: 0.01,
     scale: 1,

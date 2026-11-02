@@ -26,14 +26,14 @@ Node 22 or newer.
 
 | | Keys | Touch / mouse |
 |---|---|---|
-| Rudder | A / D or ← / → | ◀ ▶ buttons |
-| Sheets (all sails) | W / S or ↑ / ↓ | one slider per sail group |
+| Rudder | A / D or ← / → | ◀ ▶ buttons, or drag one finger left/right on the view |
+| Sheets (all sails) | W / S or ↑ / ↓ | one slider per sail group, or drag one finger up (in) / down (out) |
 | Change mode (Muleta) | M | mode buttons |
 | Change boat | B | boat buttons |
 | Show forces | F | checkbox |
 | Camera view: behind, ahead, port, starboard, top, free | 1–6 (C = behind) | camera buttons |
-| Camera distance and height | mouse wheel / pinch | sliders |
-| Orbit freely | drag the view (switches to *free*) | |
+| Camera distance and height | mouse wheel | sliders, or pinch with two fingers |
+| Orbit freely | drag the view with the mouse (switches to *free*) | |
 | Move to a town (Lisboa, Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Montijo, Alcochete) | T (next town) | *Sail from* list, or click a town on the minimap |
 | Destination: distance, bearing and time | | *Sail to* list |
 | Game speed (1×, 2×, 3×; speeds shown stay real) | | setting |

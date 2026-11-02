@@ -92,7 +92,7 @@ export class SailingHud {
 
     // --- Bottom left: sails
     const sails = el('section', 'panel sails');
-    sails.append(el('h2', '', 'Sheets <small>W/S or ↑/↓</small>'), this.sheets);
+    sails.append(el('h2', '', 'Sheets <small class="keys-hint">W/S or ↑/↓</small><small class="touch-hint">or drag ↑↓ on the view</small>'), this.sheets);
 
     // --- Bottom centre: rudder (touch-friendly)
     const helm = el('section', 'panel helm');
@@ -101,7 +101,7 @@ export class SailingHud {
     this.rudderBar.append(this.rudderNeedle);
     const helmRow = el('div', 'helm-row');
     helmRow.append(this.rudderLeft, this.rudderBar, this.rudderRight);
-    helm.append(el('h2', '', 'Rudder <small>A/D or ←/→</small>'), helmRow);
+    helm.append(el('h2', '', 'Rudder <small class="keys-hint">A/D or ←/→</small><small class="touch-hint">or drag ←→ on the view</small>'), helmRow);
 
     // --- Bottom right: wind and view options
     const opts = el('section', 'panel options');
@@ -169,7 +169,8 @@ export class SailingHud {
     opts.addEventListener('change', (e) => (e.target as HTMLElement).blur());
 
     // On small screens the options panel opens from a button.
-    const toggle = el('button', 'panel settings-toggle', '⚙ Wind & camera');
+    const toggle = el('button', 'panel settings-toggle', '⚙');
+    toggle.title = 'Wind, camera and game speed';
     toggle.onclick = () => opts.classList.toggle('open');
 
     root.append(info, inst, sails, helm, opts, toggle);
