@@ -31,6 +31,8 @@ export class CameraRig {
   /** Height of the view above the water, degrees (5 = skimming the water, 85 = nearly overhead). */
   elevation = 18;
   onChange?: () => void;
+  /** Height of the point the camera looks at, m. */
+  targetHeight = 3;
 
   constructor(private readonly camera: ArcRotateCamera) {
     camera.lowerRadiusLimit = DISTANCE_RANGE.min;
@@ -75,7 +77,7 @@ export class CameraRig {
     // Move the target in place: assigning cam.target would recompute the distance.
     const k0 = Math.min(1, dt * 6);
     cam.target.x += (x - cam.target.x) * k0;
-    cam.target.y += (3 - cam.target.y) * k0;
+    cam.target.y += (this.targetHeight - cam.target.y) * k0;
     cam.target.z += (y - cam.target.z) * k0;
     if (this.view === 'free') return;
 

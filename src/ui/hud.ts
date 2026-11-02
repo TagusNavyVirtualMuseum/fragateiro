@@ -203,6 +203,21 @@ export class SailingHud {
   /** Panel where a game can put a map. */
   readonly mapSlot = el('div', 'map-slot');
 
+  /** A list of places to move the boat to ("teleport"). */
+  setDestinations(names: string[], onGo: (name: string) => void): void {
+    const label = el('label', 'goto', 'Sail from <small>(T)</small>');
+    const select = el('select');
+    select.append(new Option('choose a town…', ''));
+    for (const n of names) select.append(new Option(n, n));
+    select.addEventListener('change', () => {
+      if (select.value) onGo(select.value);
+      select.value = '';
+      select.blur();
+    });
+    label.append(select);
+    this.mapSlot.before(label);
+  }
+
   update(state: BoatState, controls: Controls, report: ForceReport, wind: TrueWind, paused: boolean, aground = false): void {
     const heading = (rad2deg(state.heading) + 360) % 360;
     const twa = Math.abs(report.trueWindAngleDeg);

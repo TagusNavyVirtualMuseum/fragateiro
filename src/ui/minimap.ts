@@ -1,4 +1,5 @@
 // Small map of the whole estuary with the boat on it.
+import type { Destination } from '../world/destinations';
 import type { LandMask } from '../world/landMask';
 
 const WATER = [92, 150, 180];
@@ -12,6 +13,8 @@ export class Minimap {
   constructor(
     parent: HTMLElement,
     private readonly mask: LandMask,
+    destinations: Destination[],
+    onPick?: (d: Destination) => void,
     widthPx = 260,
   ) {
     const m = mask.meta;
@@ -45,14 +48,34 @@ export class Minimap {
     ctx.putImageData(img, 0, 0);
     ctx.font = '600 18px system-ui, sans-serif';
     ctx.textAlign = 'center';
-    for (const p of m.places) {
-      if (p.kind !== 'city' && p.kind !== 'town') continue;
-      const [px, py] = this.toPx(p.x, p.y);
+    for (const d of destinations) {
+      const [px, py] = this.toPx(d.town.x, d.town.y);
       ctx.fillStyle = '#3d3528';
-      ctx.fillText(p.name, px, py - 6);
+      ctx.fillText(d.name, px, py - 7);
       ctx.beginPath();
-      ctx.arc(px, py, 3, 0, Math.PI * 2);
+      ctx.arc(px, py, 4, 0, Math.PI * 2);
       ctx.fill();
+    }
+    // Click near a town to move the boat there.
+    if (onPick) {
+      this.canvas.style.cursor = 'pointer';
+      this.canvas.title = 'Click a town to sail from there';
+      this.canvas.addEventListener('click', (e) => {
+        const r = this.canvas.getBoundingClientRect();
+        const cx = ((e.clientX - r.left) / r.width) * this.canvas.width;
+        const cy = ((e.clientY - r.top) / r.height) * this.canvas.height;
+        let best: Destination | undefined;
+        let bestD = 40; // px (canvas is drawn at 2x)
+        for (const d of destinations) {
+          const [px, py] = this.toPx(d.town.x, d.town.y);
+          const dist = Math.hypot(px - cx, py - cy);
+          if (dist < bestD) {
+            bestD = dist;
+            best = d;
+          }
+        }
+        if (best) onPick(best);
+      });
     }
     parent.append(this.canvas);
   }

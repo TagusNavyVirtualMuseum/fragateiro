@@ -44,3 +44,31 @@ describe('LandMask', () => {
     expect(() => new LandMask({ ...mask.meta, width: 3 }, new Uint8Array(100))).toThrow();
   });
 });
+
+describe('destinations', () => {
+  // 20 x 20 cells of 50 m: an open "estuary" in the west half, land in the east half with
+  // a closed pond that must never be chosen.
+  function estuary(): LandMask {
+    const meta: MapMeta = {
+      cellSize: 50, width: 20, height: 20, northWest: { x: 0, y: 1000 }, origin: { lat: 0, lon: 0 },
+      places: [{ name: 'Town', kind: 'town', x: 760, y: 500 }],
+    };
+    const water = new Uint8Array(400);
+    for (let r = 0; r < 20; r++) for (let c = 0; c < 20; c++) {
+      const pond = r >= 9 && r <= 11 && c >= 14 && c <= 16;
+      water[r * 20 + c] = c < 10 || pond ? 255 : 0;
+    }
+    return new LandMask(meta, water);
+  }
+
+  it('moors in the open water, not in the pond next to the town, facing open water', async () => {
+    const { findDestinations } = await import('../src/world/destinations');
+    const mask = estuary();
+    mask.markReachableFrom(100, 500);
+    const [d] = findDestinations(mask, 14, ['Town']);
+    expect(d.name).toBe('Town');
+    expect(d.x).toBeLessThan(500); // west of the shore at x = 500, not in the pond (x 700..850)
+    expect(mask.isReachable(d.x, d.y)).toBe(true);
+    expect(Math.sin(d.heading)).toBeLessThan(0); // bow pointing west, to open water
+  });
+});

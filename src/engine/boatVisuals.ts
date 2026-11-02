@@ -66,7 +66,14 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
         axis: { base: [-0.45, 0.38, 0], top: [0.73, 7.16, 0] }, // mast Mastro02
       },
     ],
-    rudder: { nodes: ['Leme01', 'Leme02', 'Leme03'], pivot: [4.05, 0, 0] },
+    // Blade and tiller turn about the raked pin (the thin grey cylinder between hull and rudder).
+    rudder: {
+      nodes: ['Leme01', 'Leme02', 'Leme03'],
+      pivot: [4.3, 0, 0],
+      axis: { base: [3.897, -0.738, 0], top: [4.784, 1.003, 0] }, // node Pin
+    },
+    // Halyard blocks: their ropes turn with the yards, so on their own they would float in the air.
+    hiddenNodes: ['Roldana02', 'Roldana02.001'],
   },
   muleta: {
     boat: 'muleta',
@@ -96,7 +103,12 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       { sail: 'rear-1', nodes: ['vela_tras1'], pivot: [1.13, 0, 0.4] },
       { sail: 'rear-2', nodes: ['vela_tras2'], pivot: [5.04, 0, 0] },
     ],
-    rudder: { nodes: ['direcao', 'direcao.001'], pivot: [6.8, 0, 0] },
+    // Blade plus the yoke on its head (the cross bar 'Guia' and its blocks).
+    rudder: {
+      nodes: ['direcao', 'direcao.001', 'Guia', 'roldana_direcao1'],
+      pivot: [7.0, 0, 0],
+      axis: { base: [7.05, -0.1, 0], top: [6.97, 0.9, 0] }, // through the gudgeons suporte_quilha_1/2
+    },
     // Halyards and sheets of the fishing sails. They are fixed in the model, so they would
     // hang in the air as soon as the sails (or the main yard) turn.
     hiddenNodes: [

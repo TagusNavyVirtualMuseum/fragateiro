@@ -96,7 +96,7 @@ export interface MapView {
   update(time: number, camera: Camera): void;
 }
 
-export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, sunDirection: Vector3, fogDensity: number): MapView {
+export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, sunDirection: Vector3, fogDensity: number, labelNames?: string[]): MapView {
   const { width, height } = mask.sizeMetres;
   const c = mask.centre;
 
@@ -124,8 +124,8 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
   // --- Town names, always facing the camera.
   const labels: Mesh[] = [];
   for (const p of mask.meta.places) {
-    // Only cities and towns in 3D (the minimap shows them too); villages would crowd the horizon.
-    if (p.kind !== 'city' && p.kind !== 'town') continue;
+    // Only the chosen places (or cities and towns); villages would crowd the horizon.
+    if (labelNames ? !labelNames.includes(p.name) : p.kind !== 'city' && p.kind !== 'town') continue;
     const big = p.kind === 'city';
     const label = makeLabel(scene, p.name, big);
     label.position.set(p.x, 30, p.y);

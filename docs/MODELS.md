@@ -48,7 +48,8 @@ Babylon.js sandbox.
 |---|---|---|
 | Fore sail | `Vela Frente`, yard `Mastro03`, `Cordas_Mastro01` | mast `Mastro01` axis |
 | Main sail | `Vela Principal`, yard `Mastro04`, `Cordas_Mastro02` | mast `Mastro02` axis |
-| Rudder | `Leme01–03` | 4.05 |
+| Rudder (blade and tiller) | `Leme01–03` | axis of the raked pin `Pin` |
+| Hidden | `Roldana02`, `Roldana02.001` (halyard blocks) | |
 
 ### Muleta (model frame, metres)
 
@@ -58,7 +59,7 @@ Babylon.js sandbox.
 | Front sail | `Vela_frente2` | both |
 | Front fishing sails | `vela_avançada`, `vela_frente1`, `vela_frente_cima`, `mini-vela_rede-frente2(.001)` | fishing |
 | Rear fishing sails | `vela_tras1`, `vela_tras2` | fishing |
-| Rudder | `direcao`, `direcao.001` | both |
+| Rudder and its yoke | `direcao`, `direcao.001`, `Guia`, `roldana_direcao1` (axis through gudgeons `suporte_quilha_1/2`) | both |
 | Net booms | `Mastro_rede_frente`, `mastro_rede_tras` | always shown |
 
 Sails that are not set in the current mode are hidden.

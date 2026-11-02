@@ -6,7 +6,7 @@ Browser mini-games with the traditional sailing boats of the Tagus River: the **
 built to be easy to maintain and to grow into several small games.
 
 - **Sailing the Tagus** (`games/sailing/`): free sailing on a map of the estuary (Lisbon,
-  Almada, Seixal, Barreiro, Moita, Montijo) with the real channel buoys. Switch boats at any
+  Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Montijo, Alcochete) with the real channel buoys. Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
 
@@ -34,6 +34,7 @@ Node 22 or newer.
 | Camera view: behind, ahead, port, starboard, top, free | 1–6 (C = behind) | camera buttons |
 | Camera distance and height | mouse wheel / pinch | sliders |
 | Orbit freely | drag the view (switches to *free*) | |
+| Move to a town (Lisboa, Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Montijo, Alcochete) | T (next town) | *Sail from* list, or click a town on the minimap |
 | Pause / restart | P / R | |
 
 ## How it is organised

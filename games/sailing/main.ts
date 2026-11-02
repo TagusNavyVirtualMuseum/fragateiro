@@ -10,6 +10,7 @@ import { NetView } from '../../src/engine/netView';
 import { createSailingScene } from '../../src/engine/scene';
 import { SailingHud } from '../../src/ui/hud';
 import { Minimap } from '../../src/ui/minimap';
+import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
 import { hullAfloat, type LandMask } from '../../src/world/landMask';
 
 const RUDDER_RATE = 1.6; // full travel per second
@@ -38,6 +39,8 @@ let mapView: MapView;
 let minimap: Minimap;
 let start = { x: 0, y: 0 };
 let aground = false;
+let destinations: Destination[] = [];
+let nextDestination = 0;
 let paused = false;
 let time = 0;
 
@@ -87,6 +90,17 @@ function cycleMode(): void {
 function restart(): void {
   sim = new SailboatSim(spec, wind, { ...start, heading: START_HEADING });
   aground = false;
+  hud.setBoat(spec, sim.controls);
+}
+
+/** Move the boat (stopped) to a town's mooring, bow towards open water. */
+function teleport(d: Destination): void {
+  const t = sim.state.time;
+  const heading = sailableHeading(mask, d.x, d.y, d.heading, wind.at(t, d.x, d.y).from, spec.length);
+  sim = new SailboatSim(spec, wind, { x: d.x, y: d.y, heading, time: t });
+  sim.controls.mode = spec.modes[0].id;
+  aground = false;
+  camera.target.set(d.x, camera.target.y, d.y);
   hud.setBoat(spec, sim.controls);
 }
 
@@ -141,13 +155,21 @@ function applyInput(dt: number): void {
 async function main(): Promise<void> {
   const [loaded, map] = await Promise.all([Promise.all(BOATS.map((b) => BoatView.load(scene, b, BOAT_VISUALS[b.id]))), loadTagusMask()]);
   mask = map.mask;
-  mapView = createMapView(scene, mask, skyColor, sunDirection, fogDensity);
-  minimap = new Minimap(hud.mapSlot, mask);
+  mapView = createMapView(scene, mask, skyColor, sunDirection, fogDensity, DESTINATION_NAMES);
+  start = mask.nearestWater(0, 0);
+  mask.markReachableFrom(start.x, start.y);
+  destinations = findDestinations(mask, 16);
+  minimap = new Minimap(hud.mapSlot, mask, destinations, teleport);
+  hud.setDestinations(destinations.map((d) => d.name), (name) => teleport(destinations.find((d) => d.name === name)!));
+  input.onPress('KeyT', () => {
+    if (!destinations.length) return;
+    teleport(destinations[nextDestination % destinations.length]);
+    nextDestination++;
+  });
   const credit = document.createElement('div');
   credit.className = 'credit';
   credit.textContent = 'Map: © OpenStreetMap contributors';
   hud.mapSlot.append(credit);
-  start = mask.nearestWater(0, 0);
   restart();
   for (const v of loaded) {
     views.set(v.spec.id, v);
@@ -158,7 +180,7 @@ async function main(): Promise<void> {
   hud.setBoat(spec, sim.controls);
   loading.classList.add('done');
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask } });
+  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
