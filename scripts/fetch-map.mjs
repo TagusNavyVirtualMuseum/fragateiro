@@ -15,18 +15,18 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 
-// --- Area: Lisbon to Alcochete, Barreiro, Moita, Montijo and Seixal -------------------
-const BBOX = { south: 38.6, west: -9.25, north: 38.8, east: -8.9 };
+// --- Area: Lisbon, Almada, Seixal, Barreiro, Moita and Montijo ---------------------------
+const BBOX = { south: 38.62, west: -9.19, north: 38.735, east: -8.935 };
 /** Local origin (and flood-fill seed): mid-river between Terreiro do Paço and Barreiro. */
 const ORIGIN = { lat: 38.685, lon: -9.1 };
-const CELL = 15; // metres
+const CELL = 10; // metres
 const OUT_DIR = new URL('../src/assets/map/', import.meta.url);
 
 const PLACES_WANTED = /^(city|town|village)$/;
 /** Must be land / water, or the data is wrong (checked after building the grid). */
 const CHECKS = {
   land: { Moita: [38.6507, -8.9905], Montijo: [38.7067, -8.9739], Barreiro: [38.6631, -9.0724], Lisboa: [38.7139, -9.1394] },
-  water: { origin: [ORIGIN.lat, ORIGIN.lon], 'Mar da Palha': [38.72, -9.03] },
+  water: { origin: [ORIGIN.lat, ORIGIN.lon], 'Montijo channel': [38.695, -9.05], 'off Seixal': [38.655, -9.1] },
 };
 
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
