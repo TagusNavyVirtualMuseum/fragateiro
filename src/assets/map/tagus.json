@@ -1,0 +1,221 @@
+{
+  "source": "OpenStreetMap contributors (ODbL), via the Overpass API",
+  "built": "2026-11-02",
+  "bbox": {
+    "south": 38.62,
+    "west": -9.19,
+    "north": 38.735,
+    "east": -8.935
+  },
+  "origin": {
+    "lat": 38.685,
+    "lon": -9.1
+  },
+  "cellSize": 10,
+  "width": 2216,
+  "height": 1272,
+  "northWest": {
+    "x": -7820.62,
+    "y": 5528.7
+  },
+  "places": [
+    {
+      "name": "Alcântara",
+      "kind": "village",
+      "x": -7159,
+      "y": 2088
+    },
+    {
+      "name": "Aldeia de Paio Pires",
+      "kind": "village",
+      "x": 1589,
+      "y": -6442
+    },
+    {
+      "name": "Alhos Vedros",
+      "kind": "town",
+      "x": 6549,
+      "y": -3194
+    },
+    {
+      "name": "Almada",
+      "kind": "city",
+      "x": -5008,
+      "y": -207
+    },
+    {
+      "name": "Alto do Seixalinho",
+      "kind": "village",
+      "x": 3380,
+      "y": -3288
+    },
+    {
+      "name": "Amora",
+      "kind": "city",
+      "x": -1391,
+      "y": -6114
+    },
+    {
+      "name": "Arroios",
+      "kind": "village",
+      "x": -3176,
+      "y": 5222
+    },
+    {
+      "name": "Baixa da Banheira",
+      "kind": "town",
+      "x": 4859,
+      "y": -3107
+    },
+    {
+      "name": "Barreiro",
+      "kind": "city",
+      "x": 2041,
+      "y": -2297
+    },
+    {
+      "name": "Beato",
+      "kind": "village",
+      "x": -651,
+      "y": 5165
+    },
+    {
+      "name": "Campo de Ourique",
+      "kind": "village",
+      "x": -5903,
+      "y": 3353
+    },
+    {
+      "name": "Corroios",
+      "kind": "town",
+      "x": -4539,
+      "y": -4806
+    },
+    {
+      "name": "Estrela",
+      "kind": "village",
+      "x": -5186,
+      "y": 2855
+    },
+    {
+      "name": "Feijó",
+      "kind": "village",
+      "x": -5783,
+      "y": -3541
+    },
+    {
+      "name": "Gaio-Rosário",
+      "kind": "village",
+      "x": 8129,
+      "y": -1100
+    },
+    {
+      "name": "Laranjeiro",
+      "kind": "village",
+      "x": -4712,
+      "y": -3148
+    },
+    {
+      "name": "Lavradio",
+      "kind": "town",
+      "x": 3978,
+      "y": -1976
+    },
+    {
+      "name": "Lisboa",
+      "kind": "city",
+      "x": -3180,
+      "y": 2516
+    },
+    {
+      "name": "Madalena",
+      "kind": "village",
+      "x": -2946,
+      "y": 2558
+    },
+    {
+      "name": "Misericórdia",
+      "kind": "village",
+      "x": -4410,
+      "y": 2920
+    },
+    {
+      "name": "Moita",
+      "kind": "town",
+      "x": 9252,
+      "y": -3605
+    },
+    {
+      "name": "Montijo",
+      "kind": "city",
+      "x": 10893,
+      "y": 2331
+    },
+    {
+      "name": "Palhais",
+      "kind": "village",
+      "x": 4345,
+      "y": -6471
+    },
+    {
+      "name": "Penha de França",
+      "kind": "village",
+      "x": -2339,
+      "y": 4551
+    },
+    {
+      "name": "Samouco",
+      "kind": "town",
+      "x": 8413,
+      "y": 3915
+    },
+    {
+      "name": "Santo André",
+      "kind": "town",
+      "x": 3909,
+      "y": -4560
+    },
+    {
+      "name": "Santo António da Charneca",
+      "kind": "village",
+      "x": 5943,
+      "y": -6668
+    },
+    {
+      "name": "São Francisco",
+      "kind": "village",
+      "x": 11044,
+      "y": 5084
+    },
+    {
+      "name": "Sarilhos Grandes",
+      "kind": "village",
+      "x": 11428,
+      "y": -643
+    },
+    {
+      "name": "Sarilhos Pequenos",
+      "kind": "village",
+      "x": 10188,
+      "y": -438
+    },
+    {
+      "name": "Seixal",
+      "kind": "city",
+      "x": -631,
+      "y": -4730
+    },
+    {
+      "name": "Sobreda",
+      "kind": "town",
+      "x": -7796,
+      "y": -3860
+    },
+    {
+      "name": "Vale da Amoreira",
+      "kind": "village",
+      "x": 5330,
+      "y": -4378
+    }
+  ]
+}
