@@ -4,7 +4,7 @@
   "bbox": {
     "south": 38.62,
     "west": -9.19,
-    "north": 38.735,
+    "north": 38.765,
     "east": -8.935
   },
   "origin": {
@@ -13,10 +13,10 @@
   },
   "cellSize": 10,
   "width": 2216,
-  "height": 1272,
+  "height": 1604,
   "northWest": {
     "x": -7820.62,
-    "y": 5528.7
+    "y": 8845.92
   },
   "places": [
     {
@@ -24,6 +24,12 @@
       "kind": "village",
       "x": -7159,
       "y": 2088
+    },
+    {
+      "name": "Alcochete",
+      "kind": "town",
+      "x": 12092,
+      "y": 7856
     },
     {
       "name": "Aldeia de Paio Pires",
@@ -48,6 +54,12 @@
       "kind": "village",
       "x": 3380,
       "y": -3288
+    },
+    {
+      "name": "Alvalade",
+      "kind": "village",
+      "x": -3440,
+      "y": 6891
     },
     {
       "name": "Amora",
@@ -134,6 +146,12 @@
       "y": 2558
     },
     {
+      "name": "Marvila",
+      "kind": "village",
+      "x": -488,
+      "y": 6746
+    },
+    {
       "name": "Misericórdia",
       "kind": "village",
       "x": -4410,
@@ -180,6 +198,12 @@
       "kind": "village",
       "x": 5943,
       "y": -6668
+    },
+    {
+      "name": "São Domingos de Benfica",
+      "kind": "village",
+      "x": -6655,
+      "y": 6812
     },
     {
       "name": "São Francisco",
@@ -306,6 +330,14 @@
       "name": "",
       "x": -4197,
       "y": -1963
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Curva do Molhe",
+      "x": 816,
+      "y": 8391
     },
     {
       "type": "light_minor",
@@ -684,12 +716,28 @@
       "y": -929
     },
     {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "",
+      "x": 891,
+      "y": 7540
+    },
+    {
       "type": "buoy_lateral",
       "category": "port",
       "colour": "red",
       "name": "",
       "x": 1734,
       "y": -446
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 5427,
+      "y": 7505
     },
     {
       "type": "buoy_lateral",
@@ -706,6 +754,14 @@
       "name": "",
       "x": 1783,
       "y": -575
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "",
+      "x": 5530,
+      "y": 7527
     },
     {
       "type": "buoy_lateral",
@@ -754,6 +810,46 @@
       "name": "",
       "x": -6588,
       "y": -7
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Molhe Sul",
+      "x": 696,
+      "y": 7605
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "Molhe Norte",
+      "x": 665,
+      "y": 7679
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 1161,
+      "y": 8533
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "S3",
+      "x": 6079,
+      "y": 8097
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 6019,
+      "y": 8136
     },
     {
       "type": "buoy_lateral",
@@ -914,6 +1010,22 @@
       "name": "",
       "x": 61,
       "y": 4396
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "",
+      "x": 541,
+      "y": 6032
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 442,
+      "y": 6260
     },
     {
       "type": "light_minor",
