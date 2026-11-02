@@ -1,0 +1,28 @@
+{
+  "name": "fragateiro",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Browser mini-games with the traditional sailing boats of the Tagus River (Falua, Muleta).",
+  "type": "module",
+  "license": "CC0-1.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "polar": "tsx scripts/polar.ts"
+  },
+  "dependencies": {
+    "@babylonjs/core": "9.30.0",
+    "@babylonjs/loaders": "9.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.3"
+  }
+}
