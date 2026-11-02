@@ -18,7 +18,7 @@ export const CATRAIO: BoatSpec = {
   beam: 3.2,
   draft: 1.0,
   mass,
-  gm: 1.0,
+  gm: 2.0, // doubled: half the heel of the first version
   rollPeriod: 3.5,
   hull: {
     waterlineLength: lwl,
@@ -27,11 +27,11 @@ export const CATRAIO: BoatSpec = {
     waveCoef: 0.04,
     lateralArea: 7.5,
     lateralCentre: 0.2,
-    liftSlope: 1.4,
+    liftSlope: 2.8, // doubled: half the leeway
     stallDeg: 25,
     windageArea: 5,
   },
-  rudder: { area: 0.9, x: -4.8, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
+  rudder: { area: 1.35, x: -4.8, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
   sails: [
     { id: 'jib', name: 'Jib', group: 'jib', area: 14, pivot: [6.7, 0], ceDistance: 1.8, ceHeight: 3.5, minAngle: 8, maxAngle: 80, efficiency: 0.8 },
     { id: 'main', name: 'Spritsail', group: 'main', area: 32, pivot: [3.2, 0], ceDistance: 3, ceHeight: 5.5, minAngle: 6, maxAngle: 80, efficiency: 0.8 },

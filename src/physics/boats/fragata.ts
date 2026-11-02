@@ -18,7 +18,7 @@ export const FRAGATA: BoatSpec = {
   beam: 6,
   draft: 1.5,
   mass,
-  gm: 1.6,
+  gm: 3.2, // doubled: half the heel of the first version
   rollPeriod: 5,
   hull: {
     waterlineLength: lwl,
@@ -27,11 +27,11 @@ export const FRAGATA: BoatSpec = {
     waveCoef: 0.04,
     lateralArea: 17,
     lateralCentre: 0,
-    liftSlope: 1.3,
+    liftSlope: 2.6, // doubled: half the leeway
     stallDeg: 25,
     windageArea: 16,
   },
-  rudder: { area: 3.5, x: -9.5, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
+  rudder: { area: 5.25, x: -9.5, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
   sails: [
     { id: 'jib', name: 'Jib', group: 'jib', area: 45, pivot: [10.1, 0], ceDistance: 2.5, ceHeight: 6.5, minAngle: 8, maxAngle: 80, efficiency: 0.8 },
     { id: 'main', name: 'Mainsail', group: 'main', area: 150, pivot: [5.2, 0], ceDistance: 6, ceHeight: 9, minAngle: 6, maxAngle: 80, efficiency: 0.8 },

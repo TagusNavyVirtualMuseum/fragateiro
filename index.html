@@ -6,19 +6,21 @@
     <title>Fragateiro — Tagus sailing games</title>
     <meta name="description" content="Browser mini-games with the traditional sailing boats of the Tagus River." />
     <style>
-      :root { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: #f2efe6; background: #18303c; }
+      :root { font-family: 'EB Garamond', Georgia, serif; font-size: 17px; color: #f5e9cf; background: radial-gradient(circle at 50% 0, #5d3a1f, #2a180b 70%); }
+      h1, h2 { font-family: 'IM Fell English', Georgia, serif; font-weight: 400; }
+      .card { background: rgba(0, 0, 0, 0.18) !important; border-color: rgba(201, 162, 92, 0.6) !important; }
       body { margin: 0; min-height: 100vh; display: flex; justify-content: center; }
       main { max-width: 860px; padding: 48px 16px; }
       h1 { font-size: 34px; margin: 0 0 8px; }
-      p { color: #a9b8bf; line-height: 1.55; }
+      p { color: #d4bf96; line-height: 1.55; }
       .games { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 28px; }
       .card { display: block; padding: 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.05); color: inherit; text-decoration: none; }
-      a.card:hover { border-color: #e3a33b; }
+      a.card:hover { border-color: #e2b866 !important; }
       .card h2 { margin: 0 0 6px; font-size: 18px; }
       .card p { margin: 0; font-size: 14px; }
       .soon { opacity: .55; }
       .links { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 36px; font-size: 15px; }
-      .links a { color: #e3a33b; text-decoration: none; }
+      .links a { color: #e2b866; text-decoration: none; }
       .links a:hover { text-decoration: underline; }
       .partners { margin-top: 32px; padding: 18px 20px; border-radius: 12px; background: #fff; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: 20px 28px; }
       .partners a { display: block; }
@@ -26,6 +28,10 @@
       footer { margin-top: 28px; font-size: 13px; color: #7d9099; line-height: 1.5; }
       footer a { color: #a9b8bf; }
     </style>
+    <script type="module">
+      import '@fontsource/eb-garamond/latin-400.css';
+      import '@fontsource/im-fell-english/latin-400.css';
+    </script>
   </head>
   <body>
     <main>

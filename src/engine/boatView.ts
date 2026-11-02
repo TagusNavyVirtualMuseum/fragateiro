@@ -3,6 +3,8 @@ import {
   Quaternion,
   TransformNode,
   Vector3,
+  VertexBuffer,
+  type AbstractMesh,
   type AssetContainer,
   type Node,
   type Scene,
@@ -98,14 +100,15 @@ export class BoatView {
 
     for (const n of visual.hiddenNodes ?? []) byName.get(n)?.setEnabled(false);
 
-    // Sails modelled as a single plane must be drawn from both sides. (Sails that already
-    // have two faces must not: the faces would fight and flicker.)
-    if (visual.singleSidedSails) {
-      for (const sv of visual.sails) {
-        const found = byName.get(sv.nodes[0]) as TransformNode | undefined;
-        for (const m of found ? [found, ...found.getChildMeshes(false)] : []) {
-          const mat = (m as { material?: { backFaceCulling: boolean } | null }).material;
-          if (mat) mat.backFaceCulling = false;
+    // A sail modelled as a single plane must be drawn from both sides; a sail that already
+    // has both faces must not (the faces would fight and flicker). Decide from the normals.
+    for (const sv of visual.sails) {
+      for (const name of sv.nodes) {
+        const found = byName.get(name) as TransformNode | undefined;
+        if (!found) continue;
+        for (const m of [found, ...found.getChildMeshes(false)] as AbstractMesh[]) {
+          if (!m.material || !('getVerticesData' in m)) continue;
+          if (isSingleSided(m)) m.material.backFaceCulling = false;
         }
       }
     }
@@ -171,4 +174,19 @@ export class BoatView {
     this.container.dispose();
     this.root.dispose();
   }
+}
+
+/** Do (almost) all normals of the mesh face the same side? */
+function isSingleSided(mesh: AbstractMesh): boolean {
+  const n = mesh.getVerticesData(VertexBuffer.NormalKind);
+  if (!n || n.length < 9) return false;
+  const [ax, ay, az] = [n[0], n[1], n[2]];
+  let same = 0;
+  let opposite = 0;
+  for (let i = 0; i < n.length; i += 3) {
+    const d = n[i] * ax + n[i + 1] * ay + n[i + 2] * az;
+    if (d > 0.3) same++;
+    else if (d < -0.3) opposite++;
+  }
+  return opposite < 0.2 * Math.max(1, same);
 }

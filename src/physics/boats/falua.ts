@@ -18,7 +18,7 @@ export const FALUA: BoatSpec = {
   beam: 4,
   draft: 1.5,
   mass,
-  gm: 1.1,
+  gm: 2.2, // doubled: half the heel of the first version
   rollPeriod: 4,
   hull: {
     waterlineLength: lwl,
@@ -28,11 +28,11 @@ export const FALUA: BoatSpec = {
     waveCoef: 0.04,
     lateralArea: 11,
     lateralCentre: 0.3,
-    liftSlope: 1.4,
+    liftSlope: 2.8, // doubled: half the leeway
     stallDeg: 25,
     windageArea: 8,
   },
-  rudder: { area: 1.4, x: -6.6, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
+  rudder: { area: 2.1, x: -6.6, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
   sails: [
     {
       id: 'fore',

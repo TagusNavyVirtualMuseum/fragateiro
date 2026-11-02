@@ -27,8 +27,8 @@ the foil turns the flow (`src/physics/foil.ts`).
 - **Sails:** ρ = 1.204 kg/m³. C_L and C_D come from the original simulator's tables (one value
   per degree). The flow is the **apparent wind** at the sail's centre of effort: true wind
   minus the boat's velocity (including the rotation).
-- **Keel and hull:** the underwater side area is cut into 6 strips along the hull, each a
-  low-aspect-ratio wing (linear lift up to stall, then flat-plate behaviour, plus cross-flow
+- **Keel and hull:** the underwater side area is cut into 6 strips over the middle part of the
+  hull (`lateralSpan`, half the waterline length by default), each a low-aspect-ratio wing (linear lift up to stall, then flat-plate behaviour, plus cross-flow
   drag). Strips at different positions see different flows when the boat turns, which gives
   yaw damping for free, and a hull pushed sideways (the Muleta fishing) meets strong drag.
 - **Rudder:** one foil at the stern, turned by the helm.
@@ -42,7 +42,9 @@ can swing out (`minAngle` with the sheet hauled in, `maxAngle` fully eased). So:
   limit and fills (α > 0: lift and drag);
 - otherwise it streams with α ≈ 0 and **flaps** (no drive).
 
-This one rule produces the behaviours from the paper: no progress head to wind (sails flap),
+A flapping sail gets about a third of the table's drag (rising back to the table value at
+10° angle of attack), so a boat keeps its way and can tack. This one rule produces the
+behaviours from the paper: no progress head to wind (sails flap),
 a no-go zone of about ±45°, sails centred when close-hauled, half-way on a beam reach and
 fully out when running, and gybes when the wind crosses the stern. The sail angle follows its
 target with a 0.35 s lag so manoeuvres look natural.
@@ -82,9 +84,13 @@ at that speed.
 
 Mass, stability and resistance values are estimates. `npm run polar [wind m/s]` prints the
 best speed at each wind angle for every boat and mode. At 6 m/s (the paper's test wind) the
-current values give, for the Falua: nothing below about 42°, 2.4 kn at 45°, 5.4 kn on a beam
-reach and 5 kn running. The Fragata: 2.2 kn at 45°, 6 kn on a beam reach; the Catraio:
-2.2 kn at 45°, 4.9 kn on a beam reach. These are more realistic than the Unity version (which
+current values give, for the Falua: nothing below about 42°, 2.7 kn at 45°, 5.4 kn on a beam
+reach and 5 kn running. The Fragata: 2.6 kn at 45°, 6 kn on a beam reach; the Catraio:
+2.3 kn at 45°, 4.9 kn on a beam reach. Heel stays under about 5° and leeway around 0.1–0.3 kn
+in this wind (stability and hull grip were doubled after play-testing).
+
+The game runs the simulation 2× faster than real time by default (setting: 1×, 2×, 3×), so
+the speeds shown stay realistic while trips take less time. These are more realistic than the Unity version (which
 had copied yacht parameters), but should be checked with people who sail these boats. The
 tests in `tests/physics.test.ts` check behaviour (no-go zone, sheet settings, steering,
 heel, fishing drift), not exact numbers, so tuning does not break them.

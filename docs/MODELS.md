@@ -54,8 +54,9 @@ named nodes. (The Muleta in the repo was made with 1024 px textures.)
 - the rudder nodes and pivot;
 - `hiddenNodes`: parts never shown (the Muleta's fishing-sail halyards and sheets, which are
   fixed in the model and would hang in the air once the sails turn);
-- `singleSidedSails`: the Falua's sails are single planes and are drawn from both sides. The
-  Muleta's sails already have two faces; drawing both sides again makes them flicker.
+- sails modelled as a single plane (the Falua's) are drawn from both sides; sails that already
+  have both faces (the other boats) are not, or the faces would fight and flicker. The game
+  decides this from each sail's normals when it loads the model.
 
 To find node names and positions, print the bounding box of every node, for example with a
 small `@gltf-transform/core` script, or open the `.glb` in https://gltf.report or the

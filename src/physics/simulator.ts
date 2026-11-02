@@ -197,12 +197,13 @@ export class SailboatSim {
     // --- Hull and keel: a row of strips, each one a small underwater wing ---------
     const hull = spec.hull;
     const L = hull.waterlineLength;
+    const span = L * (hull.lateralSpan ?? 0.5);
     const stripArea = hull.lateralArea / KEEL_STRIPS;
     let kx = 0;
     let ky = 0;
     let kn = 0;
     for (let i = 0; i < KEEL_STRIPS; i++) {
-      const xi = hull.lateralCentre + ((i + 0.5) / KEEL_STRIPS - 0.5) * L;
+      const xi = hull.lateralCentre + ((i + 0.5) / KEEL_STRIPS - 0.5) * span;
       const f = foilForce(-1, 0, -s.u, -(s.v + s.r * xi), stripArea, RHO_WATER, this.keelCurve);
       kx += f.fx;
       ky += f.fy;
@@ -213,7 +214,7 @@ export class SailboatSim {
     N += kn;
 
     // --- Forward resistance: skin friction + wave making ------------------------
-    const froude = Math.abs(s.u) / Math.sqrt(GRAVITY * L);
+    const froude = Math.abs(s.u) / Math.sqrt(GRAVITY * hull.waterlineLength);
     const cw = hull.waveCoef * (froude / 0.4) ** 4;
     const resistance = -0.5 * RHO_WATER * hull.wettedArea * (hull.cf + cw) * s.u * Math.abs(s.u);
     X += resistance;

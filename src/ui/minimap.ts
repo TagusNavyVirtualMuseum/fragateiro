@@ -2,8 +2,9 @@
 import type { Destination } from '../world/destinations';
 import type { LandMask } from '../world/landMask';
 
-const WATER = [92, 150, 180];
-const LAND = [214, 205, 176];
+// Old chart colours: pale blue-grey water on parchment.
+const WATER = [160, 182, 178];
+const LAND = [228, 210, 170];
 
 export class Minimap {
   readonly canvas = document.createElement('canvas');
@@ -46,11 +47,11 @@ export class Minimap {
       }
     }
     ctx.putImageData(img, 0, 0);
-    ctx.font = '600 18px system-ui, sans-serif';
+    ctx.font = '20px "IM Fell English", Georgia, serif';
     ctx.textAlign = 'center';
     for (const d of destinations) {
       const [px, py] = this.toPx(d.town.x, d.town.y);
-      ctx.fillStyle = '#3d3528';
+      ctx.fillStyle = '#4a2c17';
       ctx.fillText(d.name, px, py - 7);
       ctx.beginPath();
       ctx.arc(px, py, 4, 0, Math.PI * 2);

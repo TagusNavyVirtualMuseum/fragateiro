@@ -26,7 +26,7 @@ export const MULETA: BoatSpec = {
   beam: 3,
   draft: 0.9,
   mass,
-  gm: 1.2,
+  gm: 2.4, // doubled: half the heel of the first version
   rollPeriod: 3.5,
   hull: {
     waterlineLength: lwl,
@@ -35,11 +35,11 @@ export const MULETA: BoatSpec = {
     waveCoef: 0.04,
     lateralArea: 6.5,
     lateralCentre: 0.2,
-    liftSlope: 1.4,
+    liftSlope: 2.8, // doubled: half the leeway
     stallDeg: 25,
     windageArea: 6,
   },
-  rudder: { area: 1.0, x: -6.8, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
+  rudder: { area: 1.5, x: -6.8, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
   sails: [
     { id: 'main', name: 'Main sail', group: 'main', area: 60, pivot: [1.7, 0], ceDistance: 1.5, ceHeight: 6, minAngle: 6, maxAngle: 80, efficiency: 0.8 },
     { id: 'front', name: 'Front sail', group: 'front', area: 12, pivot: [5.6, 0], ceDistance: 0.9, ceHeight: 4.5, minAngle: 6, maxAngle: 80, efficiency: 0.8 },

@@ -35,6 +35,8 @@ Node 22 or newer.
 | Camera distance and height | mouse wheel / pinch | sliders |
 | Orbit freely | drag the view (switches to *free*) | |
 | Move to a town (Lisboa, Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Montijo, Alcochete) | T (next town) | *Sail from* list, or click a town on the minimap |
+| Destination: distance, bearing and time | | *Sail to* list |
+| Game speed (1×, 2×, 3×; speeds shown stay real) | | setting |
 | Pause / restart | P / R | |
 
 ## How it is organised

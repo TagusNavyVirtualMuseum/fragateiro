@@ -12,6 +12,18 @@ export interface HudCallbacks {
   onCameraView(view: CameraView): void;
   onCameraDistance(metres: number): void;
   onCameraHeight(degrees: number): void;
+  onTimeScale(scale: number): void;
+}
+
+export interface Navigation {
+  name: string;
+  /** Distance to the destination, m. */
+  distance: number;
+  /** Compass bearing to the destination, degrees. */
+  bearing: number;
+  /** Sailing time since the destination was chosen, s. */
+  elapsed: number;
+  arrived: boolean;
 }
 
 const GROUP_NAMES: Record<string, string> = { fore: 'Fore sail', main: 'Main sail', front: 'Front sails', rear: 'Rear sails', jib: 'Jib', mizzen: 'Mizzen' };
@@ -33,6 +45,8 @@ export class SailingHud {
   private readonly readout = el('div', 'readout');
   private readonly compassBoat: SVGGElement;
   private readonly compassWind: SVGGElement;
+  private readonly compassTarget: SVGGElement;
+  private readonly nav = el('div', 'nav');
   private readonly rudderBar = el('div', 'rudder-bar');
   private readonly rudderNeedle = el('div', 'rudder-needle');
   private readonly warning = el('div', 'warning');
@@ -67,12 +81,14 @@ export class SailingHud {
       <svg viewBox="-50 -50 100 100" class="compass" aria-label="compass">
         <circle r="46" class="ring"/>
         <text y="-34" class="n">N</text><text x="36" y="4" class="t">E</text><text y="42" class="t">S</text><text x="-36" y="4" class="t">W</text>
+        <g class="target" visibility="hidden"><path d="M0,-47 L-5,-38 L5,-38 Z"/></g>
         <g class="wind"><path d="M0,-44 L0,-20 M-6,-28 L0,-20 L6,-28"/></g>
         <g class="boat"><path d="M0,-22 C7,-10 7,12 5,20 L-5,20 C-7,12 -7,-10 0,-22 Z"/></g>
       </svg>`;
     this.compassBoat = inst.querySelector('g.boat')!;
     this.compassWind = inst.querySelector('g.wind')!;
-    inst.append(this.readout, this.warning);
+    this.compassTarget = inst.querySelector('g.target')!;
+    inst.append(this.readout, this.nav, this.warning);
 
     // --- Bottom left: sails
     const sails = el('section', 'panel sails');
@@ -99,6 +115,11 @@ export class SailingHud {
       <label>Distance <input type="range" min="${DISTANCE_RANGE.min}" max="${DISTANCE_RANGE.max}" step="1" name="camDist"> <output name="camDistOut"></output></label>
       <label class="cam-height">Height <input type="range" min="3" max="85" step="1" name="camHeight"> <output name="camHeightOut"></output></label>
       <label class="check"><input type="checkbox" name="forces"> Show forces <small>(F)</small></label>
+      <label>Game speed <select name="timeScale">
+        <option value="1">1× real time</option>
+        <option value="2" selected>2× faster</option>
+        <option value="3">3× faster</option>
+      </select></label>
       <p class="keys">M: change mode · B: change boat · P: pause · R: restart</p>`;
     const dir = opts.querySelector<HTMLInputElement>('[name=dir]')!;
     const speed = opts.querySelector<HTMLInputElement>('[name=speed]')!;
@@ -141,6 +162,8 @@ export class SailingHud {
       cb.onCameraHeight(Number(this.camHeight.value));
     });
     this.camOutputs = { distOut, heightOut };
+    const timeScale = opts.querySelector<HTMLSelectElement>('[name=timeScale]')!;
+    timeScale.addEventListener('change', () => cb.onTimeScale(Number(timeScale.value)));
 
     // Let the arrow keys steer the boat instead of moving a focused slider.
     opts.addEventListener('change', (e) => (e.target as HTMLElement).blur());
@@ -200,6 +223,23 @@ export class SailingHud {
     }
   }
 
+  private updateNav(state: BoatState, nav: Navigation | null): void {
+    this.nav.hidden = !nav;
+    this.compassTarget.setAttribute('visibility', nav ? 'visible' : 'hidden');
+    if (!nav) return;
+    const heading = (rad2deg(state.heading) + 360) % 360;
+    let rel = ((nav.bearing - heading + 540) % 360) - 180;
+    const side = Math.abs(rel) < 3 ? 'dead ahead' : `${Math.abs(rel).toFixed(0)}° to ${rel > 0 ? 'starboard' : 'port'}`;
+    const km = nav.distance / 1000;
+    const t = Math.floor(nav.elapsed);
+    const time = `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
+    this.nav.innerHTML = nav.arrived
+      ? `<strong>Arrived at ${nav.name}!</strong><span>sailing time ${time}</span>`
+      : `<strong>To ${nav.name}</strong><span>${km < 1 ? `${Math.round(nav.distance)} m` : `${km.toFixed(2)} km`} · ${(nav.distance / 1852).toFixed(2)} nm</span>` +
+        `<span>bearing ${Math.round(nav.bearing)}° · ${side}</span><span>time ${time}</span>`;
+    this.compassTarget.setAttribute('transform', `rotate(${nav.bearing})`);
+  }
+
   /** Panel where a game can put a map. */
   readonly mapSlot = el('div', 'map-slot');
 
@@ -218,7 +258,22 @@ export class SailingHud {
     this.mapSlot.before(label);
   }
 
-  update(state: BoatState, controls: Controls, report: ForceReport, wind: TrueWind, paused: boolean, aground = false): void {
+  /** A list of places to sail to; the instruments then show distance and bearing. */
+  setTargets(names: string[], onTarget: (name: string | null) => void): void {
+    const label = el('label', 'goto', 'Sail to');
+    const select = el('select');
+    select.append(new Option('no destination', ''));
+    for (const n of names) select.append(new Option(n, n));
+    select.addEventListener('change', () => {
+      onTarget(select.value || null);
+      select.blur();
+    });
+    label.append(select);
+    this.mapSlot.before(label);
+  }
+
+  update(state: BoatState, controls: Controls, report: ForceReport, wind: TrueWind, paused: boolean, aground = false, nav: Navigation | null = null): void {
+    this.updateNav(state, nav);
     const heading = (rad2deg(state.heading) + 360) % 360;
     const twa = Math.abs(report.trueWindAngleDeg);
     const pointOfSail =

@@ -52,6 +52,11 @@ export interface HullSpec {
   stallDeg: number;
   /** Air drag area (Cd * A) of hull, masts and rigging, m². Hurts upwind sailing. */
   windageArea: number;
+  /**
+   * Share of the waterline length over which the side force acts (the keel and the
+   * deepest part of the hull), default 0.5. Smaller = the boat turns more easily.
+   */
+  lateralSpan?: number;
 }
 
 export interface RudderSpec {

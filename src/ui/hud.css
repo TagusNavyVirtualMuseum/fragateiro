@@ -1,10 +1,20 @@
+/* Old ship's look: varnished wood panels, brass trim, parchment and printed type. */
+@import '@fontsource/eb-garamond/latin-400.css';
+@import '@fontsource/eb-garamond/latin-600.css';
+@import '@fontsource/im-fell-english/latin-400.css';
 :root {
-  --panel: rgba(12, 28, 38, 0.72);
-  --ink: #f2efe6;
-  --muted: #a9b8bf;
-  --accent: #e3a33b;
-  --line: rgba(255, 255, 255, 0.15);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --wood-1: #4a2c17;
+  --wood-2: #5d3a1f;
+  --wood-3: #3b2312;
+  --brass: #c9a25c;
+  --brass-dark: #8a6a33;
+  --parchment: #ead9b4;
+  --panel: var(--wood-2);
+  --ink: #f5e9cf;
+  --muted: #d4bf96;
+  --accent: #e2b866;
+  --line: rgba(201, 162, 92, 0.55);
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; overflow: hidden; background: #c7d9e5; color: var(--ink); }
@@ -99,3 +109,48 @@ canvas { width: 100%; height: 100%; display: block; touch-action: none; outline:
 .goto { margin-top: 8px; }
 .goto select { flex: 1; font: inherit; color: var(--ink); background: rgba(255, 255, 255, 0.08); border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px; }
 .goto select option { color: #111; }
+
+.nav { margin-top: 8px; padding: 6px 8px; border-radius: 6px; display: grid; gap: 2px; }
+.nav span { font-variant-numeric: tabular-nums; }
+.compass .target path { fill: #e3a33b; }
+
+/* ---- Wood and brass theme ------------------------------------------------------------ */
+.hud { font-size: 14px; }
+.hud .panel {
+  background:
+    repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.07) 0 2px, transparent 2px 7px, rgba(255, 220, 160, 0.04) 7px 9px, transparent 9px 15px),
+    linear-gradient(180deg, var(--wood-2), var(--wood-1) 60%, var(--wood-3));
+  border: 2px solid var(--brass-dark);
+  box-shadow: inset 0 0 0 1px rgba(255, 225, 160, 0.25), inset 0 0 18px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  backdrop-filter: none;
+}
+.hud h1 { font-family: 'IM Fell English', Georgia, serif; font-size: 22px; font-weight: 400; color: var(--parchment); text-shadow: 0 1px 0 #000; }
+.hud h2 { font-family: 'IM Fell English', Georgia, serif; font-size: 15px; letter-spacing: 0.06em; color: var(--brass); text-transform: none; }
+.hud h2 small, .hud small { font-family: 'EB Garamond', serif; }
+.hud button, .goto select, .hud select {
+  font-family: 'EB Garamond', serif; font-size: 14px; color: #2b1a0c;
+  background: linear-gradient(180deg, #e7c987, var(--brass) 55%, #a8813f);
+  border: 1px solid #6b4f22; border-radius: 4px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.hud button:hover { background: linear-gradient(180deg, #f1d79c, #d3ae68 55%, #b48b45); }
+.hud button.active { background: linear-gradient(180deg, #8f6a2e, #6e4f1e); color: var(--parchment); border-color: #3f2c10; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5); }
+.goto select option, .hud select option { color: #111; background: var(--parchment); }
+.hud input[type='range'] { accent-color: var(--brass); }
+.hud output { color: var(--muted); }
+.readout .big { font-family: 'IM Fell English', Georgia, serif; color: var(--parchment); }
+.readout dt { color: var(--muted); }
+.compass .ring { fill: var(--parchment); stroke: var(--brass); stroke-width: 3; }
+.compass text { fill: #5b4122; font-family: 'IM Fell English', serif; }
+.compass text.n { fill: #8b1e1e; }
+.compass .boat path { fill: #3b2312; }
+.compass .wind path { stroke: #1f4f7a; }
+.compass .target path { fill: #b0281c; }
+.warning { background: rgba(120, 30, 20, 0.55); color: #ffe2b0; border: 1px solid #a8813f; }
+.nav { background: var(--parchment); color: #2b1a0c; border: 1px solid var(--brass-dark); box-shadow: inset 0 0 8px rgba(120, 80, 30, 0.35); }
+.nav strong { font-family: 'IM Fell English', serif; font-weight: 400; font-size: 16px; }
+.map-slot canvas { border: 2px solid var(--brass-dark); border-radius: 4px; box-shadow: 0 0 0 1px rgba(255, 225, 160, 0.2); }
+.rudder-bar { background: linear-gradient(180deg, #2a180b, #4a2c17); border: 1px solid var(--brass-dark); }
+.rudder-needle { background: var(--brass); box-shadow: 0 0 4px rgba(0, 0, 0, 0.6); }
+.loading { background: radial-gradient(circle, #5d3a1f, #2a180b); font-family: 'IM Fell English', Georgia, serif; font-size: 24px; color: var(--parchment); }

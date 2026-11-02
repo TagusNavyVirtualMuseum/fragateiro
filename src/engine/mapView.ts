@@ -94,6 +94,8 @@ void main() {
 export interface MapView {
   /** Call every frame (bobs the buoys, keeps labels readable). */
   update(time: number, camera: Camera): void;
+  /** Show a marker post at a destination (or none). */
+  setTarget(p: { x: number; y: number } | null): void;
 }
 
 export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, sunDirection: Vector3, fogDensity: number, labelNames?: string[]): MapView {
@@ -135,8 +137,33 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
   // --- Sea marks from OpenStreetMap / OpenSeaMap.
   const buoys = createSeaMarks(scene, TAGUS_META.seamarks ?? []);
 
+  // Destination marker: a tall post with a flag, visible from far away.
+  const marker = new TransformNode('destination', scene);
+  const markMat = new StandardMaterial('destinationMat', scene);
+  markMat.diffuseColor = new Color3(0.9, 0.55, 0.15);
+  markMat.emissiveColor = new Color3(0.6, 0.3, 0.05);
+  markMat.fogEnabled = false;
+  const post = MeshBuilder.CreateCylinder('destinationPost', { height: 30, diameter: 0.8, tessellation: 8 }, scene);
+  post.position.y = 15;
+  const flag = MeshBuilder.CreatePlane('destinationFlag', { width: 8, height: 5, sideOrientation: Mesh.DOUBLESIDE }, scene);
+  flag.position.set(4, 27, 0);
+  for (const m of [post, flag]) {
+    m.material = markMat;
+    m.parent = marker;
+    m.isPickable = false;
+  }
+  marker.setEnabled(false);
+
   return {
+    setTarget(p) {
+      marker.setEnabled(!!p);
+      if (p) marker.position.set(p.x, 0, p.y);
+    },
     update(time, camera) {
+      if (marker.isEnabled()) {
+        const d = Vector3.Distance(camera.globalPosition, marker.position);
+        marker.scaling.setAll(Math.max(1, d / 400));
+      }
       for (const b of buoys) if (b.metadata?.floats) b.position.y = waveHeight(b.position.x, b.position.z, time);
       // Keep labels a readable size on screen, whatever the distance.
       for (const l of labels) {

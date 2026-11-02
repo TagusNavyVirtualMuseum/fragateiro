@@ -41,6 +41,12 @@ let start = { x: 0, y: 0 };
 let aground = false;
 let destinations: Destination[] = [];
 let nextDestination = 0;
+/** Simulated seconds per real second: speeds stay realistic, the trip goes faster. */
+let timeScale = 2;
+let target: Destination | null = null;
+let targetSince = 0;
+let arrivedAt: number | null = null;
+const ARRIVAL_RADIUS = 150; // m
 let paused = false;
 let time = 0;
 
@@ -59,6 +65,7 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onCameraView: (v) => cameraRig.setView(v),
   onCameraDistance: (d) => cameraRig.setDistance(d),
   onCameraHeight: (h) => cameraRig.setElevation(h),
+  onTimeScale: (k) => (timeScale = k),
 }, { fromDeg: wind.fromDeg, speed: wind.speed, gusty });
 input.bindHoldButton(hud.rudderLeft, 'KeyA');
 input.bindHoldButton(hud.rudderRight, 'KeyD');
@@ -101,6 +108,8 @@ function teleport(d: Destination): void {
   sim.controls.mode = spec.modes[0].id;
   aground = false;
   camera.target.set(d.x, camera.target.y, d.y);
+  targetSince = sim.state.time;
+  arrivedAt = null;
   hud.setBoat(spec, sim.controls);
 }
 
@@ -159,8 +168,15 @@ async function main(): Promise<void> {
   start = mask.nearestWater(0, 0);
   mask.markReachableFrom(start.x, start.y);
   destinations = findDestinations(mask, 16);
+  await document.fonts.ready; // the minimap draws its labels once, with the period font
   minimap = new Minimap(hud.mapSlot, mask, destinations, teleport);
   hud.setDestinations(destinations.map((d) => d.name), (name) => teleport(destinations.find((d) => d.name === name)!));
+  hud.setTargets(destinations.map((d) => d.name), (name) => {
+    target = destinations.find((d) => d.name === name) ?? null;
+    targetSince = sim.state.time;
+    arrivedAt = null;
+    mapView.setTarget(target);
+  });
   input.onPress('KeyT', () => {
     if (!destinations.length) return;
     teleport(destinations[nextDestination % destinations.length]);
@@ -186,7 +202,7 @@ async function main(): Promise<void> {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
     if (!paused) {
       applyInput(dt);
-      stepWithLand(dt);
+      stepWithLand(dt * timeScale);
       time += dt;
     }
     const s = sim.state;
@@ -195,10 +211,24 @@ async function main(): Promise<void> {
     arrows.update(view.root, sim.report, w, s.heading, 12);
     netView.update(view.root, spec.net, !!sim.mode.net, s);
     mapView.update(time, camera);
-    minimap.draw(s.x, s.y, s.heading);
+    minimap.draw(s.x, s.y, s.heading, target ?? undefined);
+    let nav = null;
+    if (target) {
+      const dx = target.x - s.x;
+      const dy = target.y - s.y;
+      const distance = Math.hypot(dx, dy);
+      if (arrivedAt === null && distance < ARRIVAL_RADIUS) arrivedAt = s.time;
+      nav = {
+        name: target.name,
+        distance,
+        bearing: ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360,
+        elapsed: (arrivedAt ?? s.time) - targetSince,
+        arrived: arrivedAt !== null,
+      };
+    }
     cameraRig.update(s.x, s.y, s.heading, dt);
     water.update(time, camera.target, camera.position);
-    hud.update(s, sim.controls, sim.report, w, paused, aground);
+    hud.update(s, sim.controls, sim.report, w, paused, aground, nav);
     scene.render();
   });
 }

@@ -41,8 +41,6 @@ export interface BoatVisual {
   rudder: PartVisual;
   /** Model nodes never shown (e.g. ropes of sails that move, which would float in the air). */
   hiddenNodes?: string[];
-  /** The sails are single planes and must be drawn from both sides. */
-  singleSidedSails?: boolean;
   /** The model's bow points towards +x (most of our models point towards -x). */
   bowPositiveX?: boolean;
 }
@@ -55,7 +53,6 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
     scale: 1.34, // model hull is 10.4 m; the physics uses 14 m
     cgX: -0.6,
     waterline: -0.32, // same share of hull under water as the Muleta (this model has no red bottom paint)
-    singleSidedSails: true,
     sails: [
       {
         sail: 'fore',
@@ -131,7 +128,6 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
     bowPositiveX: true,
     cgX: -0.8,
     waterline: -0.6,
-    singleSidedSails: true,
     sails: [
       {
         sail: 'jib',
@@ -141,8 +137,14 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       },
       {
         sail: 'main',
-        // Mainsail and gaff (Circle.001 was split into pieces; part69 is the gaff).
-        nodes: ['vela_Trazeira.001', 'Circle.001_part69'],
+        // Mainsail, gaff (Circle.001 was split into pieces; part69 is the gaff), the blocks and
+        // rings along the gaff, and the halyards between gaff and mast. Their mast ends are on
+        // the turning axis, so they stay attached at both ends.
+        nodes: [
+          'vela_Trazeira.001', 'Circle.001_part69',
+          ...[5, 6, 7, 8, 9, 10, ...rangeNums(25, 47), 53, 54, 56].map((i) => `Circle.001_part${i}`),
+          'Circle.029', 'Circle.047', 'Circle.048', 'Circle.049',
+        ],
         pivot: [4.5, 0, 0],
         axis: { base: [5.174, -0.854, 0.016], top: [0.413, 18.184, 0.007] }, // mast, Circle.001_part52
       },
@@ -161,7 +163,6 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
     scale: 1,
     cgX: -0.55,
     waterline: -0.32, // same hull as the Falua
-    singleSidedSails: true,
     sails: [
       {
         sail: 'jib',
@@ -190,6 +191,10 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
     },
   },
 };
+
+function rangeNums(from: number, to: number): number[] {
+  return Array.from({ length: to - from + 1 }, (_, i) => from + i);
+}
 
 /** ['CordasMastro.013', ...] style node name lists. */
 function range(prefix: string, from: number, to: number): string[] {

@@ -110,6 +110,28 @@ describe('steering', () => {
   });
 });
 
+describe('tacking', () => {
+  // Close-hauled with the wind 50° on the starboard bow, then hard rudder towards the wind:
+  // the boat must carry its way through the wind onto the other tack.
+  for (const boat of [FALUA, MULETA, FRAGATA, CATRAIO]) {
+    it(`${boat.name} can tack`, () => {
+      const mode = boat.modes[0].id;
+      const sim = new SailboatSim(boat, new SteadyWind(0, WIND), { heading: deg2rad(-50) });
+      sim.controls.mode = mode;
+      for (const g of groupsInMode(boat, mode)) sim.controls.sheets[g] = 0.15;
+      for (let i = 0; i < 90 * 30; i++) sim.step(1 / 30);
+      const h0 = sim.state.heading;
+      sim.controls.rudder = 1;
+      let tacked = false;
+      for (let i = 0; i < 30 * 30 && !tacked; i++) {
+        sim.step(1 / 30);
+        tacked = wrapPi(sim.state.heading - h0) > deg2rad(95);
+      }
+      expect(tacked).toBe(true);
+    });
+  }
+});
+
 describe('Muleta modes', () => {
   it('regular mode trims front and main; fishing mode adds the rear sails', () => {
     expect(groupsInMode(MULETA, 'regular').sort()).toEqual(['front', 'main']);
