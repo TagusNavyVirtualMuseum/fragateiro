@@ -56,7 +56,8 @@ named nodes. (The Muleta in the repo was made with 1024 px textures.)
   crosses the waterline (24 slices along the hull) and draws no water inside that shape, so
   open holds stay dry whatever the waves do;
 - `horse` and `sheets` (optional): a metal arch across the stern above the tiller, and the
-  sheets drawn as ropes from each sail's clew, to a block that slides on the arch (mainsheet)
+  sheets drawn as ropes (thin textured tubes that sag a little, rebuilt every frame) from
+  each sail's clew, to a block that slides on the arch (mainsheet)
   to one fitting, or to fittings on each side (jib sheets, taut to leeward and slack to
   windward). All four boats have them; the Catraio's fixed copies of these ropes (pieces of
   its rope mesh `Cordas`, split with `scripts/split-mesh.mjs`) are hidden;

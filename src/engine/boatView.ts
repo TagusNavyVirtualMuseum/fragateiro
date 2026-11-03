@@ -3,7 +3,8 @@ import {
   LoadAssetContainerAsync,
   MeshBuilder,
   StandardMaterial,
-  type LinesMesh,
+  DynamicTexture,
+  type Mesh,
   Quaternion,
   TransformNode,
   Vector3,
@@ -47,7 +48,7 @@ export class BoatView {
   /** Sheets: clew markers (moving with their sail) and where each rope ends on the boat. */
   private readonly sheetRigs: { sail: string; clew: TransformNode; ends: TransformNode[]; horse: boolean }[] = [];
   private readonly horsePoints: TransformNode[] = [];
-  private sheetLines?: LinesMesh;
+  private sheetTubes: Mesh[] = [];
   private pitch = 0;
   private roll = 0;
 
@@ -236,8 +237,19 @@ export class BoatView {
   /** Redraw the sheets: taut to the leeward side, slack to windward. */
   private updateSheets(active: (sail: string) => boolean): void {
     if (!this.sheetRigs.length) return;
-    const lines: Vector3[][] = [];
+    const ropes: Vector3[][] = [];
     const pos = (t: TransformNode) => t.computeWorldMatrix(true).getTranslation();
+    // A rope from a to b, sagging by `sag` metres in the middle (ROPE_POINTS points).
+    const rope = (a: Vector3, b: Vector3, sag: number) => {
+      const pts: Vector3[] = [];
+      for (let j = 0; j < ROPE_POINTS; j++) {
+        const t = j / (ROPE_POINTS - 1);
+        const p = Vector3.Lerp(a, b, t);
+        p.y -= sag * 4 * t * (1 - t);
+        pts.push(p);
+      }
+      return pts;
+    };
     for (const r of this.sheetRigs) {
       if (!active(r.sail)) continue;
       const c = pos(r.clew);
@@ -248,36 +260,29 @@ export class BoatView {
           const p = pos(h);
           if (Vector3.DistanceSquared(p, c) < Vector3.DistanceSquared(best, c)) best = p;
         }
-        lines.push([c, best]);
+        ropes.push(rope(c, best, 0.02 * Vector3.Distance(c, best)));
       } else {
         const ends = r.ends.map(pos);
         const near = ends.length < 2 || Vector3.DistanceSquared(ends[0], c) < Vector3.DistanceSquared(ends[1], c) ? 0 : 1;
-        ends.forEach((e, i) => {
-          if (i === near) {
-            lines.push([c, e]);
-          } else {
-            const pts: Vector3[] = [];
-            for (let j = 0; j <= 10; j++) {
-              const t = j / 10;
-              const p = Vector3.Lerp(c, e, t);
-              p.y -= 0.6 * 4 * t * (1 - t);
-              pts.push(p);
-            }
-            lines.push(pts);
-          }
-        });
+        // Leeward sheet taut (a slight sag), windward one slack.
+        ends.forEach((e, i) => ropes.push(rope(c, e, i === near ? 0.02 * Vector3.Distance(c, e) : 0.6)));
       }
     }
-    if (!this.sheetLines || this.sheetLines.metadata?.count !== lines.length || this.sheetLines.metadata?.sizes !== lines.map((l) => l.length).join()) {
-      this.sheetLines?.dispose();
-      this.sheetLines = MeshBuilder.CreateLineSystem(`${this.spec.id}-sheets`, { lines, updatable: true }, this.root.getScene());
-      this.sheetLines.color = new Color3(0.82, 0.74, 0.55);
-      this.sheetLines.isPickable = false;
-      this.sheetLines.metadata = { count: lines.length, sizes: lines.map((l) => l.length).join() };
+    const scene = this.root.getScene();
+    if (this.sheetTubes.length !== ropes.length) {
+      for (const t of this.sheetTubes) t.dispose();
+      this.sheetTubes = ropes.map((path, i) => {
+        const tube = MeshBuilder.CreateTube(`${this.spec.id}-sheet-${i}`, { path, radius: ROPE_RADIUS, tessellation: 6, updatable: true }, scene);
+        tube.material = ropeMaterial(scene);
+        tube.isPickable = false;
+        // The tube is reshaped every frame but keeps its first bounding box: always draw it.
+        tube.alwaysSelectAsActiveMesh = true;
+        return tube;
+      });
     } else {
-      MeshBuilder.CreateLineSystem(`${this.spec.id}-sheets`, { lines, instance: this.sheetLines });
+      ropes.forEach((path, i) => MeshBuilder.CreateTube('', { path, radius: ROPE_RADIUS, tessellation: 6, instance: this.sheetTubes[i] }));
     }
-    this.sheetLines.setEnabled(this.root.isEnabled());
+    for (const t of this.sheetTubes) t.setEnabled(this.root.isEnabled());
   }
 
   /** Height of the waterline in the world (the boat bobbing on the waves), m. */
@@ -294,7 +299,7 @@ export class BoatView {
 
   setVisible(visible: boolean): void {
     this.root.setEnabled(visible);
-    this.sheetLines?.setEnabled(visible);
+    for (const t of this.sheetTubes) t.setEnabled(visible);
   }
 
   /** Boat-frame point (forward, starboard, height) -> local position of `root`. */
@@ -364,4 +369,39 @@ function isSingleSided(mesh: AbstractMesh): boolean {
     else if (d < -0.3) opposite++;
   }
   return opposite < 0.2 * Math.max(1, same);
+}
+
+const ROPE_POINTS = 13;
+/** Sheets are about 4 cm thick (big boats, hemp rope). */
+const ROPE_RADIUS = 0.02;
+
+let ropeMat: StandardMaterial | undefined;
+/** Shared material: natural fibre with a twisted lay, drawn once. */
+function ropeMaterial(scene: Scene): StandardMaterial {
+  if (ropeMat && ropeMat.getScene() === scene) return ropeMat;
+  const tex = new DynamicTexture('ropeTex', { width: 64, height: 32 }, scene, true);
+  const ctx = tex.getContext() as CanvasRenderingContext2D;
+  ctx.fillStyle = '#b89a66';
+  ctx.fillRect(0, 0, 64, 32);
+  // Diagonal strands of the lay.
+  for (let i = -32; i < 96; i += 10) {
+    ctx.strokeStyle = 'rgba(80, 60, 30, 0.55)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i + 16, 32);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(235, 215, 170, 0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(i + 4, 0);
+    ctx.lineTo(i + 20, 32);
+    ctx.stroke();
+  }
+  tex.update();
+  tex.uScale = 40;
+  ropeMat = new StandardMaterial('ropeMat', scene);
+  ropeMat.diffuseTexture = tex;
+  ropeMat.specularColor = new Color3(0.08, 0.08, 0.06);
+  return ropeMat;
 }
