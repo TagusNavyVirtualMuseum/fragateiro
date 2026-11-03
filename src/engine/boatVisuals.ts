@@ -62,8 +62,11 @@ export interface SheetVisual {
   sail: string;
   /** The sail's clew (lower aft corner), model frame. */
   clew: V3;
-  /** 'horse': to a block sliding on the arch; otherwise to fittings on each side. */
-  to: 'horse' | { port: V3; starboard: V3 };
+  /**
+   * 'horse': to a block sliding on the arch; a point: to that one fitting; or fittings on
+   * each side (the leeward sheet taut, the windward one slack).
+   */
+  to: 'horse' | V3 | { port: V3; starboard: V3 };
 }
 
 export const BOAT_VISUALS: Record<string, BoatVisual> = {
@@ -90,6 +93,13 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       },
     ],
     // Blade and tiller turn about the raked pin (the thin grey cylinder between hull and rudder).
+    // Mainsheet on an arch over the tiller at the narrow stern; fore sheets to the rails.
+    // (Bow towards -x: starboard is -z.)
+    horse: { x: 3.6, halfWidth: 0.92, footY: 1.12, topY: 1.9 },
+    sheets: [
+      { sail: 'main', clew: [3.23, 1.75, 0.0], to: 'horse' },
+      { sail: 'fore', clew: [-0.54, 1.49, -0.17], to: { port: [0.3, 0.85, 1.45], starboard: [0.3, 0.85, -1.45] } },
+    ],
     rudder: {
       nodes: ['Leme01', 'Leme02', 'Leme03'],
       pivot: [4.3, 0, 0],
@@ -126,6 +136,18 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       { sail: 'net-sails', nodes: ['mini-vela_rede-frente2', 'mini-vela_rede-frente2.001'], pivot: [-11.1, 0, -0.7] },
       { sail: 'rear-1', nodes: ['vela_tras1'], pivot: [1.13, 0, 0.4] },
       { sail: 'rear-2', nodes: ['vela_tras2'], pivot: [5.04, 0, 0] },
+    ],
+    // Mainsheet on an arch at the stern; front sheets to the rails; when fishing, the stern
+    // sails sheet to the tip of the stern net boom and the bow sails to the rails.
+    horse: { x: 5.6, halfWidth: 1.15, footY: 1.0, topY: 1.9 },
+    sheets: [
+      { sail: 'main', clew: [5.55, 2.44, -0.33], to: 'horse' },
+      { sail: 'front', clew: [-4.43, 3.07, -0.62], to: { port: [-3.0, 1.0, 1.8], starboard: [-3.0, 1.0, -1.8] } },
+      { sail: 'rear-1', clew: [11.6, 3.47, -0.02], to: [13.0, 2.79, 0.06] },
+      { sail: 'rear-2', clew: [12.29, 3.35, 0.0], to: [13.0, 2.79, 0.06] },
+      { sail: 'front-low', clew: [-1.05, 1.85, -1.74], to: [-0.5, 1.0, -1.8] },
+      { sail: 'front-top', clew: [-3.83, 6.35, -0.02], to: { port: [-3.0, 1.0, 1.8], starboard: [-3.0, 1.0, -1.8] } },
+      { sail: 'advanced', clew: [-6.96, 4.48, -0.04], to: { port: [-5.2, 1.3, 0.9], starboard: [-5.2, 1.3, -0.9] } },
     ],
     // Blade plus the yoke on its head (the cross bar 'Guia' and its blocks).
     rudder: {
@@ -216,6 +238,15 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
         axis: { base: [3.716, 0.965, 0.673], top: [4.304, 3.201, 0.677] }, // mizzen mast, Mastro_part2
       },
     ],
+    // Spritsail sheet on an arch over the tiller; jib sheets to the rails; mizzen sheet to
+    // the end of the bumkin. The model's fixed copies of these ropes are hidden.
+    horse: { x: 3.1, halfWidth: 1.02, footY: 0.92, topY: 1.75 },
+    sheets: [
+      { sail: 'main', clew: [2.66, 1.49, 0.11], to: 'horse' },
+      { sail: 'jib', clew: [-3.83, 1.53, 0.01], to: { port: [-2.0, 0.85, 1.5], starboard: [-2.0, 0.85, -1.5] } },
+      { sail: 'mizzen', clew: [5.54, 1.28, 0.36], to: [6.12, 0.76, 0.29] },
+    ],
+    hiddenNodes: ['Cordas_part1', 'Cordas_part2', 'Cordas_part5'],
     rudder: {
       nodes: ['Leme01', 'Leme01.001', 'Leme02', 'Leme02.001'],
       pivot: [4, 0, 0],

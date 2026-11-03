@@ -223,7 +223,12 @@ export class BoatView {
       const pivot = this.sails.get(sh.sail);
       if (!pivot) continue;
       const clew = at(`${this.spec.id}-clew-${sh.sail}`, sh.clew, pivot.node);
-      const ends = sh.to === 'horse' ? [] : [at(`${this.spec.id}-${sh.sail}-port`, sh.to.port, gltfRoot), at(`${this.spec.id}-${sh.sail}-stbd`, sh.to.starboard, gltfRoot)];
+      const ends =
+        sh.to === 'horse'
+          ? []
+          : Array.isArray(sh.to)
+            ? [at(`${this.spec.id}-${sh.sail}-end`, sh.to as [number, number, number], gltfRoot)]
+            : [at(`${this.spec.id}-${sh.sail}-port`, sh.to.port, gltfRoot), at(`${this.spec.id}-${sh.sail}-stbd`, sh.to.starboard, gltfRoot)];
       this.sheetRigs.push({ sail: sh.sail, clew, ends, horse: sh.to === 'horse' });
     }
   }
@@ -246,7 +251,7 @@ export class BoatView {
         lines.push([c, best]);
       } else {
         const ends = r.ends.map(pos);
-        const near = Vector3.DistanceSquared(ends[0], c) < Vector3.DistanceSquared(ends[1], c) ? 0 : 1;
+        const near = ends.length < 2 || Vector3.DistanceSquared(ends[0], c) < Vector3.DistanceSquared(ends[1], c) ? 0 : 1;
         ends.forEach((e, i) => {
           if (i === near) {
             lines.push([c, e]);

@@ -57,8 +57,9 @@ named nodes. (The Muleta in the repo was made with 1024 px textures.)
   open holds stay dry whatever the waves do;
 - `horse` and `sheets` (optional): a metal arch across the stern above the tiller, and the
   sheets drawn as ropes from each sail's clew, to a block that slides on the arch (mainsheet)
-  or to fittings on each side (jib sheets, taut to leeward and slack to windward). Only the
-  Fragata has them so far;
+  to one fitting, or to fittings on each side (jib sheets, taut to leeward and slack to
+  windward). All four boats have them; the Catraio's fixed copies of these ropes (pieces of
+  its rope mesh `Cordas`, split with `scripts/split-mesh.mjs`) are hidden;
 - `hiddenNodes`: parts never shown (the Muleta's fishing-sail halyards and sheets, which are
   fixed in the model and would hang in the air once the sails turn);
 - sails modelled as a single plane (the Falua's) are drawn from both sides; sails that already
