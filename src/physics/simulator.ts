@@ -28,6 +28,10 @@ const SAIL_LAG = 0.35;
 const GYBE_MARGIN = deg2rad(12);
 /** Below this angle of attack the sail is considered to be flapping. */
 const LUFF_ALPHA_DEG = 6;
+/** With balanced sails, the rudder steers as if the boat moved at least this fast, m/s. */
+const BALANCED_RUDDER_FLOW = 1.5;
+/** Extra yaw damping with balanced sails, 1/s. */
+const BALANCED_YAW_DAMPING = 0.6;
 
 const ZERO_FORCE: PointForce = { fx: 0, fy: 0, x: 0, y: 0 };
 
@@ -226,11 +230,19 @@ export class SailboatSim {
     const rudderAngle = clamp(c.rudder, -1, 1) * deg2rad(rd.maxAngleDeg);
     // Balanced: the rudder ignores the sideways drift, which would otherwise push the stern
     // round (part of what makes a real boat want to turn).
+    // It also always steers as if the boat were moving at least BALANCED_RUDDER_FLOW, so it
+    // keeps control when the boat is slow (just after a tack); real rudders lose it.
     const rudderSway = c.balanced ? s.r * rd.x : s.v + s.r * rd.x;
-    const rf = foilForce(-Math.cos(rudderAngle), Math.sin(rudderAngle), -s.u, -rudderSway, rd.area, RHO_WATER, this.rudderCurve);
+    // (Not reversed either when the boat drifts backwards: that would steer the wrong way.)
+    const rudderFlow = c.balanced ? Math.max(Math.abs(s.u), BALANCED_RUDDER_FLOW) : s.u;
+    const rf = foilForce(-Math.cos(rudderAngle), Math.sin(rudderAngle), -rudderFlow, -rudderSway, rd.area, RHO_WATER, this.rudderCurve);
     X += rf.fx;
     Y += rf.fy;
     N += rd.x * rf.fy;
+    // Balanced (easier) mode: the boat stops turning by itself within a few seconds when the
+    // rudder is centred, instead of carrying the spin of a tack.
+    // Only with the rudder near the centre: a hard-over turn (a tack) is not slowed.
+    if (c.balanced) N -= this.inertia * s.r * BALANCED_YAW_DAMPING * Math.max(0, 1 - Math.abs(c.rudder) / 0.3);
 
     // --- Fishing net, dragged from the boom tips -----------------------------------
     const net: PointForce[] = [];

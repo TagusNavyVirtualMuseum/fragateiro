@@ -124,6 +124,26 @@ describe('balanced sails', () => {
   });
 });
 
+describe('rudder with balanced sails', () => {
+  it('steers the same way even when the boat drifts backwards (e.g. after a slow tack)', () => {
+    for (const boat of [FALUA, FRAGATA]) {
+      const sim = new SailboatSim(boat, new SteadyWind(0, 0.1), { heading: 0, u: -0.8 });
+      sim.controls.balanced = true;
+      sim.controls.rudder = 1; // to starboard
+      for (let i = 0; i < 3 * 30; i++) sim.step(1 / 30);
+      expect(wrapPi(sim.state.heading)).toBeGreaterThan(deg2rad(2));
+    }
+  });
+
+  it('keeps steering control when the boat is nearly stopped', () => {
+    const sim = new SailboatSim(FRAGATA, new SteadyWind(0, 0.1), { heading: 0, u: 0.1 });
+    sim.controls.balanced = true;
+    sim.controls.rudder = -1;
+    for (let i = 0; i < 3 * 30; i++) sim.step(1 / 30);
+    expect(wrapPi(sim.state.heading)).toBeLessThan(-deg2rad(2));
+  });
+});
+
 describe('tacking', () => {
   // Close-hauled with the wind 50° on the starboard bow, then hard rudder towards the wind:
   // the boat must carry its way through the wind onto the other tack.
