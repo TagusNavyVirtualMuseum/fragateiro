@@ -37,7 +37,7 @@ Node 22 or newer.
 | Move to a place (Lisboa, Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Sarilhos Pequenos, Montijo, Ilha do Rato, Alcochete) | T (next place) | *Sail from* list, or click it on the minimap |
 | Destination: distance, bearing and time | | *Sail to* list |
 | Game speed (1×, 2×, 3× default, 5×, 10×; speeds shown stay real, "time ×3" under the speed) | | setting |
-| Wind streaks, balanced sails (on by default: the sails do not turn the boat) | | wind settings |
+| Balanced sails (on by default: the sails do not turn the boat) | | wind settings |
 | Pause / restart | P / R | |
 
 ## How it is organised

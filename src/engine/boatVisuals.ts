@@ -48,6 +48,22 @@ export interface BoatVisual {
    * and no water is drawn inside it (so open holds stay dry).
    */
   hullNodes: string[];
+  /**
+   * Metal arch across the stern, above the tiller (the "horse" the mainsheet runs on), in
+   * the model frame: its position along the hull, its feet's half-width and height, and
+   * the height of its top.
+   */
+  horse?: { x: number; halfWidth: number; footY: number; topY: number };
+  /** Sheets (ropes from a sail's clew to the boat), drawn as lines. */
+  sheets?: SheetVisual[];
+}
+
+export interface SheetVisual {
+  sail: string;
+  /** The sail's clew (lower aft corner), model frame. */
+  clew: V3;
+  /** 'horse': to a block sliding on the arch; otherwise to fittings on each side. */
+  to: 'horse' | { port: V3; starboard: V3 };
 }
 
 export const BOAT_VISUALS: Record<string, BoatVisual> = {
@@ -156,6 +172,13 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
         pivot: [4.5, 0, 0],
         axis: { base: [5.174, -0.854, 0.016], top: [0.413, 18.184, 0.007] }, // mast, Circle.001_part52
       },
+    ],
+    // Mainsheet on an arch over the tiller; jib sheets to the rails at midships.
+    // (Bow towards +x here, so starboard is +z.)
+    horse: { x: -9.0, halfWidth: 2.25, footY: 1.85, topY: 2.95 },
+    sheets: [
+      { sail: 'main', clew: [-8.11, 2.95, 1.11], to: 'horse' },
+      { sail: 'jib', clew: [4.47, 2.91, 1.34], to: { port: [2.5, 1.9, -2.4], starboard: [2.5, 1.9, 2.4] } },
     ],
     // Rudder blade and tiller (pieces of the hull mesh Corpo), about the hinge line.
     rudder: {

@@ -9,7 +9,6 @@ import { TouchControls, isTouchDevice } from '../../src/engine/touchControls';
 import { createMapView, loadTagusMask, type MapView } from '../../src/engine/mapView';
 import { NetView } from '../../src/engine/netView';
 import { createSailingScene } from '../../src/engine/scene';
-import { WindView } from '../../src/engine/windView';
 import { SailingHud } from '../../src/ui/hud';
 import { Minimap } from '../../src/ui/minimap';
 import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
@@ -28,7 +27,6 @@ const { engine, scene, camera, water, skyColor, sunDirection, fogDensity } = cre
 const cameraRig = new CameraRig(camera);
 const arrows = new ForceArrows(scene);
 const netView = new NetView(scene);
-const windView = new WindView(scene);
 const input = new Input();
 
 const wind = new GustyWind(0, 12 * 0.514444, 0, 0); // 12 knots
@@ -71,7 +69,6 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onCameraHeight: (h) => cameraRig.setElevation(h),
   onTimeScale: (k) => (timeScale = k),
   onBalanced: (on) => (balanced = on),
-  onWindVisible: (on) => windView.setVisible(on),
 }, { fromDeg: wind.fromDeg, speed: wind.speed, gusty });
 // Phones and tablets: gestures on the 3D view steer and trim; the camera keeps its views
 // (buttons) but does not orbit with one finger.
@@ -246,7 +243,6 @@ async function main(): Promise<void> {
       };
     }
     cameraRig.update(s.x, s.y, s.heading, dt);
-    windView.update(camera.target, w, timeScale);
     water.update(time, camera.target, camera.position);
     // Keep the water out of the hull, so open holds stay dry.
     water.setHull({ ...view.hullProfile, x: s.x, y: s.y, heading: s.heading, heave: view.waterlineHeight });

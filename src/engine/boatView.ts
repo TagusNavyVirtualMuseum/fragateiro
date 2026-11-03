@@ -1,5 +1,9 @@
 import {
+  Color3,
   LoadAssetContainerAsync,
+  MeshBuilder,
+  StandardMaterial,
+  type LinesMesh,
   Quaternion,
   TransformNode,
   Vector3,
@@ -40,6 +44,10 @@ export class BoatView {
   private readonly sails = new Map<string, Pivot>();
   private rudder?: Pivot;
   private heave = 0;
+  /** Sheets: clew markers (moving with their sail) and where each rope ends on the boat. */
+  private readonly sheetRigs: { sail: string; clew: TransformNode; ends: TransformNode[]; horse: boolean }[] = [];
+  private readonly horsePoints: TransformNode[] = [];
+  private sheetLines?: LinesMesh;
   private pitch = 0;
   private roll = 0;
 
@@ -102,6 +110,7 @@ export class BoatView {
     this.rudder = makePivot(`${spec.id}-rudder`, visual.rudder);
 
     for (const n of visual.hiddenNodes ?? []) byName.get(n)?.setEnabled(false);
+    this.buildSheets(scene, gltfRoot as unknown as TransformNode);
     this.hullProfile = this.measureWaterline(visual.hullNodes.map((n) => byName.get(n)).filter((n): n is Node => !!n));
 
     // A sail modelled as a single plane must be drawn from both sides; a sail that already
@@ -173,6 +182,99 @@ export class BoatView {
     return { fwdStart, step, widths: widths.map((x, i) => Math.max(0, Math.min(x, widths[i - 1] ?? 0, widths[i + 1] ?? 0) * 0.94 - 0.05)) };
   }
 
+  /**
+   * The arch over the tiller and the sheets. Everything is placed in the glTF root's space
+   * (model coordinates); clew markers are re-parented to their sail's pivot so they turn
+   * with the sail.
+   */
+  private buildSheets(scene: Scene, gltfRoot: TransformNode): void {
+    const v = this.visual;
+    const u = v.unit;
+    const at = (name: string, p: [number, number, number], parent: TransformNode) => {
+      const t = new TransformNode(name, scene);
+      t.parent = gltfRoot;
+      t.position.set(p[0] / u, p[1] / u, p[2] / u);
+      if (parent !== gltfRoot) {
+        gltfRoot.computeWorldMatrix(true);
+        t.computeWorldMatrix(true);
+        t.setParent(parent);
+      }
+      return t;
+    };
+    if (v.horse) {
+      const { x, halfWidth, footY, topY } = v.horse;
+      const path: Vector3[] = [];
+      for (let i = 0; i <= 16; i++) {
+        const t = i / 16;
+        const z = -halfWidth + 2 * halfWidth * t;
+        const y = footY + (topY - footY) * Math.pow(Math.sin(Math.PI * t), 0.6);
+        path.push(new Vector3(x / u, y / u, z / u));
+        this.horsePoints.push(at(`${this.spec.id}-horse-${i}`, [x, y, z], gltfRoot));
+      }
+      const arch = MeshBuilder.CreateTube(`${this.spec.id}-horse`, { path, radius: 0.035 / u, tessellation: 8 }, scene);
+      const metal = new StandardMaterial(`${this.spec.id}-horseMat`, scene);
+      metal.diffuseColor = new Color3(0.35, 0.36, 0.38);
+      metal.specularColor = new Color3(0.6, 0.6, 0.6);
+      arch.material = metal;
+      arch.parent = gltfRoot;
+      arch.isPickable = false;
+    }
+    for (const sh of v.sheets ?? []) {
+      const pivot = this.sails.get(sh.sail);
+      if (!pivot) continue;
+      const clew = at(`${this.spec.id}-clew-${sh.sail}`, sh.clew, pivot.node);
+      const ends = sh.to === 'horse' ? [] : [at(`${this.spec.id}-${sh.sail}-port`, sh.to.port, gltfRoot), at(`${this.spec.id}-${sh.sail}-stbd`, sh.to.starboard, gltfRoot)];
+      this.sheetRigs.push({ sail: sh.sail, clew, ends, horse: sh.to === 'horse' });
+    }
+  }
+
+  /** Redraw the sheets: taut to the leeward side, slack to windward. */
+  private updateSheets(active: (sail: string) => boolean): void {
+    if (!this.sheetRigs.length) return;
+    const lines: Vector3[][] = [];
+    const pos = (t: TransformNode) => t.computeWorldMatrix(true).getTranslation();
+    for (const r of this.sheetRigs) {
+      if (!active(r.sail)) continue;
+      const c = pos(r.clew);
+      if (r.horse && this.horsePoints.length) {
+        // The block slides along the arch to the point nearest the clew.
+        let best = pos(this.horsePoints[0]);
+        for (const h of this.horsePoints) {
+          const p = pos(h);
+          if (Vector3.DistanceSquared(p, c) < Vector3.DistanceSquared(best, c)) best = p;
+        }
+        lines.push([c, best]);
+      } else {
+        const ends = r.ends.map(pos);
+        const near = Vector3.DistanceSquared(ends[0], c) < Vector3.DistanceSquared(ends[1], c) ? 0 : 1;
+        ends.forEach((e, i) => {
+          if (i === near) {
+            lines.push([c, e]);
+          } else {
+            const pts: Vector3[] = [];
+            for (let j = 0; j <= 10; j++) {
+              const t = j / 10;
+              const p = Vector3.Lerp(c, e, t);
+              p.y -= 0.6 * 4 * t * (1 - t);
+              pts.push(p);
+            }
+            lines.push(pts);
+          }
+        });
+      }
+    }
+    if (!this.sheetLines || this.sheetLines.metadata?.count !== lines.length || this.sheetLines.metadata?.sizes !== lines.map((l) => l.length).join()) {
+      this.sheetLines?.dispose();
+      this.sheetLines = MeshBuilder.CreateLineSystem(`${this.spec.id}-sheets`, { lines, updatable: true }, this.root.getScene());
+      this.sheetLines.color = new Color3(0.82, 0.74, 0.55);
+      this.sheetLines.isPickable = false;
+      this.sheetLines.metadata = { count: lines.length, sizes: lines.map((l) => l.length).join() };
+    } else {
+      MeshBuilder.CreateLineSystem(`${this.spec.id}-sheets`, { lines, instance: this.sheetLines });
+    }
+    this.sheetLines.setEnabled(this.root.isEnabled());
+  }
+
   /** Height of the waterline in the world (the boat bobbing on the waves), m. */
   get waterlineHeight(): number {
     return this.heave;
@@ -187,6 +289,7 @@ export class BoatView {
 
   setVisible(visible: boolean): void {
     this.root.setEnabled(visible);
+    this.sheetLines?.setEnabled(visible);
   }
 
   /** Boat-frame point (forward, starboard, height) -> local position of `root`. */
@@ -229,6 +332,9 @@ export class BoatView {
       Quaternion.RotationAxisToRef(p.axis, (state.sailAngles[id] ?? 0) + flap, p.node.rotationQuaternion!);
       i++;
     }
+    this.root.computeWorldMatrix(true);
+    for (const p of this.sails.values()) p.node.computeWorldMatrix(true);
+    this.updateSheets((id) => reports.get(id)?.active ?? true);
     if (this.rudder) {
       Quaternion.RotationAxisToRef(this.rudder.axis, (rudder * spec.rudder.maxAngleDeg * Math.PI) / 180, this.rudder.node.rotationQuaternion!);
     }
