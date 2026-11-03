@@ -23,7 +23,7 @@ const ORIGIN = { lat: 38.685, lon: -9.1 };
 const CELL = 10; // metres
 const OUT_DIR = new URL('../src/assets/map/', import.meta.url);
 
-const PLACES_WANTED = /^(city|town|village)$/;
+const PLACES_WANTED = /^(city|town|village|hamlet|island|islet)$/;
 /** Must be land / water, or the data is wrong (checked after building the grid). */
 const CHECKS = {
   land: { Moita: [38.6507, -8.9905], Montijo: [38.7067, -8.9739], Barreiro: [38.6631, -9.0724], Lisboa: [38.7139, -9.1394], Alcochete: [38.7553, -8.9608] },
@@ -57,6 +57,8 @@ async function download() {
   way["waterway"="riverbank"](${b});
   relation["waterway"="riverbank"](${b});
   node["place"](${b});
+  way["place"~"island|islet"]["name"](${b});
+  relation["place"~"island|islet"]["name"](${b});
   node["seamark:type"](${b});
 );
 out geom;`;
@@ -267,8 +269,17 @@ for (let i = 0; i < W * H; i++) { rgb[i * 3] = sharp[i]; rgb[i * 3 + 1] = wide[i
 
 const places = [];
 for (const el of elements) {
-  if (el.type !== 'node' || !el.tags?.name || !PLACES_WANTED.test(el.tags.place ?? '')) continue;
-  const [x, y] = toXY(el.lat, el.lon);
+  if (!el.tags?.name || !PLACES_WANTED.test(el.tags.place ?? '')) continue;
+  // Towns are points; islands are usually outlines (use the middle of their points).
+  let lat = el.lat;
+  let lon = el.lon;
+  const pts = el.geometry ?? el.members?.flatMap((m) => m.geometry ?? []) ?? [];
+  if (lat === undefined && pts.length) {
+    lat = pts.reduce((s, p) => s + p.lat, 0) / pts.length;
+    lon = pts.reduce((s, p) => s + p.lon, 0) / pts.length;
+  }
+  if (lat === undefined) continue;
+  const [x, y] = toXY(lat, lon);
   places.push({ name: el.tags.name, kind: el.tags.place, x: Math.round(x), y: Math.round(y) });
 }
 places.sort((a, b) => a.name.localeCompare(b.name));
