@@ -1,11 +1,11 @@
 # Fragateiro
 
 Browser mini-games with the traditional sailing boats of the Tagus River: the **Falua**, the
-**Muleta** of Seixal, the **Fragata**, the **Catraio** and the **Canoa**. A web successor to the Unity simulator described in
+**Muleta** of Seixal, the **Fragata**, the **Catraio** and (under development, not in the game yet) the **Canoa**. A web successor to the Unity simulator described in
 *A sailing simulator for the revival of the Tagus River nautical heritage* (Fazenda et al., 2025),
 built to be easy to maintain and to grow into several small games.
 
-- **Sailing the Tagus** (`games/sailing/`): free sailing with five boats on a map of the estuary (Lisbon,
+- **Sailing the Tagus** (`games/sailing/`): free sailing with four boats on a map of the estuary (Lisbon,
   Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Sarilhos Pequenos, Montijo, Ilha do Rato, Alcochete) with the real channel buoys. Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
@@ -73,7 +73,8 @@ prints the areas and centres the physics needs. Then continue from step 2.
 
 1. Convert the model: `scripts/convert-model.sh boat.fbx textures/ src/assets/models/boat.glb`
    (see [docs/MODELS.md](docs/MODELS.md)).
-2. Describe it in `src/physics/boats/<boat>.ts` and add it to `BOATS` in `src/physics/index.ts`.
+2. Describe it in `src/physics/boats/<boat>.ts` and add it to `BOATS` in `src/physics/index.ts`
+   (or to `BOATS_IN_DEVELOPMENT` to keep it out of the games while it is being worked on).
 3. Map its sails and rudder to model nodes in `src/engine/boatVisuals.ts`.
 4. Run `npm run polar` and adjust until the speeds look right; add it to the tests.
 
