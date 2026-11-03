@@ -1,6 +1,6 @@
 {
   "source": "OpenStreetMap contributors (ODbL), via the Overpass API",
-  "built": "2026-11-02",
+  "built": "2026-11-03",
   "bbox": {
     "south": 38.62,
     "west": -9.19,
@@ -50,6 +50,18 @@
       "y": -207
     },
     {
+      "name": "Alto da Guarda",
+      "kind": "hamlet",
+      "x": 8897,
+      "y": 3730
+    },
+    {
+      "name": "Alto do Moinho",
+      "kind": "hamlet",
+      "x": -5246,
+      "y": -5325
+    },
+    {
       "name": "Alto do Seixalinho",
       "kind": "village",
       "x": 3380,
@@ -68,10 +80,34 @@
       "y": -6114
     },
     {
+      "name": "Arce",
+      "kind": "hamlet",
+      "x": 11903,
+      "y": 425
+    },
+    {
       "name": "Arroios",
       "kind": "village",
       "x": -3176,
       "y": 5222
+    },
+    {
+      "name": "Bairro da Mosca",
+      "kind": "hamlet",
+      "x": 13696,
+      "y": 284
+    },
+    {
+      "name": "Bairro do Barrão",
+      "kind": "hamlet",
+      "x": 13939,
+      "y": 3382
+    },
+    {
+      "name": "Bairro do Charqueirão",
+      "kind": "hamlet",
+      "x": 14278,
+      "y": 858
     },
     {
       "name": "Baixa da Banheira",
@@ -92,16 +128,76 @@
       "y": 5165
     },
     {
+      "name": "Bela Colónia",
+      "kind": "hamlet",
+      "x": 10116,
+      "y": 3564
+    },
+    {
+      "name": "Broega",
+      "kind": "hamlet",
+      "x": 11119,
+      "y": -1198
+    },
+    {
+      "name": "Cabeço Verde",
+      "kind": "hamlet",
+      "x": 6777,
+      "y": -6260
+    },
+    {
       "name": "Campo de Ourique",
       "kind": "village",
       "x": -5903,
       "y": 3353
     },
     {
+      "name": "Carvalhinho",
+      "kind": "hamlet",
+      "x": 10656,
+      "y": -3976
+    },
+    {
+      "name": "Cercal",
+      "kind": "hamlet",
+      "x": 11908,
+      "y": 5400
+    },
+    {
+      "name": "Cercal de Baixo",
+      "kind": "hamlet",
+      "x": 11429,
+      "y": 5905
+    },
+    {
+      "name": "Cercal de Cima",
+      "kind": "hamlet",
+      "x": 11936,
+      "y": 5533
+    },
+    {
+      "name": "Chão Duro",
+      "kind": "hamlet",
+      "x": 10105,
+      "y": -2278
+    },
+    {
+      "name": "Cidade Sol",
+      "kind": "hamlet",
+      "x": 5788,
+      "y": -5743
+    },
+    {
       "name": "Corroios",
       "kind": "town",
       "x": -4539,
       "y": -4806
+    },
+    {
+      "name": "Espinhosa",
+      "kind": "hamlet",
+      "x": 10931,
+      "y": -101
     },
     {
       "name": "Estrela",
@@ -116,10 +212,58 @@
       "y": -3541
     },
     {
+      "name": "Fidalguinhos",
+      "kind": "hamlet",
+      "x": 4458,
+      "y": -3499
+    },
+    {
       "name": "Gaio-Rosário",
       "kind": "village",
       "x": 8129,
       "y": -1100
+    },
+    {
+      "name": "Ginjal",
+      "kind": "hamlet",
+      "x": -4414,
+      "y": 280
+    },
+    {
+      "name": "Ilha do Rato",
+      "kind": "islet",
+      "x": 5511,
+      "y": 30
+    },
+    {
+      "name": "Ilha dos Pássaros",
+      "kind": "islet",
+      "x": 6590,
+      "y": -1291
+    },
+    {
+      "name": "Lagoa da Cheia",
+      "kind": "hamlet",
+      "x": 12439,
+      "y": 5055
+    },
+    {
+      "name": "Lagoa da Pedra",
+      "kind": "hamlet",
+      "x": 10647,
+      "y": 4611
+    },
+    {
+      "name": "Lagoa do Barro",
+      "kind": "hamlet",
+      "x": 9724,
+      "y": 3504
+    },
+    {
+      "name": "Lançada",
+      "kind": "hamlet",
+      "x": 12666,
+      "y": 42
     },
     {
       "name": "Laranjeiro",
@@ -144,6 +288,12 @@
       "kind": "village",
       "x": -2946,
       "y": 2558
+    },
+    {
+      "name": "Malpique",
+      "kind": "hamlet",
+      "x": 12901,
+      "y": -462
     },
     {
       "name": "Marvila",
@@ -180,6 +330,36 @@
       "kind": "village",
       "x": -2339,
       "y": 4551
+    },
+    {
+      "name": "Penteado",
+      "kind": "hamlet",
+      "x": 12442,
+      "y": -5015
+    },
+    {
+      "name": "Pinhal da Areia",
+      "kind": "hamlet",
+      "x": 10668,
+      "y": -2985
+    },
+    {
+      "name": "Pinhal do Gancho",
+      "kind": "hamlet",
+      "x": 11564,
+      "y": -1892
+    },
+    {
+      "name": "Quinta do Torrão",
+      "kind": "hamlet",
+      "x": 4643,
+      "y": -5944
+    },
+    {
+      "name": "Rego de Água",
+      "kind": "hamlet",
+      "x": 7373,
+      "y": -5484
     },
     {
       "name": "Samouco",
@@ -240,6 +420,24 @@
       "kind": "village",
       "x": 5330,
       "y": -4378
+    },
+    {
+      "name": "Vale de Figueira",
+      "kind": "hamlet",
+      "x": 12227,
+      "y": 6048
+    },
+    {
+      "name": "Vila Chã",
+      "kind": "hamlet",
+      "x": 5067,
+      "y": -5666
+    },
+    {
+      "name": "Vinha das Pedras",
+      "kind": "hamlet",
+      "x": 5741,
+      "y": -3467
     }
   ],
   "seamarks": [
