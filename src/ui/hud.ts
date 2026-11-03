@@ -15,6 +15,7 @@ export interface HudCallbacks {
   onTimeScale(scale: number): void;
   onBalanced(on: boolean): void;
   onWindVisible(on: boolean): void;
+  onSound(on: boolean): void;
 }
 
 export interface Navigation {
@@ -53,6 +54,7 @@ export class SailingHud {
   private readonly rudderNeedle = el('div', 'rudder-needle');
   private readonly warning = el('div', 'warning');
   private readonly forcesBox: HTMLInputElement;
+  private readonly soundBox: HTMLInputElement;
   /** Shown next to the speed, so it is clear the clock runs faster. */
   private timeScale = 3;
   private readonly camButtons = el('div', 'buttons');
@@ -121,6 +123,7 @@ export class SailingHud {
       <label>Distance <input type="range" min="${DISTANCE_RANGE.min}" max="${DISTANCE_RANGE.max}" step="1" name="camDist"> <output name="camDistOut"></output></label>
       <label class="cam-height">Height <input type="range" min="3" max="85" step="1" name="camHeight"> <output name="camHeightOut"></output></label>
       <label class="check"><input type="checkbox" name="forces"> Show forces <small>(F)</small></label>
+      <label class="check"><input type="checkbox" name="sound" checked> Sound: wind and water <small>(N)</small></label>
       <label>Game speed <select name="timeScale">
         <option value="1">1× real time</option>
         <option value="2">2× faster</option>
@@ -128,7 +131,7 @@ export class SailingHud {
         <option value="5">5× faster</option>
         <option value="10">10× faster</option>
       </select></label>
-      <p class="keys">M: change mode · B: change boat · P: pause · R: restart</p>`;
+      <p class="keys">M: change mode · B: change boat · N: sound · P: pause · R: restart</p>`;
     const dir = opts.querySelector<HTMLInputElement>('[name=dir]')!;
     const speed = opts.querySelector<HTMLInputElement>('[name=speed]')!;
     const gusty = opts.querySelector<HTMLInputElement>('[name=gusty]')!;
@@ -176,6 +179,8 @@ export class SailingHud {
       cb.onTimeScale(Number(timeScale.value));
       this.timeScale = Number(timeScale.value);
     });
+    this.soundBox = opts.querySelector<HTMLInputElement>('[name=sound]')!;
+    this.soundBox.addEventListener('change', () => cb.onSound(this.soundBox.checked));
     const windVisible = opts.querySelector<HTMLInputElement>('[name=windVisible]')!;
     windVisible.addEventListener('change', () => cb.onWindVisible(windVisible.checked));
     const balanced = opts.querySelector<HTMLInputElement>('[name=balanced]')!;
@@ -203,6 +208,10 @@ export class SailingHud {
     this.camOutputs.distOut.textContent = `${Math.round(distance)} m`;
     this.camOutputs.heightOut.textContent = `${Math.round(elevation)}°`;
     this.camHeightLabel.hidden = view === 'top' || view === 'free';
+  }
+
+  setSound(on: boolean): void {
+    this.soundBox.checked = on;
   }
 
   setForces(visible: boolean): void {

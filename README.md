@@ -38,6 +38,7 @@ Node 22 or newer.
 | Destination: distance, bearing and time | | *Sail to* list |
 | Game speed (1×, 2×, 3× default, 5×, 10×; speeds shown stay real, "time ×3" under the speed) | | setting |
 | Show the wind (streaks over the water), balanced sails (on by default: the sails do not turn the boat) | | wind settings |
+| Sound of wind, water and flapping sails (synthesised, starts on the first click or key) | N | checkbox |
 | Pause / restart | P / R | |
 
 ## How it is organised
