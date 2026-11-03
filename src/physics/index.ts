@@ -10,9 +10,11 @@ export { FALUA } from './boats/falua';
 export { MULETA } from './boats/muleta';
 export { FRAGATA } from './boats/fragata';
 export { CATRAIO } from './boats/catraio';
+export { CANOA } from './boats/canoa';
 
+import { CANOA } from './boats/canoa';
 import { CATRAIO } from './boats/catraio';
 import { FALUA } from './boats/falua';
 import { FRAGATA } from './boats/fragata';
 import { MULETA } from './boats/muleta';
-export const BOATS = [FALUA, MULETA, FRAGATA, CATRAIO];
+export const BOATS = [FALUA, MULETA, FRAGATA, CATRAIO, CANOA];

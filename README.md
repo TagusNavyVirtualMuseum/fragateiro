@@ -1,11 +1,11 @@
 # Fragateiro
 
 Browser mini-games with the traditional sailing boats of the Tagus River: the **Falua**, the
-**Muleta** of Seixal, the **Fragata** and the **Catraio**. A web successor to the Unity simulator described in
+**Muleta** of Seixal, the **Fragata**, the **Catraio** and the **Canoa**. A web successor to the Unity simulator described in
 *A sailing simulator for the revival of the Tagus River nautical heritage* (Fazenda et al., 2025),
 built to be easy to maintain and to grow into several small games.
 
-- **Sailing the Tagus** (`games/sailing/`): free sailing with four boats on a map of the estuary (Lisbon,
+- **Sailing the Tagus** (`games/sailing/`): free sailing with five boats on a map of the estuary (Lisbon,
   Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Sarilhos Pequenos, Montijo, Ilha do Rato, Alcochete) with the real channel buoys. Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
@@ -65,6 +65,11 @@ explained on its own. See [docs/PHYSICS.md](docs/PHYSICS.md).
 3. Link it from `index.html`.
 
 ### Add a boat
+
+No 3D model? `scripts/generate-boat.mjs` builds one from numbers: length, beam, weight,
+sheer line, stem, masts, sail corners and rudder, read from a side photo or plan (see
+`scripts/boats/canoa.mjs`). It finds the depth at which the hull floats at its weight and
+prints the areas and centres the physics needs. Then continue from step 2.
 
 1. Convert the model: `scripts/convert-model.sh boat.fbx textures/ src/assets/models/boat.glb`
    (see [docs/MODELS.md](docs/MODELS.md)).

@@ -6,9 +6,9 @@ The boats come from the MiraroTejo project (the lighter versions made for the vi
 |---|---|---|---|
 | Falua | `MiraroTejo/Assets/Embarcações/Falua/falua.fbx` (7.5 MB + textures) | `src/assets/models/falua.glb` | 6.9 MB |
 | Muleta | `MiraroTejo/Assets/Embarcações/Muleta/Muleta.fbx` (2.8 MB + textures) | `src/assets/models/muleta.glb` | 2.7 MB |
-
 | Fragata | `MiraroTejo/Assets/Embarcações/Fragata/Fragata.fbx` (4.7 MB + textures) | `src/assets/models/fragata.glb` | 3.8 MB |
 | Catraio | `MiraroTejo/Assets/Embarcações/Catraio/catraio.fbx` (55 MB, textures inside) | `src/assets/models/catraio.glb` | 3.2 MB |
+| Canoa | generated: `scripts/boats/canoa.mjs` (from a photo, 8.8 m × 2.2 m, 5 t) | `src/assets/models/canoa.glb` | 0.5 MB |
 
 The SingraroTejo versions (184 MB and 290 MB) are too heavy for the web.
 
@@ -27,6 +27,27 @@ npx @gltf-transform/cli@4.5.1 prune catraio-split.glb src/assets/models/catraio.
 ```
 
 The Fragata's bow points to +x (`bowPositiveX: true` in `boatVisuals.ts`).
+
+## Generating a model from numbers
+
+For a boat with photos or plans but no 3D model:
+
+```bash
+node scripts/generate-boat.mjs scripts/boats/canoa.mjs src/assets/models/canoa.glb
+```
+
+The parameter file gives, in metres (s aft of the bow, y above the waterline, z to port):
+length, beam and weight; the sheer line (height amidships, rise at bow and stern); how far
+the stem curves into the keel; where the hull is widest and how round its sections are;
+masts (position, height, rake); each sail's four corners; fixed spars (bowsprit, bumkin);
+and the rudder outline and tiller. The hull is painted in bands (bottom, topsides, a stripe,
+the sheer strake) with flat colours, so the files are small.
+
+The script searches for the hull depth at which the boat displaces its weight, writes the
+`.glb` in metres (`unit: 1`, `waterline: 0` in `boatVisuals.ts`) with named nodes (`Casco`,
+`Vela`, `Verga`, `Leme`, `Cana`, ...), and prints what the physics needs: waterline length,
+draft, centre of buoyancy (`cgX`), lateral area and centre, rudder area, and each sail's
+area, pivot and centre of effort.
 
 ## Converting
 

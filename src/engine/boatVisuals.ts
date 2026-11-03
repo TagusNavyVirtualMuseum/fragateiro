@@ -6,6 +6,7 @@ import faluaUrl from '../assets/models/falua.glb?url';
 import muletaUrl from '../assets/models/muleta.glb?url';
 import fragataUrl from '../assets/models/fragata.glb?url';
 import catraioUrl from '../assets/models/catraio.glb?url';
+import canoaUrl from '../assets/models/canoa.glb?url';
 
 type V3 = [number, number, number];
 
@@ -251,6 +252,41 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       nodes: ['Leme01', 'Leme01.001', 'Leme02', 'Leme02.001'],
       pivot: [4, 0, 0],
       axis: { base: [3.614, -0.739, 0], top: [4.434, 1.003, 0] }, // node Pin
+    },
+  },
+  canoa: {
+    boat: 'canoa',
+    // Generated from numbers and a photo: scripts/boats/canoa.mjs (model in metres).
+    hullNodes: ['Casco'],
+    url: canoaUrl,
+    unit: 1,
+    scale: 1,
+    cgX: 0.25,
+    waterline: 0,
+    sails: [
+      {
+        sail: 'main',
+        nodes: ['Vela', 'Verga'],
+        pivot: [-1.0, 0, 0],
+        axis: { base: [-1.0, -0.35, 0], top: [-1.4, 5.4, 0] }, // mast raked forward
+      },
+      {
+        sail: 'mizzen',
+        nodes: ['Vela_mezena', 'Verga_mezena'],
+        pivot: [3.35, 0, 0.3],
+        axis: { base: [3.35, 0, 0.3], top: [3.35, 3.6, 0.3] },
+      },
+    ],
+    // Lateen sheet on an arch over the tiller; mizzen sheet to the end of the bumkin.
+    horse: { x: 2.9, halfWidth: 0.8, footY: 0.8, topY: 1.3 },
+    sheets: [
+      { sail: 'main', clew: [1.8, 1.35, 0.13], to: 'horse' },
+      { sail: 'mizzen', clew: [5.4, 1.5, 0.39], to: [5.8, 0.98, 0.15] },
+    ],
+    rudder: {
+      nodes: ['Leme', 'Cana'],
+      pivot: [4.4, 0, 0],
+      axis: { base: [4.4, -0.62, 0], top: [4.4, 0.95, 0] }, // the sternpost
     },
   },
 };
