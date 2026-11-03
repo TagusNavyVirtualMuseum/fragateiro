@@ -9,6 +9,7 @@ import { TouchControls, isTouchDevice } from '../../src/engine/touchControls';
 import { createMapView, loadTagusMask, type MapView } from '../../src/engine/mapView';
 import { NetView } from '../../src/engine/netView';
 import { createSailingScene } from '../../src/engine/scene';
+import { WindView } from '../../src/engine/windView';
 import { SailingHud } from '../../src/ui/hud';
 import { Minimap } from '../../src/ui/minimap';
 import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
@@ -27,9 +28,10 @@ const { engine, scene, camera, water, skyColor, sunDirection, fogDensity } = cre
 const cameraRig = new CameraRig(camera);
 const arrows = new ForceArrows(scene);
 const netView = new NetView(scene);
+const windView = new WindView(scene);
 const input = new Input();
 
-const wind = new GustyWind(0, 6, 0, 0);
+const wind = new GustyWind(0, 12 * 0.514444, 0, 0); // 12 knots
 let gusty = false;
 const views = new Map<string, BoatView>();
 let spec: BoatSpec = BOATS[0];
@@ -43,7 +45,8 @@ let aground = false;
 let destinations: Destination[] = [];
 let nextDestination = 0;
 /** Simulated seconds per real second: speeds stay realistic, the trip goes faster. */
-let timeScale = 2;
+let timeScale = 3;
+let balanced = true;
 let target: Destination | null = null;
 let targetSince = 0;
 let arrivedAt: number | null = null;
@@ -67,6 +70,8 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onCameraDistance: (d) => cameraRig.setDistance(d),
   onCameraHeight: (h) => cameraRig.setElevation(h),
   onTimeScale: (k) => (timeScale = k),
+  onBalanced: (on) => (balanced = on),
+  onWindVisible: (on) => windView.setVisible(on),
 }, { fromDeg: wind.fromDeg, speed: wind.speed, gusty });
 // Phones and tablets: gestures on the 3D view steer and trim; the camera keeps its views
 // (buttons) but does not orbit with one finger.
@@ -177,11 +182,11 @@ function applyInput(dt: number): void {
 async function main(): Promise<void> {
   const [loaded, map] = await Promise.all([Promise.all(BOATS.map((b) => BoatView.load(scene, b, BOAT_VISUALS[b.id]))), loadTagusMask()]);
   mask = map.mask;
+  await document.fonts.ready; // labels and minimap are drawn once, with the period font
   mapView = createMapView(scene, mask, skyColor, sunDirection, fogDensity, DESTINATION_NAMES);
   start = mask.nearestWater(0, 0);
   mask.markReachableFrom(start.x, start.y);
   destinations = findDestinations(mask, 16);
-  await document.fonts.ready; // the minimap draws its labels once, with the period font
   minimap = new Minimap(hud.mapSlot, mask, destinations, teleport);
   hud.setDestinations(destinations.map((d) => d.name), (name) => teleport(destinations.find((d) => d.name === name)!));
   hud.setTargets(destinations.map((d) => d.name), (name) => {
@@ -215,6 +220,7 @@ async function main(): Promise<void> {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
     if (!paused) {
       applyInput(dt);
+      sim.controls.balanced = balanced;
       stepWithLand(dt * timeScale);
       time += dt;
     }
@@ -222,7 +228,7 @@ async function main(): Promise<void> {
     const w = wind.at(s.time, s.x, s.y);
     view.update(s, sim.report, sim.controls.rudder, time, dt);
     arrows.update(view.root, sim.report, w, s.heading, 12);
-    netView.update(view.root, spec.net, !!sim.mode.net, s);
+    netView.update(view.root, spec.net, !!sim.mode.net, s, sim.report.trueWindAngleDeg >= 0, time);
     mapView.update(time, camera);
     minimap.draw(s.x, s.y, s.heading, target ?? undefined);
     let nav = null;
@@ -240,9 +246,10 @@ async function main(): Promise<void> {
       };
     }
     cameraRig.update(s.x, s.y, s.heading, dt);
+    windView.update(camera.target, w, timeScale);
     water.update(time, camera.target, camera.position);
     // Keep the water out of the hull, so open holds stay dry.
-    water.setHull({ ...view.hullProfile, x: s.x, y: s.y, heading: s.heading });
+    water.setHull({ ...view.hullProfile, x: s.x, y: s.y, heading: s.heading, heave: view.waterlineHeight });
     hud.update(s, sim.controls, sim.report, w, paused, aground, nav);
     scene.render();
   });

@@ -1,7 +1,7 @@
 // Places the boat can be moved to (teleport), each with a mooring spot in open water.
 import { LandMask, hullAfloat } from './landMask';
 
-export const DESTINATION_NAMES = ['Lisboa', 'Almada', 'Seixal', 'Amora', 'Barreiro', 'Alhos Vedros', 'Moita', 'Montijo', 'Alcochete'];
+export const DESTINATION_NAMES = ['Lisboa', 'Almada', 'Seixal', 'Amora', 'Barreiro', 'Alhos Vedros', 'Moita', 'Sarilhos Pequenos', 'Montijo', 'Ilha do Rato', 'Alcochete'];
 
 export interface Destination {
   name: string;

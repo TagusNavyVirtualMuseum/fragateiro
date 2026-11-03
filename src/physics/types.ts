@@ -102,6 +102,12 @@ export interface Controls {
   /** Sheet per sail group: 0 = hauled in, 1 = fully eased. */
   sheets: Record<string, number>;
   mode: string;
+  /**
+   * Balanced sails: the sails push the boat as if they acted at the centre of lateral
+   * resistance, so they do not turn it (easier to steer; real boats are rarely this well
+   * balanced).
+   */
+  balanced?: boolean;
 }
 
 export interface BoatState {

@@ -124,8 +124,15 @@ export class BoatView {
    * z forward). Slightly inset so no gap shows between hull and water.
    */
   private measureWaterline(nodes: Node[]): HullProfile {
+    const levels: [number, number] = [-0.05, 0.45];
+    const low = this.sliceHull(nodes, levels[0]);
+    const high = this.sliceHull(nodes, levels[1], low.fwdStart, low.step);
+    return { fwdStart: low.fwdStart, step: low.step, halfWidths: low.widths, halfWidthsHigh: high.widths.map((w, i) => Math.max(w, low.widths[i])), levels };
+  }
+
+  /** Half-widths where the planking crosses the plane y = level (boat frame). */
+  private sliceHull(nodes: Node[], level: number, fwdStartIn?: number, stepIn?: number): { fwdStart: number; step: number; widths: number[] } {
     this.root.computeWorldMatrix(true);
-    const LEVEL = -0.05;
     const pts: [number, number][] = [];
     for (const n of nodes) {
       for (const m of [n, ...(n as TransformNode).getChildMeshes(false)] as AbstractMesh[]) {
@@ -142,8 +149,8 @@ export class BoatView {
           for (let e = 0; e < 3; e++) {
             const a = w[idx[t + e]];
             const b = w[idx[t + ((e + 1) % 3)]];
-            if ((a.y - LEVEL) * (b.y - LEVEL) > 0 || a.y === b.y) continue;
-            const k = (LEVEL - a.y) / (b.y - a.y);
+            if ((a.y - level) * (b.y - level) > 0 || a.y === b.y) continue;
+            const k = (level - a.y) / (b.y - a.y);
             cross.push([a.z + (b.z - a.z) * k, Math.abs(a.x + (b.x - a.x) * k)]);
           }
           if (cross.length < 2) continue;
@@ -152,19 +159,23 @@ export class BoatView {
         }
       }
     }
-    if (!pts.length) return { fwdStart: 0, step: 0, halfWidths: new Array(HULL_BINS).fill(0) };
+    if (!pts.length && fwdStartIn === undefined) return { fwdStart: 0, step: 0, widths: new Array(HULL_BINS).fill(0) };
     const zs = pts.map((p) => p[0]);
-    const fwdStart = Math.min(...zs);
-    const step = (Math.max(...zs) - fwdStart) / HULL_BINS;
-    const halfWidths = new Array(HULL_BINS).fill(0);
+    const fwdStart = fwdStartIn ?? Math.min(...zs);
+    const step = stepIn ?? (Math.max(...zs) - fwdStart) / HULL_BINS;
+    const widths = new Array(HULL_BINS).fill(0);
     for (const [z, x] of pts) {
-      const b = Math.min(HULL_BINS - 1, Math.floor((z - fwdStart) / step));
-      halfWidths[b] = Math.max(halfWidths[b], x);
+      const b = Math.floor((z - fwdStart) / step);
+      if (b >= 0 && b < HULL_BINS) widths[b] = Math.max(widths[b], x);
     }
     // Each slice takes the narrower of itself and its neighbours (the hull tapers within a
-    // slice), minus a small margin.
-    const inset = halfWidths.map((x, i) => Math.max(0, Math.min(x, halfWidths[i - 1] ?? 0, halfWidths[i + 1] ?? 0) * 0.94 - 0.05));
-    return { fwdStart, step, halfWidths: inset };
+    // slice), minus a small margin so no gap shows between hull and water.
+    return { fwdStart, step, widths: widths.map((x, i) => Math.max(0, Math.min(x, widths[i - 1] ?? 0, widths[i + 1] ?? 0) * 0.94 - 0.05)) };
+  }
+
+  /** Height of the waterline in the world (the boat bobbing on the waves), m. */
+  get waterlineHeight(): number {
+    return this.heave;
   }
 
   static async load(scene: Scene, spec: BoatSpec, visual: BoatVisual): Promise<BoatView> {

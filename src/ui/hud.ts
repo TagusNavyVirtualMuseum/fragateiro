@@ -13,6 +13,8 @@ export interface HudCallbacks {
   onCameraDistance(metres: number): void;
   onCameraHeight(degrees: number): void;
   onTimeScale(scale: number): void;
+  onBalanced(on: boolean): void;
+  onWindVisible(on: boolean): void;
 }
 
 export interface Navigation {
@@ -51,6 +53,8 @@ export class SailingHud {
   private readonly rudderNeedle = el('div', 'rudder-needle');
   private readonly warning = el('div', 'warning');
   private readonly forcesBox: HTMLInputElement;
+  /** Shown next to the speed, so it is clear the clock runs faster. */
+  private timeScale = 3;
   private readonly camButtons = el('div', 'buttons');
   private readonly camDistance: HTMLInputElement;
   private readonly camHeight: HTMLInputElement;
@@ -108,8 +112,10 @@ export class SailingHud {
     opts.innerHTML = `
       <h2>Wind</h2>
       <label>From <input type="range" min="0" max="355" step="5" name="dir"> <output name="dirOut"></output></label>
-      <label>Speed <input type="range" min="1" max="14" step="0.5" name="speed"> <output name="speedOut"></output></label>
+      <label>Speed <input type="range" min="2" max="30" step="1" name="speed"> <output name="speedOut"></output></label>
       <label class="check"><input type="checkbox" name="gusty"> Gusts and shifts</label>
+      <label class="check"><input type="checkbox" name="windVisible" checked> Show the wind</label>
+      <label class="check" title="The sails push the boat without turning it: easier to steer. Real boats are rarely this well balanced."><input type="checkbox" name="balanced" checked> Balanced sails <small>(easier steering)</small></label>
       <h2>Camera <small>keys 1–6 · drag to orbit · wheel to zoom</small></h2>
       <div class="cam-buttons"></div>
       <label>Distance <input type="range" min="${DISTANCE_RANGE.min}" max="${DISTANCE_RANGE.max}" step="1" name="camDist"> <output name="camDistOut"></output></label>
@@ -117,8 +123,10 @@ export class SailingHud {
       <label class="check"><input type="checkbox" name="forces"> Show forces <small>(F)</small></label>
       <label>Game speed <select name="timeScale">
         <option value="1">1× real time</option>
-        <option value="2" selected>2× faster</option>
-        <option value="3">3× faster</option>
+        <option value="2">2× faster</option>
+        <option value="3" selected>3× faster</option>
+        <option value="5">5× faster</option>
+        <option value="10">10× faster</option>
       </select></label>
       <p class="keys">M: change mode · B: change boat · P: pause · R: restart</p>`;
     const dir = opts.querySelector<HTMLInputElement>('[name=dir]')!;
@@ -128,12 +136,13 @@ export class SailingHud {
     const dirOut = opts.querySelector<HTMLOutputElement>('[name=dirOut]')!;
     const speedOut = opts.querySelector<HTMLOutputElement>('[name=speedOut]')!;
     dir.value = String(wind.fromDeg);
-    speed.value = String(wind.speed);
+    speed.value = String(Math.round(toKnots(wind.speed)));
     gusty.checked = wind.gusty;
     const windChanged = () => {
       dirOut.textContent = `${dir.value}°`;
-      speedOut.textContent = `${speed.value} m/s · ${toKnots(Number(speed.value)).toFixed(0)} kn`;
-      cb.onWind(Number(dir.value), Number(speed.value), gusty.checked);
+      const ms = Number(speed.value) * 0.514444;
+      speedOut.textContent = `${speed.value} kn · ${ms.toFixed(1)} m/s`;
+      cb.onWind(Number(dir.value), ms, gusty.checked);
     };
     for (const i of [dir, speed, gusty]) i.addEventListener('input', windChanged);
     windChanged();
@@ -163,7 +172,14 @@ export class SailingHud {
     });
     this.camOutputs = { distOut, heightOut };
     const timeScale = opts.querySelector<HTMLSelectElement>('[name=timeScale]')!;
-    timeScale.addEventListener('change', () => cb.onTimeScale(Number(timeScale.value)));
+    timeScale.addEventListener('change', () => {
+      cb.onTimeScale(Number(timeScale.value));
+      this.timeScale = Number(timeScale.value);
+    });
+    const balanced = opts.querySelector<HTMLInputElement>('[name=balanced]')!;
+    balanced.addEventListener('change', () => cb.onBalanced(balanced.checked));
+    const windVisible = opts.querySelector<HTMLInputElement>('[name=windVisible]')!;
+    windVisible.addEventListener('change', () => cb.onWindVisible(windVisible.checked));
 
     // Let the arrow keys steer the boat instead of moving a focused slider.
     opts.addEventListener('change', (e) => (e.target as HTMLElement).blur());
@@ -204,7 +220,9 @@ export class SailingHud {
       }
     }
     const mode = spec.modes.find((m) => m.id === controls.mode) ?? spec.modes[0];
-    this.about.textContent = `${spec.description} ${spec.modes.length > 1 ? mode.description : ''}`;
+    // Boat descriptions live on the main page; here only how to use a mode.
+    this.about.textContent = spec.modes.length > 1 ? mode.description : '';
+    this.about.hidden = spec.modes.length <= 1;
 
     this.sheets.replaceChildren();
     this.sliders.clear();
@@ -282,11 +300,12 @@ export class SailingHud {
     const tack = report.trueWindAngleDeg >= 0 ? 'starboard tack' : 'port tack';
     this.readout.innerHTML = `
       <div class="big">${toKnots(Math.hypot(state.u, state.v)).toFixed(1)}<small> kn</small></div>
+      <div class="tscale" title="The game clock runs faster than real time; speeds shown are real.">${this.timeScale === 1 ? 'real time' : `time ×${this.timeScale}`}</div>
       <dl>
         <dt>Heading</dt><dd>${heading.toFixed(0)}°</dd>
         <dt>Point of sail</dt><dd>${pointOfSail}${twa >= 40 ? `, ${tack}` : ''}</dd>
-        <dt>True wind</dt><dd>${twa.toFixed(0)}° · ${wind.speed.toFixed(1)} m/s</dd>
-        <dt>Apparent wind</dt><dd>${Math.abs(report.apparentWindAngleDeg).toFixed(0)}° · ${report.apparentWindSpeed.toFixed(1)} m/s</dd>
+        <dt>True wind</dt><dd>${twa.toFixed(0)}° · ${toKnots(wind.speed).toFixed(0)} kn</dd>
+        <dt>Apparent wind</dt><dd>${Math.abs(report.apparentWindAngleDeg).toFixed(0)}° · ${toKnots(report.apparentWindSpeed).toFixed(0)} kn</dd>
         <dt>Heel</dt><dd>${Math.abs(rad2deg(state.heel)).toFixed(0)}°</dd>
         <dt>Drift</dt><dd>${toKnots(state.v).toFixed(1)} kn ${state.v >= 0 ? '→' : '←'}</dd>
       </dl>`;

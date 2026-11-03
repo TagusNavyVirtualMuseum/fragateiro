@@ -1,4 +1,4 @@
-import { Color3, Effect, MeshBuilder, Scene, ShaderMaterial, Vector2, Vector3, Vector4, type Mesh } from '@babylonjs/core';
+import { Color3, Effect, MeshBuilder, Scene, ShaderMaterial, StandardMaterial, Vector2, Vector3, Vector4, type Mesh } from '@babylonjs/core';
 import { WAVES, waveUniforms } from './waves';
 
 const N = WAVES.length;
@@ -51,10 +51,19 @@ uniform float time;
 uniform vec4 hull;
 uniform vec2 hullRange;
 uniform float hullWidth[HULL_BINS];
+// Half-widths higher up the hull (hullLevels.y above the waterline): where the water is
+// higher (a wave crest), use the width at that height, so flared sides stay dry inside.
+uniform float hullWidthHigh[HULL_BINS];
+// hullLevels: low level, high level, boat height in the world
+uniform vec3 hullLevels;
+// Far sheet only: leave out the square covered by the detailed patch (it would show through).
+// inner: centre x, centre z, distance from the centre to the edge (0 = off)
+uniform vec3 inner;
 varying vec3 vWorld;
 varying vec3 vNormal;
 
 void main() {
+  if (inner.z > 0.0 && abs(vWorld.x - inner.x) < inner.z && abs(vWorld.z - inner.y) < inner.z) discard;
   vec2 d = vWorld.xz - hull.xy;
   float fwd = d.x * hull.z + d.y * hull.w;
   float side = abs(d.x * hull.w - d.y * hull.z);
@@ -62,8 +71,10 @@ void main() {
   if (hullRange.y > 0.0 && f >= 0.0 && f < float(HULL_BINS)) {
     int bin = int(f);
     float w = 0.0;
-    for (int i = 0; i < HULL_BINS; i++) if (i == bin) w = hullWidth[i];
-    if (side < w) discard;
+    float wh = 0.0;
+    for (int i = 0; i < HULL_BINS; i++) if (i == bin) { w = hullWidth[i]; wh = hullWidthHigh[i]; }
+    float t = clamp((vWorld.y - hullLevels.z - hullLevels.x) / (hullLevels.y - hullLevels.x), 0.0, 1.0);
+    if (side < mix(w, wh, t)) discard;
   }
   // Small ripples on top of the big waves, fading out in the distance to avoid shimmer.
   float dist = length(cameraPosition - vWorld);
@@ -80,7 +91,10 @@ void main() {
   vec3 r = reflect(-sunDirection, n);
   color += vec3(1.0, 0.95, 0.85) * pow(max(dot(r, v), 0.0), 180.0) * 1.5;
   float fog = 1.0 - exp(-pow(dist * fogDensity, 2.0));
-  gl_FragColor = vec4(mix(color, skyColor, fog), 1.0);
+  // Slightly see-through close by (the net and the hull show under the surface), opaque
+  // at grazing angles and in the distance.
+  float alpha = mix(0.72, 1.0, clamp(max(fresnel * 1.6, fog), 0.0, 1.0));
+  gl_FragColor = vec4(mix(color, skyColor, fog), alpha);
 }
 `;
 
@@ -92,8 +106,12 @@ export interface HullProfile {
   fwdStart: number;
   /** Length of each slice, m. */
   step: number;
-  /** Half-width of the hull in each slice (HULL_BINS values), m. */
+  /** Half-width of the hull in each slice (HULL_BINS values) at `levels[0]`, m. */
   halfWidths: number[];
+  /** The same, at `levels[1]` (higher up the side). */
+  halfWidthsHigh: number[];
+  /** Heights of the two measurements above the waterline, m. */
+  levels: [number, number];
 }
 
 export interface HullOutline extends HullProfile {
@@ -101,6 +119,8 @@ export interface HullOutline extends HullProfile {
   x: number;
   y: number;
   heading: number;
+  /** Height of the boat's waterline in the world (heave), m. */
+  heave: number;
 }
 
 export interface Water {
@@ -116,7 +136,7 @@ export function createWater(scene: Scene, skyColor: Color3, sunDirection: Vector
   const mesh = MeshBuilder.CreateGround('water', { width: size, height: size, subdivisions: 240 }, scene);
   const mat = new ShaderMaterial('waterMat', scene, { vertex: 'water', fragment: 'water' }, {
     attributes: ['position'],
-    uniforms: ['world', 'viewProjection', 'time', 'waveScale', 'dirK', 'ampPhase', 'cameraPosition', 'sunDirection', 'deepColor', 'shallowColor', 'skyColor', 'fogDensity', 'hull', 'hullRange', 'hullWidth'],
+    uniforms: ['world', 'viewProjection', 'time', 'waveScale', 'dirK', 'ampPhase', 'cameraPosition', 'sunDirection', 'deepColor', 'shallowColor', 'skyColor', 'fogDensity', 'hull', 'hullRange', 'hullWidth', 'hullWidthHigh', 'hullLevels', 'inner'],
   });
   mat.setFloat('waveScale', 1);
   const { dirK, ampPhase } = waveUniforms();
@@ -128,6 +148,7 @@ export function createWater(scene: Scene, skyColor: Color3, sunDirection: Vector
   mat.setVector3('sunDirection', sunDirection.normalizeToNew());
   mat.setFloat('fogDensity', fogDensity);
   mat.backFaceCulling = false;
+  mat.needAlphaBlending = () => true;
   mesh.material = mat;
   mesh.isPickable = false;
   mesh.alwaysSelectAsActiveMesh = true;
@@ -141,10 +162,23 @@ export function createWater(scene: Scene, skyColor: Color3, sunDirection: Vector
   far.isPickable = false;
   far.alwaysSelectAsActiveMesh = true;
 
+  // A dark river bed a few metres down: seen through the translucent water, like murky depth.
+  const bed = MeshBuilder.CreateGround('riverBed', { width: 4000, height: 4000, subdivisions: 1 }, scene);
+  const bedMat = new StandardMaterial('riverBedMat', scene);
+  bedMat.diffuseColor = new Color3(0.05, 0.13, 0.14);
+  bedMat.specularColor = Color3.Black();
+  bedMat.emissiveColor = new Color3(0.03, 0.08, 0.09);
+  bed.material = bedMat;
+  bed.position.y = -5;
+  bed.isPickable = false;
+
   const step = size / 240;
   for (const m of [mat, farMat]) {
     m.setVector2('hullRange', new Vector2(0, 0));
     m.setFloats('hullWidth', new Array(HULL_BINS).fill(0));
+    m.setFloats('hullWidthHigh', new Array(HULL_BINS).fill(0));
+    m.setVector3('hullLevels', new Vector3(0, 1, 0));
+    m.setVector3('inner', Vector3.Zero());
   }
   return {
     mesh,
@@ -157,11 +191,16 @@ export function createWater(scene: Scene, skyColor: Color3, sunDirection: Vector
         m.setVector4('hull', new Vector4(h.x, h.y, Math.sin(h.heading), Math.cos(h.heading)));
         m.setVector2('hullRange', new Vector2(h.fwdStart, h.step));
         m.setFloats('hullWidth', h.halfWidths);
+        m.setFloats('hullWidthHigh', h.halfWidthsHigh);
+        m.setVector3('hullLevels', new Vector3(h.levels[0], h.levels[1], h.heave));
       }
     },
     update(time, centre, cameraPosition) {
+      bed.position.x = centre.x;
+      bed.position.z = centre.z;
       far.position.x = centre.x;
       far.position.z = centre.z;
+      farMat.setVector3('inner', new Vector3(mesh.position.x, mesh.position.z, size / 2 - step));
       farMat.setFloat('time', time);
       farMat.setVector3('cameraPosition', cameraPosition);
       // Snap to the grid so the vertices don't "swim" as the patch follows the boat.

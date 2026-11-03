@@ -89,8 +89,17 @@ reach and 5 kn running. The Fragata: 2.6 kn at 45°, 6 kn on a beam reach; the C
 2.3 kn at 45°, 4.9 kn on a beam reach. Heel stays under about 5° and leeway around 0.1–0.3 kn
 in this wind (stability and hull grip were doubled after play-testing).
 
-The game runs the simulation 2× faster than real time by default (setting: 1×, 2×, 3×), so
-the speeds shown stay realistic while trips take less time. These are more realistic than the Unity version (which
+The game runs the simulation 3× faster than real time by default (setting: 1×, 2×, 3×, 5×,
+10×), so the speeds shown stay realistic while trips take less time. The default wind is
+12 kn.
+
+## Balanced sails (option)
+
+Real boats are rarely balanced: the sails push at their centres of effort, which are not over
+the hull's centre of lateral resistance, so a boat wants to turn into or away from the wind,
+and the sideways drift also pushes on the rudder. With *Balanced sails* (on by default in
+the game) the sail forces act at the centre of lateral resistance and the rudder ignores the
+drift, so with the rudder centred the boat holds its course. Speeds and heel are unchanged. These are more realistic than the Unity version (which
 had copied yacht parameters), but should be checked with people who sail these boats. The
 tests in `tests/physics.test.ts` check behaviour (no-go zone, sheet settings, steering,
 heel, fishing drift), not exact numbers, so tuning does not break them.

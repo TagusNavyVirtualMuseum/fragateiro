@@ -6,7 +6,7 @@ Browser mini-games with the traditional sailing boats of the Tagus River: the **
 built to be easy to maintain and to grow into several small games.
 
 - **Sailing the Tagus** (`games/sailing/`): free sailing with four boats on a map of the estuary (Lisbon,
-  Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Montijo, Alcochete) with the real channel buoys. Switch boats at any
+  Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Sarilhos Pequenos, Montijo, Ilha do Rato, Alcochete) with the real channel buoys. Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
 
@@ -34,9 +34,10 @@ Node 22 or newer.
 | Camera view: behind, ahead, port, starboard, top, free | 1–6 (C = behind) | camera buttons |
 | Camera distance and height | mouse wheel | sliders, or pinch with two fingers |
 | Orbit freely | drag the view with the mouse (switches to *free*) | |
-| Move to a town (Lisboa, Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Montijo, Alcochete) | T (next town) | *Sail from* list, or click a town on the minimap |
+| Move to a place (Lisboa, Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Sarilhos Pequenos, Montijo, Ilha do Rato, Alcochete) | T (next place) | *Sail from* list, or click it on the minimap |
 | Destination: distance, bearing and time | | *Sail to* list |
-| Game speed (1×, 2×, 3×; speeds shown stay real) | | setting |
+| Game speed (1×, 2×, 3× default, 5×, 10×; speeds shown stay real, "time ×3" under the speed) | | setting |
+| Wind streaks, balanced sails (on by default: the sails do not turn the boat) | | wind settings |
 | Pause / restart | P / R | |
 
 ## How it is organised

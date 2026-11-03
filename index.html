@@ -19,6 +19,15 @@
       .card h2 { margin: 0 0 6px; font-size: 18px; }
       .card p { margin: 0; font-size: 14px; }
       .soon { opacity: .55; }
+      .boats { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; margin-top: 18px; }
+      .boat { border: 1px solid rgba(201, 162, 92, 0.6); border-radius: 12px; overflow: hidden; background: rgba(0, 0, 0, 0.18); }
+      .boat img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; border-bottom: 2px solid rgba(201, 162, 92, 0.6); }
+      .boat div { padding: 14px 18px 16px; }
+      .boat h3 { font-family: 'IM Fell English', Georgia, serif; font-weight: 400; font-size: 22px; margin: 0 0 6px; }
+      .boat p { margin: 0; font-size: 15px; }
+      .boat .facts { margin-top: 8px; color: #e2b866; font-size: 14px; }
+      h2.section { margin: 40px 0 0; font-size: 26px; }
+      @media (max-width: 440px) { .boats { grid-template-columns: 1fr; } }
       .links { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 36px; font-size: 15px; }
       .links a { color: #e2b866; text-decoration: none; }
       .links a:hover { text-decoration: underline; }
@@ -56,6 +65,51 @@
           <p>Drag the net sideways and fill it with fish. Coming soon.</p>
         </div>
       </div>
+      <h2 class="section">The boats</h2>
+      <div class="boats">
+        <article class="boat">
+          <img src="./src/assets/boats/falua.jpg" alt="The Falua under sail" />
+          <div>
+            <h3>Falua</h3>
+            <p>A fast boat that carried passengers across the Tagus and light cargo to the Lisbon markets. It
+              shares its two triangular lateen sails, and its name (from the Arabic <em>falūka</em>, "small boat"),
+              with the Egyptian felucca. A crew of two or three. No original Falua survives, and nobody alive
+              remembers seeing one.</p>
+            <p class="facts">14–18 m · two lateen sails · crew of 2–3</p>
+          </div>
+        </article>
+        <article class="boat">
+          <img src="./src/assets/boats/muleta.jpg" alt="The Muleta fishing sideways with all its sails set" />
+          <div>
+            <h3>Muleta</h3>
+            <p>The legendary fishing boat of Seixal, known since the 15th century. It fished by drifting
+              <em>sideways</em> before the wind, dragging its net from long booms at the bow and stern, with up to
+              twelve sails set to balance the drift. The last Muleta disappeared at the end of the 19th century and
+              the technique has been almost entirely lost. In the game, try its lateral fishing mode.</p>
+            <p class="facts">10–12 m · up to 12 sails · crew of about 14</p>
+          </div>
+        </article>
+        <article class="boat">
+          <img src="./src/assets/boats/fragata.jpg" alt="The Fragata with its gaff mainsail and jib" />
+          <div>
+            <h3>Fragata</h3>
+            <p>The big sailing barge of the Tagus, which carried cargo between Lisbon and the towns along the river.
+              A raked mast carries a large gaff mainsail and a jib. A few fragatas have been restored and still
+              sail on the river.</p>
+            <p class="facts">about 18–25 m · gaff mainsail and jib</p>
+          </div>
+        </article>
+        <article class="boat">
+          <img src="./src/assets/boats/catraio.jpg" alt="The Catraio with its spritsail, jib and mizzen" />
+          <div>
+            <h3>Catraio</h3>
+            <p>A small Tagus boat for passengers and goods. Its mainsail is held up by a diagonal spar, the sprit
+              (<em>espicha</em>), with a jib on the bowsprit and a small mizzen at the stern.</p>
+            <p class="facts">about 10 m · spritsail, jib and mizzen</p>
+          </div>
+        </article>
+      </div>
+
       <nav class="links">
         <a href="https://tagusnavyvirtualmuseum.github.io/about.html">About the project →</a>
         <a href="https://doi.org/10.1016/j.daach.2025.e00475">Read the paper →</a>

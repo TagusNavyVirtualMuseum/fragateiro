@@ -181,7 +181,7 @@ function makeLabel(scene: Scene, text: string, big: boolean): Mesh {
   dt.hasAlpha = true;
   const ctx = dt.getContext() as CanvasRenderingContext2D;
   ctx.clearRect(0, 0, w, 96);
-  ctx.font = `${big ? 'bold ' : ''}${fontPx}px system-ui, sans-serif`;
+  ctx.font = `${fontPx}px 'IM Fell English', Georgia, serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.lineWidth = 10;

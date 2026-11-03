@@ -110,6 +110,20 @@ describe('steering', () => {
   });
 });
 
+describe('balanced sails', () => {
+  it('with balanced sails and the rudder centred, the sails do not turn the boat', () => {
+    const turn = (balanced: boolean) => {
+      const sim = new SailboatSim(MULETA, new SteadyWind(0, WIND), { heading: deg2rad(-90), u: 2 });
+      sim.controls.sheets = { main: 0.4, front: 0.4 };
+      sim.controls.balanced = balanced;
+      for (let i = 0; i < 20 * 30; i++) sim.step(1 / 30);
+      return Math.abs(wrapPi(sim.state.heading - deg2rad(-90)));
+    };
+    expect(turn(false)).toBeGreaterThan(deg2rad(3));
+    expect(turn(true)).toBeLessThan(deg2rad(1));
+  });
+});
+
 describe('tacking', () => {
   // Close-hauled with the wind 50° on the starboard bow, then hard rudder towards the wind:
   // the boat must carry its way through the wind onto the other tack.

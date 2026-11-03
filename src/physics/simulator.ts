@@ -180,7 +180,9 @@ export class SailboatSim {
       const fy = f.fy * cosHeel;
       X += fx;
       Y += fy;
-      N += ceX * fy - ceY * fx;
+      // Balanced: the force acts at the centre of lateral resistance, where the hull's side
+      // force cancels its turning effect.
+      N += c.balanced ? spec.hull.lateralCentre * fy : ceX * fy - ceY * fx;
       heelMoment += fy * (sail.ceHeight + spec.draft * 0.5);
       sails.push({ id: sail.id, active, fx, fy, ceX, ceY, alphaDeg: f.alphaDeg, luffing: f.alphaDeg < LUFF_ALPHA_DEG });
     }
@@ -222,7 +224,10 @@ export class SailboatSim {
     // --- Rudder -------------------------------------------------------------------
     const rd = spec.rudder;
     const rudderAngle = clamp(c.rudder, -1, 1) * deg2rad(rd.maxAngleDeg);
-    const rf = foilForce(-Math.cos(rudderAngle), Math.sin(rudderAngle), -s.u, -(s.v + s.r * rd.x), rd.area, RHO_WATER, this.rudderCurve);
+    // Balanced: the rudder ignores the sideways drift, which would otherwise push the stern
+    // round (part of what makes a real boat want to turn).
+    const rudderSway = c.balanced ? s.r * rd.x : s.v + s.r * rd.x;
+    const rf = foilForce(-Math.cos(rudderAngle), Math.sin(rudderAngle), -s.u, -rudderSway, rd.area, RHO_WATER, this.rudderCurve);
     X += rf.fx;
     Y += rf.fy;
     N += rd.x * rf.fy;
