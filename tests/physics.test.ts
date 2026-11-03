@@ -144,6 +144,17 @@ describe('rudder with balanced sails', () => {
   });
 });
 
+describe('in irons', () => {
+  it('a boat stopped head to wind only creeps backwards (under 1 kn after 40 s)', () => {
+    for (const boat of [FALUA, MULETA, FRAGATA, CATRAIO]) {
+      const sim = new SailboatSim(boat, new SteadyWind(0, WIND), { heading: 0, u: 0.5 });
+      sim.controls.mode = boat.modes[0].id;
+      for (let i = 0; i < 40 * 30; i++) sim.step(1 / 30);
+      expect(toKnots(sim.state.u)).toBeGreaterThan(-1);
+    }
+  });
+});
+
 describe('tacking', () => {
   // Close-hauled with the wind 50° on the starboard bow, then hard rudder towards the wind:
   // the boat must carry its way through the wind onto the other tack.

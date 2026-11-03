@@ -18,7 +18,7 @@ export const CATRAIO: BoatSpec = {
   beam: 3.2,
   draft: 1.0,
   mass,
-  gm: 2.0, // doubled: half the heel of the first version
+  gm: 2.0, // doubled from the first version: half the heel
   rollPeriod: 3.5,
   hull: {
     waterlineLength: lwl,

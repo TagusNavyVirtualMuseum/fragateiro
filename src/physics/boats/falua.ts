@@ -18,7 +18,7 @@ export const FALUA: BoatSpec = {
   beam: 4,
   draft: 1.5,
   mass,
-  gm: 2.2, // doubled: half the heel of the first version
+  gm: 2.2, // doubled from the first version: half the heel
   rollPeriod: 4,
   hull: {
     waterlineLength: lwl,

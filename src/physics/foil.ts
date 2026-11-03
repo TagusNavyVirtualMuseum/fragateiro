@@ -84,15 +84,15 @@ function interpolate(table: readonly number[], deg: number): number {
 
 /**
  * Soft cambered sail, from the original simulator's tables. A flapping sail (angle of
- * attack below ~10°) gets less drag than the table gives (about a third at 0°), so a boat
- * keeps its way through a tack.
+ * attack below ~10°) gets less drag than the table gives (a fifth at 0°, like a flag), so a
+ * boat keeps its way through a tack and does not sail backwards in irons.
  */
 export function sailCurve(efficiency = 1): CoefficientCurve {
   return (alphaDeg) => {
     const luffing = Math.min(1, alphaDeg / 10);
     return {
       cl: interpolate(SAIL_LIFT, alphaDeg) * efficiency,
-      cd: interpolate(SAIL_DRAG, alphaDeg) * (0.35 + 0.65 * luffing),
+      cd: interpolate(SAIL_DRAG, alphaDeg) * (0.2 + 0.8 * luffing),
     };
   };
 }

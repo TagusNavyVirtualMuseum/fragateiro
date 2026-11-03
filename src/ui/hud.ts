@@ -14,6 +14,7 @@ export interface HudCallbacks {
   onCameraHeight(degrees: number): void;
   onTimeScale(scale: number): void;
   onBalanced(on: boolean): void;
+  onWindVisible(on: boolean): void;
 }
 
 export interface Navigation {
@@ -113,6 +114,7 @@ export class SailingHud {
       <label>From <input type="range" min="0" max="355" step="5" name="dir"> <output name="dirOut"></output></label>
       <label>Speed <input type="range" min="2" max="30" step="1" name="speed"> <output name="speedOut"></output></label>
       <label class="check"><input type="checkbox" name="gusty"> Gusts and shifts</label>
+      <label class="check"><input type="checkbox" name="windVisible" checked> Show the wind</label>
       <label class="check" title="The sails push the boat without turning it: easier to steer. Real boats are rarely this well balanced."><input type="checkbox" name="balanced" checked> Balanced sails <small>(easier steering)</small></label>
       <h2>Camera <small>keys 1–6 · drag to orbit · wheel to zoom</small></h2>
       <div class="cam-buttons"></div>
@@ -174,6 +176,8 @@ export class SailingHud {
       cb.onTimeScale(Number(timeScale.value));
       this.timeScale = Number(timeScale.value);
     });
+    const windVisible = opts.querySelector<HTMLInputElement>('[name=windVisible]')!;
+    windVisible.addEventListener('change', () => cb.onWindVisible(windVisible.checked));
     const balanced = opts.querySelector<HTMLInputElement>('[name=balanced]')!;
     balanced.addEventListener('change', () => cb.onBalanced(balanced.checked));
 

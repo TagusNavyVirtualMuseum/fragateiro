@@ -28,6 +28,8 @@ const SAIL_LAG = 0.35;
 const GYBE_MARGIN = deg2rad(12);
 /** Below this angle of attack the sail is considered to be flapping. */
 const LUFF_ALPHA_DEG = 6;
+/** Drag coefficient of the hull moving stern first. */
+const STERNWAY_CD = 1.2;
 /** With balanced sails, the rudder steers as if the boat moved at least this fast, m/s. */
 const BALANCED_RUDDER_FLOW = 1.5;
 /** Extra yaw damping with balanced sails, 1/s. */
@@ -222,7 +224,10 @@ export class SailboatSim {
     // --- Forward resistance: skin friction + wave making ------------------------
     const froude = Math.abs(s.u) / Math.sqrt(GRAVITY * hull.waterlineLength);
     const cw = hull.waveCoef * (froude / 0.4) ** 4;
-    const resistance = -0.5 * RHO_WATER * hull.wettedArea * (hull.cf + cw) * s.u * Math.abs(s.u);
+    let resistance = -0.5 * RHO_WATER * hull.wettedArea * (hull.cf + cw) * s.u * Math.abs(s.u);
+    // Going backwards the hull is blunt (flow separates at the stern, rudder and keel):
+    // bluff-body drag on most of the underwater cross-section, so a stalled boat only creeps back.
+    if (s.u < 0) resistance += 0.5 * RHO_WATER * STERNWAY_CD * 0.6 * spec.beam * spec.draft * s.u * s.u;
     X += resistance;
 
     // --- Rudder -------------------------------------------------------------------

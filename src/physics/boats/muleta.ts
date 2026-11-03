@@ -26,7 +26,7 @@ export const MULETA: BoatSpec = {
   beam: 3,
   draft: 0.9,
   mass,
-  gm: 2.4, // doubled: half the heel of the first version
+  gm: 2.4, // doubled from the first version: half the heel
   rollPeriod: 3.5,
   hull: {
     waterlineLength: lwl,

@@ -18,7 +18,7 @@ export const FRAGATA: BoatSpec = {
   beam: 6,
   draft: 1.5,
   mass,
-  gm: 3.2, // doubled: half the heel of the first version
+  gm: 3.2, // doubled from the first version: half the heel
   rollPeriod: 5,
   hull: {
     waterlineLength: lwl,

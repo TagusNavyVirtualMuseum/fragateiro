@@ -42,7 +42,7 @@ can swing out (`minAngle` with the sheet hauled in, `maxAngle` fully eased). So:
   limit and fills (α > 0: lift and drag);
 - otherwise it streams with α ≈ 0 and **flaps** (no drive).
 
-A flapping sail gets about a third of the table's drag (rising back to the table value at
+A flapping sail gets about a fifth of the table's drag (rising back to the table value at
 10° angle of attack), so a boat keeps its way and can tack. This one rule produces the
 behaviours from the paper: no progress head to wind (sails flap),
 a no-go zone of about ±45°, sails centred when close-hauled, half-way on a beam reach and
@@ -55,6 +55,9 @@ target with a 0.35 s lag so manoeuvres look natural.
   wetted surface `S = 2.6 √(∇ L)` (from the original code) and `C_w` growing as `(Fn/0.4)⁴`,
   so speed levels off near hull speed.
 - Windage: air drag on hull, masts and rigging (`windageArea`), which hurts upwind sailing.
+- Going backwards, the hull is blunt (the flow separates at the stern, rudder and keel):
+  extra drag with Cd 1.2 on 60 % of beam × draft, so a boat stopped head to wind only creeps
+  backwards (under 1 kn) instead of sailing backwards.
 
 ## Equations of motion
 
@@ -86,7 +89,9 @@ Mass, stability and resistance values are estimates. `npm run polar [wind m/s]` 
 best speed at each wind angle for every boat and mode. At 6 m/s (the paper's test wind) the
 current values give, for the Falua: nothing below about 42°, 2.7 kn at 45°, 5.4 kn on a beam
 reach and 5 kn running. The Fragata: 2.6 kn at 45°, 6 kn on a beam reach; the Catraio:
-2.3 kn at 45°, 4.9 kn on a beam reach. Heel stays under about 5° and leeway around 0.1–0.3 kn
+2.3 kn at 45°, 4.9 kn on a beam reach. The masses (Falua 15 t, Muleta 7 t, Fragata 30 t
+part-loaded, Catraio 5 t) are estimates; they are what makes each boat feel different
+(how it carries its way through a tack and how quickly it picks up speed). Heel stays under about 5° and leeway around 0.1–0.3 kn
 in this wind (stability and hull grip were doubled after play-testing).
 
 The game runs the simulation 3× faster than real time by default (setting: 1×, 2×, 3×, 5×,
