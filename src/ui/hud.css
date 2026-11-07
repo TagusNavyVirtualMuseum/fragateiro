@@ -187,3 +187,5 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
 
 .tscale { text-align: center; margin-top: -4px; font-size: 13px; color: var(--accent); letter-spacing: 0.04em; }
 .tscale::before { content: '⏱ '; }
+
+.map-zoom { display: block; margin-top: 4px; padding: 2px 8px !important; font-size: 12px !important; }

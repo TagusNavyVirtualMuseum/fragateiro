@@ -20,6 +20,7 @@ import heightUrl from '../assets/map/tagus-height.png?url';
 import metaJson from '../assets/map/tagus.json';
 import { LandMask, type MapMeta } from '../world/landMask';
 import { Terrain, type HeightsMeta } from '../world/terrain';
+import { createLandmarks, type BridgeLine } from './landmarks';
 import { waveHeight } from './waves';
 
 export interface SeaMark {
@@ -31,8 +32,8 @@ export interface SeaMark {
   y: number;
 }
 
-export type TagusMeta = MapMeta & { seamarks?: SeaMark[]; source: string; heights?: HeightsMeta & { source: string } };
-export const TAGUS_META = metaJson as TagusMeta;
+export type TagusMeta = MapMeta & { seamarks?: SeaMark[]; source: string; heights?: HeightsMeta & { source: string }; bridges?: Record<string, BridgeLine> };
+export const TAGUS_META = metaJson as unknown as TagusMeta;
 
 /** Pixels of an image (RGBA). */
 async function imagePixels(url: string): Promise<{ image: HTMLImageElement; rgba: Uint8ClampedArray }> {
@@ -120,18 +121,10 @@ export interface MapView {
 
 export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, sunDirection: Vector3, fogDensity: number, labelNames?: string[], terrain?: Terrain): MapView {
   const { width, height } = mask.sizeMetres;
-  const c = mask.centre;
 
-  // --- Land: one big sheet at the real ground heights (about 55 m between vertices); the
+  // --- Land, in tiles at the real ground heights: every tile with land has a coarse version
+  // (250 m between vertices); tiles near the camera also get a detailed one (50 m). The
   // shader cuts out the water and keeps a low bank along the shore.
-  const land = MeshBuilder.CreateGround('land', { width, height, subdivisionsX: 400, subdivisionsY: Math.round((400 * height) / width), updatable: true }, scene);
-  land.position.set(c.x, 0, c.y);
-  if (terrain) {
-    const pos = land.getVerticesData(VertexBuffer.PositionKind)!;
-    for (let i = 0; i < pos.length; i += 3) pos[i + 1] = Math.max(0, terrain.heightAt(c.x + pos[i], c.y + pos[i + 2]));
-    land.updateVerticesData(VertexBuffer.PositionKind, pos);
-    land.createNormals(false);
-  }
   const tex = new Texture(maskUrl, scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
   tex.wrapU = tex.wrapV = Texture.CLAMP_ADDRESSMODE;
   const mat = new ShaderMaterial('landMat', scene, { vertex: 'land', fragment: 'land' }, {
@@ -146,9 +139,46 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
   mat.setVector3('sunDirection', sunDirection);
   mat.setFloat('fogDensity', fogDensity);
   mat.backFaceCulling = false;
-  land.material = mat;
-  land.isPickable = false;
-  land.alwaysSelectAsActiveMesh = true;
+
+  const TILE = 4000; // m
+  const NEAR = 6000; // m: detailed tiles within this distance of the camera
+  const makeTile = (cx: number, cz: number, subdivisions: number): Mesh => {
+    const t = MeshBuilder.CreateGround('land', { width: TILE, height: TILE, subdivisions, updatable: true }, scene);
+    t.position.set(cx, 0, cz);
+    if (terrain) {
+      const pos = t.getVerticesData(VertexBuffer.PositionKind)!;
+      for (let i = 0; i < pos.length; i += 3) pos[i + 1] = Math.max(0, terrain.heightAt(cx + pos[i], cz + pos[i + 2]));
+      t.updateVerticesData(VertexBuffer.PositionKind, pos);
+      t.createNormals(false);
+      t.refreshBoundingInfo();
+    }
+    t.material = mat;
+    t.isPickable = false;
+    return t;
+  };
+  const tiles: { cx: number; cz: number; low: Mesh; high?: Mesh }[] = [];
+  const nw = mask.meta.northWest;
+  for (let z = nw.y - height; z < nw.y; z += TILE) {
+    for (let x = nw.x; x < nw.x + width; x += TILE) {
+      // Only tiles with some land in them.
+      let land = false;
+      for (let a = 0; a <= TILE && !land; a += 100) for (let b = 0; b <= TILE && !land; b += 100) land = !mask.isWater(x + a, z + b);
+      if (!land) continue;
+      tiles.push({ cx: x + TILE / 2, cz: z + TILE / 2, low: makeTile(x + TILE / 2, z + TILE / 2, 16) });
+    }
+  }
+  const updateTiles = (camera: Camera) => {
+    const p = camera.globalPosition;
+    for (const t of tiles) {
+      const d = Math.max(0, Math.hypot(p.x - t.cx, p.z - t.cz) - TILE * 0.7);
+      if (d < NEAR && !t.high) t.high = makeTile(t.cx, t.cz, 80);
+      else if (d > NEAR + 1500 && t.high) {
+        t.high.dispose();
+        t.high = undefined;
+      }
+      t.low.setEnabled(!t.high);
+    }
+  };
 
   // --- Town names, always facing the camera.
   const labels: Mesh[] = [];
@@ -158,6 +188,13 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
     const big = p.kind === 'city';
     const label = makeLabel(scene, p.name, big);
     label.position.set(p.x, (terrain ? Math.max(0, terrain.heightAt(p.x, p.y)) : 0) + 30, p.y);
+    labels.push(label);
+  }
+
+  // --- Landmarks: the two bridges, Torre de Belém, Padrão dos Descobrimentos.
+  for (const l of createLandmarks(scene, mask, terrain, mask.meta.origin, TAGUS_META.bridges)) {
+    const label = makeLabel(scene, l.name, false);
+    label.position.set(l.x, l.height, l.y);
     labels.push(label);
   }
 
@@ -187,6 +224,7 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
       if (p) marker.position.set(p.x, 0, p.y);
     },
     update(time, camera) {
+      updateTiles(camera);
       if (marker.isEnabled()) {
         const d = Vector3.Distance(camera.globalPosition, marker.position);
         marker.scaling.setAll(Math.max(1, d / 400));

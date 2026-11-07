@@ -5,8 +5,10 @@ Browser mini-games with the traditional sailing boats of the Tagus River: the **
 *A sailing simulator for the revival of the Tagus River nautical heritage* (Fazenda et al., 2025),
 built to be easy to maintain and to grow into several small games.
 
-- **Sailing the Tagus** (`games/sailing/`): free sailing with four boats on a map of the estuary (Lisbon,
-  Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Sarilhos Pequenos, Montijo, Ilha do Rato, Alcochete) with the real channel buoys. Switch boats at any
+- **Sailing the Tagus** (`games/sailing/`): free sailing with four boats on a map of the lower Tagus,
+  from Vila Franca de Xira down the estuary and out along the coast to Cascais and round Cabo
+  Espichel to Sesimbra, with the real channel buoys and four landmarks: the 25 de Abril and
+  Vasco da Gama bridges, Torre de Belém and the Padrão dos Descobrimentos. Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
   An afternoon sky with clouds drifting downwind, gulls circling over the river, real land
@@ -37,7 +39,8 @@ Node 22 or newer.
 | Camera view: behind, ahead, port, starboard, top, free | 1–6 (C = behind) | camera buttons |
 | Camera distance and height | mouse wheel | sliders, or pinch with two fingers |
 | Orbit freely | drag the view with the mouse (switches to *free*) | |
-| Move to a place (Lisboa, Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Sarilhos Pequenos, Montijo, Ilha do Rato, Alcochete) | T (next place) | *Sail from* list, or click it on the minimap |
+| Move to a place (19 ports, from Cascais and Sesimbra to Vila Franca de Xira) | T (next place) | *Sail from* list, or click it on the minimap |
+| Minimap: 15 km around the boat, or the whole map | | button under the minimap |
 | Destination: distance, bearing and time | | *Sail to* list |
 | Game speed (1×, 2×, 3× default, 5×, 10×; speeds shown stay real, "time ×3" under the speed) | | setting |
 | Show the wind (streaks over the water), balanced sails (on by default: the sails do not turn the boat) | | wind settings |
@@ -86,11 +89,14 @@ prints the areas and centres the physics needs. Then continue from step 2.
 
 ## The map
 
-`src/assets/map/` holds a land/water mask of the estuary (10 m cells) plus town names and sea
+`src/assets/map/` holds a land/water mask of the lower Tagus and the coast (20 m cells) plus town names and sea
 marks, built from OpenStreetMap by `scripts/fetch-map.mjs`; the buoys are the same data that
-OpenSeaMap shows. Land heights (30 m grid, `tagus-height.png`) come from the Copernicus
+OpenSeaMap shows. Land heights (40 m grid, `tagus-height.png`) come from the Copernicus
 GLO-30 elevation model via `scripts/fetch-heights.mjs`: the hills of Lisbon and the Almada
-plateau rise behind the shore, and the camera stays above the ground. To change the area,
+plateau rise behind the shore, and the camera stays above the ground. The land is drawn in
+4 km tiles, detailed only near the camera. The bridges follow their OpenStreetMap deck lines
+(`bridges` in `tagus.json`); all landmarks are built from simple shapes in
+`src/engine/landmarks.ts`. To change the area,
 edit `BBOX` in `fetch-map.mjs` and run the **Update map data** workflow (Actions tab); it
 downloads both and commits the new files. Map data © OpenStreetMap contributors, ODbL.
 Heights: Copernicus GLO-30 DEM, © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH

@@ -1,45 +1,46 @@
-// Small map of the whole estuary with the boat on it.
+// Small chart of the river with the boat on it. It shows a window of about 15 km that
+// follows the boat, or (with the button under it) the whole map.
 import type { Destination } from '../world/destinations';
 import type { LandMask } from '../world/landMask';
 
 // Old chart colours: pale blue-grey water on parchment.
 const WATER = [160, 182, 178];
 const LAND = [228, 210, 170];
+/** Width of the window that follows the boat, m. */
+const NEAR_WIDTH = 15000;
 
 export class Minimap {
   readonly canvas = document.createElement('canvas');
   private readonly base: HTMLCanvasElement;
-  private readonly scale: number;
+  /** Metres per pixel of the pre-rendered chart. */
+  private readonly mPerPx: number;
+  private whole = false;
+  /** The part of the world shown now: north-west corner and size, m. */
+  private view = { x: 0, y: 0, w: 1, h: 1 };
 
   constructor(
     parent: HTMLElement,
     private readonly mask: LandMask,
     destinations: Destination[],
     onPick?: (d: Destination) => void,
-    widthPx = 260,
+    private readonly widthPx = 260,
   ) {
     const m = mask.meta;
-    this.scale = widthPx / m.width;
-    const w = widthPx;
-    const h = Math.round(m.height * this.scale);
-    this.canvas.width = w * 2; // sharp on high-DPI screens
-    this.canvas.height = h * 2;
-    this.canvas.style.width = `${w}px`;
-    this.canvas.style.height = `${h}px`;
-    this.canvas.className = 'minimap';
-    this.canvas.title = 'Map of the estuary';
-
-    // Pre-render land and water once.
+    const { width, height } = mask.sizeMetres;
+    // Pre-render land, water and town names once, at the near view's scale (2 px per CSS
+    // pixel, for high-DPI screens).
+    this.mPerPx = NEAR_WIDTH / (widthPx * 2);
     this.base = document.createElement('canvas');
-    this.base.width = w * 2;
-    this.base.height = h * 2;
+    this.base.width = Math.ceil(width / this.mPerPx);
+    this.base.height = Math.ceil(height / this.mPerPx);
     const ctx = this.base.getContext('2d')!;
-    const img = ctx.createImageData(w * 2, h * 2);
-    for (let y = 0; y < h * 2; y++) {
-      for (let x = 0; x < w * 2; x++) {
-        const v = mask.water[Math.floor(y / (2 * this.scale)) * m.width + Math.floor(x / (2 * this.scale))] / 255;
-        const c = v >= 0.5 ? WATER : LAND;
-        const o = (y * w * 2 + x) * 4;
+    const img = ctx.createImageData(this.base.width, this.base.height);
+    const cellsPerPx = this.mPerPx / m.cellSize;
+    for (let y = 0; y < this.base.height; y++) {
+      const row = Math.min(m.height - 1, Math.floor(y * cellsPerPx)) * m.width;
+      for (let x = 0; x < this.base.width; x++) {
+        const c = mask.water[row + Math.min(m.width - 1, Math.floor(x * cellsPerPx))] >= 128 ? WATER : LAND;
+        const o = (y * this.base.width + x) * 4;
         img.data[o] = c[0];
         img.data[o + 1] = c[1];
         img.data[o + 2] = c[2];
@@ -49,14 +50,20 @@ export class Minimap {
     ctx.putImageData(img, 0, 0);
     ctx.font = '20px "IM Fell English", Georgia, serif';
     ctx.textAlign = 'center';
+    ctx.fillStyle = '#4a2c17';
     for (const d of destinations) {
-      const [px, py] = this.toPx(d.town.x, d.town.y);
-      ctx.fillStyle = '#4a2c17';
+      const px = (d.town.x - m.northWest.x) / this.mPerPx;
+      const py = (m.northWest.y - d.town.y) / this.mPerPx;
       ctx.fillText(d.name, px, py - 7);
       ctx.beginPath();
       ctx.arc(px, py, 4, 0, Math.PI * 2);
       ctx.fill();
     }
+
+    this.canvas.className = 'minimap';
+    this.canvas.title = 'Chart of the river';
+    this.resize();
+
     // Click near a town to move the boat there.
     if (onPick) {
       this.canvas.style.cursor = 'pointer';
@@ -78,18 +85,51 @@ export class Minimap {
         if (best) onPick(best);
       });
     }
-    parent.append(this.canvas);
+    const toggle = document.createElement('button');
+    toggle.className = 'map-zoom';
+    toggle.textContent = 'Whole map';
+    toggle.onclick = () => {
+      this.whole = !this.whole;
+      toggle.textContent = this.whole ? 'Near the boat' : 'Whole map';
+      this.resize();
+      toggle.blur();
+    };
+    parent.append(this.canvas, toggle);
+  }
+
+  /** Near view: a fixed 4:3 window; whole map: the map's own shape. */
+  private resize(): void {
+    const { width, height } = this.mask.sizeMetres;
+    const w = this.widthPx;
+    const h = this.whole ? Math.round((w * height) / width) : Math.round(w * 0.75);
+    this.canvas.width = w * 2;
+    this.canvas.height = h * 2;
+    this.canvas.style.width = `${w}px`;
+    this.canvas.style.height = `${h}px`;
   }
 
   private toPx(x: number, y: number): [number, number] {
-    const m = this.mask.meta;
-    return [((x - m.northWest.x) / m.cellSize) * this.scale * 2, ((m.northWest.y - y) / m.cellSize) * this.scale * 2];
+    const v = this.view;
+    return [((x - v.x) / v.w) * this.canvas.width, ((v.y - y) / v.h) * this.canvas.height];
   }
 
   /** Redraw with the boat at (x east, y north) and its heading (rad). */
   draw(x: number, y: number, heading: number, target?: { x: number; y: number }, others: { x: number; y: number }[] = []): void {
+    const m = this.mask.meta;
+    const { width, height } = this.mask.sizeMetres;
+    if (this.whole) {
+      this.view = { x: m.northWest.x, y: m.northWest.y, w: width, h: height };
+    } else {
+      const w = NEAR_WIDTH;
+      const h = (w * this.canvas.height) / this.canvas.width;
+      // Centred on the boat, but not past the edges of the map.
+      const vx = Math.max(m.northWest.x, Math.min(m.northWest.x + width - w, x - w / 2));
+      const vy = Math.min(m.northWest.y, Math.max(m.northWest.y - height + h, y + h / 2));
+      this.view = { x: vx, y: vy, w, h };
+    }
+    const v = this.view;
     const ctx = this.canvas.getContext('2d')!;
-    ctx.drawImage(this.base, 0, 0);
+    ctx.drawImage(this.base, (v.x - m.northWest.x) / this.mPerPx, (m.northWest.y - v.y) / this.mPerPx, v.w / this.mPerPx, v.h / this.mPerPx, 0, 0, this.canvas.width, this.canvas.height);
     // Other boats: small dark dots.
     ctx.fillStyle = '#3b2312';
     for (const o of others) {
