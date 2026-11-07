@@ -217,3 +217,13 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
 .mission-row .level-name { color: var(--muted); font-size: 13px; }
 .easy-note { color: var(--muted); margin: 2px 0; font-size: 13px; }
 .hud button:disabled { opacity: 0.4; cursor: not-allowed; }
+.mission-list.kinds { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+.mission-list.kinds .mission-card strong { font-size: 22px; }
+.mission-options h2 { margin-top: 12px !important; }
+.option-list { flex-direction: column; align-items: stretch; }
+.hud .option-list button.option { display: flex; justify-content: space-between; gap: 10px; text-align: left; padding: 6px 10px; }
+.hud .option-list button.option small { color: inherit; opacity: 0.75; font-style: italic; }
+.mission-footer { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+.mission-footer .best { flex: 1; text-align: center; color: var(--muted); }
+.hud .mission-footer button.go { font-size: 17px; padding: 6px 22px; }
+.hud .port-select { font: inherit; padding: 4px 6px; min-width: 200px; }

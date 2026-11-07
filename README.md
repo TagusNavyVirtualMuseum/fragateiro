@@ -20,20 +20,23 @@ built to be easy to maintain and to grow into several small games.
 
 ### Missions and levels
 
-The game opens on a mission menu (and the **Missions** button brings it back):
+The game opens on a two-step menu (the **Missions** button brings it back): first what to
+do, then where and with which boat.
 
-| Mission | Boat |
-|---|---|
-| Lisbon to Almada | Catraio |
-| Moita to Lisbon, Sarilhos to Barreiro, Vila Franca to Lisbon | Fragata |
-| 3-buoy regatta in front of Lisbon | Falua, or Catraio |
-| 2-buoy regatta off Cascais | Falua |
-| 2-buoy regatta off Oeiras | Catraio |
-| Free sailing | any |
+- **Regatta:** a course in front of Lisbon (3 buoys), in Cascais bay or off Oeiras (2 buoys),
+  with any boat. The buoys are laid to the wind in open water (first buoy upwind); round them
+  in order (within 45 m), then back to the line.
+- **Transport:** Lisbon–Almada, Moita–Lisbon, Sarilhos–Barreiro, Vila Franca–Lisbon, with any
+  boat (the menu suggests the one that traditionally sailed the route). Ends within 150 m of
+  the port.
+- **Fishing** (Muleta): off Seixal, at the river mouth or in Cascais bay. Shoals show as dark
+  patches of bubbling water with fish jumping and gulls circling over them. Sail to windward
+  of one, switch to lateral fishing (M) and drift sideways over it: the net on the windward
+  side catches fish in proportion to the water it sweeps through the shoal, and much less if
+  the boat moves forward. Bring home 150 kg. Rules in `src/world/fishing.ts`.
+- **Free sailing:** any boat, from any port, no clock.
 
-Routes end within 150 m of the port; regattas are laid to the wind in open water (first buoy
-upwind), each buoy is rounded by passing within 45 m, in order, then back to the line. The
-clock is the game clock; best times are kept in the browser per mission and level.
+Times use the game clock; best times are kept in the browser per mission, boat and level.
 
 - **Easy:** the crew trims each sail for the best drive (no sheet controls), and the boat goes
   where it points (no drift).

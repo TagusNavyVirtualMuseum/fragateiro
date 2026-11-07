@@ -15,7 +15,9 @@ import { Birds } from '../../src/engine/birds';
 import { Traffic } from '../../src/engine/traffic';
 import { CourseView } from '../../src/engine/courseView';
 import { MissionMenu } from '../../src/ui/missionMenu';
-import { LEVELS, MISSIONS, MissionRun, bestTimeKey, buildCourse, type Level, type Mission } from '../../src/world/missions';
+import { LEVELS, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
+import { FishingGround } from '../../src/world/fishing';
+import { ShoalView } from '../../src/engine/shoalView';
 import { SailingHud } from '../../src/ui/hud';
 import { Minimap } from '../../src/ui/minimap';
 import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
@@ -61,7 +63,9 @@ let timeScale = 3;
 /** Difficulty: easy trims the sails automatically; hard turns off the balanced sails and
  * the help with tacking that comes with them. */
 let level: Level = loadLevel();
-let mission: Mission = MISSIONS.find((m) => m.kind === 'free')!;
+let mission: Mission = makeMission('free', 'Lisboa', BOATS[0].id, BOATS);
+/** The shoals of the fishing ground, during a fishing trip. */
+let fishing: FishingGround | null = null;
 let run: MissionRun | null = null;
 let missionDone = false;
 /** Boat a mission requires (others cannot be chosen meanwhile), or null in free sailing. */
@@ -255,7 +259,8 @@ function applyInput(dt: number): void {
 }
 
 const courseView = new CourseView(scene);
-const menu = new MissionMenu(document.getElementById('hud')!, MISSIONS, BOATS, readBest, (m, l) => void startMission(m, l), level);
+const shoalView = new ShoalView(scene);
+const menu = new MissionMenu(document.getElementById('hud')!, BOATS, readBest, (m, l) => void startMission(m, l), level);
 
 function loadLevel(): Level {
   try {
@@ -288,13 +293,30 @@ async function startMission(m: Mission, l: Level): Promise<void> {
   mission = m;
   missionDone = false;
   run = null;
+  fishing = null;
+  shoalView.clear();
   courseView.setCourse(null);
   target = null;
   mapView.setTarget(null);
+  // Free sailing starts in the chosen boat but lets you change; missions keep their boat.
+  requiredBoat = null;
+  if (m.boat !== spec.id) await switchBoat(m.boat);
   requiredBoat = m.kind === 'free' ? null : m.boat;
-  if (requiredBoat && requiredBoat !== spec.id) await switchBoat(requiredBoat);
   const levelName = LEVELS.find((x) => x.id === l)!.name;
-  if (m.kind === 'route') {
+  if (m.kind === 'free') {
+    const from = destinations.find((d) => d.name === m.from);
+    if (from) teleport(from);
+  } else if (m.kind === 'fishing') {
+    const at = destinations.find((d) => d.name === m.at);
+    if (at) {
+      teleport(at);
+      // The ground: open water about a kilometre off the port.
+      let centre = { x: at.x + Math.sin(at.heading) * 1000, y: at.y + Math.cos(at.heading) * 1000 };
+      if (!mask.isReachable(centre.x, centre.y)) centre = { x: at.x, y: at.y };
+      fishing = new FishingGround(mask, centre, 6);
+      run = new MissionRun(m, sim.state.time, null, null);
+    }
+  } else if (m.kind === 'transport') {
     const from = destinations.find((d) => d.name === m.from);
     const to = destinations.find((d) => d.name === m.to);
     if (from && to) {
@@ -323,6 +345,7 @@ async function startMission(m: Mission, l: Level): Promise<void> {
     }
   }
   hud.setMission(m.title, levelName, m.kind === 'free', requiredBoat, l === 'easy');
+  if (m.kind === 'free') run = null;
   hud.setBoat(spec, sim.controls);
   paused = false;
 }
@@ -342,6 +365,24 @@ function finishMission(): void {
   }
   paused = true;
   menu.showResult(mission, level, t, before, record, () => void startMission(mission, level));
+}
+
+/**
+ * The net's top rope in the world while fishing, on the windward side (as NetView draws it),
+ * or null when the net is not out.
+ */
+function netSweep() {
+  const net = spec.net;
+  if (!net || !sim.mode.net) return null;
+  const s = sim.state;
+  const side = sim.report.trueWindAngleDeg >= 0 ? 1 : -1;
+  const [bow, stern] = net.points;
+  const span = (bow[0] - stern[0]) * 0.75;
+  const mid = (bow[0] + stern[0]) / 2;
+  const sh = Math.sin(s.heading);
+  const ch = Math.cos(s.heading);
+  const world = (fwd: number, stbd: number) => ({ x: s.x + fwd * sh + stbd * ch, y: s.y + fwd * ch - stbd * sh });
+  return { a: world(mid + span / 2, side * 13), b: world(mid - span / 2, side * 13), sway: s.v, surge: s.u };
 }
 
 /** Hills: never let the camera end up inside the land (lift it over the slope instead). */
@@ -370,6 +411,7 @@ async function main(): Promise<void> {
   minimap = new Minimap(hud.mapSlot, mask, destinations, (d) => {
     if (!run) teleport(d);
   });
+  menu.setPorts(destinations.map((d) => d.name));
   hud.setTargets(destinations.map((d) => d.name), (name) => {
     target = destinations.find((d) => d.name === name) ?? null;
     targetSince = sim.state.time;
@@ -398,7 +440,7 @@ async function main(): Promise<void> {
   paused = true;
   menu.show();
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
+  Object.assign(window, { game: { netSweep, get fishing() { return fishing; }, get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -408,7 +450,13 @@ async function main(): Promise<void> {
       sim.controls.noDrift = level === 'easy';
       stepWithLand(dt * timeScale);
       time += dt;
-      if (run && !missionDone && run.update(sim.state.x, sim.state.y, sim.state.time)) finishMission();
+      if (fishing && run && !missionDone) {
+        fishing.update(netSweep(), dt * timeScale);
+        if (mission.kind === 'fishing' && fishing.caught >= mission.targetKg) {
+          run.finishedAt = sim.state.time;
+          finishMission();
+        }
+      } else if (run && !missionDone && run.update(sim.state.x, sim.state.y, sim.state.time)) finishMission();
     }
     const s = sim.state;
     const w = wind.at(s.time, s.x, s.y);
@@ -418,10 +466,24 @@ async function main(): Promise<void> {
     mapView.update(time, camera);
     traffic?.update(s, paused ? 0 : dt * timeScale, time, dt);
     courseView.update(run?.next ?? -1, time);
-    const goal = run ? run.goal : target;
-    minimap.draw(s.x, s.y, s.heading, goal ?? undefined, traffic?.positions, run?.course?.buoys);
+    if (fishing) shoalView.update(fishing.shoals, sim.state.time, dt);
+    const shoal = fishing ? fishing.nearest(s.x, s.y) : null;
+    const goal = fishing ? shoal : run ? run.goal : target;
+    minimap.draw(s.x, s.y, s.heading, goal ?? undefined, traffic?.positions, run?.course?.buoys ?? fishing?.shoals.filter((x) => x.kg >= 5));
     let nav = null;
-    if (run && run.goal) {
+    if (fishing && run && mission.kind === 'fishing') {
+      const dx = (shoal?.x ?? s.x) - s.x;
+      const dy = (shoal?.y ?? s.y) - s.y;
+      mapView.setTarget(null);
+      nav = {
+        title: `Catch ${Math.floor(fishing.caught)} of ${mission.targetKg} kg`,
+        name: sim.mode.net ? 'nearest shoal' : 'nearest shoal (M: fish)',
+        distance: Math.hypot(dx, dy),
+        bearing: ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360,
+        elapsed: run.elapsed(s.time),
+        arrived: missionDone,
+      };
+    } else if (run && run.goal) {
       const g = run.goal;
       const dx = g.x - s.x;
       const dy = g.y - s.y;

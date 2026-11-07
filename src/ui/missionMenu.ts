@@ -1,7 +1,7 @@
-// The mission menu (choose a mission and a level) and the result panel at the end.
+// The mission menu, in two steps: first what to do (regatta, transport, fishing, free
+// sailing), then where and with which boat. Also the result panel at the end of a mission.
 import type { BoatSpec } from '../physics';
-import type { Level, Mission } from '../world/missions';
-import { LEVELS } from '../world/missions';
+import { FISHING_GROUNDS, FISHING_TARGET_KG, LEVELS, MISSION_KINDS, REGATTA_COURSES, ROUTES, makeMission, type Level, type Mission, type MissionKind } from '../world/missions';
 
 /** mm:ss (or h:mm:ss) of a game time in seconds. */
 export function formatTime(seconds: number): string {
@@ -15,10 +15,17 @@ export function formatTime(seconds: number): string {
 export class MissionMenu {
   private readonly overlay = document.createElement('div');
   private level: Level;
+  private ports: string[] = [];
+  /** The choices of the second step, remembered between visits. */
+  private choice: Record<MissionKind, { option: string; boat: string }> = {
+    regatta: { option: REGATTA_COURSES[0].id, boat: 'falua' },
+    transport: { option: ROUTES[0].id, boat: ROUTES[0].boat },
+    fishing: { option: FISHING_GROUNDS[0].id, boat: 'muleta' },
+    free: { option: 'Lisboa', boat: 'falua' },
+  };
 
   constructor(
     parent: HTMLElement,
-    private readonly missions: Mission[],
     private readonly boats: BoatSpec[],
     private readonly best: (missionId: string, level: Level) => number | null,
     private readonly onStart: (mission: Mission, level: Level) => void,
@@ -34,46 +41,115 @@ export class MissionMenu {
     return !this.overlay.hidden;
   }
 
-  /** The list of missions, with the level buttons above it. */
+  /** Ports for free sailing. */
+  setPorts(names: string[]): void {
+    this.ports = names;
+  }
+
+  /** Step 1: the level and the kind of mission. */
   show(): void {
-    const o = this.overlay;
-    o.replaceChildren();
-    const panel = el('section', 'panel mission-panel');
-    panel.append(el('h1', '', 'Choose a mission'));
-    const levels = el('div', 'buttons levels');
-    const levelText = el('p', 'level-text');
-    const list = el('div', 'mission-list');
-    const draw = () => {
-      for (const b of levels.querySelectorAll('button')) b.classList.toggle('active', b.dataset.level === this.level);
-      levelText.textContent = LEVELS.find((l) => l.id === this.level)!.description;
-      list.replaceChildren();
-      for (const m of this.missions) {
-        const card = el('button', 'mission-card');
-        const boat = m.kind === 'free' ? 'any boat' : (this.boats.find((b) => b.id === m.boat)?.name ?? m.boat);
-        const best = m.kind === 'free' ? null : this.best(m.id, this.level);
-        card.append(
-          el('strong', '', m.title),
-          el('span', 'boat', boat),
-          el('span', 'desc', m.description),
-          el('span', 'best', best !== null ? `best ${formatTime(best)}` : m.kind === 'free' ? '' : 'not yet sailed'),
-        );
-        card.onclick = () => this.onStart(m, this.level);
-        list.append(card);
-      }
-    };
-    for (const l of LEVELS) {
-      const b = el('button', '', l.name);
-      b.dataset.level = l.id;
-      b.onclick = () => {
-        this.level = l.id;
-        draw();
-      };
-      levels.append(b);
+    const panel = this.panel('What would you like to do?');
+    panel.append(this.levelPicker());
+    const list = el('div', 'mission-list kinds');
+    for (const k of MISSION_KINDS) {
+      const card = el('button', 'mission-card');
+      card.append(el('strong', '', k.title), el('span', 'desc', k.description));
+      card.onclick = () => this.showOptions(k.id);
+      list.append(card);
     }
-    panel.append(el('h2', '', 'Level'), levels, levelText, el('h2', '', 'Missions'), list);
-    o.append(panel);
-    draw();
-    o.hidden = false;
+    panel.append(list);
+  }
+
+  /** Step 2: where, and with which boat. */
+  private showOptions(kind: MissionKind): void {
+    const kindInfo = MISSION_KINDS.find((k) => k.id === kind)!;
+    const panel = this.panel(kindInfo.title);
+    const c = this.choice[kind];
+    const body = el('div', 'mission-options');
+    const footer = el('div', 'mission-footer');
+    const bestText = el('span', 'best');
+    const refresh = () => {
+      const m = makeMission(kind, c.option, c.boat, this.boats);
+      const best = kind === 'free' ? null : this.best(m.id, this.level);
+      bestText.textContent = kind === 'free' ? '' : best !== null ? `Your best: ${formatTime(best)}` : 'Not yet sailed at this level';
+      for (const b of body.querySelectorAll<HTMLButtonElement>('button[data-option]')) b.classList.toggle('active', b.dataset.option === c.option);
+      for (const b of body.querySelectorAll<HTMLButtonElement>('button[data-boat]')) b.classList.toggle('active', b.dataset.boat === c.boat);
+    };
+    const optionButtons = (title: string, items: { id: string; label: string; note?: string; onPick?: () => void }[]) => {
+      body.append(el('h2', '', title));
+      const row = el('div', 'buttons option-list');
+      for (const it of items) {
+        const b = el('button', 'option');
+        b.dataset.option = it.id;
+        b.append(el('span', '', it.label));
+        if (it.note) b.append(el('small', '', it.note));
+        b.onclick = () => {
+          c.option = it.id;
+          it.onPick?.();
+          refresh();
+        };
+        row.append(b);
+      }
+      body.append(row);
+    };
+    const boatButtons = () => {
+      body.append(el('h2', '', 'Boat'));
+      const row = el('div', 'buttons');
+      for (const boat of this.boats) {
+        const b = el('button', '', boat.name);
+        b.dataset.boat = boat.id;
+        b.onclick = () => {
+          c.boat = boat.id;
+          refresh();
+        };
+        row.append(b);
+      }
+      body.append(row);
+    };
+
+    if (kind === 'regatta') {
+      optionButtons('Course', REGATTA_COURSES.map((r) => ({ id: r.id, label: r.name })));
+      boatButtons();
+      body.append(el('p', 'level-text', 'The buoys are laid to the wind: the first one upwind. Round them in order (pass within 45 m) and come back to the line.'));
+    } else if (kind === 'transport') {
+      optionButtons(
+        'Route',
+        ROUTES.map((r) => ({
+          id: r.id,
+          label: `${r.from} → ${r.to}`,
+          note: `traditionally a ${this.boats.find((b) => b.id === r.boat)?.name ?? r.boat}`,
+          onPick: () => (c.boat = r.boat),
+        })),
+      );
+      boatButtons();
+    } else if (kind === 'fishing') {
+      optionButtons('Fishing ground', FISHING_GROUNDS.map((g) => ({ id: g.id, label: g.name })));
+      body.append(
+        el('h2', '', 'Boat: Muleta'),
+        el(
+          'p',
+          'level-text',
+          `Find a shoal (bubbles on the water, gulls over it). Sail to windward of it, switch to lateral fishing (M), ` +
+            `and drift sideways over it: the net on the windward side catches the fish. Bring home ${FISHING_TARGET_KG} kg.`,
+        ),
+      );
+    } else {
+      boatButtons();
+      body.append(el('h2', '', 'Start from'));
+      const select = el('select', 'port-select');
+      for (const p of this.ports) select.append(new Option(p, p));
+      select.value = c.option;
+      select.onchange = () => (c.option = select.value);
+      body.append(select);
+    }
+
+    const back = el('button', '', '← Back');
+    back.onclick = () => this.show();
+    const go = el('button', 'go', kind === 'free' ? 'Set sail' : 'Start');
+    go.onclick = () => this.onStart(makeMission(kind, c.option, c.boat, this.boats), this.level);
+    footer.append(back, bestText, go);
+    panel.append(body, footer);
+    refresh();
   }
 
   hide(): void {
@@ -82,12 +158,10 @@ export class MissionMenu {
 
   /** End of a mission: the time, the best time, and what next. */
   showResult(mission: Mission, level: Level, time: number, best: number | null, record: boolean, onAgain: () => void): void {
-    const o = this.overlay;
-    o.replaceChildren();
-    const panel = el('section', 'panel mission-panel result');
     const levelName = LEVELS.find((l) => l.id === level)!.name;
+    const panel = this.panel(record ? 'New best time!' : mission.kind === 'fishing' ? 'The hold is full!' : 'Mission complete');
+    panel.classList.add('result');
     panel.append(
-      el('h1', '', record ? 'New best time!' : 'Mission complete'),
       el('p', 'result-title', `${mission.title} · ${levelName}`),
       el('div', 'result-time', formatTime(time)),
       el('p', 'result-best', best !== null && !record ? `Best: ${formatTime(best)}` : 'Sailing time (game clock)'),
@@ -99,8 +173,38 @@ export class MissionMenu {
     menu.onclick = () => this.show();
     row.append(again, menu);
     panel.append(row);
-    o.append(panel);
-    o.hidden = false;
+  }
+
+  /** A fresh panel in the overlay, with a title. */
+  private panel(title: string): HTMLElement {
+    this.overlay.replaceChildren();
+    const panel = el('section', 'panel mission-panel');
+    panel.append(el('h1', '', title));
+    this.overlay.append(panel);
+    this.overlay.hidden = false;
+    return panel;
+  }
+
+  private levelPicker(): HTMLElement {
+    const box = el('div');
+    const row = el('div', 'buttons levels');
+    const text = el('p', 'level-text');
+    const draw = () => {
+      for (const b of row.querySelectorAll('button')) b.classList.toggle('active', b.dataset.level === this.level);
+      text.textContent = LEVELS.find((l) => l.id === this.level)!.description;
+    };
+    for (const l of LEVELS) {
+      const b = el('button', '', l.name);
+      b.dataset.level = l.id;
+      b.onclick = () => {
+        this.level = l.id;
+        draw();
+      };
+      row.append(b);
+    }
+    box.append(el('h2', '', 'Level'), row, text);
+    draw();
+    return box;
   }
 }
 

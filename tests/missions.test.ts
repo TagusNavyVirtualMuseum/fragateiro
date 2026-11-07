@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { LandMask, type MapMeta } from '../src/world/landMask';
-import { MISSIONS, MissionRun, buildCourse } from '../src/world/missions';
+import { BOATS } from '../src/physics';
+import { FISHING_GROUNDS, MISSION_KINDS, REGATTA_COURSES, ROUTES, MissionRun, buildCourse, makeMission } from '../src/world/missions';
 
 // 20 x 20 km: open water, land in the east (x >= 4 km).
 function mask(): LandMask {
@@ -30,7 +31,7 @@ describe('missions', () => {
 
   it('counts buoys in order and finishes back at the line', () => {
     const course = { start: { x: 0, y: 0 }, buoys: [{ x: 0, y: 500 }, { x: 300, y: 250 }] };
-    const run = new MissionRun(MISSIONS.find((x) => x.id === 'regatta-cascais')!, 10, course, null);
+    const run = new MissionRun(makeMission('regatta', 'cascais', 'falua', BOATS), 10, course, null);
     run.update(300, 250, 20); // the second buoy first: does not count
     expect(run.next).toBe(0);
     run.update(10, 490, 30);
@@ -40,7 +41,21 @@ describe('missions', () => {
     expect(run.elapsed(99)).toBe(40);
   });
 
-  it('every mission names a known boat and level-independent rules', () => {
-    for (const m of MISSIONS) if (m.kind !== 'free') expect(['falua', 'muleta', 'fragata', 'catraio', 'canoa']).toContain(m.boat);
+  it('builds a mission for every choice, with ids that keep best times apart', () => {
+    const ids = new Set<string>();
+    for (const k of MISSION_KINDS) {
+      const options = k.id === 'regatta' ? REGATTA_COURSES.map((c) => c.id) : k.id === 'transport' ? ROUTES.map((r) => r.id) : k.id === 'fishing' ? FISHING_GROUNDS.map((g) => g.id) : ['Lisboa'];
+      for (const o of options) {
+        for (const b of BOATS) {
+          const m = makeMission(k.id, o, b.id, BOATS);
+          expect(m.kind).toBe(k.id);
+          if (m.kind === 'fishing') expect(m.boat).toBe('muleta');
+          else expect(m.boat).toBe(b.id);
+          ids.add(m.id);
+        }
+      }
+    }
+    // Regattas and transport keep one best time per boat; fishing is always the Muleta.
+    expect(ids.size).toBe(REGATTA_COURSES.length * BOATS.length + ROUTES.length * BOATS.length + FISHING_GROUNDS.length + BOATS.length);
   });
 });

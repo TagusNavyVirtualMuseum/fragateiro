@@ -28,6 +28,8 @@ export interface Navigation {
   /** Sailing time since the destination was chosen, s. */
   elapsed: number;
   arrived: boolean;
+  /** Heading line instead of "To <name>" (fishing shows the catch). */
+  title?: string;
 }
 
 const GROUP_NAMES: Record<string, string> = { fore: 'Fore sail', main: 'Main sail', front: 'Front sails', rear: 'Rear sails', jib: 'Jib', mizzen: 'Mizzen' };
@@ -296,7 +298,7 @@ export class SailingHud {
     const time = `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
     this.nav.innerHTML = nav.arrived
       ? `<strong>Arrived at ${nav.name}!</strong><span>sailing time ${time}</span>`
-      : `<strong>To ${nav.name}</strong><span>${km < 1 ? `${Math.round(nav.distance)} m` : `${km.toFixed(2)} km`} · ${(nav.distance / 1852).toFixed(2)} nm</span>` +
+      : `<strong>${nav.title ?? `To ${nav.name}`}</strong><span>${nav.title ? `${nav.name}: ` : ''}${km < 1 ? `${Math.round(nav.distance)} m` : `${km.toFixed(2)} km`} · ${(nav.distance / 1852).toFixed(2)} nm</span>` +
         `<span>bearing ${Math.round(nav.bearing)}° · ${side}</span><span>time ${time}</span>`;
     this.compassTarget.setAttribute('transform', `rotate(${nav.bearing})`);
   }

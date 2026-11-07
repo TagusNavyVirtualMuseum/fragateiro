@@ -1,4 +1,4 @@
-// Missions: sail from one port to another, or round a course of buoys against the clock.
+// Missions: regattas round buoys, transport between ports, fishing, or free sailing.
 // Plain TypeScript (no 3D), so the rules can be tested.
 import type { LandMask } from './landMask';
 
@@ -10,22 +10,66 @@ export const LEVELS: { id: Level; name: string; description: string }[] = [
   { id: 'hard', name: 'Hard', description: 'You trim the sheets; the sails turn the boat, and there is no help through a tack: ease the sheets as you turn through the wind, then steer to hold the new course.' },
 ];
 
-export type Mission =
-  | { id: string; kind: 'route'; title: string; boat: string; from: string; to: string; description: string }
-  | { id: string; kind: 'regatta'; title: string; boat: string; at: string; buoys: 2 | 3; description: string }
-  | { id: string; kind: 'free'; title: string; description: string };
+export type MissionKind = 'regatta' | 'transport' | 'fishing' | 'free';
 
-export const MISSIONS: Mission[] = [
-  { id: 'lisboa-almada', kind: 'route', title: 'Lisbon to Almada', boat: 'catraio', from: 'Lisboa', to: 'Almada', description: 'Cross the river with passengers, as the catraios did every day.' },
-  { id: 'moita-lisboa', kind: 'route', title: 'Moita to Lisbon', boat: 'fragata', from: 'Moita', to: 'Lisboa', description: 'Bring a cargo from the south bank to the city.' },
-  { id: 'sarilhos-barreiro', kind: 'route', title: 'Sarilhos to Barreiro', boat: 'fragata', from: 'Sarilhos Pequenos', to: 'Barreiro', description: 'From the boatyards of Sarilhos to the quays of Barreiro.' },
-  { id: 'vfx-lisboa', kind: 'route', title: 'Vila Franca to Lisbon', boat: 'fragata', from: 'Vila Franca de Xira', to: 'Lisboa', description: 'Down the river from the lezírias to Lisbon, a long haul.' },
-  { id: 'regatta-lisboa-falua', kind: 'regatta', title: 'Lisbon regatta (Falua)', boat: 'falua', at: 'Lisboa', buoys: 3, description: 'Three buoys in front of Lisbon: round them in order and back to the line.' },
-  { id: 'regatta-lisboa-catraio', kind: 'regatta', title: 'Lisbon regatta (Catraio)', boat: 'catraio', at: 'Lisboa', buoys: 3, description: 'Three buoys in front of Lisbon: round them in order and back to the line.' },
-  { id: 'regatta-cascais', kind: 'regatta', title: 'Cascais regatta', boat: 'falua', at: 'Cascais', buoys: 2, description: 'Two buoys in Cascais bay, open to the sea.' },
-  { id: 'regatta-oeiras', kind: 'regatta', title: 'Oeiras regatta', boat: 'catraio', at: 'Oeiras', buoys: 2, description: 'Two buoys off Oeiras, at the mouth of the river.' },
-  { id: 'free', kind: 'free', title: 'Free sailing', description: 'Any boat, anywhere: move between ports and choose where to sail.' },
+export type Mission =
+  | { id: string; kind: 'transport'; title: string; boat: string; from: string; to: string }
+  | { id: string; kind: 'regatta'; title: string; boat: string; at: string; buoys: 2 | 3 }
+  | { id: string; kind: 'fishing'; title: string; boat: string; at: string; targetKg: number }
+  | { id: string; kind: 'free'; title: string; boat: string; from: string };
+
+/** The four kinds of mission, as the menu shows them first. */
+export const MISSION_KINDS: { id: MissionKind; title: string; description: string }[] = [
+  { id: 'regatta', title: 'Regatta', description: 'Round the buoys against the clock.' },
+  { id: 'transport', title: 'Transport', description: 'Carry passengers or cargo from one port to another.' },
+  { id: 'fishing', title: 'Fishing', description: 'Drift sideways with the Muleta and drag its net through the shoals.' },
+  { id: 'free', title: 'Free sailing', description: 'Any boat, anywhere, no clock.' },
 ];
+
+/** Regatta courses: laid to the wind off a port. */
+export const REGATTA_COURSES: { id: string; name: string; at: string; buoys: 2 | 3 }[] = [
+  { id: 'lisboa', name: 'In front of Lisbon (3 buoys)', at: 'Lisboa', buoys: 3 },
+  { id: 'cascais', name: 'Cascais bay (2 buoys)', at: 'Cascais', buoys: 2 },
+  { id: 'oeiras', name: 'Off Oeiras (2 buoys)', at: 'Oeiras', buoys: 2 },
+];
+
+/** Transport routes, with the boat that traditionally sailed them. */
+export const ROUTES: { id: string; from: string; to: string; boat: string; description: string }[] = [
+  { id: 'lisboa-almada', from: 'Lisboa', to: 'Almada', boat: 'catraio', description: 'Passengers across the river, as the catraios did every day.' },
+  { id: 'moita-lisboa', from: 'Moita', to: 'Lisboa', boat: 'fragata', description: 'Cargo from the south bank to the city.' },
+  { id: 'sarilhos-barreiro', from: 'Sarilhos Pequenos', to: 'Barreiro', boat: 'fragata', description: 'From the boatyards of Sarilhos to the quays of Barreiro.' },
+  { id: 'vfx-lisboa', from: 'Vila Franca de Xira', to: 'Lisboa', boat: 'fragata', description: 'Down the river from the lezírias: a long haul.' },
+];
+
+/** Fishing grounds of the Muleta. */
+export const FISHING_GROUNDS: { id: string; name: string; at: string }[] = [
+  { id: 'seixal', name: 'Off Seixal', at: 'Seixal' },
+  { id: 'barra', name: 'The river mouth (Trafaria)', at: 'Trafaria' },
+  { id: 'cascais', name: 'Cascais bay', at: 'Cascais' },
+];
+
+/** Fish to bring home on a fishing trip, kg. */
+export const FISHING_TARGET_KG = 150;
+
+const boatName = (boats: { id: string; name: string }[], id: string) => boats.find((b) => b.id === id)?.name ?? id;
+
+/** Build a mission from the menu's choices: a kind, one of its options, and a boat. */
+export function makeMission(kind: MissionKind, option: string, boat: string, boats: { id: string; name: string }[]): Mission {
+  const b = boatName(boats, boat);
+  if (kind === 'regatta') {
+    const c = REGATTA_COURSES.find((x) => x.id === option) ?? REGATTA_COURSES[0];
+    return { id: `regatta-${c.id}-${boat}`, kind, title: `Regatta: ${c.name.replace(/ \(.*\)/, '')} · ${b}`, boat, at: c.at, buoys: c.buoys };
+  }
+  if (kind === 'transport') {
+    const r = ROUTES.find((x) => x.id === option) ?? ROUTES[0];
+    return { id: `transport-${r.id}-${boat}`, kind, title: `${r.from} to ${r.to} · ${b}`, boat, from: r.from, to: r.to };
+  }
+  if (kind === 'fishing') {
+    const g = FISHING_GROUNDS.find((x) => x.id === option) ?? FISHING_GROUNDS[0];
+    return { id: `fishing-${g.id}`, kind, title: `Fishing: ${g.name}`, boat: 'muleta', at: g.at, targetKg: FISHING_TARGET_KG };
+  }
+  return { id: `free-${option}-${boat}`, kind: 'free', title: `Free sailing · ${b}`, boat, from: option };
+}
 
 /** Passing this close to a buoy counts as rounding it, m. */
 export const ROUNDING_RADIUS = 45;
@@ -94,7 +138,7 @@ export class MissionRun {
 
   get goalName(): string {
     const m = this.mission;
-    if (m.kind === 'route') return m.to;
+    if (m.kind === 'transport') return m.to;
     if (this.course) return this.next < this.course.buoys.length ? `Buoy ${this.next + 1} of ${this.course.buoys.length}` : 'Finish line';
     return '';
   }

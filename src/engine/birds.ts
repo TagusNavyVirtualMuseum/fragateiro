@@ -3,10 +3,17 @@
 // then, and drifts with the wind. Birds left far behind come back near the camera.
 import { Color3, Mesh, StandardMaterial, Vector3, VertexBuffer, VertexData, type Scene } from '@babylonjs/core';
 
-const COUNT = 24;
+export interface FlockOptions {
+  count?: number;
+  /** Circle centres are placed this far from the flock's centre, m (min, max). */
+  spread?: [number, number];
+  /** Flying height, m (min, max). */
+  height?: [number, number];
+  /** Birds further than this from the centre come back near it, m. */
+  range?: number;
+}
 /** Vertices per bird: nose, tail, then per wing a root pair, the elbow and the tip. */
 const VERTS = 10;
-const RANGE = 250; // m: birds further than this from the camera target are moved back near it
 
 interface Bird {
   /** Centre of the circle it is gliding round. */
@@ -28,8 +35,17 @@ export class Birds {
   private readonly mesh: Mesh;
   private readonly positions: Float32Array;
   private placed = false;
+  private readonly count: number;
+  private readonly spread: [number, number];
+  private readonly height: [number, number];
+  private readonly range: number;
 
-  constructor(scene: Scene) {
+  constructor(scene: Scene, options: FlockOptions = {}) {
+    this.count = options.count ?? 24;
+    this.spread = options.spread ?? [15, 125];
+    this.height = options.height ?? [6, 28];
+    this.range = options.range ?? 250;
+    const COUNT = this.count;
     for (let i = 0; i < COUNT; i++) this.birds.push(this.spawn(0, 0));
     this.positions = new Float32Array(COUNT * VERTS * 3);
     const indices: number[] = [];
@@ -68,14 +84,14 @@ export class Birds {
 
   private spawn(x: number, z: number): Bird {
     const a = Math.random() * Math.PI * 2;
-    const d = 15 + Math.random() * 110;
+    const d = this.spread[0] + Math.random() * (this.spread[1] - this.spread[0]);
     const radius = 15 + Math.random() * 45;
     const speed = 7 + Math.random() * 4; // m/s
     return {
       cx: x + Math.cos(a) * d,
       cz: z + Math.sin(a) * d,
       radius,
-      height: 6 + Math.random() * 22,
+      height: this.height[0] + Math.random() * (this.height[1] - this.height[0]),
       angle: Math.random() * Math.PI * 2,
       turn: (speed / radius) * (Math.random() < 0.5 ? -1 : 1),
       flapping: Math.random() * 2,
@@ -88,17 +104,21 @@ export class Birds {
     this.mesh.setEnabled(on);
   }
 
+  dispose(): void {
+    this.mesh.dispose();
+  }
+
   /** dt in real seconds; wind drift in m/s towards (x, z). */
   update(centre: Vector3, windX: number, windZ: number, dt: number): void {
     if (!this.mesh.isEnabled()) return;
     if (!this.placed) {
       this.placed = true;
-      for (let i = 0; i < COUNT; i++) this.birds[i] = this.spawn(centre.x, centre.z);
+      for (let i = 0; i < this.count; i++) this.birds[i] = this.spawn(centre.x, centre.z);
     }
     const p = this.positions;
-    for (let i = 0; i < COUNT; i++) {
+    for (let i = 0; i < this.count; i++) {
       let b = this.birds[i];
-      if (Math.hypot(b.cx - centre.x, b.cz - centre.z) > RANGE) b = this.birds[i] = this.spawn(centre.x, centre.z);
+      if (Math.hypot(b.cx - centre.x, b.cz - centre.z) > this.range) b = this.birds[i] = this.spawn(centre.x, centre.z);
       b.angle += b.turn * dt;
       b.cx += windX * 0.3 * dt;
       b.cz += windZ * 0.3 * dt;
