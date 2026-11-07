@@ -114,7 +114,7 @@ export class Minimap {
   }
 
   /** Redraw with the boat at (x east, y north) and its heading (rad). */
-  draw(x: number, y: number, heading: number, target?: { x: number; y: number }, others: { x: number; y: number }[] = []): void {
+  draw(x: number, y: number, heading: number, target?: { x: number; y: number }, others: { x: number; y: number }[] = [], marks: { x: number; y: number }[] = []): void {
     const m = this.mask.meta;
     const { width, height } = this.mask.sizeMetres;
     if (this.whole) {
@@ -137,6 +137,15 @@ export class Minimap {
       ctx.beginPath();
       ctx.arc(ox, oy, 3.5, 0, Math.PI * 2);
       ctx.fill();
+    }
+    // Regatta buoys: yellow rings.
+    ctx.strokeStyle = '#d9a400';
+    ctx.lineWidth = 3;
+    for (const m of marks) {
+      const [mx, my] = this.toPx(m.x, m.y);
+      ctx.beginPath();
+      ctx.arc(mx, my, 5, 0, Math.PI * 2);
+      ctx.stroke();
     }
     if (target) {
       const [tx, ty] = this.toPx(target.x, target.y);

@@ -1,5 +1,5 @@
 // Free sailing on the Tagus: switch between the Falua and the Muleta.
-import { BOATS, GustyWind, SailboatSim, defaultControls, deg2rad, groupsInMode, type BoatSpec } from '../../src/physics';
+import { BOATS, GustyWind, SailboatSim, autoTrimSheets, defaultControls, deg2rad, groupsInMode, type BoatSpec } from '../../src/physics';
 import { BOAT_VISUALS } from '../../src/engine/boatVisuals';
 import { BoatView } from '../../src/engine/boatView';
 import { CAMERA_VIEWS, CameraRig } from '../../src/engine/cameraRig';
@@ -13,6 +13,9 @@ import { WindView } from '../../src/engine/windView';
 import { Sound } from '../../src/engine/sound';
 import { Birds } from '../../src/engine/birds';
 import { Traffic } from '../../src/engine/traffic';
+import { CourseView } from '../../src/engine/courseView';
+import { MissionMenu } from '../../src/ui/missionMenu';
+import { LEVELS, MISSIONS, MissionRun, bestTimeKey, buildCourse, type Level, type Mission } from '../../src/world/missions';
 import { SailingHud } from '../../src/ui/hud';
 import { Minimap } from '../../src/ui/minimap';
 import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
@@ -55,7 +58,14 @@ let destinations: Destination[] = [];
 let nextDestination = 0;
 /** Simulated seconds per real second: speeds stay realistic, the trip goes faster. */
 let timeScale = 3;
-let balanced = true;
+/** Difficulty: easy trims the sails automatically; hard turns off the balanced sails and
+ * the help with tacking that comes with them. */
+let level: Level = loadLevel();
+let mission: Mission = MISSIONS.find((m) => m.kind === 'free')!;
+let run: MissionRun | null = null;
+let missionDone = false;
+/** Boat a mission requires (others cannot be chosen meanwhile), or null in free sailing. */
+let requiredBoat: string | null = null;
 let target: Destination | null = null;
 let targetSince = 0;
 let arrivedAt: number | null = null;
@@ -79,7 +89,10 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onCameraDistance: (d) => cameraRig.setDistance(d),
   onCameraHeight: (h) => cameraRig.setElevation(h),
   onTimeScale: (k) => (timeScale = k),
-  onBalanced: (on) => (balanced = on),
+  onMissions: () => {
+    paused = true;
+    menu.show();
+  },
   onWindVisible: (on) => windView.setVisible(on),
   onSound: (on) => sound.setMuted(!on),
   onTraffic: (on) => {
@@ -91,6 +104,7 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
 // (buttons) but does not orbit with one finger.
 const touch = new TouchControls(canvas, {
   onSheets: (delta) => {
+    if (level === 'easy') return;
     for (const g of groupsInMode(spec, sim.controls.mode)) {
       sim.controls.sheets[g] = Math.max(0, Math.min(1, (sim.controls.sheets[g] ?? 0.5) + delta));
     }
@@ -122,6 +136,7 @@ function loadView(id: string): Promise<BoatView> {
 let wanted = BOATS[0].id;
 
 async function switchBoat(id: string): Promise<void> {
+  if (requiredBoat && id !== requiredBoat) return;
   wanted = id;
   if (id === spec.id) return;
   if (!views.has(id)) {
@@ -198,6 +213,7 @@ function stepWithLand(dt: number): void {
 
 input.onPress('KeyM', cycleMode);
 input.onPress('KeyB', () => {
+  if (requiredBoat) return;
   const i = BOATS.findIndex((b) => b.id === wanted);
   void switchBoat(BOATS[(i + 1) % BOATS.length].id);
 });
@@ -206,7 +222,7 @@ input.onPress('KeyN', () => {
   sound.setMuted(sound.enabled);
   hud.setSound(sound.enabled);
 });
-input.onPress('KeyR', restart);
+input.onPress('KeyR', () => (run ? void startMission(mission, level) : restart()));
 for (const v of CAMERA_VIEWS) input.onPress(`Digit${v.key}`, () => cameraRig.setView(v.id));
 input.onPress('KeyC', () => cameraRig.setView('back'));
 cameraRig.onChange = () => hud.setCamera(cameraRig.view, cameraRig.distance, cameraRig.elevation);
@@ -224,6 +240,11 @@ function applyInput(dt: number): void {
   else if (left !== right) c.rudder = Math.max(-1, Math.min(1, c.rudder + (right ? 1 : -1) * RUDDER_RATE * dt));
   else c.rudder -= Math.sign(c.rudder) * Math.min(Math.abs(c.rudder), RUDDER_RETURN * dt);
 
+  if (level === 'easy') {
+    // The crew trims: every sail eased to the best angle for the wind it feels.
+    Object.assign(c.sheets, autoTrimSheets(spec, c.mode, sim.report.apparentWindAngleDeg));
+    return;
+  }
   const haul = input.held('KeyW', 'ArrowUp');
   const ease = input.held('KeyS', 'ArrowDown');
   if (haul !== ease) {
@@ -231,6 +252,96 @@ function applyInput(dt: number): void {
       c.sheets[g] = Math.max(0, Math.min(1, (c.sheets[g] ?? 0.5) + (ease ? 1 : -1) * SHEET_RATE * dt));
     }
   }
+}
+
+const courseView = new CourseView(scene);
+const menu = new MissionMenu(document.getElementById('hud')!, MISSIONS, BOATS, readBest, (m, l) => void startMission(m, l), level);
+
+function loadLevel(): Level {
+  try {
+    const l = localStorage.getItem('fragateiro.level');
+    if (l === 'easy' || l === 'medium' || l === 'hard') return l;
+  } catch {
+    // storage blocked: use the default
+  }
+  return 'medium';
+}
+
+function readBest(id: string, l: Level): number | null {
+  try {
+    const v = localStorage.getItem(bestTimeKey(id, l));
+    return v === null ? null : Number(v);
+  } catch {
+    return null;
+  }
+}
+
+/** Start a mission at a level: boat, start position, course or destination, clock. */
+async function startMission(m: Mission, l: Level): Promise<void> {
+  menu.hide();
+  level = l;
+  try {
+    localStorage.setItem('fragateiro.level', l);
+  } catch {
+    // storage blocked: the level is just not remembered
+  }
+  mission = m;
+  missionDone = false;
+  run = null;
+  courseView.setCourse(null);
+  target = null;
+  mapView.setTarget(null);
+  requiredBoat = m.kind === 'free' ? null : m.boat;
+  if (requiredBoat && requiredBoat !== spec.id) await switchBoat(requiredBoat);
+  const levelName = LEVELS.find((x) => x.id === l)!.name;
+  if (m.kind === 'route') {
+    const from = destinations.find((d) => d.name === m.from);
+    const to = destinations.find((d) => d.name === m.to);
+    if (from && to) {
+      teleport(from);
+      run = new MissionRun(m, sim.state.time, null, { x: to.x, y: to.y });
+    }
+  } else if (m.kind === 'regatta') {
+    const at = destinations.find((d) => d.name === m.at);
+    if (at) {
+      // The course is laid in open water about 700 m off the port, to the wind of the day.
+      let centre = { x: at.x + Math.sin(at.heading) * 700, y: at.y + Math.cos(at.heading) * 700 };
+      if (!mask.isReachable(centre.x, centre.y)) centre = { x: at.x, y: at.y };
+      const windFrom = wind.at(sim.state.time, centre.x, centre.y).from;
+      const course = buildCourse(mask, centre, windFrom, m.buoys);
+      if (course) {
+        // Start just to leeward of the line, sailing across the wind.
+        const sx = course.start.x - Math.sin(windFrom) * 80;
+        const sy = course.start.y - Math.cos(windFrom) * 80;
+        const heading = sailableHeading(mask, sx, sy, windFrom + Math.PI / 2, windFrom, spec.length);
+        sim = new SailboatSim(spec, wind, { x: sx, y: sy, heading, u: 1.5, time: sim.state.time });
+        aground = false;
+        camera.target.set(sx, camera.target.y, sy);
+        courseView.setCourse(course);
+        run = new MissionRun(m, sim.state.time, course, null);
+      }
+    }
+  }
+  hud.setMission(m.title, levelName, m.kind === 'free', requiredBoat, l === 'easy');
+  hud.setBoat(spec, sim.controls);
+  paused = false;
+}
+
+function finishMission(): void {
+  if (!run) return;
+  missionDone = true;
+  const t = run.elapsed(sim.state.time);
+  const before = readBest(mission.id, level);
+  const record = before === null || t < before;
+  if (record) {
+    try {
+      localStorage.setItem(bestTimeKey(mission.id, level), String(t));
+    } catch {
+      // storage blocked: the best time is just not kept
+    }
+  }
+  paused = true;
+  menu.showResult(mission, level, t, before, record, () => void startMission(mission, level));
 }
 
 /** Hills: never let the camera end up inside the land (lift it over the slope instead). */
@@ -255,8 +366,10 @@ async function main(): Promise<void> {
   start = mask.nearestWater(0, 0);
   mask.markReachableFrom(start.x, start.y);
   destinations = findDestinations(mask, 16);
-  minimap = new Minimap(hud.mapSlot, mask, destinations, teleport);
-  hud.setDestinations(destinations.map((d) => d.name), (name) => teleport(destinations.find((d) => d.name === name)!));
+  // In free sailing, click a town on the minimap to sail from there.
+  minimap = new Minimap(hud.mapSlot, mask, destinations, (d) => {
+    if (!run) teleport(d);
+  });
   hud.setTargets(destinations.map((d) => d.name), (name) => {
     target = destinations.find((d) => d.name === name) ?? null;
     targetSince = sim.state.time;
@@ -264,7 +377,7 @@ async function main(): Promise<void> {
     mapView.setTarget(target);
   });
   input.onPress('KeyT', () => {
-    if (!destinations.length) return;
+    if (!destinations.length || run) return;
     teleport(destinations[nextDestination % destinations.length]);
     nextDestination++;
   });
@@ -281,16 +394,20 @@ async function main(): Promise<void> {
   // second Falua.
   traffic = new Traffic(scene, [...BOATS, BOATS[0]], wind, mask, sim.state);
   traffic.setVisible(trafficOn);
+  // Start with the mission menu.
+  paused = true;
+  menu.show();
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
+  Object.assign(window, { game: { get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
     if (!paused) {
       applyInput(dt);
-      sim.controls.balanced = balanced;
+      sim.controls.balanced = level !== 'hard';
       stepWithLand(dt * timeScale);
       time += dt;
+      if (run && !missionDone && run.update(sim.state.x, sim.state.y, sim.state.time)) finishMission();
     }
     const s = sim.state;
     const w = wind.at(s.time, s.x, s.y);
@@ -299,9 +416,23 @@ async function main(): Promise<void> {
     netView.update(view.root, spec.net, !!sim.mode.net, s, sim.report.trueWindAngleDeg >= 0, time);
     mapView.update(time, camera);
     traffic?.update(s, paused ? 0 : dt * timeScale, time, dt);
-    minimap.draw(s.x, s.y, s.heading, target ?? undefined, traffic?.positions);
+    courseView.update(run?.next ?? -1, time);
+    const goal = run ? run.goal : target;
+    minimap.draw(s.x, s.y, s.heading, goal ?? undefined, traffic?.positions, run?.course?.buoys);
     let nav = null;
-    if (target) {
+    if (run && run.goal) {
+      const g = run.goal;
+      const dx = g.x - s.x;
+      const dy = g.y - s.y;
+      mapView.setTarget(g);
+      nav = {
+        name: run.goalName,
+        distance: Math.hypot(dx, dy),
+        bearing: ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360,
+        elapsed: run.elapsed(s.time),
+        arrived: missionDone,
+      };
+    } else if (target) {
       const dx = target.x - s.x;
       const dy = target.y - s.y;
       const distance = Math.hypot(dx, dy);

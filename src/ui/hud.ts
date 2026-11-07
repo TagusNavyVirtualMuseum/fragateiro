@@ -13,10 +13,10 @@ export interface HudCallbacks {
   onCameraDistance(metres: number): void;
   onCameraHeight(degrees: number): void;
   onTimeScale(scale: number): void;
-  onBalanced(on: boolean): void;
   onWindVisible(on: boolean): void;
   onSound(on: boolean): void;
   onTraffic(on: boolean): void;
+  onMissions(): void;
 }
 
 export interface Navigation {
@@ -63,6 +63,12 @@ export class SailingHud {
   private readonly camHeight: HTMLInputElement;
   private readonly camHeightLabel: HTMLLabelElement;
   private sliders = new Map<string, HTMLInputElement>();
+  private readonly missionRow = el('div', 'mission-row');
+  private readonly missionName = el('span', 'mission-name');
+  private readonly levelName = el('span', 'level-name');
+  private targetsLabel?: HTMLLabelElement;
+  /** Easy level: the sails trim themselves (no sheet sliders). */
+  private easy = false;
 
   constructor(
     root: HTMLElement,
@@ -74,7 +80,14 @@ export class SailingHud {
 
     // --- Top left: boat, mode, description
     const info = el('section', 'panel info');
-    info.append(el('h1', '', '<a href="../../" title="All games">⟵</a> Sailing the Tagus'), this.boatBar, this.modeBar, this.about, this.mapSlot);
+    const missionsBtn = el('button', '', 'Missions');
+    missionsBtn.title = 'Choose a mission and a level';
+    missionsBtn.onclick = () => {
+      missionsBtn.blur();
+      cb.onMissions();
+    };
+    this.missionRow.append(this.missionName, this.levelName, missionsBtn);
+    info.append(el('h1', '', '<a href="../../" title="All games">⟵</a> Sailing the Tagus'), this.missionRow, this.boatBar, this.modeBar, this.about, this.mapSlot);
     for (const b of boats) {
       const btn = el('button', '', b.name);
       btn.dataset.id = b.id;
@@ -118,7 +131,6 @@ export class SailingHud {
       <label>Speed <input type="range" min="2" max="30" step="1" name="speed"> <output name="speedOut"></output></label>
       <label class="check"><input type="checkbox" name="gusty"> Gusts and shifts</label>
       <label class="check"><input type="checkbox" name="windVisible" checked> Show the wind</label>
-      <label class="check" title="The sails push the boat without turning it: easier to steer. Real boats are rarely this well balanced."><input type="checkbox" name="balanced" checked> Balanced sails <small>(easier steering)</small></label>
       <h2>Camera <small>keys 1–6 · drag to orbit · wheel to zoom</small></h2>
       <div class="cam-buttons"></div>
       <label>Distance <input type="range" min="${DISTANCE_RANGE.min}" max="${DISTANCE_RANGE.max}" step="1" name="camDist"> <output name="camDistOut"></output></label>
@@ -187,8 +199,6 @@ export class SailingHud {
     traffic.addEventListener('change', () => cb.onTraffic(traffic.checked));
     const windVisible = opts.querySelector<HTMLInputElement>('[name=windVisible]')!;
     windVisible.addEventListener('change', () => cb.onWindVisible(windVisible.checked));
-    const balanced = opts.querySelector<HTMLInputElement>('[name=balanced]')!;
-    balanced.addEventListener('change', () => cb.onBalanced(balanced.checked));
 
 
     // Let the arrow keys steer the boat instead of moving a focused slider.
@@ -222,6 +232,15 @@ export class SailingHud {
     this.forcesBox.checked = visible;
   }
 
+  /** The current mission and level; free sailing shows the "Sail to" list. */
+  setMission(title: string, level: string, free: boolean, boat: string | null, easy: boolean): void {
+    this.missionName.textContent = title;
+    this.levelName.textContent = level;
+    if (this.targetsLabel) this.targetsLabel.hidden = !free;
+    for (const b of this.boatBar.querySelectorAll('button')) b.disabled = !!boat && b.dataset.id !== boat;
+    this.easy = easy;
+  }
+
   /** Show that a boat's model is downloading (its button pulses). */
   setBoatLoading(id: string, on: boolean): void {
     for (const b of this.boatBar.querySelectorAll('button')) if (b.dataset.id === id) b.classList.toggle('loading', on);
@@ -245,6 +264,10 @@ export class SailingHud {
 
     this.sheets.replaceChildren();
     this.sliders.clear();
+    if (this.easy) {
+      this.sheets.append(el('p', 'easy-note', 'Easy level: the crew trims the sails for you. Just steer.'));
+      return;
+    }
     for (const g of groupsInMode(spec, mode.id)) {
       const label = el('label', 'sheet');
       const input = el('input');
@@ -299,6 +322,7 @@ export class SailingHud {
   /** A list of places to sail to; the instruments then show distance and bearing. */
   setTargets(names: string[], onTarget: (name: string | null) => void): void {
     const label = el('label', 'goto', 'Sail to');
+    this.targetsLabel = label;
     const select = el('select');
     select.append(new Option('no destination', ''));
     for (const n of names) select.append(new Option(n, n));

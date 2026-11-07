@@ -16,6 +16,30 @@ built to be easy to maintain and to grow into several small games.
   heights, and other traditional boats sailing around you (each with its own physics and a
   simple helmsman that tacks upwind and keeps off the shore).
 
+### Missions and levels
+
+The game opens on a mission menu (and the **Missions** button brings it back):
+
+| Mission | Boat |
+|---|---|
+| Lisbon to Almada | Catraio |
+| Moita to Lisbon, Sarilhos to Barreiro, Vila Franca to Lisbon | Fragata |
+| 3-buoy regatta in front of Lisbon | Falua, or Catraio |
+| 2-buoy regatta off Cascais | Falua |
+| 2-buoy regatta off Oeiras | Catraio |
+| Free sailing | any |
+
+Routes end within 150 m of the port; regattas are laid to the wind in open water (first buoy
+upwind), each buoy is rounded by passing within 45 m, in order, then back to the line. The
+clock is the game clock; best times are kept in the browser per mission and level.
+
+- **Easy:** the crew trims the sails to the best angle for the apparent wind (no sheet controls).
+- **Medium:** you trim the sheets; balanced sails.
+- **Hard:** you trim the sheets; sails not balanced (they turn the boat), and none of the
+  low-speed steering help through a tack.
+
+Missions are defined in `src/world/missions.ts`; the trimming in `src/physics/autotrim.ts`.
+
 ## Run it
 
 ```bash
@@ -35,19 +59,20 @@ Node 22 or newer.
 | Rudder | A / D or ← / → | ◀ ▶ buttons, or drag one finger left/right on the view |
 | Sheets (all sails) | W / S or ↑ / ↓ | one slider per sail group, or drag one finger up (in) / down (out) |
 | Change mode (Muleta) | M | mode buttons |
-| Change boat | B | boat buttons |
+| Change boat (free sailing) | B | boat buttons |
 | Show forces | F | checkbox |
 | Camera view: behind, ahead, port, starboard, top, free | 1–6 (C = behind) | camera buttons |
 | Camera distance and height | mouse wheel | sliders, or pinch with two fingers |
 | Orbit freely | drag the view with the mouse (switches to *free*) | |
-| Move to a place (21 ports, from Cascais, Sesimbra and Setúbal to Vila Franca de Xira, including the Alfeite naval base) | T (next place) | *Sail from* list, or click it on the minimap |
+| Move to a place, in free sailing (21 ports, from Cascais, Sesimbra and Setúbal to Vila Franca de Xira, including the Alfeite naval base) | T (next place) | click it on the minimap |
 | Minimap: 15 km around the boat, or the whole map | | button under the minimap |
 | Destination: distance, bearing and time | | *Sail to* list |
 | Game speed (1×, 2×, 3× default, 5×, 10×; speeds shown stay real, "time ×3" under the speed) | | setting |
-| Show the wind (streaks over the water), balanced sails (on by default: the sails do not turn the boat) | | wind settings |
+| Show the wind (streaks over the water) | | wind settings |
 | Sound of wind, water and flapping sails (synthesised, starts on the first click or key) | N | checkbox |
 | Other boats on the river (shown as dots on the minimap) | | checkbox |
-| Pause / restart | P / R | |
+| Pause / restart (a mission starts again) | P / R | |
+| Missions and level | | *Missions* button |
 
 ## How it is organised
 

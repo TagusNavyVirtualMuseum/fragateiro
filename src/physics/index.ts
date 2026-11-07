@@ -6,6 +6,7 @@ export * from './foil';
 export * from './wind';
 export * from './simulator';
 export * from './polar';
+export * from './autotrim';
 export { FALUA } from './boats/falua';
 export { MULETA } from './boats/muleta';
 export { FRAGATA } from './boats/fragata';
