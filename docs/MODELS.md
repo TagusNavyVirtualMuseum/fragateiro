@@ -4,7 +4,7 @@ The boats come from the MiraroTejo project (the lighter versions made for the vi
 
 | Boat | Source | Web file | Size |
 |---|---|---|---|
-| Falua | `MiraroTejo/Assets/Embarcações/Falua/falua.fbx` (7.5 MB + textures) | `src/assets/models/falua.glb` | 6.9 MB |
+| Falua | `MiraroTejo/Assets/Embarcações/Falua/falua.fbx` (7.5 MB + textures) | `src/assets/models/falua.glb` | 2.8 MB (slimmed) |
 | Muleta | `MiraroTejo/Assets/Embarcações/Muleta/Muleta.fbx` (2.8 MB + textures) | `src/assets/models/muleta.glb` | 2.7 MB |
 | Fragata | `MiraroTejo/Assets/Embarcações/Fragata/Fragata.fbx` (4.7 MB + textures) | `src/assets/models/fragata.glb` | 3.8 MB |
 | Catraio | `MiraroTejo/Assets/Embarcações/Catraio/catraio.fbx` (55 MB, textures inside) | `src/assets/models/catraio.glb` | 3.2 MB |
@@ -27,6 +27,26 @@ npx @gltf-transform/cli@4.5.1 prune catraio-split.glb src/assets/models/catraio.
 ```
 
 The Fragata's bow points to +x (`bowPositiveX: true` in `boatVisuals.ts`).
+
+## Slimming a model
+
+```bash
+npm install --no-save @gltf-transform/functions@4.5.1 meshoptimizer@1.3.0
+node scripts/slim-model.mjs big.glb src/assets/models/boat.glb 0.01
+```
+
+Or, without installing anything: run the **Slim a model** workflow (Actions tab) with the
+model's path and unit; it slims the file in the repository and commits it.
+
+Small fittings (hooks, rings, blocks, the anchor) often have thousands of triangles each.
+The script simplifies parts under 0.8 m to a few hundred triangles, and parts with more than
+800 triangles per metre of their size (a row of rings along a yard can be one mesh) as far as
+a 3 mm change in shape allows, so thin ropes keep their shape. Node names do not change. The
+Falua went from 7 MB and 179k triangles to 2.8 MB and 61k with no visible difference at
+sailing distance. The last argument is the model's `unit` from `boatVisuals.ts`.
+
+The game loads only the first boat at start; the others download the first time they are
+picked (the button pulses meanwhile), so more boats do not slow the start.
 
 ## Generating a model from numbers
 

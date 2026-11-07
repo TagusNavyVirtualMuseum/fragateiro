@@ -11,6 +11,7 @@ import { NetView } from '../../src/engine/netView';
 import { createSailingScene } from '../../src/engine/scene';
 import { WindView } from '../../src/engine/windView';
 import { Sound } from '../../src/engine/sound';
+import { Birds } from '../../src/engine/birds';
 import { SailingHud } from '../../src/ui/hud';
 import { Minimap } from '../../src/ui/minimap';
 import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
@@ -25,12 +26,13 @@ const START_HEADING = deg2rad(90);
 
 const canvas = document.getElementById('scene') as HTMLCanvasElement;
 const loading = document.getElementById('loading')!;
-const { engine, scene, camera, water, skyColor, sunDirection, fogDensity } = createSailingScene(canvas);
+const { engine, scene, camera, water, skyColor, sunDirection, fogDensity, sky } = createSailingScene(canvas);
 const cameraRig = new CameraRig(camera);
 const arrows = new ForceArrows(scene);
 const netView = new NetView(scene);
 const windView = new WindView(scene);
 const sound = new Sound();
+const birds = new Birds(scene);
 const input = new Input();
 
 const wind = new GustyWind(0, 12 * 0.514444, 0, 0); // 12 knots
@@ -57,7 +59,7 @@ let paused = false;
 let time = 0;
 
 const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
-  onBoat: (id) => switchBoat(id),
+  onBoat: (id) => void switchBoat(id),
   onMode: (id) => setMode(id),
   onSheet: (g, v) => (sim.controls.sheets[g] = v),
   onWind: (fromDeg, speed, g) => {
@@ -90,8 +92,41 @@ if (isTouchDevice()) camera.inputs.removeByType('ArcRotateCameraPointersInput');
 input.bindHoldButton(hud.rudderLeft, 'KeyA');
 input.bindHoldButton(hud.rudderRight, 'KeyD');
 
-function switchBoat(id: string): void {
-  if (id === spec.id || !views.has(id)) return;
+/** Boats load the first time they are picked (only the first one loads at start). */
+const pending = new Map<string, Promise<BoatView>>();
+function loadView(id: string): Promise<BoatView> {
+  let p = pending.get(id);
+  if (!p) {
+    const b = BOATS.find((x) => x.id === id)!;
+    p = BoatView.load(scene, b, BOAT_VISUALS[id]).then((v) => {
+      v.setVisible(false);
+      views.set(id, v);
+      return v;
+    });
+    pending.set(id, p);
+    p.catch(() => pending.delete(id)); // allow a retry
+  }
+  return p;
+}
+
+/** The boat last asked for (may still be loading). */
+let wanted = BOATS[0].id;
+
+async function switchBoat(id: string): Promise<void> {
+  wanted = id;
+  if (id === spec.id) return;
+  if (!views.has(id)) {
+    hud.setBoatLoading(id, true);
+    try {
+      await loadView(id);
+    } catch (e) {
+      console.error(e);
+      return;
+    } finally {
+      hud.setBoatLoading(id, false);
+    }
+    if (wanted !== id) return; // another boat was picked meanwhile
+  }
   const old = sim.state;
   spec = BOATS.find((b) => b.id === id)!;
   sim = new SailboatSim(spec, wind, { x: old.x, y: old.y, heading: old.heading, u: old.u, v: old.v, r: old.r, time: old.time });
@@ -153,7 +188,10 @@ function stepWithLand(dt: number): void {
 }
 
 input.onPress('KeyM', cycleMode);
-input.onPress('KeyB', () => switchBoat(BOATS[(BOATS.indexOf(spec) + 1) % BOATS.length].id));
+input.onPress('KeyB', () => {
+  const i = BOATS.findIndex((b) => b.id === wanted);
+  void switchBoat(BOATS[(i + 1) % BOATS.length].id);
+});
 input.onPress('KeyP', () => (paused = !paused));
 input.onPress('KeyN', () => {
   sound.setMuted(sound.enabled);
@@ -187,7 +225,7 @@ function applyInput(dt: number): void {
 }
 
 async function main(): Promise<void> {
-  const [loaded, map] = await Promise.all([Promise.all(BOATS.map((b) => BoatView.load(scene, b, BOAT_VISUALS[b.id]))), loadTagusMask()]);
+  const [first, map] = await Promise.all([loadView(spec.id), loadTagusMask()]);
   mask = map.mask;
   await document.fonts.ready; // labels and minimap are drawn once, with the period font
   mapView = createMapView(scene, mask, skyColor, sunDirection, fogDensity, DESTINATION_NAMES);
@@ -212,16 +250,12 @@ async function main(): Promise<void> {
   credit.textContent = 'Map: © OpenStreetMap contributors';
   hud.mapSlot.append(credit);
   restart();
-  for (const v of loaded) {
-    views.set(v.spec.id, v);
-    v.setVisible(false);
-  }
-  view = views.get(spec.id)!;
+  view = first;
   view.setVisible(true);
   hud.setBoat(spec, sim.controls);
   loading.classList.add('done');
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views } });
+  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -254,6 +288,9 @@ async function main(): Promise<void> {
     }
     cameraRig.update(s.x, s.y, s.heading, dt);
     windView.update(camera.target, w, timeScale, paused ? 0 : dt);
+    const still = paused ? 0 : dt;
+    sky.update(still * timeScale, w.from, w.speed);
+    birds.update(camera.target, -Math.sin(w.from) * w.speed, -Math.cos(w.from) * w.speed, still);
     const set = sim.report.sails.filter((x) => x.active);
     sound.update(
       {

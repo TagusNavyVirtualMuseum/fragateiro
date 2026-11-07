@@ -1,0 +1,47 @@
+name: Slim a model
+
+# Simplifies a boat model's over-detailed fittings (scripts/slim-model.mjs) and commits it.
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: Path of the .glb in the repository
+        required: true
+        default: src/assets/models/falua.glb
+      unit:
+        description: Model units to metres (the unit in boatVisuals.ts)
+        required: true
+        default: '0.01'
+
+permissions:
+  contents: write
+
+jobs:
+  slim:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save @gltf-transform/functions@4.5.1 meshoptimizer@1.3.0
+      - name: Slim
+        env:
+          MODEL: ${{ inputs.model }}
+          UNIT: ${{ inputs.unit }}
+        run: |
+          cp "$MODEL" /tmp/original.glb
+          node scripts/slim-model.mjs /tmp/original.glb "$MODEL" "$UNIT"
+          ls -l /tmp/original.glb "$MODEL"
+      - name: Commit
+        env:
+          MODEL: ${{ inputs.model }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git add "$MODEL"
+          git diff --cached --quiet && { echo "No change"; exit 0; }
+          git commit -m "Slim $MODEL"
+          git push

@@ -218,6 +218,11 @@ export class SailingHud {
     this.forcesBox.checked = visible;
   }
 
+  /** Show that a boat's model is downloading (its button pulses). */
+  setBoatLoading(id: string, on: boolean): void {
+    for (const b of this.boatBar.querySelectorAll('button')) if (b.dataset.id === id) b.classList.toggle('loading', on);
+  }
+
   /** Rebuild the boat-specific parts (after changing boat or mode). */
   setBoat(spec: BoatSpec, controls: Controls): void {
     for (const b of this.boatBar.querySelectorAll('button')) b.classList.toggle('active', b.dataset.id === spec.id);

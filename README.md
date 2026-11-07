@@ -9,6 +9,7 @@ built to be easy to maintain and to grow into several small games.
   Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Sarilhos Pequenos, Montijo, Ilha do Rato, Alcochete) with the real channel buoys. Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
+  An afternoon sky with clouds drifting downwind, and gulls circling over the river.
 
 ## Run it
 
@@ -72,7 +73,8 @@ sheer line, stem, masts, sail corners and rudder, read from a side photo or plan
 prints the areas and centres the physics needs. Then continue from step 2.
 
 1. Convert the model: `scripts/convert-model.sh boat.fbx textures/ src/assets/models/boat.glb`
-   (see [docs/MODELS.md](docs/MODELS.md)).
+   (see [docs/MODELS.md](docs/MODELS.md)); if it is heavy, slim it with `scripts/slim-model.mjs`.
+   Boats download only when picked, so each new boat adds nothing to the start-up time.
 2. Describe it in `src/physics/boats/<boat>.ts` and add it to `BOATS` in `src/physics/index.ts`
    (or to `BOATS_IN_DEVELOPMENT` to keep it out of the games while it is being worked on).
 3. Map its sails and rudder to model nodes in `src/engine/boatVisuals.ts`.

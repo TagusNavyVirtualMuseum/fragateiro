@@ -76,6 +76,9 @@ canvas { width: 100%; height: 100%; display: block; touch-action: none; outline:
   font-size: 18px; z-index: 10; transition: opacity 0.4s;
 }
 .loading.done { opacity: 0; pointer-events: none; }
+/* A boat button while its model downloads. */
+button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cursor: progress; }
+@keyframes boat-loading { from { opacity: 1; } to { opacity: 0.45; } }
 
 @media (max-width: 900px) {
   .hud { font-size: 12px; }
