@@ -265,32 +265,32 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
   },
   canoa: {
     boat: 'canoa',
-    // Generated from numbers and a photo: scripts/boats/canoa.mjs (model in metres).
+    // Generated from numbers and photos: scripts/boats/canoa.mjs (model in metres).
     hullNodes: ['Casco'],
     url: canoaUrl,
     unit: 1,
     scale: 1,
-    cgX: 0.25,
+    cgX: 0.3,
     waterline: 0,
     sails: [
       {
         sail: 'main',
         nodes: ['Vela', 'Verga'],
-        pivot: [-1.0, 0, 0],
-        axis: { base: [-1.0, -0.35, 0], top: [-1.4, 5.4, 0] }, // mast raked forward
+        pivot: [-1.2, 0, 0],
+        axis: { base: [-1.2, -0.35, 0], top: [-0.79, 11.3, 0] }, // mast, raked slightly aft
       },
       {
         sail: 'mizzen',
         nodes: ['Vela_mezena', 'Verga_mezena'],
-        pivot: [3.35, 0, 0.3],
-        axis: { base: [3.35, 0, 0.3], top: [3.35, 3.6, 0.3] },
+        pivot: [3.9, 0, 0.15],
+        axis: { base: [3.9, 0.2, 0.15], top: [3.9, 5.6, 0.15] },
       },
     ],
     // Lateen sheet on an arch over the tiller; mizzen sheet to the end of the bumkin.
     horse: { x: 2.9, halfWidth: 0.8, footY: 0.8, topY: 1.3 },
     sheets: [
-      { sail: 'main', clew: [1.8, 1.35, 0.13], to: 'horse' },
-      { sail: 'mizzen', clew: [5.4, 1.5, 0.39], to: [5.8, 0.98, 0.15] },
+      { sail: 'main', clew: [3.66, 1.49, 0.17], to: 'horse' },
+      { sail: 'mizzen', clew: [5.84, 1.39, 0.29], to: [6.8, 1.15, 0.12] },
     ],
     rudder: {
       nodes: ['Leme', 'Cana'],
@@ -298,6 +298,7 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       axis: { base: [4.4, -0.62, 0], top: [4.4, 0.95, 0] }, // the sternpost
     },
   },
+
 };
 
 function rangeNums(from: number, to: number): number[] {

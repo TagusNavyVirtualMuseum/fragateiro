@@ -17,6 +17,6 @@ import { CATRAIO } from './boats/catraio';
 import { FALUA } from './boats/falua';
 import { FRAGATA } from './boats/fragata';
 import { MULETA } from './boats/muleta';
-export const BOATS = [FALUA, MULETA, FRAGATA, CATRAIO];
+export const BOATS = [FALUA, MULETA, FRAGATA, CATRAIO, CANOA];
 /** Boats still being worked on: tested, but not offered in the games yet. */
-export const BOATS_IN_DEVELOPMENT = [CANOA];
+export const BOATS_IN_DEVELOPMENT: typeof BOATS = [];

@@ -1,11 +1,11 @@
 # Fragateiro
 
 Browser mini-games with the traditional sailing boats of the Tagus River: the **Falua**, the
-**Muleta** of Seixal, the **Fragata**, the **Catraio** and (under development, not in the game yet) the **Canoa**. A web successor to the Unity simulator described in
+**Muleta** of Seixal, the **Fragata**, the **Catraio** and the **Canoa**. A web successor to the Unity simulator described in
 *A sailing simulator for the revival of the Tagus River nautical heritage* (Fazenda et al., 2025),
 built to be easy to maintain and to grow into several small games.
 
-- **Sailing the Tagus** (`games/sailing/`): free sailing with four boats on a map of the lower Tagus,
+- **Sailing the Tagus** (`games/sailing/`): free sailing with five boats on a map of the lower Tagus,
   from Vila Franca de Xira down the estuary and out along the coast to Cascais and round Cabo
   Espichel to Sesimbra and Setúbal, with the real channel buoys and landmarks: the 25 de Abril
   and Vasco da Gama bridges, Torre de Belém, the Padrão dos Descobrimentos, the Castelo de São

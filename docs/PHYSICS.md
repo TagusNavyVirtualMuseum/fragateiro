@@ -89,7 +89,8 @@ Mass, stability and resistance values are estimates. `npm run polar [wind m/s]` 
 best speed at each wind angle for every boat and mode. At 6 m/s (the paper's test wind) the
 current values give, for the Falua: nothing below about 42°, 2.7 kn at 45°, 5.4 kn on a beam
 reach and 5 kn running. The Fragata: 2.6 kn at 45°, 6 kn on a beam reach; the Catraio:
-2.3 kn at 45°, 4.9 kn on a beam reach; the Canoa: 1.7 kn at 45°, 4.2 kn on a beam reach.
+2.3 kn at 45°, 4.9 kn on a beam reach; the Canoa (52 m² lateen on a narrow 5 t hull): 2.7 kn at 45°, 5 kn on a beam reach, heeling
+up to about 10°.
 The masses (Falua 15 t, Muleta 7 t, Fragata 30 t part-loaded, Catraio 5 t, Canoa 5 t) are estimates; they are what makes each boat feel different
 (how it carries its way through a tack and how quickly it picks up speed). Heel stays under about 5° and leeway around 0.1–0.3 kn
 in this wind (stability and hull grip were doubled after play-testing).
