@@ -21,6 +21,7 @@ import metaJson from '../assets/map/tagus.json';
 import { LandMask, type MapMeta } from '../world/landMask';
 import { Terrain, type HeightsMeta } from '../world/terrain';
 import { createLandmarks, type BridgeLine } from './landmarks';
+import { createBuoy, seaMarkStyle } from './buoys';
 import { addExtraPlaces } from '../world/destinations';
 import { waveHeight } from './waves';
 
@@ -95,19 +96,54 @@ uniform float fogDensity;
 varying vec3 vWorld;
 varying vec3 vNormal;
 varying vec2 vUV;
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+float fbm(vec2 p) {
+  float v = 0.0;
+  float a = 0.5;
+  for (int i = 0; i < 4; i++) { v += a * noise(p); p = p * 2.1 + vec2(3.1, 7.7); a *= 0.5; }
+  return v;
+}
+
 void main() {
   vec4 m = texture2D(mask, vUV);
-  if (m.r > 0.5) discard;                       // water
+  // Water is drawn by the water itself.
+  if (m.r > 0.5) discard;
   float inland = 1.0 - m.g;
-  float noise = 0.5 + 0.25 * sin(vWorld.x * 0.013 + sin(vWorld.z * 0.011) * 3.0) + 0.25 * sin(vWorld.z * 0.031 - vWorld.x * 0.017);
-  vec3 sand = vec3(0.78, 0.72, 0.56);
-  vec3 field = mix(vec3(0.45, 0.52, 0.33), vec3(0.62, 0.6, 0.45), noise);
-  vec3 color = mix(sand, field, smoothstep(0.08, 0.4, inland));
-  // Higher ground: darker green (pine woods and scrub on the hills).
-  color = mix(color, vec3(0.32, 0.4, 0.26), smoothstep(40.0, 160.0, vWorld.y) * 0.6);
+  vec3 n = normalize(vNormal);
+  float slope = 1.0 - n.y;
+  vec2 p = vWorld.xz;
+  // The Lisbon countryside in late summer: dry golden grass, patches of green fields and
+  // olive scrub, darker pine woods on the hills, bare rock on steep slopes and sand at the
+  // shore. Large patches (about 1 km) mixed with smaller ones (fields of 100-200 m).
+  float big = fbm(p * 0.0011);
+  float small = fbm(p * 0.006 + 11.0);
+  vec3 dryGrass = vec3(0.62, 0.56, 0.38);
+  vec3 greenField = vec3(0.40, 0.46, 0.27);
+  vec3 scrub = vec3(0.37, 0.39, 0.26);
+  vec3 soil = vec3(0.56, 0.46, 0.34);
+  vec3 pine = vec3(0.20, 0.27, 0.16);
+  vec3 rock = vec3(0.60, 0.57, 0.50);
+  vec3 sand = vec3(0.80, 0.75, 0.60);
+  vec3 color = mix(dryGrass, greenField, smoothstep(0.45, 0.62, big));
+  color = mix(color, soil, smoothstep(0.62, 0.72, small) * 0.7);
+  color = mix(color, scrub, smoothstep(0.5, 0.7, small) * smoothstep(0.35, 0.55, big) * 0.6);
+  // Woods: more of them on higher ground.
+  float wood = smoothstep(0.55, 0.7, big + 0.25 * smoothstep(30.0, 150.0, vWorld.y) + 0.15 * (small - 0.5));
+  color = mix(color, pine, wood * 0.85);
+  // Steep ground (cliffs, valley sides) shows bare rock.
+  color = mix(color, rock, smoothstep(0.25, 0.5, slope));
+  // A strip of sand along the shore.
+  color = mix(sand, color, smoothstep(0.06, 0.3, inland));
   // Slopes facing the sun are lit, the others in shade: this is what shows the relief.
-  float light = max(dot(normalize(vNormal), normalize(sunDirection)), 0.0);
-  color *= 0.55 + 0.75 * light;
+  float light = max(dot(n, normalize(sunDirection)), 0.0);
+  color *= 0.6 + 0.65 * light;
   float dist = length(cameraPosition - vWorld);
   float fog = 1.0 - exp(-pow(dist * fogDensity, 2.0));
   gl_FragColor = vec4(mix(color, skyColor, fog), 1.0);
@@ -273,45 +309,18 @@ function makeLabel(scene: Scene, text: string, big: boolean): Mesh {
   return plane;
 }
 
-const COLOURS: Record<string, Color3> = {
-  red: new Color3(0.85, 0.12, 0.1),
-  green: new Color3(0.1, 0.6, 0.25),
-  yellow: new Color3(0.95, 0.8, 0.1),
-  black: new Color3(0.1, 0.1, 0.1),
-  white: new Color3(0.95, 0.95, 0.95),
-};
 
 function createSeaMarks(scene: Scene, marks: SeaMark[]): TransformNode[] {
-  const mats = new Map<string, StandardMaterial>();
-  const material = (colour: string) => {
-    const key = colour.split(';')[0] || 'yellow';
-    if (!mats.has(key)) {
-      const m = new StandardMaterial(`seamark-${key}`, scene);
-      m.diffuseColor = COLOURS[key] ?? COLOURS.yellow;
-      m.emissiveColor = (COLOURS[key] ?? COLOURS.yellow).scale(0.25);
-      mats.set(key, m);
-    }
-    return mats.get(key)!;
-  };
   const nodes: TransformNode[] = [];
   for (const s of marks) {
     const node = new TransformNode(`seamark-${s.name || s.type}`, scene);
     node.position.set(s.x, 0, s.y);
     const beacon = s.type.startsWith('beacon') || s.type.startsWith('light');
     node.metadata = { floats: !beacon };
-    const body = MeshBuilder.CreateCylinder('mark', { height: beacon ? 5 : 2.2, diameterTop: beacon ? 0.4 : 0.35, diameterBottom: beacon ? 0.6 : 1.4, tessellation: 12 }, scene);
-    body.position.y = beacon ? 2.5 : 0.9;
-    body.material = material(s.colour);
-    body.parent = node;
-    body.isPickable = false;
-    // Lateral marks: red cans are cylinders, green ones end in a cone.
-    if (s.colour.startsWith('green') || s.category.includes('starboard')) {
-      const top = MeshBuilder.CreateCylinder('markTop', { height: 0.9, diameterTop: 0, diameterBottom: 0.6, tessellation: 12 }, scene);
-      top.position.y = (beacon ? 5 : 2.2) + 0.4;
-      top.material = body.material;
-      top.parent = node;
-      top.isPickable = false;
-    }
+    const buoy = createBuoy(scene, `seamark-${nodes.length}`, seaMarkStyle(s.type, s.colour, s.category));
+    // Beacons stand on the bottom, their float hidden under water and the tower raised.
+    if (beacon) buoy.position.y = 1.5;
+    buoy.parent = node;
     nodes.push(node);
   }
   return nodes;

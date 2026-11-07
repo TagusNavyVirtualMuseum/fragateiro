@@ -4,7 +4,7 @@
 //   Torre de Belém      the 16th-century tower in the river at Belém
 //   Padrão dos Descobrimentos  the 52 m monument to the Discoveries, shaped like a prow
 //   Lighthouses of Cabo Espichel, Bugio, Santa Marta, Gibalta and Alfeite; the Castelo de
-//   São Jorge
+//   São Jorge; Cristo Rei; Ponte Marechal Carmona (Vila Franca); Torre Vasco da Gama
 // Bridge routes are the deck lines from OpenStreetMap (tagus.json "bridges"); the rest is
 // placed by its latitude and longitude. Sizes are real; details are simplified.
 import { Color3, Mesh, MeshBuilder, PBRMaterial, Vector3, VertexData, type Scene } from '@babylonjs/core';
@@ -507,6 +507,114 @@ export function createLandmarks(
     }
     merged('castelo', pieces, castle);
     labels.push({ name: 'Castelo de São Jorge', x, y, height: g + 50 });
+  }
+
+  // --- Ponte Marechal Carmona, Vila Franca de Xira (1951): a steel truss bridge, low over the
+  // river, with its road on top of a row of grey-green trusses on concrete piers -------------
+  const vfx = bridgeLines['Ponte Marechal Carmona'];
+  if (vfx) {
+    const steel = material(scene, 'vfx-steel', '#6f7f78', 0.5);
+    const concrete = material(scene, 'vfx-concrete', '#bdb8ac');
+    const samples = resample(vfx.points, 10);
+    const DECK = 12;
+    const pts = samples.map((p) => ({ ...p, h: Math.max(ground(p.x, p.y) + 1, DECK) })).filter((p) => p.h - ground(p.x, p.y) > 2);
+    if (pts.length > 2) {
+      deck(scene, 'vfx-deck', pts, 11, 1.2, steel);
+      // Trusses on both sides: top and bottom chords with diagonals between them.
+      const truss: Vector3[][] = [];
+      const piers: Parameters<typeof boxes>[2] = [];
+      for (const side of [-1, 1]) {
+        const chord = (h: number) => pts.map((p, i) => {
+          const c = at(samples, p.s);
+          void i;
+          return new Vector3(p.x + c.dy * side * 5.2, p.h + h, p.y - c.dx * side * 5.2);
+        });
+        const top = chord(7);
+        const bottom = chord(-1.2);
+        truss.push(top, bottom);
+        for (let i = 0; i + 1 < top.length; i++) {
+          truss.push(i % 2 ? [bottom[i], top[i + 1]] : [top[i], bottom[i + 1]]);
+          truss.push([bottom[i], top[i]]);
+        }
+      }
+      // Cross bracing over the road, and a pier every 60 m.
+      pts.forEach((p, i) => {
+        const c = at(samples, p.s);
+        if (i % 3 === 0) truss.push([new Vector3(p.x + c.dy * 5.2, p.h + 7, p.y - c.dx * 5.2), new Vector3(p.x - c.dy * 5.2, p.h + 7, p.y + c.dx * 5.2)]);
+        if (i % 6 === 0) {
+          const g = ground(p.x, p.y);
+          piers.push({ x: p.x, y: (g + p.h - 1.2) / 2 - 1, z: p.y, w: 3, h: p.h - 1.2 - g + 2, d: 10, rot: Math.atan2(c.dx, c.dy) });
+        }
+      });
+      lines(scene, 'vfx-truss', truss, new Color3(0.36, 0.45, 0.41));
+      boxes(scene, 'vfx-piers', piers, concrete);
+      const mid = at(samples, samples[samples.length - 1].s / 2);
+      labels.push({ name: 'Ponte Marechal Carmona', x: mid.x, y: mid.y, height: 45 });
+    }
+  }
+
+  // --- Cristo Rei, Almada (1959): the statue of Christ with open arms, 28 m tall, on a 75 m
+  // pedestal shaped like a gateway, high on the cliff facing Lisbon -------------------------
+  {
+    const [x, y] = toXY(38.67858, -9.17117);
+    const g = ground(x, y);
+    const concrete = material(scene, 'cristo-rei', '#d9d4c7');
+    const pieces: Mesh[] = [];
+    const box = (cx: number, cy: number, cz: number, w: number, h: number, d: number) => {
+      const b = MeshBuilder.CreateBox('cristo-part', { width: w, height: h, depth: d }, scene);
+      b.position.set(x + cx, g + cy, y + cz);
+      pieces.push(b);
+    };
+    // Four legs forming arches on each side, joined by a beam at the top of the arches.
+    for (const [dx, dz] of [[-9, -9], [9, -9], [-9, 9], [9, 9]]) box(dx, 12, dz, 5, 24, 5);
+    box(0, 26, 0, 24, 5, 24);
+    // The shaft narrows to the platform at 75 m.
+    for (let k = 0; k < 9; k++) {
+      const w = 20 - k * 1.2;
+      box(0, 28.5 + k * 5 + 2.5, 0, w, 5, w);
+    }
+    box(0, 74, 0, 14, 2, 14); // the platform (the viewpoint)
+    // The statue: robe, chest, head and the arms held wide.
+    const robe = MeshBuilder.CreateCylinder('cristo-robe', { height: 19, diameterBottom: 6.5, diameterTop: 4.2, tessellation: 16 }, scene);
+    robe.position.set(x, g + 75 + 9.5, y);
+    pieces.push(robe);
+    box(0, 75 + 21, 0, 4.4, 4, 3);
+    box(0, 75 + 22.5, 0, 22, 2.2, 2.2); // arms
+    const head = MeshBuilder.CreateSphere('cristo-head', { diameter: 3.2, segments: 10 }, scene);
+    head.position.set(x, g + 75 + 26, y);
+    pieces.push(head);
+    // Facing north, to Lisbon: the arms lie east-west, which the box above already does.
+    merged('cristo-rei', pieces, concrete);
+    labels.push({ name: 'Cristo Rei', x, y, height: g + 130 });
+  }
+
+  // --- Torre Vasco da Gama, Parque das Nações (1998): a 145 m tower shaped like a caravel's
+  // sail, at the water's edge, with the hotel at its foot ------------------------------------
+  {
+    const [x, y] = toXY(38.7741, -9.0918);
+    const g = ground(x, y);
+    const white = material(scene, 'tvg-white', '#e8e8e4', 0.4);
+    const glass = material(scene, 'tvg-glass', '#33505e', 0.15);
+    const mast: Mesh[] = [];
+    // The mast: a slim tapering spine facing the river.
+    mast.push(prism(scene, [[x - 3, y - 2.5], [x + 3, y - 2.5], [x + 3, y + 2.5], [x - 3, y + 2.5]], g, g + 145));
+    // The sail: thin layers whose outer edge curves out and back, like wind in a sail.
+    for (let k = 0; k < 28; k++) {
+      const t = k / 28;
+      const reach = 4 + 18 * Math.sin(Math.PI * Math.min(1, t * 1.15)) * (1 - 0.4 * t);
+      // The sail spreads to the north, so it shows its full shape to boats on the river.
+      mast.push(prism(scene, [[x - 2, y + 2], [x - 0.8, y + 2 + reach], [x + 0.8, y + 2 + reach], [x + 2, y + 2]], g + 6 + k * 4.7, g + 6 + (k + 1) * 4.7));
+    }
+    // The viewing deck near the top.
+    const deckTop = MeshBuilder.CreateBox('tvg-deck', { width: 9, height: 6, depth: 12 }, scene);
+    deckTop.position.set(x, g + 122, y + 3);
+    mast.push(deckTop);
+    merged('torre-vasco-da-gama', mast, white);
+    // The hotel: a long low block on the landward side, glass and white.
+    const hotel = MeshBuilder.CreateBox('tvg-hotel', { width: 22, height: 26, depth: 40 }, scene);
+    hotel.position.set(x - 16, g + 13, y);
+    merged('tvg-hotel', [hotel], glass);
+    labels.push({ name: 'Torre Vasco da Gama', x, y, height: g + 175 });
   }
 
   return labels;

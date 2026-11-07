@@ -1,12 +1,12 @@
-// Regatta marks: large yellow inflatable buoys with a flag, bobbing on the waves, and two
-// posts marking the start and finish line. The next buoy to round glows.
+// Regatta marks: yellow special-mark pillar buoys (IALA) bobbing on the waves, and two posts
+// marking the start and finish line. A glowing ring floats round the next buoy to round.
 import { Color3, Mesh, MeshBuilder, PBRMaterial, TransformNode, type Scene } from '@babylonjs/core';
 import type { Course } from '../world/missions';
 import { waveHeight } from './waves';
+import { SPECIAL_MARK, createBuoy } from './buoys';
 
 export class CourseView {
   private marks: TransformNode[] = [];
-  private readonly yellow: PBRMaterial;
   private readonly glow: PBRMaterial;
   private readonly flag: PBRMaterial;
   private readonly post: PBRMaterial;
@@ -19,7 +19,6 @@ export class CourseView {
       m.roughness = 0.6;
       return m;
     };
-    this.yellow = mat('mark', '#f2c21b');
     this.glow = mat('mark-next', '#ffb000');
     this.glow.emissiveColor = new Color3(0.9, 0.55, 0.05);
     this.flag = mat('mark-flag', '#c0262d');
@@ -34,20 +33,15 @@ export class CourseView {
     course.buoys.forEach((b, i) => {
       const root = new TransformNode(`mark-${i}`, this.scene);
       root.position.set(b.x, 0, b.y);
-      const body = MeshBuilder.CreateCylinder(`mark-body-${i}`, { height: 4, diameterTop: 1.6, diameterBottom: 3, tessellation: 16 }, this.scene);
-      body.position.y = 1.6;
-      body.material = this.yellow;
-      const pole = MeshBuilder.CreateCylinder(`mark-pole-${i}`, { height: 4, diameter: 0.15 }, this.scene);
-      pole.position.y = 5.4;
-      pole.material = this.post;
-      const flag = MeshBuilder.CreatePlane(`mark-flag-${i}`, { width: 2, height: 1.2, sideOrientation: Mesh.DOUBLESIDE }, this.scene);
-      flag.position.set(1, 6.6, 0);
-      flag.material = this.flag;
-      for (const m of [body, pole, flag]) {
-        m.parent = root;
-        m.isPickable = false;
-      }
-      root.metadata = { body };
+      // A yellow special-mark pillar buoy with its X topmark; a ring glows on the next one.
+      const buoy = createBuoy(this.scene, `course-mark-${i}`, SPECIAL_MARK);
+      buoy.parent = root;
+      const ring = MeshBuilder.CreateTorus(`mark-ring-${i}`, { diameter: 4.4, thickness: 0.35, tessellation: 24 }, this.scene);
+      ring.position.y = 0.4;
+      ring.material = this.glow;
+      ring.parent = root;
+      ring.isPickable = false;
+      root.metadata = { ring };
       this.marks.push(root);
     });
     // Start/finish line: two white posts across the wind, 120 m apart.
@@ -75,9 +69,9 @@ export class CourseView {
   /** Highlight the next buoy and bob everything on the waves. */
   update(next: number, time: number): void {
     this.marks.forEach((m, i) => {
-      m.position.y = waveHeight(m.position.x, m.position.z, time) - 0.6;
-      const body = m.metadata?.body as Mesh | undefined;
-      if (body) body.material = i === next ? this.glow : this.yellow;
+      m.position.y = waveHeight(m.position.x, m.position.z, time) - 0.2;
+      const ring = m.metadata?.ring as Mesh | undefined;
+      if (ring) ring.setEnabled(i === next);
     });
   }
 }

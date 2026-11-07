@@ -8,8 +8,10 @@ built to be easy to maintain and to grow into several small games.
 - **Sailing the Tagus** (`games/sailing/`): free sailing with five boats on a map of the lower Tagus,
   from Vila Franca de Xira down the estuary and out along the coast to Cascais and round Cabo
   Espichel to Sesimbra and Setúbal, with the real channel buoys and landmarks: the 25 de Abril
-  and Vasco da Gama bridges, Torre de Belém, the Padrão dos Descobrimentos, the Castelo de São
-  Jorge and the lighthouses of Cabo Espichel, Bugio, Santa Marta, Gibalta and Alfeite. Switch boats at any
+  and Vasco da Gama bridges, the Vila Franca bridge, Torre de Belém, the Padrão dos
+  Descobrimentos, Cristo Rei, the Torre Vasco da Gama, the Castelo de São Jorge and the
+  lighthouses of Cabo Espichel, Bugio, Santa Marta, Gibalta and Alfeite. Buoys are IALA pillar
+  buoys (red can / green cone topmarks; yellow X for the regatta marks). Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
   An afternoon sky with clouds drifting downwind, gulls circling over the river, real land
@@ -33,10 +35,11 @@ Routes end within 150 m of the port; regattas are laid to the wind in open water
 upwind), each buoy is rounded by passing within 45 m, in order, then back to the line. The
 clock is the game clock; best times are kept in the browser per mission and level.
 
-- **Easy:** the crew trims the sails to the best angle for the apparent wind (no sheet controls).
+- **Easy:** the crew trims each sail for the best drive (no sheet controls), and the boat goes
+  where it points (no drift).
 - **Medium:** you trim the sheets; balanced sails.
 - **Hard:** you trim the sheets; sails not balanced (they turn the boat), and none of the
-  low-speed steering help through a tack.
+  low-speed steering help through a tack: ease the sheets while turning through the wind.
 
 Missions are defined in `src/world/missions.ts`; the trimming in `src/physics/autotrim.ts`.
 
