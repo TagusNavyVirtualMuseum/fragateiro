@@ -6,7 +6,7 @@
 //   node scripts/fetch-heights.mjs
 //
 // Reads the map grid from src/assets/map/tagus.json (written by fetch-map.mjs), samples the
-// elevation at the centre of every 30 m cell and writes:
+// elevation at the centre of every 40 m cell and writes:
 //   src/assets/map/tagus-height.png   height = (R * 256 + G) * 0.1 - 100 metres
 //   tagus.json "heights"              grid size, cell size and how to decode
 // The model is a surface model: towns and woods add their height, which reads well from
@@ -17,7 +17,8 @@ import { deflateSync } from 'node:zlib';
 import { fromArrayBuffer } from 'geotiff';
 
 const OUT_DIR = new URL('../src/assets/map/', import.meta.url);
-const CELL = 30; // m
+// 40 m keeps the image small for the whole area (the source is 30 m).
+const CELL = 40; // m
 const SCALE = 0.1; // m per step
 const OFFSET = -100; // m
 

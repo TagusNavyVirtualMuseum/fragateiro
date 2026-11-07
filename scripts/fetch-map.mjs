@@ -16,18 +16,28 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 
-// --- Area: Lisbon, Almada, Seixal, Barreiro, Moita, Montijo and Alcochete -----------------
-const BBOX = { south: 38.62, west: -9.19, north: 38.765, east: -8.935 };
+// --- Area: the Tagus from Vila Franca de Xira to the sea, the coast from Cascais (and the
+// Sintra coast) round to Cabo Espichel and Sesimbra ----------------------------------------
+const BBOX = { south: 38.38, west: -9.5, north: 38.99, east: -8.85 };
 /** Local origin (and flood-fill seed): mid-river between Terreiro do Paço and Barreiro. */
 const ORIGIN = { lat: 38.685, lon: -9.1 };
-const CELL = 10; // metres
+// 20 m cells keep the mask under 4096 px a side (the most phones can load as a texture).
+const CELL = 20; // metres
 const OUT_DIR = new URL('../src/assets/map/', import.meta.url);
 
 const PLACES_WANTED = /^(city|town|village|hamlet|island|islet)$/;
+/** Landmark bridges: their deck lines are saved for drawing. */
+const BRIDGES = /^Ponte (25 de Abril|Vasco da Gama)$/;
 /** Must be land / water, or the data is wrong (checked after building the grid). */
 const CHECKS = {
-  land: { Moita: [38.6507, -8.9905], Montijo: [38.7067, -8.9739], Barreiro: [38.6631, -9.0724], Lisboa: [38.7139, -9.1394], Alcochete: [38.7553, -8.9608] },
-  water: { origin: [ORIGIN.lat, ORIGIN.lon], 'Montijo channel': [38.695, -9.05], 'off Seixal': [38.655, -9.1] },
+  land: {
+    Moita: [38.6507, -8.9905], Montijo: [38.7067, -8.9739], Barreiro: [38.6631, -9.0724], Lisboa: [38.7139, -9.1394], Alcochete: [38.7553, -8.9608],
+    Cascais: [38.6979, -9.4215], Sesimbra: [38.4445, -9.1015], 'Vila Franca de Xira': [38.9553, -8.9897], Sintra: [38.8, -9.38],
+  },
+  water: {
+    origin: [ORIGIN.lat, ORIGIN.lon], 'Montijo channel': [38.695, -9.05], 'off Seixal': [38.655, -9.1],
+    'off Cascais': [38.68, -9.42], 'off Cabo Espichel': [38.4, -9.23], 'Sesimbra bay': [38.43, -9.1], 'Tagus at Vila Franca': [38.94, -8.975],
+  },
 };
 
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
@@ -60,6 +70,8 @@ async function download() {
   way["place"~"island|islet"]["name"](${b});
   relation["place"~"island|islet"]["name"](${b});
   node["seamark:type"](${b});
+  node["natural"="cape"]["name"](${b});
+  way["highway"]["bridge"]["name"~"^Ponte (25 de Abril|Vasco da Gama)$"](${b});
 );
 out geom;`;
   for (const url of OVERPASS) {
@@ -235,7 +247,7 @@ function blur(src, radius) {
   return out;
 }
 const sharp = blur(water, 1);
-const wide = blur(blur(water, 4), 4);
+const wide = blur(blur(water, 2), 2);
 
 function png(width, height, rgb) {
   const crcTable = Array.from({ length: 256 }, (_, n) => {
@@ -269,7 +281,9 @@ for (let i = 0; i < W * H; i++) { rgb[i * 3] = sharp[i]; rgb[i * 3 + 1] = wide[i
 
 const places = [];
 for (const el of elements) {
-  if (!el.tags?.name || !PLACES_WANTED.test(el.tags.place ?? '')) continue;
+  // Capes (Cabo Espichel) count as places too.
+  const kind = el.tags?.natural === 'cape' ? 'cape' : el.tags?.place;
+  if (!el.tags?.name || !(kind === 'cape' || PLACES_WANTED.test(kind ?? ''))) continue;
   // Towns are points; islands are usually outlines (use the middle of their points).
   let lat = el.lat;
   let lon = el.lon;
@@ -280,7 +294,7 @@ for (const el of elements) {
   }
   if (lat === undefined) continue;
   const [x, y] = toXY(lat, lon);
-  places.push({ name: el.tags.name, kind: el.tags.place, x: Math.round(x), y: Math.round(y) });
+  places.push({ name: el.tags.name, kind, x: Math.round(x), y: Math.round(y) });
 }
 places.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -296,6 +310,17 @@ for (const el of elements) {
   seamarks.push({ type, category, colour, name: t['seamark:name'] ?? t.name ?? '', x: Math.round(x), y: Math.round(y) });
 }
 console.log(`sea marks: ${seamarks.length}`);
+
+// Bridges: the longest road on each (its deck line), in world metres.
+const bridges = {};
+for (const el of elements) {
+  const name = el.tags?.name;
+  if (el.type !== 'way' || !el.tags?.highway || !BRIDGES.test(name ?? '') || !el.geometry) continue;
+  const pts = el.geometry.map((g) => toXY(g.lat, g.lon).map((v) => Math.round(v)));
+  const length = pts.reduce((s, p, i) => (i ? s + Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]) : 0), 0);
+  if (!bridges[name] || bridges[name].length < length) bridges[name] = { length: Math.round(length), points: pts };
+}
+console.log(`bridges: ${Object.entries(bridges).map(([n, b]) => `${n} ${b.length} m`).join(', ') || 'none'}`);
 
 mkdirSync(OUT_DIR, { recursive: true });
 writeFileSync(new URL('tagus-mask.png', OUT_DIR), png(W, H, rgb));
@@ -314,6 +339,7 @@ writeFileSync(
       northWest: { x: Number(minX.toFixed(2)), y: Number(maxY.toFixed(2)) },
       places,
       seamarks,
+      bridges,
     },
     null,
     2,
