@@ -87,9 +87,17 @@ export class Minimap {
   }
 
   /** Redraw with the boat at (x east, y north) and its heading (rad). */
-  draw(x: number, y: number, heading: number, target?: { x: number; y: number }): void {
+  draw(x: number, y: number, heading: number, target?: { x: number; y: number }, others: { x: number; y: number }[] = []): void {
     const ctx = this.canvas.getContext('2d')!;
     ctx.drawImage(this.base, 0, 0);
+    // Other boats: small dark dots.
+    ctx.fillStyle = '#3b2312';
+    for (const o of others) {
+      const [ox, oy] = this.toPx(o.x, o.y);
+      ctx.beginPath();
+      ctx.arc(ox, oy, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
     if (target) {
       const [tx, ty] = this.toPx(target.x, target.y);
       ctx.strokeStyle = '#e3a33b';

@@ -7,6 +7,15 @@ import muletaUrl from '../assets/models/muleta.glb?url';
 import fragataUrl from '../assets/models/fragata.glb?url';
 import catraioUrl from '../assets/models/catraio.glb?url';
 import canoaUrl from '../assets/models/canoa.glb?url';
+// Light versions for boats seen from afar (scripts/lite-models.ts).
+import faluaLite from '../assets/models/lite/falua.glb?url';
+import muletaLite from '../assets/models/lite/muleta.glb?url';
+import fragataLite from '../assets/models/lite/fragata.glb?url';
+import catraioLite from '../assets/models/lite/catraio.glb?url';
+import canoaLite from '../assets/models/lite/canoa.glb?url';
+
+/** Light model of each boat, for the other boats sailing on the river. */
+export const LITE_URLS: Record<string, string> = { falua: faluaLite, muleta: muletaLite, fragata: fragataLite, catraio: catraioLite, canoa: canoaLite };
 
 type V3 = [number, number, number];
 

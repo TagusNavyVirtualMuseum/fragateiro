@@ -16,6 +16,7 @@ export interface HudCallbacks {
   onBalanced(on: boolean): void;
   onWindVisible(on: boolean): void;
   onSound(on: boolean): void;
+  onTraffic(on: boolean): void;
 }
 
 export interface Navigation {
@@ -124,6 +125,7 @@ export class SailingHud {
       <label class="cam-height">Height <input type="range" min="3" max="85" step="1" name="camHeight"> <output name="camHeightOut"></output></label>
       <label class="check"><input type="checkbox" name="forces"> Show forces <small>(F)</small></label>
       <label class="check"><input type="checkbox" name="sound" checked> Sound: wind and water <small>(N)</small></label>
+      <label class="check"><input type="checkbox" name="traffic" checked> Other boats on the river</label>
       <label>Game speed <select name="timeScale">
         <option value="1">1× real time</option>
         <option value="2">2× faster</option>
@@ -181,6 +183,8 @@ export class SailingHud {
     });
     this.soundBox = opts.querySelector<HTMLInputElement>('[name=sound]')!;
     this.soundBox.addEventListener('change', () => cb.onSound(this.soundBox.checked));
+    const traffic = opts.querySelector<HTMLInputElement>('[name=traffic]')!;
+    traffic.addEventListener('change', () => cb.onTraffic(traffic.checked));
     const windVisible = opts.querySelector<HTMLInputElement>('[name=windVisible]')!;
     windVisible.addEventListener('change', () => cb.onWindVisible(windVisible.checked));
     const balanced = opts.querySelector<HTMLInputElement>('[name=balanced]')!;

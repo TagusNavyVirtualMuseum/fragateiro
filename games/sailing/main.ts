@@ -12,6 +12,7 @@ import { createSailingScene } from '../../src/engine/scene';
 import { WindView } from '../../src/engine/windView';
 import { Sound } from '../../src/engine/sound';
 import { Birds } from '../../src/engine/birds';
+import { Traffic } from '../../src/engine/traffic';
 import { SailingHud } from '../../src/ui/hud';
 import { Minimap } from '../../src/ui/minimap';
 import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
@@ -46,6 +47,8 @@ let mask: LandMask;
 let terrain: Terrain | undefined;
 let mapView: MapView;
 let minimap: Minimap;
+let traffic: Traffic | undefined;
+let trafficOn = true;
 let start = { x: 0, y: 0 };
 let aground = false;
 let destinations: Destination[] = [];
@@ -79,6 +82,10 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onBalanced: (on) => (balanced = on),
   onWindVisible: (on) => windView.setVisible(on),
   onSound: (on) => sound.setMuted(!on),
+  onTraffic: (on) => {
+    trafficOn = on;
+    traffic?.setVisible(on);
+  },
 }, { fromDeg: wind.fromDeg, speed: wind.speed, gusty });
 // Phones and tablets: gestures on the 3D view steer and trim; the camera keeps its views
 // (buttons) but does not orbit with one finger.
@@ -270,8 +277,12 @@ async function main(): Promise<void> {
   view.setVisible(true);
   hud.setBoat(spec, sim.controls);
   loading.classList.add('done');
+  // Other boats on the river (light models, loaded in the background): one of each, and a
+  // second Falua.
+  traffic = new Traffic(scene, [...BOATS, BOATS[0]], wind, mask, sim.state);
+  traffic.setVisible(trafficOn);
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat } });
+  Object.assign(window, { game: { get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -287,7 +298,8 @@ async function main(): Promise<void> {
     arrows.update(view.root, sim.report, w, s.heading, 12);
     netView.update(view.root, spec.net, !!sim.mode.net, s, sim.report.trueWindAngleDeg >= 0, time);
     mapView.update(time, camera);
-    minimap.draw(s.x, s.y, s.heading, target ?? undefined);
+    traffic?.update(s, paused ? 0 : dt * timeScale, time, dt);
+    minimap.draw(s.x, s.y, s.heading, target ?? undefined, traffic?.positions);
     let nav = null;
     if (target) {
       const dx = target.x - s.x;

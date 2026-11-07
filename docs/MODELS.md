@@ -48,6 +48,22 @@ sailing distance. The last argument is the model's `unit` from `boatVisuals.ts`.
 The game loads only the first boat at start; the others download the first time they are
 picked (the button pulses meanwhile), so more boats do not slow the start.
 
+## Light versions (other boats on the river)
+
+```bash
+npm install --no-save @gltf-transform/functions@4.5.1 meshoptimizer@1.3.0 sharp@0.34.4
+npx tsx --import ./scripts/url-stub.mjs scripts/lite-models.ts [boat ...]
+```
+
+The boats sailing around the player use light copies in `src/assets/models/lite/`. The script
+reads `boatVisuals.ts`, keeps the parts that move (sails, yards, rudder) as separate named
+nodes, drops fittings under 0.5 m and hidden parts, merges everything else into one mesh per
+material with its textures replaced by their average colour, and simplifies hard. Each boat
+ends up with 6-8k triangles (the Fragata 26k) and 140-480 KB; all four together are about
+1 MB, loaded in the background after the game starts. Run it again after changing a model or
+its wiring. (`scripts/url-stub.mjs` lets Node import `boatVisuals.ts`, whose `?url` imports
+only work in Vite.)
+
 ## Generating a model from numbers
 
 For a boat with photos or plans but no 3D model:

@@ -65,7 +65,7 @@ for (const node of doc.getRoot().listNodes()) {
         prim.setAttribute('NORMAL', null);
         if (normal.listParents().length <= 1) normal.dispose();
       }
-      weldPrimitive(prim, { tolerance: 0.0001 });
+      weldPrimitive(prim);
       if (size < SMALL) {
         // A few hundred triangles are plenty for something this size.
         const budget = 150 + 600 * (size / SMALL);

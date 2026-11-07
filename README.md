@@ -9,7 +9,9 @@ built to be easy to maintain and to grow into several small games.
   Almada, Seixal, Amora, Barreiro, Alhos Vedros, Moita, Sarilhos Pequenos, Montijo, Ilha do Rato, Alcochete) with the real channel buoys. Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
-  An afternoon sky with clouds drifting downwind, and gulls circling over the river.
+  An afternoon sky with clouds drifting downwind, gulls circling over the river, real land
+  heights, and other traditional boats sailing around you (each with its own physics and a
+  simple helmsman that tacks upwind and keeps off the shore).
 
 ## Run it
 
@@ -40,6 +42,7 @@ Node 22 or newer.
 | Game speed (1×, 2×, 3× default, 5×, 10×; speeds shown stay real, "time ×3" under the speed) | | setting |
 | Show the wind (streaks over the water), balanced sails (on by default: the sails do not turn the boat) | | wind settings |
 | Sound of wind, water and flapping sails (synthesised, starts on the first click or key) | N | checkbox |
+| Other boats on the river (shown as dots on the minimap) | | checkbox |
 | Pause / restart | P / R | |
 
 ## How it is organised
@@ -49,7 +52,7 @@ src/physics/    Sailing physics in plain TypeScript. No 3D, no browser: tested w
   boats/        One file per boat: dimensions, sails, modes (all the numbers live here).
 src/engine/     Babylon.js pieces shared by every game: scene, water, boat view, arrows…
 src/ui/         HTML/CSS overlay (instruments, sliders).
-src/world/      Game rules that need no 3D (land / water lookup).
+src/world/      Game rules that need no 3D (land / water, heights, the other boats' helmsman).
 src/assets/     Boat models (.glb) and the estuary map (map/).
 games/<name>/   One folder per mini-game: an index.html and a main.ts.
 tests/          Physics tests.
@@ -77,7 +80,8 @@ prints the areas and centres the physics needs. Then continue from step 2.
    Boats download only when picked, so each new boat adds nothing to the start-up time.
 2. Describe it in `src/physics/boats/<boat>.ts` and add it to `BOATS` in `src/physics/index.ts`
    (or to `BOATS_IN_DEVELOPMENT` to keep it out of the games while it is being worked on).
-3. Map its sails and rudder to model nodes in `src/engine/boatVisuals.ts`.
+3. Map its sails and rudder to model nodes in `src/engine/boatVisuals.ts`, then make its light
+   version for the other boats on the river (`scripts/lite-models.ts`, see docs/MODELS.md).
 4. Run `npm run polar` and adjust until the speeds look right; add it to the tests.
 
 ## The map
