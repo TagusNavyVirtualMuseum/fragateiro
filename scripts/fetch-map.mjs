@@ -36,7 +36,7 @@ const CHECKS = {
   },
   water: {
     origin: [ORIGIN.lat, ORIGIN.lon], 'Montijo channel': [38.695, -9.05], 'off Seixal': [38.655, -9.1],
-    'off Cascais': [38.68, -9.42], 'off Cabo Espichel': [38.4, -9.23], 'Sesimbra bay': [38.43, -9.1], 'Tagus at Vila Franca': [38.94, -8.975],
+    'off Cascais': [38.68, -9.42], 'off Cabo Espichel': [38.4, -9.23], 'Sesimbra bay': [38.43, -9.1], 'Tagus off Alhandra': [38.9, -9.03],
   },
 };
 
