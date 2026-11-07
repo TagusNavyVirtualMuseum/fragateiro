@@ -5,9 +5,9 @@ import type { LandMask } from './landMask';
 export type Level = 'easy' | 'medium' | 'hard';
 
 export const LEVELS: { id: Level; name: string; description: string }[] = [
-  { id: 'easy', name: 'Easy', description: 'The sails trim themselves; balanced sails.' },
+  { id: 'easy', name: 'Easy', description: 'The crew trims the sails for the best speed; no drift; balanced sails. Just steer.' },
   { id: 'medium', name: 'Medium', description: 'You trim the sheets; balanced sails.' },
-  { id: 'hard', name: 'Hard', description: 'You trim the sheets; the boat is not balanced and tacking needs skill.' },
+  { id: 'hard', name: 'Hard', description: 'You trim the sheets; the sails turn the boat, and there is no help through a tack: ease the sheets as you turn through the wind, then steer to hold the new course.' },
 ];
 
 export type Mission =

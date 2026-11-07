@@ -108,6 +108,8 @@ export interface Controls {
    * balanced).
    */
   balanced?: boolean;
+  /** No leeway in the track: the boat goes where it points (easy level). */
+  noDrift?: boolean;
 }
 
 export interface BoatState {

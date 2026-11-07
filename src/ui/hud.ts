@@ -350,7 +350,7 @@ export class SailingHud {
         <dt>True wind</dt><dd>${twa.toFixed(0)}° · ${toKnots(wind.speed).toFixed(0)} kn</dd>
         <dt>Apparent wind</dt><dd>${Math.abs(report.apparentWindAngleDeg).toFixed(0)}° · ${toKnots(report.apparentWindSpeed).toFixed(0)} kn</dd>
         <dt>Heel</dt><dd>${Math.abs(rad2deg(state.heel)).toFixed(0)}°</dd>
-        <dt>Drift</dt><dd>${toKnots(state.v).toFixed(1)} kn ${state.v >= 0 ? '→' : '←'}</dd>
+        <dt>Drift</dt><dd>${this.easy ? 'none (easy)' : `${toKnots(state.v).toFixed(1)} kn ${state.v >= 0 ? '→' : '←'}`}</dd>
       </dl>`;
     this.compassBoat.setAttribute('transform', `rotate(${heading})`);
     this.compassWind.setAttribute('transform', `rotate(${rad2deg(wind.from)})`);

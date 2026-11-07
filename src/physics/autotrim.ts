@@ -1,5 +1,6 @@
-// Sheets for the easy level: each sail eased until it meets the apparent wind at the angle
-// of attack where these sails pull best, like a crew that trims perfectly.
+// A simple sheet rule: each sail eased until it meets the apparent wind at a fixed angle of
+// attack. The game's easy level uses SailboatSim.bestSheets() instead (searches the real
+// best drive); this rule is kept for the autopilot of the other boats and as a reference.
 import type { BoatSpec } from './types';
 
 /** Angle of attack the trimmer aims for, degrees (the sail tables pull best around here). */

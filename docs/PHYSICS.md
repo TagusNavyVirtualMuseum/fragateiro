@@ -56,8 +56,11 @@ target with a 0.35 s lag so manoeuvres look natural.
   so speed levels off near hull speed.
 - Windage: air drag on hull, masts and rigging (`windageArea`), which hurts upwind sailing.
 - Going backwards, the hull is blunt (the flow separates at the stern, rudder and keel):
-  extra drag with Cd 1.2 on 60 % of beam × draft, so a boat stopped head to wind only creeps
-  backwards (under 1 kn) instead of sailing backwards.
+  extra drag with Cd 1.2 on 60 % of beam × draft, plus a linear term (mass / 15 s) at a
+  crawl, so a boat stopped head to wind only creeps backwards instead of sailing backwards.
+- The windage acts a quarter of the waterline ahead of the centre (masts, high bow and
+  rigging), so a boat with flapping sails falls off the wind until they fill again. With
+  balanced sails the extra yaw damping fades out below 1 m/s for the same reason.
 
 ## Equations of motion
 
@@ -99,7 +102,20 @@ The game runs the simulation 3× faster than real time by default (setting: 1×,
 10×), so the speeds shown stay realistic while trips take less time. The default wind is
 12 kn.
 
-## Balanced sails (option)
+## Levels
+
+The game's levels change only the help, never the boats:
+
+- **Easy:** every step, each sail's sheet is set to the value that gives the most forward
+  drive for the wind it feels (`SailboatSim.bestSheets()`, a search over the sail's own lift
+  and drag curves; tested to match the best sheet setting within 5 %), and the track leaves
+  out the sideways slip (`noDrift`: the hull still works as usual, so speeds are unchanged).
+  Balanced sails.
+- **Medium:** the player trims; balanced sails.
+- **Hard:** not balanced, so none of the low-speed steering help below. The Catraio and Canoa
+  only get through the wind if the sheets are eased while turning, as on the real boats.
+
+## Balanced sails
 
 Real boats are rarely balanced: the sails push at their centres of effort, which are not over
 the hull's centre of lateral resistance, so a boat wants to turn into or away from the wind,

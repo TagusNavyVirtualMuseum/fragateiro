@@ -1,5 +1,5 @@
 // Free sailing on the Tagus: switch between the Falua and the Muleta.
-import { BOATS, GustyWind, SailboatSim, autoTrimSheets, defaultControls, deg2rad, groupsInMode, type BoatSpec } from '../../src/physics';
+import { BOATS, GustyWind, SailboatSim, defaultControls, deg2rad, groupsInMode, type BoatSpec } from '../../src/physics';
 import { BOAT_VISUALS } from '../../src/engine/boatVisuals';
 import { BoatView } from '../../src/engine/boatView';
 import { CAMERA_VIEWS, CameraRig } from '../../src/engine/cameraRig';
@@ -242,7 +242,7 @@ function applyInput(dt: number): void {
 
   if (level === 'easy') {
     // The crew trims: every sail eased to the best angle for the wind it feels.
-    Object.assign(c.sheets, autoTrimSheets(spec, c.mode, sim.report.apparentWindAngleDeg));
+    Object.assign(c.sheets, sim.bestSheets());
     return;
   }
   const haul = input.held('KeyW', 'ArrowUp');
@@ -405,6 +405,7 @@ async function main(): Promise<void> {
     if (!paused) {
       applyInput(dt);
       sim.controls.balanced = level !== 'hard';
+      sim.controls.noDrift = level === 'easy';
       stepWithLand(dt * timeScale);
       time += dt;
       if (run && !missionDone && run.update(sim.state.x, sim.state.y, sim.state.time)) finishMission();

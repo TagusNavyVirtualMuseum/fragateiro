@@ -30,6 +30,10 @@ const GYBE_MARGIN = deg2rad(12);
 const LUFF_ALPHA_DEG = 6;
 /** Drag coefficient of the hull moving stern first. */
 const STERNWAY_CD = 1.2;
+/** Where the wind pushes on hull and rigging, ahead of the centre, as a share of the waterline. */
+const WINDAGE_ARM = 0.25;
+/** Time scale of the extra damping when creeping backwards, s. */
+const STERNWAY_TIME = 15;
 /** With balanced sails, the rudder steers as if the boat moved at least this fast, m/s. */
 const BALANCED_RUDDER_FLOW = 1.5;
 /** Extra yaw damping with balanced sails, 1/s. */
@@ -120,6 +124,55 @@ export class SailboatSim {
     }
   }
 
+  /**
+   * The sheet setting for each sail group that gives the most forward drive right now, from
+   * the apparent wind at each sail and the sail's own lift and drag curves (easy level).
+   * A sail can only be held as far out as the wind would blow it; past that it flaps.
+   */
+  bestSheets(): Record<string, number> {
+    const s = this.state;
+    const wind = this.wind.at(s.time, s.x, s.y);
+    const we = -wind.speed * Math.sin(wind.from);
+    const wn = -wind.speed * Math.cos(wind.from);
+    const wf = we * Math.sin(s.heading) + wn * Math.cos(s.heading);
+    const ws = we * Math.cos(s.heading) - wn * Math.sin(s.heading);
+    const out: Record<string, number> = {};
+    const score: Record<string, number> = {};
+    for (const sail of this.spec.sails) {
+      if (!this.mode.sails.includes(sail.id)) continue;
+      const curve = this.sailCurves.get(sail.id)!;
+      let best = -Infinity;
+      let bestSheet = 0;
+      for (let k = 0; k <= 40; k++) {
+        const sheet = k / 40;
+        const limit = deg2rad(sail.minAngle + sheet * (sail.maxAngle - sail.minAngle));
+        // Where the boom would sit: at the sheet's limit, or streaming free if the wind
+        // blows it in closer than that.
+        const ax0 = wf - s.u;
+        const ay0 = ws - s.v;
+        const free = wrapPi(Math.PI - Math.atan2(ay0, ax0));
+        const side = Math.sign(free) || 1;
+        const delta = Math.abs(free) <= limit ? free : side * limit;
+        const bx = -Math.cos(delta);
+        const by = Math.sin(delta);
+        const ceX = sail.pivot[0] + bx * sail.ceDistance;
+        const ceY = sail.pivot[1] + by * sail.ceDistance;
+        const f = foilForce(bx, by, wf - (s.u - s.r * ceY), ws - (s.v + s.r * ceX), sail.area, RHO_AIR, curve);
+        // Prefer the more eased setting on a tie (less heel, as a sailor would).
+        if (f.fx > best + 1e-6) {
+          best = f.fx;
+          bestSheet = sheet;
+        }
+      }
+      // Sails sharing a sheet group: keep the setting of the biggest drive.
+      if (!(sail.group in score) || best > score[sail.group]) {
+        score[sail.group] = best;
+        out[sail.group] = bestSheet;
+      }
+    }
+    return out;
+  }
+
   /** Same as step() but with a custom fixed step (faster, used for offline polars). */
   stepFixed(dt: number, h: number): void {
     for (let t = 0; t < dt - 1e-9; t += h) this.integrate(Math.min(h, dt - t));
@@ -200,6 +253,10 @@ export class SailboatSim {
       const k = 0.5 * RHO_AIR * spec.hull.windageArea * Math.hypot(ax, ay);
       X += k * ax;
       Y += k * ay;
+      // Masts, high bow and rigging catch the wind ahead of the hull's grip in the water, so
+      // a boat with flapping sails falls off the wind until they fill (as real boats do),
+      // instead of lying head to wind and drifting backwards.
+      N += WINDAGE_ARM * spec.hull.waterlineLength * k * ay;
     }
 
     // --- Hull and keel: a row of strips, each one a small underwater wing ---------
@@ -228,6 +285,9 @@ export class SailboatSim {
     // Going backwards the hull is blunt (flow separates at the stern, rudder and keel):
     // bluff-body drag on most of the underwater cross-section, so a stalled boat only creeps back.
     if (s.u < 0) resistance += 0.5 * RHO_WATER * STERNWAY_CD * 0.6 * spec.beam * spec.draft * s.u * s.u;
+    // And at a crawl backwards the hull, keel and rudder held across the flow damp it further
+    // (simplified as a linear term), so a boat caught in irons mostly stops.
+    if (s.u < 0) resistance -= (spec.mass / STERNWAY_TIME) * s.u;
     X += resistance;
 
     // --- Rudder -------------------------------------------------------------------
@@ -247,7 +307,9 @@ export class SailboatSim {
     // Balanced (easier) mode: the boat stops turning by itself within a few seconds when the
     // rudder is centred, instead of carrying the spin of a tack.
     // Only with the rudder near the centre: a hard-over turn (a tack) is not slowed.
-    if (c.balanced) N -= this.inertia * s.r * BALANCED_YAW_DAMPING * Math.max(0, 1 - Math.abs(c.rudder) / 0.3);
+    // (Not when the boat is nearly stopped: then the wind must be free to turn the bow off and
+    // fill the sails again.)
+    if (c.balanced) N -= this.inertia * s.r * BALANCED_YAW_DAMPING * Math.max(0, 1 - Math.abs(c.rudder) / 0.3) * clamp01(s.u / 1.0);
 
     // --- Fishing net, dragged from the boom tips -----------------------------------
     const net: PointForce[] = [];
@@ -280,8 +342,11 @@ export class SailboatSim {
     s.heading = wrapPi(s.heading + s.r * h);
     const sh = Math.sin(s.heading);
     const ch = Math.cos(s.heading);
-    s.x += (s.u * sh + s.v * ch) * h;
-    s.y += (s.u * ch - s.v * sh) * h;
+    // Easy level: the boat goes where it points (the hull still works as usual, so speeds are
+    // unchanged; only the sideways slip is left out of the track).
+    const vTrack = c.noDrift ? 0 : s.v;
+    s.x += (s.u * sh + vTrack * ch) * h;
+    s.y += (s.u * ch - vTrack * sh) * h;
     s.time += h;
 
     // --- Report (for the HUD, force arrows and tests) -----------------------------
