@@ -12,11 +12,14 @@ import {
   TransformNode,
   Vector2,
   Vector3,
+  VertexBuffer,
   type Camera,
 } from '@babylonjs/core';
 import maskUrl from '../assets/map/tagus-mask.png?url';
+import heightUrl from '../assets/map/tagus-height.png?url';
 import metaJson from '../assets/map/tagus.json';
 import { LandMask, type MapMeta } from '../world/landMask';
+import { Terrain, type HeightsMeta } from '../world/terrain';
 import { waveHeight } from './waves';
 
 export interface SeaMark {
@@ -28,41 +31,53 @@ export interface SeaMark {
   y: number;
 }
 
-export type TagusMeta = MapMeta & { seamarks?: SeaMark[]; source: string };
+export type TagusMeta = MapMeta & { seamarks?: SeaMark[]; source: string; heights?: HeightsMeta & { source: string } };
 export const TAGUS_META = metaJson as TagusMeta;
 
-/** Download and decode the mask (the red channel is the water map). */
-export async function loadTagusMask(): Promise<{ mask: LandMask; image: HTMLImageElement }> {
+/** Pixels of an image (RGBA). */
+async function imagePixels(url: string): Promise<{ image: HTMLImageElement; rgba: Uint8ClampedArray }> {
   const image = new Image();
-  image.src = maskUrl;
+  image.src = url;
   await image.decode();
   const canvas = document.createElement('canvas');
   canvas.width = image.width;
   canvas.height = image.height;
   const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
   ctx.drawImage(image, 0, 0);
-  const rgba = ctx.getImageData(0, 0, image.width, image.height).data;
+  return { image, rgba: ctx.getImageData(0, 0, image.width, image.height).data };
+}
+
+/** Download and decode the mask (the red channel is the water map) and the land heights. */
+export async function loadTagusMask(): Promise<{ mask: LandMask; image: HTMLImageElement; terrain?: Terrain }> {
+  const heights = TAGUS_META.heights;
+  const [{ image, rgba }, h] = await Promise.all([imagePixels(maskUrl), heights ? imagePixels(heightUrl) : Promise.resolve(null)]);
   const water = new Uint8Array(image.width * image.height);
   for (let i = 0; i < water.length; i++) water[i] = rgba[i * 4];
-  return { mask: new LandMask(TAGUS_META, water), image };
+  const terrain = heights && h ? Terrain.fromRGBA(heights, TAGUS_META.northWest, h.rgba) : undefined;
+  return { mask: new LandMask(TAGUS_META, water), image, terrain };
 }
 
 Effect.ShadersStore.landVertexShader = /* glsl */ `
 precision highp float;
 attribute vec3 position;
+attribute vec3 normal;
 uniform mat4 world;
 uniform mat4 viewProjection;
 uniform sampler2D mask;
 uniform vec2 northWest;
 uniform vec2 size;
 varying vec3 vWorld;
+varying vec3 vNormal;
 varying vec2 vUV;
 void main() {
   vec4 wp = world * vec4(position, 1.0);
   vUV = vec2((wp.x - northWest.x) / size.x, 1.0 - (northWest.y - wp.z) / size.y);
   float inland = 1.0 - texture2D(mask, vUV).g;
-  wp.y = 0.7 + 3.0 * smoothstep(0.0, 1.0, inland);
+  // A low bank along the shore; inland, the real ground height (position.y) takes over.
+  float bank = 0.7 + 3.0 * smoothstep(0.0, 1.0, inland);
+  wp.y = max(bank, position.y * smoothstep(0.0, 0.06, inland));
   vWorld = wp.xyz;
+  vNormal = normalize(mat3(world) * normal);
   gl_Position = viewProjection * wp;
 }
 `;
@@ -75,6 +90,7 @@ uniform vec3 skyColor;
 uniform vec3 sunDirection;
 uniform float fogDensity;
 varying vec3 vWorld;
+varying vec3 vNormal;
 varying vec2 vUV;
 void main() {
   vec4 m = texture2D(mask, vUV);
@@ -84,7 +100,11 @@ void main() {
   vec3 sand = vec3(0.78, 0.72, 0.56);
   vec3 field = mix(vec3(0.45, 0.52, 0.33), vec3(0.62, 0.6, 0.45), noise);
   vec3 color = mix(sand, field, smoothstep(0.08, 0.4, inland));
-  color *= 0.85 + 0.25 * max(dot(normalize(vec3(0.0, 1.0, 0.0)), normalize(sunDirection)), 0.0);
+  // Higher ground: darker green (pine woods and scrub on the hills).
+  color = mix(color, vec3(0.32, 0.4, 0.26), smoothstep(40.0, 160.0, vWorld.y) * 0.6);
+  // Slopes facing the sun are lit, the others in shade: this is what shows the relief.
+  float light = max(dot(normalize(vNormal), normalize(sunDirection)), 0.0);
+  color *= 0.55 + 0.75 * light;
   float dist = length(cameraPosition - vWorld);
   float fog = 1.0 - exp(-pow(dist * fogDensity, 2.0));
   gl_FragColor = vec4(mix(color, skyColor, fog), 1.0);
@@ -98,17 +118,24 @@ export interface MapView {
   setTarget(p: { x: number; y: number } | null): void;
 }
 
-export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, sunDirection: Vector3, fogDensity: number, labelNames?: string[]): MapView {
+export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, sunDirection: Vector3, fogDensity: number, labelNames?: string[], terrain?: Terrain): MapView {
   const { width, height } = mask.sizeMetres;
   const c = mask.centre;
 
-  // --- Land: one big sheet; the shader cuts out the water and raises the land inland.
-  const land = MeshBuilder.CreateGround('land', { width, height, subdivisionsX: 360, subdivisionsY: Math.round((360 * height) / width) }, scene);
+  // --- Land: one big sheet at the real ground heights (about 55 m between vertices); the
+  // shader cuts out the water and keeps a low bank along the shore.
+  const land = MeshBuilder.CreateGround('land', { width, height, subdivisionsX: 400, subdivisionsY: Math.round((400 * height) / width), updatable: true }, scene);
   land.position.set(c.x, 0, c.y);
+  if (terrain) {
+    const pos = land.getVerticesData(VertexBuffer.PositionKind)!;
+    for (let i = 0; i < pos.length; i += 3) pos[i + 1] = Math.max(0, terrain.heightAt(c.x + pos[i], c.y + pos[i + 2]));
+    land.updateVerticesData(VertexBuffer.PositionKind, pos);
+    land.createNormals(false);
+  }
   const tex = new Texture(maskUrl, scene, false, true, Texture.TRILINEAR_SAMPLINGMODE);
   tex.wrapU = tex.wrapV = Texture.CLAMP_ADDRESSMODE;
   const mat = new ShaderMaterial('landMat', scene, { vertex: 'land', fragment: 'land' }, {
-    attributes: ['position'],
+    attributes: ['position', 'normal'],
     uniforms: ['world', 'viewProjection', 'northWest', 'size', 'cameraPosition', 'skyColor', 'sunDirection', 'fogDensity'],
     samplers: ['mask'],
   });
@@ -130,7 +157,7 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
     if (labelNames ? !labelNames.includes(p.name) : p.kind !== 'city' && p.kind !== 'town') continue;
     const big = p.kind === 'city';
     const label = makeLabel(scene, p.name, big);
-    label.position.set(p.x, 30, p.y);
+    label.position.set(p.x, (terrain ? Math.max(0, terrain.heightAt(p.x, p.y)) : 0) + 30, p.y);
     labels.push(label);
   }
 

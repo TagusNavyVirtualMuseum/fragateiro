@@ -16,6 +16,7 @@ import { SailingHud } from '../../src/ui/hud';
 import { Minimap } from '../../src/ui/minimap';
 import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
 import { hullAfloat, type LandMask } from '../../src/world/landMask';
+import type { Terrain } from '../../src/world/terrain';
 
 const RUDDER_RATE = 1.6; // full travel per second
 const RUDDER_RETURN = 1.2;
@@ -42,6 +43,7 @@ let spec: BoatSpec = BOATS[0];
 let sim = new SailboatSim(spec, wind, { heading: START_HEADING });
 let view: BoatView;
 let mask: LandMask;
+let terrain: Terrain | undefined;
 let mapView: MapView;
 let minimap: Minimap;
 let start = { x: 0, y: 0 };
@@ -224,11 +226,25 @@ function applyInput(dt: number): void {
   }
 }
 
+/** Hills: never let the camera end up inside the land (lift it over the slope instead). */
+function keepCameraAboveGround(): void {
+  if (!terrain) return;
+  camera.getViewMatrix(true); // refresh the camera position after the rig moved it
+  const p = camera.position;
+  const ground = mask.isWater(p.x, p.z) ? 0 : Math.max(0, terrain.heightAt(p.x, p.z));
+  const minY = ground + 3;
+  if (p.y >= minY) return;
+  // Arc-rotate camera: height above the target = radius * cos(beta).
+  const c = Math.min(1, Math.max(-1, (minY - camera.target.y) / camera.radius));
+  camera.beta = Math.max(0.05, Math.min(camera.beta, Math.acos(c)));
+}
+
 async function main(): Promise<void> {
   const [first, map] = await Promise.all([loadView(spec.id), loadTagusMask()]);
   mask = map.mask;
+  terrain = map.terrain;
   await document.fonts.ready; // labels and minimap are drawn once, with the period font
-  mapView = createMapView(scene, mask, skyColor, sunDirection, fogDensity, DESTINATION_NAMES);
+  mapView = createMapView(scene, mask, skyColor, sunDirection, fogDensity, DESTINATION_NAMES, map.terrain);
   start = mask.nearestWater(0, 0);
   mask.markReachableFrom(start.x, start.y);
   destinations = findDestinations(mask, 16);
@@ -247,7 +263,7 @@ async function main(): Promise<void> {
   });
   const credit = document.createElement('div');
   credit.className = 'credit';
-  credit.textContent = 'Map: © OpenStreetMap contributors';
+  credit.textContent = 'Map: © OpenStreetMap contributors · Heights: Copernicus GLO-30';
   hud.mapSlot.append(credit);
   restart();
   view = first;
@@ -287,6 +303,7 @@ async function main(): Promise<void> {
       };
     }
     cameraRig.update(s.x, s.y, s.heading, dt);
+    keepCameraAboveGround();
     windView.update(camera.target, w, timeScale, paused ? 0 : dt);
     const still = paused ? 0 : dt;
     sky.update(still * timeScale, w.from, w.speed);

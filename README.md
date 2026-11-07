@@ -84,9 +84,13 @@ prints the areas and centres the physics needs. Then continue from step 2.
 
 `src/assets/map/` holds a land/water mask of the estuary (10 m cells) plus town names and sea
 marks, built from OpenStreetMap by `scripts/fetch-map.mjs`; the buoys are the same data that
-OpenSeaMap shows. To change the area, edit `BBOX` in that script and run the **Update map
-data** workflow (Actions tab); it downloads the data and commits the new files. Map data
-© OpenStreetMap contributors, ODbL.
+OpenSeaMap shows. Land heights (30 m grid, `tagus-height.png`) come from the Copernicus
+GLO-30 elevation model via `scripts/fetch-heights.mjs`: the hills of Lisbon and the Almada
+plateau rise behind the shore, and the camera stays above the ground. To change the area,
+edit `BBOX` in `fetch-map.mjs` and run the **Update map data** workflow (Actions tab); it
+downloads both and commits the new files. Map data © OpenStreetMap contributors, ODbL.
+Heights: Copernicus GLO-30 DEM, © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH
+2014-2018, provided under COPERNICUS by the European Union and ESA.
 
 ## Deploy
 

@@ -1,6 +1,7 @@
 name: Update map data
 
-# Downloads the Tagus coastline from OpenStreetMap and commits the game's map files.
+# Downloads the Tagus coastline from OpenStreetMap and the land heights (Copernicus GLO-30)
+# and commits the game's map files.
 # Run it by hand (Actions -> Update map data -> Run workflow) when the map area changes.
 on:
   workflow_dispatch:
@@ -17,12 +18,14 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/fetch-map.mjs
+      - run: npm install --no-save geotiff@3.0.5
+      - run: node scripts/fetch-heights.mjs
       - name: Commit the map
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/assets/map
           if git diff --cached --quiet; then echo "Map unchanged"; else
-            git commit -m "Update Tagus map from OpenStreetMap"
+            git commit -m "Update Tagus map from OpenStreetMap and Copernicus heights"
             git push
           fi
