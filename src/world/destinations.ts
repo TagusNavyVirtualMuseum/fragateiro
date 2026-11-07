@@ -5,10 +5,25 @@ export const DESTINATION_NAMES = [
   // The coast, from the west
   'Cascais', 'Oeiras', 'Trafaria', 'Cabo Espichel', 'Sesimbra', 'Setúbal',
   // The estuary
-  'Lisboa', 'Almada', 'Seixal', 'Amora', 'Barreiro', 'Alhos Vedros', 'Moita', 'Sarilhos Pequenos', 'Montijo', 'Ilha do Rato', 'Alcochete',
+  'Lisboa', 'Almada', 'Alfeite', 'Seixal', 'Amora', 'Barreiro', 'Alhos Vedros', 'Moita', 'Sarilhos Pequenos', 'Montijo', 'Ilha do Rato', 'Alcochete',
   // Upriver
   'Sacavém', 'Alverca do Ribatejo', 'Vila Franca de Xira',
 ];
+
+/**
+ * Places that are not named towns in OpenStreetMap, added by their latitude and longitude
+ * (the Lisbon naval base at Alfeite).
+ */
+export const EXTRA_PLACES: { name: string; kind: string; lat: number; lon: number }[] = [{ name: 'Alfeite', kind: 'village', lat: 38.6575, lon: -9.1335 }];
+
+/** Add EXTRA_PLACES to the map's places (once), with the projection of scripts/fetch-map.mjs. */
+export function addExtraPlaces(meta: { origin: { lat: number; lon: number }; places: { name: string; kind: string; x: number; y: number }[] }): void {
+  const mLon = 111320 * Math.cos((meta.origin.lat * Math.PI) / 180);
+  for (const p of EXTRA_PLACES) {
+    if (meta.places.some((q) => q.name === p.name)) continue;
+    meta.places.push({ name: p.name, kind: p.kind, x: Math.round((p.lon - meta.origin.lon) * mLon), y: Math.round((p.lat - meta.origin.lat) * 110574) });
+  }
+}
 
 export interface Destination {
   name: string;

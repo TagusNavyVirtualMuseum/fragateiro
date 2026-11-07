@@ -9,7 +9,7 @@ built to be easy to maintain and to grow into several small games.
   from Vila Franca de Xira down the estuary and out along the coast to Cascais and round Cabo
   Espichel to Sesimbra and Setúbal, with the real channel buoys and landmarks: the 25 de Abril
   and Vasco da Gama bridges, Torre de Belém, the Padrão dos Descobrimentos, the Castelo de São
-  Jorge and the lighthouses of Cabo Espichel, Bugio and Santa Marta. Switch boats at any
+  Jorge and the lighthouses of Cabo Espichel, Bugio, Santa Marta, Gibalta and Alfeite. Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
   An afternoon sky with clouds drifting downwind, gulls circling over the river, real land
@@ -40,7 +40,7 @@ Node 22 or newer.
 | Camera view: behind, ahead, port, starboard, top, free | 1–6 (C = behind) | camera buttons |
 | Camera distance and height | mouse wheel | sliders, or pinch with two fingers |
 | Orbit freely | drag the view with the mouse (switches to *free*) | |
-| Move to a place (20 ports, from Cascais, Sesimbra and Setúbal to Vila Franca de Xira) | T (next place) | *Sail from* list, or click it on the minimap |
+| Move to a place (21 ports, from Cascais, Sesimbra and Setúbal to Vila Franca de Xira, including the Alfeite naval base) | T (next place) | *Sail from* list, or click it on the minimap |
 | Minimap: 15 km around the boat, or the whole map | | button under the minimap |
 | Destination: distance, bearing and time | | *Sail to* list |
 | Game speed (1×, 2×, 3× default, 5×, 10×; speeds shown stay real, "time ×3" under the speed) | | setting |

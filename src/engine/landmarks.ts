@@ -3,7 +3,8 @@
 //   Ponte Vasco da Gama low viaduct (12 km) with a cable-stayed span of 420 m, towers 150 m
 //   Torre de Belém      the 16th-century tower in the river at Belém
 //   Padrão dos Descobrimentos  the 52 m monument to the Discoveries, shaped like a prow
-//   Lighthouses of Cabo Espichel, Bugio and Santa Marta; the Castelo de São Jorge
+//   Lighthouses of Cabo Espichel, Bugio, Santa Marta, Gibalta and Alfeite; the Castelo de
+//   São Jorge
 // Bridge routes are the deck lines from OpenStreetMap (tagus.json "bridges"); the rest is
 // placed by its latitude and longitude. Sizes are real; details are simplified.
 import { Color3, Mesh, MeshBuilder, PBRMaterial, Vector3, VertexData, type Scene } from '@babylonjs/core';
@@ -433,6 +434,42 @@ export function createLandmarks(
     merged('santa-marta-blue', blues, blue);
     lanternTop(x, g + 20, y, 3);
     labels.push({ name: 'Farol de Santa Marta', x, y, height: g + 50 });
+  }
+
+  // Gibalta, Caxias: a round tower (about 21 m) in red and white bands on the slope above the
+  // shore, one of the leading lights into the river.
+  const red = material(scene, 'lighthouse-red', '#b3332a', 0.5);
+  {
+    const [x, y] = toXY(38.699, -9.2655);
+    const g = ground(x, y);
+    const whites: Mesh[] = [];
+    const reds: Mesh[] = [];
+    for (let k = 0; k < 7; k++) {
+      const band = MeshBuilder.CreateCylinder('gibalta', { height: 3, diameter: 3.6 - k * 0.12, tessellation: 16 }, scene);
+      band.position.set(x, g + 1.5 + k * 3, y);
+      (k % 2 ? reds : whites).push(band);
+    }
+    const hut = MeshBuilder.CreateBox('gibalta-hut', { width: 6, height: 3.5, depth: 5 }, scene);
+    hut.position.set(x + 4, g + 1.75, y + 1);
+    whites.push(hut);
+    merged('gibalta-white', whites, white);
+    merged('gibalta-red', reds, red);
+    lanternTop(x, g + 21, y, 2.4);
+    labels.push({ name: 'Farol da Gibalta', x, y, height: g + 45 });
+  }
+
+  // Alfeite: a small white light tower at the pier head of the naval base.
+  {
+    const [x, y] = toXY(38.6597, -9.1402);
+    const g = ground(x, y);
+    const tower = MeshBuilder.CreateCylinder('alfeite-light', { height: 10, diameterTop: 1.8, diameterBottom: 2.6, tessellation: 12 }, scene);
+    tower.position.set(x, g + 5, y);
+    merged('alfeite-light', [tower], white);
+    const gallery = MeshBuilder.CreateCylinder('alfeite-gallery', { height: 0.5, diameter: 3, tessellation: 12 }, scene);
+    gallery.position.set(x, g + 10.2, y);
+    merged('alfeite-gallery', [gallery], red);
+    lanternTop(x, g + 10.4, y, 1.6);
+    labels.push({ name: 'Farol do Alfeite', x, y, height: g + 32 });
   }
 
   // --- Castelo de São Jorge: walls with square towers and battlements on the hill above

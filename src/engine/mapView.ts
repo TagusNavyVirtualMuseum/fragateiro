@@ -21,6 +21,7 @@ import metaJson from '../assets/map/tagus.json';
 import { LandMask, type MapMeta } from '../world/landMask';
 import { Terrain, type HeightsMeta } from '../world/terrain';
 import { createLandmarks, type BridgeLine } from './landmarks';
+import { addExtraPlaces } from '../world/destinations';
 import { waveHeight } from './waves';
 
 export interface SeaMark {
@@ -34,6 +35,7 @@ export interface SeaMark {
 
 export type TagusMeta = MapMeta & { seamarks?: SeaMark[]; source: string; heights?: HeightsMeta & { source: string }; bridges?: Record<string, BridgeLine> };
 export const TAGUS_META = metaJson as unknown as TagusMeta;
+addExtraPlaces(TAGUS_META);
 
 /** Pixels of an image (RGBA). */
 async function imagePixels(url: string): Promise<{ image: HTMLImageElement; rgba: Uint8ClampedArray }> {
