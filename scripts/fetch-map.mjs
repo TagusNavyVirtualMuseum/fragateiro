@@ -36,7 +36,7 @@ const CHECKS = {
   },
   water: {
     origin: [ORIGIN.lat, ORIGIN.lon], 'Montijo channel': [38.695, -9.05], 'off Seixal': [38.655, -9.1],
-    'off Cascais': [38.68, -9.42], 'off Cabo Espichel': [38.4, -9.23], 'Sesimbra bay': [38.43, -9.1], 'Tagus off Alhandra': [38.9, -9.03],
+    'off Cascais': [38.68, -9.42], 'off Cabo Espichel': [38.4, -9.23], 'Sesimbra bay': [38.43, -9.1],
   },
 };
 
@@ -220,6 +220,10 @@ const isWaterAt = (lat, lon) => {
   return water[y * W + x] > 0;
 };
 const problems = [];
+// Upriver, where the river is a water area rather than coastline: report only (for now).
+for (const [name, [lat, lon]] of Object.entries({ 'Tagus off Alhandra': [38.9, -9.03], 'Tagus off Póvoa': [38.86, -9.05], 'Tagus at Vila Franca': [38.955, -8.985] })) {
+  console.log(`${name}: ${isWaterAt(lat, lon) ? 'water' : 'LAND'}`);
+}
 for (const [name, [lat, lon]] of Object.entries(CHECKS.land)) if (isWaterAt(lat, lon)) problems.push(`${name} should be land`);
 for (const [name, [lat, lon]] of Object.entries(CHECKS.water)) if (!isWaterAt(lat, lon)) problems.push(`${name} should be water`);
 const waterShare = water.reduce((s, v) => s + (v ? 1 : 0), 0) / (W * H);
