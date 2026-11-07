@@ -9,7 +9,6 @@
 //   - textures shrink to 128 px.
 // Writes src/assets/models/lite/<boat>.glb.
 //
-//   npm install --no-save @gltf-transform/functions@4.5.1 meshoptimizer@1.3.0 sharp@0.34.4
 //   npx tsx --import ./scripts/url-stub.mjs scripts/lite-models.ts [boat ...]
 
 import { mkdirSync } from 'node:fs';

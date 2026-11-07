@@ -26,7 +26,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm install --no-save @gltf-transform/functions@4.5.1 meshoptimizer@1.3.0
       - name: Slim
         env:
           MODEL: ${{ inputs.model }}

@@ -7,8 +7,6 @@
 //   node scripts/slim-model.mjs in.glb out.glb [unit=0.01]
 //
 // unit: model units -> metres (the `unit` in boatVisuals.ts).
-// Needs two extra tools, installed only when slimming:
-//   npm install --no-save @gltf-transform/functions@4.5.1 meshoptimizer@1.3.0
 // Or run the "Slim a model" workflow on GitHub (Actions tab), which commits the result.
 
 import { NodeIO } from '@gltf-transform/core';

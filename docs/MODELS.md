@@ -31,11 +31,10 @@ The Fragata's bow points to +x (`bowPositiveX: true` in `boatVisuals.ts`).
 ## Slimming a model
 
 ```bash
-npm install --no-save @gltf-transform/functions@4.5.1 meshoptimizer@1.3.0
 node scripts/slim-model.mjs big.glb src/assets/models/boat.glb 0.01
 ```
 
-Or, without installing anything: run the **Slim a model** workflow (Actions tab) with the
+Or run the **Slim a model** workflow (Actions tab) with the
 model's path and unit; it slims the file in the repository and commits it.
 
 Small fittings (hooks, rings, blocks, the anchor) often have thousands of triangles each.
@@ -51,7 +50,6 @@ picked (the button pulses meanwhile), so more boats do not slow the start.
 ## Light versions (other boats on the river)
 
 ```bash
-npm install --no-save @gltf-transform/functions@4.5.1 meshoptimizer@1.3.0 sharp@0.34.4
 npx tsx --import ./scripts/url-stub.mjs scripts/lite-models.ts [boat ...]
 ```
 
