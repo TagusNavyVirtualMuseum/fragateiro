@@ -3,9 +3,10 @@
 //   Ponte Vasco da Gama low viaduct (12 km) with a cable-stayed span of 420 m, towers 150 m
 //   Torre de Belém      the 16th-century tower in the river at Belém
 //   Padrão dos Descobrimentos  the 52 m monument to the Discoveries, shaped like a prow
+//   Lighthouses of Cabo Espichel, Bugio and Santa Marta; the Castelo de São Jorge
 // Bridge routes are the deck lines from OpenStreetMap (tagus.json "bridges"); the rest is
 // placed by its latitude and longitude. Sizes are real; details are simplified.
-import { Color3, Mesh, MeshBuilder, PBRMaterial, Vector3, type Scene } from '@babylonjs/core';
+import { Color3, Mesh, MeshBuilder, PBRMaterial, Vector3, VertexData, type Scene } from '@babylonjs/core';
 import type { LandMask } from '../world/landMask';
 import type { Terrain } from '../world/terrain';
 
@@ -105,6 +106,63 @@ function boxes(scene: Scene, name: string, items: { x: number; y: number; z: num
   m.material = mat;
   m.isPickable = false;
   return m;
+}
+
+/** Merge pieces into one mesh with one material (one draw call). */
+function merged(name: string, pieces: Mesh[], mat: PBRMaterial): Mesh {
+  const m = Mesh.MergeMeshes(pieces, true, true)!;
+  m.name = name;
+  m.material = mat;
+  m.isPickable = false;
+  return m;
+}
+
+/** A vertical prism over a convex outline [x, z][] (world metres), from y0 to y1. */
+function prism(scene: Scene, outline: [number, number][], y0: number, y1: number): Mesh {
+  const positions: number[] = [];
+  const indices: number[] = [];
+  const quad = (a: number[], b: number[], c: number[], d: number[]) => {
+    const o = positions.length / 3;
+    positions.push(...a, ...b, ...c, ...d);
+    indices.push(o, o + 1, o + 2, o, o + 2, o + 3);
+  };
+  const n = outline.length;
+  for (let i = 0; i < n; i++) {
+    const [ax, az] = outline[i];
+    const [bx, bz] = outline[(i + 1) % n];
+    quad([ax, y0, az], [bx, y0, bz], [bx, y1, bz], [ax, y1, az]);
+  }
+  for (const [y, flip] of [[y1, false], [y0, true]] as const) {
+    const o = positions.length / 3;
+    for (const [px, pz] of outline) positions.push(px, y, pz);
+    for (let i = 1; i + 1 < n; i++) indices.push(...(flip ? [o, o + i + 1, o + i] : [o, o + i, o + i + 1]));
+  }
+  // Faces in both directions (the winding of hand-made outlines varies), each with its own
+  // vertices so the lighting of one side does not cancel the other.
+  const count = indices.length;
+  const offset = positions.length / 3;
+  positions.push(...positions);
+  for (let i = 0; i < count; i += 3) indices.push(indices[i] + offset, indices[i + 2] + offset, indices[i + 1] + offset);
+  const m = new Mesh('prism', scene);
+  const data = new VertexData();
+  data.positions = positions;
+  data.indices = indices;
+  const normals: number[] = [];
+  VertexData.ComputeNormals(positions, indices, normals);
+  data.normals = normals;
+  // Texture coordinates (unused), so it can be merged with the built-in shapes.
+  data.uvs = new Array((positions.length / 3) * 2).fill(0);
+  data.applyToMesh(m);
+  return m;
+}
+
+/** A standing figure in a long robe, about `h` metres tall, standing at (x, y, z). */
+function figure(scene: Scene, x: number, y: number, z: number, h: number): Mesh {
+  const robe = MeshBuilder.CreateCylinder('robe', { height: h * 0.8, diameterTop: h * 0.2, diameterBottom: h * 0.36, tessellation: 8 }, scene);
+  robe.position.set(x, y + h * 0.4, z);
+  const head = MeshBuilder.CreateSphere('head', { diameter: h * 0.2, segments: 6 }, scene);
+  head.position.set(x, y + h * 0.9, z);
+  return Mesh.MergeMeshes([robe, head], true)!;
 }
 
 /** Thin ropes and cables as one line system. */
@@ -266,25 +324,152 @@ export function createLandmarks(
     labels.push({ name: 'Torre de Belém', x, y, height: 60 });
   }
 
-  // --- Padrão dos Descobrimentos (1960): a 52 m slab with the cross-sword, its prow facing
-  // the river and the navigators on ramps up both sides ---------------------------------------
+  // --- Padrão dos Descobrimentos (1960): a 52 m stone "sail" whose front edge slants out
+  // into a prow over the river; on its two sides, ramps of 16 navigators step up to Henry the
+  // Navigator at the prow, holding a caravel; the great sword-cross is on the land side.
   {
     const [x, y] = toXY(38.69361, -9.20573);
-    const parts: Parameters<typeof boxes>[2] = [
-      { x, y: 1.5, z: y, w: 46, h: 3, d: 30 }, // platform
-      { x, y: 26, z: y + 6, w: 20, h: 52, d: 7 }, // the tall slab (north)
-      { x, y: 46, z: y + 9.8, w: 3, h: 12, d: 1 }, // sword hilt (on the land side)
-      { x, y: 44, z: y + 9.8, w: 10, h: 2, d: 1 },
-    ];
-    // Prow: a wedge pointing south, rising towards the slab, carrying the figures.
-    for (let k = 0; k < 8; k++) {
-      const h = 6 + k * 4.5;
-      parts.push({ x, y: h / 2 + 3, z: y - 14 + k * 2.6, w: 14 - k * 0.4, h, d: 2.6 });
-      // Navigators: two rows of statues stepping up the ramps.
-      for (const side of [-1, 1]) parts.push({ x: x + side * (5 - k * 0.3), y: h + 4.5, z: y - 14 + k * 2.6, w: 1.6, h: 3.4, d: 1.6 });
+    const pieces: Mesh[] = [];
+    const box = (cx: number, cy: number, cz: number, w: number, h: number, d: number, rot = 0) => {
+      const b = MeshBuilder.CreateBox('padrao-part', { width: w, height: h, depth: d }, scene);
+      b.position.set(x + cx, cy, y + cz);
+      b.rotation.y = rot;
+      pieces.push(b);
+    };
+    box(0, 1.5, 0, 46, 3, 36); // the platform
+    // The sail: 2 m layers, each a wedge (flat back to the north, point to the south);
+    // the point moves back as it rises, so the front edge slants like a prow.
+    for (let k = 0; k < 26; k++) {
+      const half = 4.6 - k * 0.09;
+      const tip = -20 + k * 0.95;
+      pieces.push(prism(scene, [[x - half, y + 9], [x + half, y + 9], [x, y + tip]], 3 + k * 2, 5 + k * 2));
     }
-    boxes(scene, 'padrao', parts, stone);
+    // Ramps and navigators, from Henry at the prow back and down to the platform.
+    for (const side of [-1, 1]) {
+      for (let i = 1; i <= 16; i++) {
+        const t = i / 16;
+        const px = side * (1.6 + 6.6 * t);
+        const pz = -19 + 29 * t;
+        const top = 18 - 14 * t;
+        const rot = Math.atan2(side * 6.6, 29);
+        box(px, (3 + top) / 2, pz, 3.2, top - 3, 2.1, rot);
+        pieces.push(figure(scene, x + px, top, y + pz, 3.2));
+      }
+    }
+    box(0, 10.5, -19.5, 3.6, 15, 3.4); // Henry's plinth at the prow
+    pieces.push(figure(scene, x, 18, y - 19.5, 4.6));
+    box(0, 21.5, -21.2, 2.2, 1, 0.9); // the caravel in his hands
+    // Sword-cross on the north face.
+    box(0, 25, 9.4, 2.4, 34, 0.8);
+    box(0, 38, 9.4, 13, 1.8, 0.8);
+    box(0, 44, 9.4, 1.6, 10, 0.8);
+    merged('padrao', pieces, stone);
     labels.push({ name: 'Padrão dos Descobrimentos', x, y, height: 80 });
+  }
+
+  // --- Lighthouses ---------------------------------------------------------------------------
+  const white = material(scene, 'lighthouse-white', '#efece4');
+  const lantern = material(scene, 'lantern', '#2f3b40', 0.2);
+  lantern.emissiveColor = new Color3(0.9, 0.75, 0.35);
+  const dome = material(scene, 'lantern-dome', '#8e2b22', 0.5);
+  const blue = material(scene, 'azulejo-blue', '#2c4f9e', 0.4);
+  /** A tower top: the glass lantern and its red dome. */
+  const lanternTop = (cx: number, top: number, cz: number, d: number) => {
+    const glass = MeshBuilder.CreateCylinder('lantern', { height: d * 0.9, diameter: d, tessellation: 12 }, scene);
+    glass.position.set(cx, top + d * 0.45, cz);
+    glass.material = lantern;
+    const cap = MeshBuilder.CreateCylinder('lantern-dome', { height: d * 0.5, diameterTop: 0.2, diameterBottom: d * 1.1, tessellation: 12 }, scene);
+    cap.position.set(cx, top + d * 0.9 + d * 0.25, cz);
+    cap.material = dome;
+    for (const m of [glass, cap]) m.isPickable = false;
+  };
+
+  // Cabo Espichel: a hexagonal white tower (32 m) on the cliff top, with the keepers' house.
+  {
+    const [x, y] = toXY(38.41466, -9.21625);
+    const g = ground(x, y);
+    const tower = MeshBuilder.CreateCylinder('espichel', { height: 32, diameter: 6.5, tessellation: 6 }, scene);
+    tower.position.set(x, g + 16, y);
+    const house = MeshBuilder.CreateBox('espichel-house', { width: 16, height: 6, depth: 9 }, scene);
+    house.position.set(x + 9, g + 3, y + 2);
+    merged('espichel', [tower, house], white);
+    lanternTop(x, g + 32, y, 3.4);
+    labels.push({ name: 'Farol do Cabo Espichel', x, y, height: g + 60 });
+  }
+
+  // Bugio: the round fort of São Lourenço on a sandbank at the mouth of the river, with the
+  // lighthouse tower in the middle.
+  {
+    const [x, y] = toXY(38.66111, -9.29944);
+    const walls = MeshBuilder.CreateCylinder('bugio-walls', { height: 8, diameter: 58, tessellation: 40 }, scene);
+    walls.position.set(x, 3, y);
+    const ring = MeshBuilder.CreateCylinder('bugio-parapet', { height: 1.5, diameter: 60, tessellation: 40 }, scene);
+    ring.position.set(x, 7.5, y);
+    const keep = MeshBuilder.CreateCylinder('bugio-keep', { height: 4, diameter: 26, tessellation: 24 }, scene);
+    keep.position.set(x, 9, y);
+    merged('bugio-fort', [walls, ring, keep], stone);
+    const tower = MeshBuilder.CreateCylinder('bugio-tower', { height: 12, diameter: 5, tessellation: 16 }, scene);
+    tower.position.set(x, 17, y);
+    merged('bugio-tower', [tower], white);
+    lanternTop(x, 23, y, 3);
+    labels.push({ name: 'Farol do Bugio', x, y, height: 55 });
+  }
+
+  // Santa Marta, Cascais: a square tower (20 m) in blue and white stripes of tiles.
+  {
+    const [x, y] = toXY(38.69222, -9.42139);
+    const g = ground(x, y);
+    const whites: Mesh[] = [];
+    const blues: Mesh[] = [];
+    for (let k = 0; k < 10; k++) {
+      const band = MeshBuilder.CreateBox('santa-marta', { width: 4.6, height: 2, depth: 4.6 }, scene);
+      band.position.set(x, g + 1 + k * 2, y);
+      (k % 2 ? blues : whites).push(band);
+    }
+    const fort = MeshBuilder.CreateBox('santa-marta-fort', { width: 26, height: 5, depth: 20 }, scene);
+    fort.position.set(x - 2, g + 2.5, y + 8);
+    whites.push(fort);
+    merged('santa-marta-white', whites, white);
+    merged('santa-marta-blue', blues, blue);
+    lanternTop(x, g + 20, y, 3);
+    labels.push({ name: 'Farol de Santa Marta', x, y, height: g + 50 });
+  }
+
+  // --- Castelo de São Jorge: walls with square towers and battlements on the hill above
+  // the old town -----------------------------------------------------------------------------
+  {
+    const [x, y] = toXY(38.71386, -9.1335);
+    const g = ground(x, y);
+    const castle = material(scene, 'castle', '#c4b394');
+    const pieces: Mesh[] = [];
+    const box = (cx: number, cy: number, cz: number, w: number, h: number, d: number) => {
+      const b = MeshBuilder.CreateBox('castle-part', { width: w, height: h, depth: d }, scene);
+      b.position.set(x + cx, g + cy, y + cz);
+      pieces.push(b);
+    };
+    const W = 130; // east-west
+    const D = 70; // north-south
+    const H = 12;
+    // Curtain walls with battlements.
+    for (const [cx, cz, w, d] of [[0, -D / 2, W, 3], [0, D / 2, W, 3], [-W / 2, 0, 3, D], [W / 2, 0, 3, D]]) {
+      box(cx, H / 2 - 3, cz, w, H + 6, d);
+      const along = w > d;
+      const len = along ? w : d;
+      for (let t = -len / 2 + 1.5; t < len / 2; t += 3) box(cx + (along ? t : 0), H + 3.7, cz + (along ? 0 : t), along ? 1.5 : 3.2, 1.6, along ? 3.2 : 1.5);
+    }
+    // Towers: at the corners, along the walls, and the keep (castelejo) inside.
+    const towers: [number, number, number][] = [
+      [-W / 2, -D / 2, 9], [W / 2, -D / 2, 9], [-W / 2, D / 2, 9], [W / 2, D / 2, 9],
+      [-W / 6, -D / 2, 8], [W / 6, -D / 2, 8], [-W / 6, D / 2, 8], [W / 6, D / 2, 8], [-W / 2, 0, 8], [W / 2, 0, 8],
+      [W / 4, 0, 11], [W / 4 + 14, 8, 9],
+    ];
+    for (const [cx, cz, s] of towers) {
+      const th = H + 8 + (s > 9 ? 6 : 0);
+      box(cx, th / 2 - 3, cz, s, th + 6, s);
+      for (const [dx, dz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) box(cx + (dx * (s - 1.4)) / 2, th + 3.8, cz + (dz * (s - 1.4)) / 2, 1.4, 1.6, 1.4);
+    }
+    merged('castelo', pieces, castle);
+    labels.push({ name: 'Castelo de São Jorge', x, y, height: g + 50 });
   }
 
   return labels;

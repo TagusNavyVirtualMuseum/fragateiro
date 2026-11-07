@@ -3,7 +3,7 @@ import { LandMask, hullAfloat } from './landMask';
 
 export const DESTINATION_NAMES = [
   // The coast, from the west
-  'Cascais', 'Oeiras', 'Trafaria', 'Cabo Espichel', 'Sesimbra',
+  'Cascais', 'Oeiras', 'Trafaria', 'Cabo Espichel', 'Sesimbra', 'Setúbal',
   // The estuary
   'Lisboa', 'Almada', 'Seixal', 'Amora', 'Barreiro', 'Alhos Vedros', 'Moita', 'Sarilhos Pequenos', 'Montijo', 'Ilha do Rato', 'Alcochete',
   // Upriver
