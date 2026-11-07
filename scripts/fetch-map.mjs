@@ -27,7 +27,7 @@ const OUT_DIR = new URL('../src/assets/map/', import.meta.url);
 
 const PLACES_WANTED = /^(city|town|village|hamlet|island|islet)$/;
 /** Landmark bridges: their deck lines are saved for drawing. */
-const BRIDGES = /^Ponte (25 de Abril|Vasco da Gama)$/;
+const BRIDGES = /^Ponte (25 de Abril|Vasco da Gama|Marechal Carmona)$/;
 /** Must be land / water, or the data is wrong (checked after building the grid). */
 const CHECKS = {
   land: {
@@ -71,7 +71,7 @@ async function download() {
   relation["place"~"island|islet"]["name"](${b});
   node["seamark:type"](${b});
   node["natural"="cape"]["name"](${b});
-  way["highway"]["bridge"]["name"~"^Ponte (25 de Abril|Vasco da Gama)$"](${b});
+  way["highway"]["bridge"]["name"~"^Ponte (25 de Abril|Vasco da Gama|Marechal Carmona)$"](${b});
 );
 out geom;`;
   for (const url of OVERPASS) {
