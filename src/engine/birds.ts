@@ -11,6 +11,8 @@ export interface FlockOptions {
   height?: [number, number];
   /** Birds further than this from the centre come back near it, m. */
   range?: number;
+  /** Size multiplier (larger birds read better from far away). */
+  size?: number;
 }
 /** Vertices per bird: nose, tail, then per wing a root pair, the elbow and the tip. */
 const VERTS = 10;
@@ -39,12 +41,14 @@ export class Birds {
   private readonly spread: [number, number];
   private readonly height: [number, number];
   private readonly range: number;
+  private readonly sizeScale: number;
 
   constructor(scene: Scene, options: FlockOptions = {}) {
     this.count = options.count ?? 24;
     this.spread = options.spread ?? [15, 125];
     this.height = options.height ?? [6, 28];
     this.range = options.range ?? 250;
+    this.sizeScale = options.size ?? 1;
     const COUNT = this.count;
     for (let i = 0; i < COUNT; i++) this.birds.push(this.spawn(0, 0));
     this.positions = new Float32Array(COUNT * VERTS * 3);
@@ -96,7 +100,7 @@ export class Birds {
       turn: (speed / radius) * (Math.random() < 0.5 ? -1 : 1),
       flapping: Math.random() * 2,
       phase: Math.random() * 10,
-      size: 0.8 + Math.random() * 0.4, // wingspan about 1.2-1.7 m (with the 1.4 m base below)
+      size: (0.8 + Math.random() * 0.4) * this.sizeScale, // wingspan about 1.2-1.7 m (with the 1.4 m base below)
     };
   }
 

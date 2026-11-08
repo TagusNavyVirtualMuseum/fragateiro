@@ -98,9 +98,12 @@ export class FishingGround {
     readonly centre: { x: number; y: number },
     count = 6,
     private readonly rand = Math.random,
+    /** Where the boat starts: the first shoal rises 300-500 m from it, to be found quickly. */
+    start?: { x: number; y: number },
   ) {
     for (let i = 0; i < count; i++) {
-      const s = spawnShoal(mask, centre.x, centre.y, rand, i === 0 ? 250 : 400, i === 0 ? 450 : 1600);
+      const from = i === 0 && start ? start : centre;
+      const s = spawnShoal(mask, from.x, from.y, rand, i === 0 ? 300 : 400, i === 0 ? 500 : 1600);
       if (s) this.shoals.push(s);
     }
   }

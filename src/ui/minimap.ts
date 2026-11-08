@@ -15,6 +15,8 @@ export class Minimap {
   /** Metres per pixel of the pre-rendered chart. */
   private readonly mPerPx: number;
   private whole = false;
+  /** Key to the symbols, under the chart. */
+  private readonly legend = document.createElement('div');
   /** The part of the world shown now: north-west corner and size, m. */
   private view = { x: 0, y: 0, w: 1, h: 1 };
 
@@ -94,7 +96,8 @@ export class Minimap {
       this.resize();
       toggle.blur();
     };
-    parent.append(this.canvas, toggle);
+    this.legend.className = 'map-legend';
+    parent.append(this.canvas, this.legend, toggle);
   }
 
   /** Near view: a fixed 4:3 window; whole map: the map's own shape. */
@@ -114,7 +117,7 @@ export class Minimap {
   }
 
   /** Redraw with the boat at (x east, y north) and its heading (rad). */
-  draw(x: number, y: number, heading: number, target?: { x: number; y: number }, others: { x: number; y: number }[] = [], marks: { x: number; y: number }[] = []): void {
+  draw(x: number, y: number, heading: number, target?: { x: number; y: number }, others: { x: number; y: number }[] = [], marks: { x: number; y: number }[] = [], marksAre: 'buoys' | 'shoals' = 'buoys'): void {
     const m = this.mask.meta;
     const { width, height } = this.mask.sizeMetres;
     if (this.whole) {
@@ -138,15 +141,30 @@ export class Minimap {
       ctx.arc(ox, oy, 3.5, 0, Math.PI * 2);
       ctx.fill();
     }
-    // Regatta buoys: yellow rings.
-    ctx.strokeStyle = '#d9a400';
+    // Regatta buoys: yellow rings. Shoals of fish: blue-green discs.
     ctx.lineWidth = 3;
     for (const m of marks) {
       const [mx, my] = this.toPx(m.x, m.y);
       ctx.beginPath();
-      ctx.arc(mx, my, 5, 0, Math.PI * 2);
-      ctx.stroke();
+      if (marksAre === 'shoals') {
+        ctx.arc(mx, my, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#1f8a8a';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.lineWidth = 3;
+      } else {
+        ctx.arc(mx, my, 5, 0, Math.PI * 2);
+        ctx.strokeStyle = '#d9a400';
+        ctx.stroke();
+      }
     }
+    this.legend.innerHTML =
+      '<span class="lg-me">▲</span> you' +
+      (others.length ? ' · <span class="lg-boat">●</span> other boats' : '') +
+      (marks.length ? (marksAre === 'shoals' ? ' · <span class="lg-shoal">●</span> shoals of fish' : ' · <span class="lg-buoy">○</span> regatta buoys') : '') +
+      (target ? ' · <span class="lg-target">○</span> where to go' : '');
     if (target) {
       const [tx, ty] = this.toPx(target.x, target.y);
       ctx.strokeStyle = '#e3a33b';

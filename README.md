@@ -33,7 +33,9 @@ do, then where and with which boat.
   patches of bubbling water with fish jumping and gulls circling over them. Sail to windward
   of one, switch to lateral fishing (M) and drift sideways over it: the net on the windward
   side catches fish in proportion to the water it sweeps through the shoal, and much less if
-  the boat moves forward. Bring home 150 kg. Rules in `src/world/fishing.ts`.
+  the boat moves forward. Bring home 150 kg. From afar, look for the flock of gulls (and, on
+  easy and medium, the orange post over the nearest shoal); close up, the pale foaming patch
+  with splashes. On the minimap shoals are blue-green discs. Rules in `src/world/fishing.ts`.
 - **Free sailing:** any boat, from any port, no clock.
 
 Times use the game clock; best times are kept in the browser per mission, boat and level.

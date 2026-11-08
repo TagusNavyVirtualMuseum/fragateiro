@@ -313,7 +313,7 @@ async function startMission(m: Mission, l: Level): Promise<void> {
       // The ground: open water about a kilometre off the port.
       let centre = { x: at.x + Math.sin(at.heading) * 1000, y: at.y + Math.cos(at.heading) * 1000 };
       if (!mask.isReachable(centre.x, centre.y)) centre = { x: at.x, y: at.y };
-      fishing = new FishingGround(mask, centre, 6);
+      fishing = new FishingGround(mask, centre, 6, Math.random, { x: sim.state.x, y: sim.state.y });
       run = new MissionRun(m, sim.state.time, null, null);
     }
   } else if (m.kind === 'transport') {
@@ -469,12 +469,13 @@ async function main(): Promise<void> {
     if (fishing) shoalView.update(fishing.shoals, sim.state.time, dt);
     const shoal = fishing ? fishing.nearest(s.x, s.y) : null;
     const goal = fishing ? shoal : run ? run.goal : target;
-    minimap.draw(s.x, s.y, s.heading, goal ?? undefined, traffic?.positions, run?.course?.buoys ?? fishing?.shoals.filter((x) => x.kg >= 5));
+    minimap.draw(s.x, s.y, s.heading, goal ?? undefined, traffic?.positions, run?.course?.buoys ?? fishing?.shoals.filter((x) => x.kg >= 5), fishing ? 'shoals' : 'buoys');
     let nav = null;
     if (fishing && run && mission.kind === 'fishing') {
       const dx = (shoal?.x ?? s.x) - s.x;
       const dy = (shoal?.y ?? s.y) - s.y;
-      mapView.setTarget(null);
+      // The tall orange post marks the nearest shoal, except on the hard level.
+      mapView.setTarget(level === 'hard' ? null : shoal);
       nav = {
         title: `Catch ${Math.floor(fishing.caught)} of ${mission.targetKg} kg`,
         name: sim.mode.net ? 'nearest shoal' : 'nearest shoal (M: fish)',
