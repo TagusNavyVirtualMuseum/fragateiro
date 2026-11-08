@@ -17,7 +17,10 @@ export interface SailSpec {
   ceDistance: number;
   /** Height of the centre of effort above the waterline, m (heeling arm). */
   ceHeight: number;
-  /** Boom angle with the sheet hauled fully in, degrees. */
+  /**
+   * Boom angle with the sheet hauled fully in, degrees. Traditional rigs (lateen yards,
+   * sprits, gaffs) cannot be hauled as flat as a yacht's boom: 20° for all our boats.
+   */
   minAngle: number;
   /** Boom angle with the sheet fully eased, degrees. */
   maxAngle: number;

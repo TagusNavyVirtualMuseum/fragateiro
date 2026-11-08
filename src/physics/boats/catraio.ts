@@ -33,9 +33,9 @@ export const CATRAIO: BoatSpec = {
   },
   rudder: { area: 1.35, x: -4.8, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
   sails: [
-    { id: 'jib', name: 'Jib', group: 'jib', area: 14, pivot: [6.7, 0], ceDistance: 1.8, ceHeight: 3.5, minAngle: 8, maxAngle: 80, efficiency: 0.8 },
-    { id: 'main', name: 'Spritsail', group: 'main', area: 32, pivot: [3.2, 0], ceDistance: 3, ceHeight: 5.5, minAngle: 6, maxAngle: 80, efficiency: 0.8 },
-    { id: 'mizzen', name: 'Mizzen', group: 'mizzen', area: 3, pivot: [-4.45, 0], ceDistance: 0.8, ceHeight: 2.2, minAngle: 6, maxAngle: 80, efficiency: 0.8 },
+    { id: 'jib', name: 'Jib', group: 'jib', area: 14, pivot: [6.7, 0], ceDistance: 1.8, ceHeight: 3.5, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
+    { id: 'main', name: 'Spritsail', group: 'main', area: 32, pivot: [3.2, 0], ceDistance: 3, ceHeight: 5.5, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
+    { id: 'mizzen', name: 'Mizzen', group: 'mizzen', area: 3, pivot: [-4.45, 0], ceDistance: 0.8, ceHeight: 2.2, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
   ],
   modes: [{ id: 'sailing', name: 'Sailing', description: 'Spritsail, jib and mizzen set.', sails: ['jib', 'main', 'mizzen'] }],
 };

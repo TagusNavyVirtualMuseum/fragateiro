@@ -33,8 +33,8 @@ export const FRAGATA: BoatSpec = {
   },
   rudder: { area: 5.25, x: -9.5, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
   sails: [
-    { id: 'jib', name: 'Jib', group: 'jib', area: 45, pivot: [10.1, 0], ceDistance: 2.5, ceHeight: 6.5, minAngle: 8, maxAngle: 80, efficiency: 0.8 },
-    { id: 'main', name: 'Mainsail', group: 'main', area: 150, pivot: [5.2, 0], ceDistance: 6, ceHeight: 9, minAngle: 6, maxAngle: 80, efficiency: 0.8 },
+    { id: 'jib', name: 'Jib', group: 'jib', area: 45, pivot: [10.1, 0], ceDistance: 2.5, ceHeight: 6.5, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
+    { id: 'main', name: 'Mainsail', group: 'main', area: 150, pivot: [5.2, 0], ceDistance: 6, ceHeight: 9, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
   ],
   modes: [{ id: 'sailing', name: 'Sailing', description: 'Mainsail and jib set.', sails: ['jib', 'main'] }],
 };

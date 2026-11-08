@@ -36,8 +36,8 @@ export const CANOA: BoatSpec = {
   // A big rudder, as canoas carry, to steer the large lateen.
   rudder: { area: 1.2, x: -4.5, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
   sails: [
-    { id: 'main', name: 'Lateen sail', group: 'main', area: 52.6, pivot: [1.5, 0], ceDistance: 2.4, ceHeight: 5.6, minAngle: 6, maxAngle: 80, efficiency: 0.8 },
-    { id: 'mizzen', name: 'Mizzen', group: 'mizzen', area: 5.2, pivot: [-3.6, 0], ceDistance: 1.2, ceHeight: 3.1, minAngle: 6, maxAngle: 80, efficiency: 0.8 },
+    { id: 'main', name: 'Lateen sail', group: 'main', area: 52.6, pivot: [1.5, 0], ceDistance: 2.4, ceHeight: 5.6, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
+    { id: 'mizzen', name: 'Mizzen', group: 'mizzen', area: 5.2, pivot: [-3.6, 0], ceDistance: 1.2, ceHeight: 3.1, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
   ],
   modes: [{ id: 'sailing', name: 'Sailing', description: 'Lateen sail and mizzen set.', sails: ['main', 'mizzen'] }],
 };

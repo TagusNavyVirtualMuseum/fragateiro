@@ -30,6 +30,8 @@ const GYBE_MARGIN = deg2rad(12);
 const LUFF_ALPHA_DEG = 6;
 /** Drag coefficient of the hull moving stern first. */
 const STERNWAY_CD = 1.2;
+/** Mass plus added mass in sway, as a multiple of the boat's mass. */
+const SWAY_MASS = 3.0;
 /** Where the wind pushes on hull and rigging, ahead of the centre, as a share of the waterline. */
 const WINDAGE_ARM = 0.25;
 /** Time scale of the extra damping when creeping backwards, s. */
@@ -97,7 +99,9 @@ export class SailboatSim {
 
     const m = spec.mass;
     this.massU = 1.05 * m;
-    this.massV = 1.6 * m;
+    // Sideways the hull drags a lot of water with it (strip theory: about pi/2 rho T^2 L,
+    // 1-3 times the boat's mass for these hulls), so a sideways slide builds up slowly.
+    this.massV = SWAY_MASS * m;
     this.inertia = (1.3 * m * (spec.length ** 2 + spec.beam ** 2)) / 12;
     this.rollStiffness = m * GRAVITY * spec.gm;
     this.rollInertia = this.rollStiffness * (spec.rollPeriod / (2 * Math.PI)) ** 2;

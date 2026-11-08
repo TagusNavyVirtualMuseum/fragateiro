@@ -25,8 +25,13 @@ where V̂ is the flow direction and **n** is perpendicular to it, on the side op
 the foil turns the flow (`src/physics/foil.ts`).
 
 - **Sails:** ρ = 1.204 kg/m³. C_L and C_D come from the original simulator's tables (one value
-  per degree). The flow is the **apparent wind** at the sail's centre of effort: true wind
-  minus the boat's velocity (including the rotation).
+  per degree), with the drag scaled to 60 % at small angles of attack, rising back to the full
+  table value at 90° (`SAIL_DRAG_SCALE`). The yacht tables give a best lift/drag of only about
+  1.5, where cloth sails reach 3–5; with it, close-hauled sails pushed about seven times more
+  sideways than forward, and a slow boat could not gather way (see
+  [physics-study](physics-study/README.md)). Now the best lift/drag is about 2.5. The flow is
+  the **apparent wind** at the sail's centre of effort: true wind minus the boat's velocity
+  (including the rotation).
 - **Keel and hull:** the underwater side area is cut into 6 strips over the middle part of the
   hull (`lateralSpan`, half the waterline length by default), each a low-aspect-ratio wing (linear lift up to stall, then flat-plate behaviour, plus cross-flow
   drag). Strips at different positions see different flows when the boat turns, which gives
@@ -36,7 +41,10 @@ the foil turns the flow (`src/physics/foil.ts`).
 ## Sails and sheets
 
 A sail on its own streams downwind like a flag. The **sheet** only limits how far the boom
-can swing out (`minAngle` with the sheet hauled in, `maxAngle` fully eased). So:
+can swing out (`minAngle` with the sheet hauled in, `maxAngle` fully eased). Traditional
+rigs (lateen yards, sprits, gaffs) cannot be hauled as flat as a yacht's boom, so `minAngle`
+is 20° for every working sail (the Muleta's small fishing sails on the net booms keep 4°).
+This also sets the no-go zone. So:
 
 - if the wind would push the boom further than the sheet allows, the sail is pinned at the
   limit and fills (α > 0: lift and drag);
@@ -45,7 +53,7 @@ can swing out (`minAngle` with the sheet hauled in, `maxAngle` fully eased). So:
 A flapping sail gets about a fifth of the table's drag (rising back to the table value at
 10° angle of attack), so a boat keeps its way and can tack. This one rule produces the
 behaviours from the paper: no progress head to wind (sails flap),
-a no-go zone of about ±45°, sails centred when close-hauled, half-way on a beam reach and
+a no-go zone of about ±36°, sails hauled in when close-hauled, half-way on a beam reach and
 fully out when running, and gybes when the wind crosses the stern. The sail angle follows its
 target with a 0.35 s lag so manoeuvres look natural.
 
@@ -64,7 +72,9 @@ target with a 0.35 s lag so manoeuvres look natural.
 
 ## Equations of motion
 
-With added masses (1.05 m in surge, 1.6 m in sway, 1.3 × the yaw inertia):
+With added masses (1.05 m in surge, 3 m in sway, 1.3 × the yaw inertia). Sideways, a hull
+drags a lot of water with it (strip theory gives about π/2 ρ T² L, one to three times the
+boat's mass for these hulls), so a sideways slide builds up slowly:
 
 ```
 m_u (du/dt − v r) = X
@@ -90,13 +100,15 @@ at that speed.
 
 Mass, stability and resistance values are estimates. `npm run polar [wind m/s]` prints the
 best speed at each wind angle for every boat and mode. At 6 m/s (the paper's test wind) the
-current values give, for the Falua: nothing below about 42°, 2.7 kn at 45°, 5.4 kn on a beam
-reach and 5 kn running. The Fragata: 2.6 kn at 45°, 6 kn on a beam reach; the Catraio:
-2.3 kn at 45°, 4.9 kn on a beam reach; the Canoa (52 m² lateen on a narrow 5 t hull): 2.7 kn at 45°, 5 kn on a beam reach, heeling
-up to about 10°.
+current values give, for the Falua: nothing below about 35°, 2.7 kn at 40°, 3.6 kn at 45°,
+5.7 kn on a beam reach and 5 kn running. The Muleta: 3.5 kn at 45°, 5.5 kn on a beam reach;
+the Fragata: 3.6 kn at 45°, 6.3 kn on a beam reach; the Catraio: 3.2 kn at 45°, 5.1 kn on a
+beam reach; the Canoa (52 m² lateen on a narrow 5 t hull): 3.5 kn at 45°, 5.2 kn on a beam
+reach, heeling up to about 9°. Close-hauled the best setting is sheets fully in.
 The masses (Falua 15 t, Muleta 7 t, Fragata 30 t part-loaded, Catraio 5 t, Canoa 5 t) are estimates; they are what makes each boat feel different
-(how it carries its way through a tack and how quickly it picks up speed). Heel stays under about 5° and leeway around 0.1–0.3 kn
-in this wind (stability and hull grip were doubled after play-testing).
+(how it carries its way through a tack and how quickly it picks up speed). Heel stays under about 5° (the Canoa about 9°) and leeway around 0.1–0.2 kn in this wind
+(stability and hull grip were doubled after play-testing). `npm run study` runs a set of fixed
+situations and logs every force; see [physics-study](physics-study/README.md).
 
 The game runs the simulation 3× faster than real time by default (setting: 1×, 2×, 3×, 5×,
 10×), so the speeds shown stay realistic while trips take less time. The default wind is

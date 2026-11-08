@@ -90,12 +90,19 @@ function interpolate(table: readonly number[], deg: number): number {
 export function sailCurve(efficiency = 1): CoefficientCurve {
   return (alphaDeg) => {
     const luffing = Math.min(1, alphaDeg / 10);
+    // The yacht tables' drag is high at working angles (best lift/drag about 1.5; cloth sails
+    // reach 3-5): scale it to 60 % at small angles, back to the full flat-plate value at 90°.
+    const a = Math.min(1, alphaDeg / 90);
+    const dragScale = SAIL_DRAG_SCALE + (1 - SAIL_DRAG_SCALE) * a * a;
     return {
       cl: interpolate(SAIL_LIFT, alphaDeg) * efficiency,
-      cd: interpolate(SAIL_DRAG, alphaDeg) * (0.2 + 0.8 * luffing),
+      cd: interpolate(SAIL_DRAG, alphaDeg) * (0.2 + 0.8 * luffing) * dragScale,
     };
   };
 }
+
+/** Share of the tables' sail drag kept at small angles of attack (see sailCurve). */
+export const SAIL_DRAG_SCALE = 0.6;
 
 /**
  * Symmetric underwater foil (keel strip or rudder).

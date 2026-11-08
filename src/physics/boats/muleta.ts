@@ -41,9 +41,10 @@ export const MULETA: BoatSpec = {
   },
   rudder: { area: 1.5, x: -6.8, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
   sails: [
-    { id: 'main', name: 'Main sail', group: 'main', area: 60, pivot: [1.7, 0], ceDistance: 1.5, ceHeight: 6, minAngle: 6, maxAngle: 80, efficiency: 0.8 },
-    { id: 'front', name: 'Front sail', group: 'front', area: 12, pivot: [5.6, 0], ceDistance: 0.9, ceHeight: 4.5, minAngle: 6, maxAngle: 80, efficiency: 0.8 },
-    // Fishing sails (bowsprit and net booms)
+    { id: 'main', name: 'Main sail', group: 'main', area: 60, pivot: [1.7, 0], ceDistance: 1.5, ceHeight: 6, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
+    { id: 'front', name: 'Front sail', group: 'front', area: 12, pivot: [5.6, 0], ceDistance: 0.9, ceHeight: 4.5, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
+    // Fishing sails (bowsprit and net booms): small sails on booms, sheeted flat on purpose to
+    // hold the boat square to the wind, so they keep a small minimum angle.
     { id: 'advanced', name: 'Vela avançada', group: 'front', area: 6, pivot: [11.8, 0], ceDistance: 1.5, ceHeight: 5, minAngle: 4, maxAngle: 70, efficiency: 0.8 },
     { id: 'front-low', name: 'Lower front sail', group: 'front', area: 8, pivot: [9, 0], ceDistance: 2.5, ceHeight: 3, minAngle: 4, maxAngle: 70, efficiency: 0.8 },
     { id: 'front-top', name: 'Upper front sail', group: 'front', area: 9, pivot: [9.2, 0], ceDistance: 1.6, ceHeight: 5, minAngle: 4, maxAngle: 70, efficiency: 0.8 },
