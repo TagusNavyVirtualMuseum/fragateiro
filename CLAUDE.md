@@ -7,3 +7,4 @@
 - `.npmrc` sets `legacy-peer-deps` because npm 10 crashes on vitest's optional peers.
 - In the browser console, `game.sim` is the running simulator (debug handle in `games/sailing/main.ts`).
 - After changing a boat model or its wiring, rebuild the light copies used by the other boats: `npx tsx --import ./scripts/url-stub.mjs scripts/lite-models.ts` (see `docs/MODELS.md`).
+- `npm run study` runs the physics study (scripts/physics-study.ts) and rewrites `docs/physics-study/results.md` and `data/`; update the findings in `docs/physics-study/README.md` when the physics changes.

@@ -56,6 +56,7 @@ npm run dev        # open the URL it prints
 npm test           # physics tests
 npm run build      # static site in dist/
 npm run polar      # print speed polars for every boat and mode (tuning aid)
+npm run study      # physics study: fixed situations, forces logged (docs/physics-study/)
 ```
 
 Node 22 or newer.

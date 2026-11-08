@@ -164,6 +164,8 @@ export interface ForceReport {
   keel: PointForce;
   rudder: PointForce;
   resistance: PointForce;
+  /** Air drag on hull, masts and rigging. */
+  windage: PointForce;
   net: PointForce[];
   /** Apparent wind at the boat: speed (m/s) and angle off the bow (deg, + = from starboard). */
   apparentWindSpeed: number;

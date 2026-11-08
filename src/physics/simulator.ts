@@ -247,12 +247,14 @@ export class SailboatSim {
     }
 
     // --- Windage: air drag on hull, masts and rigging --------------------------------
+    let windage: PointForce;
     {
       const ax = wf - s.u;
       const ay = ws - s.v;
       const k = 0.5 * RHO_AIR * spec.hull.windageArea * Math.hypot(ax, ay);
       X += k * ax;
       Y += k * ay;
+      windage = { fx: k * ax, fy: k * ay, x: WINDAGE_ARM * spec.hull.waterlineLength, y: 0 };
       // Masts, high bow and rigging catch the wind ahead of the hull's grip in the water, so
       // a boat with flapping sails falls off the wind until they fill (as real boats do),
       // instead of lying head to wind and drifting backwards.
@@ -357,6 +359,7 @@ export class SailboatSim {
       keel: { fx: kx, fy: ky, x: hull.lateralCentre, y: 0 },
       rudder: { fx: rf.fx, fy: rf.fy, x: rd.x, y: 0 },
       resistance: { fx: resistance, fy: 0, x: 0, y: 0 },
+      windage,
       net,
       apparentWindSpeed: Math.hypot(awx, awy),
       apparentWindAngleDeg: rad2deg(Math.atan2(-awy, -awx)),
@@ -371,6 +374,7 @@ export class SailboatSim {
       keel: ZERO_FORCE,
       rudder: ZERO_FORCE,
       resistance: ZERO_FORCE,
+      windage: ZERO_FORCE,
       net: [],
       apparentWindSpeed: 0,
       apparentWindAngleDeg: 0,
