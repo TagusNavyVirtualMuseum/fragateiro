@@ -30,6 +30,7 @@ import { getArea, type AreaId } from '../world/area';
 import { LandMask, type MapMeta } from '../world/landMask';
 import { Terrain, type HeightsMeta } from '../world/terrain';
 import { createLandmarks, type BridgeLine } from './landmarks';
+import { createArcachonLandmarks } from './landmarksArcachon';
 import { createBuoy, seaMarkStyle } from './buoys';
 import { addExtraPlaces } from '../world/destinations';
 import { waveHeight } from './waves';
@@ -256,8 +257,11 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
     labels.push(label);
   }
 
-  // --- Landmarks of the Tagus: bridges, towers, lighthouses.
-  for (const l of AREA.tagusExtras ? createLandmarks(scene, mask, terrain, mask.meta.origin, MAP_META.bridges) : []) {
+  // --- Landmarks: the Tagus bridges, towers and lighthouses; Arcachon's lighthouse, piers
+  // and huts on stilts.
+  const landmarks =
+    AREA.id === 'tejo' ? createLandmarks(scene, mask, terrain, mask.meta.origin, MAP_META.bridges) : AREA.id === 'arcachon' ? createArcachonLandmarks(scene, mask, terrain, mask.meta.origin) : [];
+  for (const l of landmarks) {
     const label = makeLabel(scene, l.name, false);
     label.position.set(l.x, l.height, l.y);
     labels.push(label);

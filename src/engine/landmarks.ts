@@ -25,14 +25,14 @@ export interface LandmarkLabel {
 }
 
 /** The same projection as scripts/fetch-map.mjs. */
-function projector(origin: { lat: number; lon: number }) {
+export function projector(origin: { lat: number; lon: number }) {
   const mLat = 110574;
   const mLon = 111320 * Math.cos((origin.lat * Math.PI) / 180);
   return (lat: number, lon: number): [number, number] => [(lon - origin.lon) * mLon, (lat - origin.lat) * mLat];
 }
 
 /** Physically based, like the boats (a plain material turns white in the bright sun). */
-function material(scene: Scene, name: string, hex: string, roughness = 0.85): PBRMaterial {
+export function material(scene: Scene, name: string, hex: string, roughness = 0.85): PBRMaterial {
   const m = new PBRMaterial(name, scene);
   m.albedoColor = Color3.FromHexString(hex).toLinearSpace();
   m.metallic = 0;
@@ -94,7 +94,7 @@ function deck(scene: Scene, name: string, pts: { x: number; y: number; h: number
 }
 
 /** Many copies of one box (piers, tower legs): one mesh, one draw call. */
-function boxes(scene: Scene, name: string, items: { x: number; y: number; z: number; w: number; h: number; d: number; rot?: number }[], mat: PBRMaterial): Mesh | null {
+export function boxes(scene: Scene, name: string, items: { x: number; y: number; z: number; w: number; h: number; d: number; rot?: number }[], mat: PBRMaterial): Mesh | null {
   if (!items.length) return null;
   const parts = items.map((it, i) => {
     const b = MeshBuilder.CreateBox(`${name}-${i}`, { width: it.w, height: it.h, depth: it.d }, scene);
@@ -110,7 +110,7 @@ function boxes(scene: Scene, name: string, items: { x: number; y: number; z: num
 }
 
 /** Merge pieces into one mesh with one material (one draw call). */
-function merged(name: string, pieces: Mesh[], mat: PBRMaterial): Mesh {
+export function merged(name: string, pieces: Mesh[], mat: PBRMaterial): Mesh {
   const m = Mesh.MergeMeshes(pieces, true, true)!;
   m.name = name;
   m.material = mat;
@@ -119,7 +119,7 @@ function merged(name: string, pieces: Mesh[], mat: PBRMaterial): Mesh {
 }
 
 /** A vertical prism over a convex outline [x, z][] (world metres), from y0 to y1. */
-function prism(scene: Scene, outline: [number, number][], y0: number, y1: number): Mesh {
+export function prism(scene: Scene, outline: [number, number][], y0: number, y1: number): Mesh {
   const positions: number[] = [];
   const indices: number[] = [];
   const quad = (a: number[], b: number[], c: number[], d: number[]) => {
@@ -167,7 +167,7 @@ function figure(scene: Scene, x: number, y: number, z: number, h: number): Mesh 
 }
 
 /** Thin ropes and cables as one line system. */
-function lines(scene: Scene, name: string, segments: Vector3[][], color: Color3): Mesh {
+export function lines(scene: Scene, name: string, segments: Vector3[][], color: Color3): Mesh {
   const l = MeshBuilder.CreateLineSystem(name, { lines: segments }, scene);
   l.color = color;
   l.isPickable = false;

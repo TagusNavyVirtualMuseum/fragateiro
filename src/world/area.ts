@@ -10,7 +10,7 @@ export interface AreaInfo {
   ports: string[];
   /** Boat picked when the game opens here. */
   boat: string;
-  /** The Tagus landmarks (bridges, towers, lighthouses) and its dolphins and orcas. */
+  /** The Tagus wildlife (dolphins up to Lisbon, orcas offshore). Landmarks: mapView.ts. */
   tagusExtras: boolean;
   /** Ports that are not named places on OpenStreetMap, by latitude and longitude. */
   extraPlaces: { name: string; kind: string; lat: number; lon: number }[];
