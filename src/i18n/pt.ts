@@ -41,7 +41,7 @@ export const PT: Record<string, string> = {
   'boat.canoa.desc':
     'Um barco estreito do Tejo com uma grande vela latina triangular numa verga comprida, amurada ao gurupés, e uma ' +
     'pequena mezena à popa. Canoas restauradas, como a <em>Alma do Tejo</em>, ainda navegam no rio. O seu modelo 3D foi ' +
-    'feito a partir de fotografias e das suas medidas.',
+    'feito a partir de fotografias com o Meshy, um serviço que transforma fotografias em 3D.',
   'boat.canoa.facts': '8,8 m · 2,2 m de boca · cerca de 5 t · vela latina (cerca de 52 m²) e mezena',
   'land.note': 'Os pesos são as estimativas usadas pela física do jogo.',
   'land.about': 'Sobre o projeto →',

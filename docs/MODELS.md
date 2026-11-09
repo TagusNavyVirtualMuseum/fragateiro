@@ -8,7 +8,7 @@ The boats come from the MiraroTejo project (the lighter versions made for the vi
 | Muleta | `MiraroTejo/Assets/Embarcações/Muleta/Muleta.fbx` (2.8 MB + textures) | `src/assets/models/muleta.glb` | 2.7 MB |
 | Fragata | `MiraroTejo/Assets/Embarcações/Fragata/Fragata.fbx` (4.7 MB + textures) | `src/assets/models/fragata.glb` | 3.8 MB |
 | Catraio | `MiraroTejo/Assets/Embarcações/Catraio/catraio.fbx` (55 MB, textures inside) | `src/assets/models/catraio.glb` | 3.2 MB |
-| Canoa | generated: `scripts/boats/canoa.mjs` (from a photo, 8.8 m × 2.2 m, 5 t) | `src/assets/models/canoa.glb` | 0.5 MB |
+| Canoa | Meshy (photo to 3D) of the *Alma do Tejo*, cut by `scripts/cut-model.mjs` with `scripts/boats/canoa-meshy.mjs` (46 MB, one piece) | `src/assets/models/canoa.glb` | 3 MB |
 
 The SingraroTejo versions (184 MB and 290 MB) are too heavy for the web.
 
@@ -61,6 +61,29 @@ ends up with 6-8k triangles (the Fragata 26k) and 140-480 KB; all four together 
 1 MB, loaded in the background after the game starts. Run it again after changing a model or
 its wiring. (`scripts/url-stub.mjs` lets Node import `boatVisuals.ts`, whose `?url` imports
 only work in Vite.)
+
+## Models made from photos (Meshy)
+
+Photo-to-3D services such as [Meshy](https://www.meshy.ai) give one textured mesh: hull,
+sails, ropes (and any people, engines or flags in the photo) all in one piece. Download the
+**GLB** with textures, then cut it into the parts the game moves:
+
+```bash
+node scripts/cut-model.mjs scripts/boats/canoa-meshy.mjs Meshy_AI_..._texture.glb src/assets/models/canoa.glb
+```
+
+The config file sorts every triangle by where it is (in the Meshy model's own units): what
+to drop (boxes around people and the engine; small loose pieces such as flags), which
+triangles are each sail with its yard (for the Canoa: aloft, on one side of the centreline),
+and the rudder. It also gives the scale (non-uniform if the proportions need fixing: the
+Canoa came out 30% too beamy) and the origin (the waterline at y = 0). The script then
+simplifies each part to a triangle budget and shrinks the textures to 1024 px WebP: the
+Canoa went from 46 MB and 1.3 M triangles to 3 MB and 80k. To find the numbers, render the
+model with a grid (a Babylon page with an orthographic camera works well) and colour the
+parts to check the cut. A mast inside a sail's part is fine: it turns about its own axis.
+
+Tips for Meshy: photos without people, the whole hull out of the water (a photo of a boat
+afloat gives a model that stops at the waterline), sails set and seen from the side.
 
 ## Generating a model from numbers
 

@@ -40,8 +40,8 @@ export const EN: Record<string, string> = {
   'boat.canoa.alt': 'The Canoa with its lateen sail and mizzen',
   'boat.canoa.desc':
     'A narrow Tagus boat with one big triangular lateen sail on a long yard, its tack on a bowsprit, and a small mizzen ' +
-    'at the stern. Restored canoas, like the <em>Alma do Tejo</em>, still sail on the river. Its 3D model was built from ' +
-    'photos and its dimensions.',
+    'at the stern. Restored canoas, like the <em>Alma do Tejo</em>, still sail on the river. Its 3D model was made from ' +
+    'photos of it with Meshy, a photo-to-3D service.',
   'boat.canoa.facts': '8.8 m · 2.2 m beam · about 5 t · lateen sail (about 52 m²) and mizzen',
   'land.note': "Weights are the estimates used by the game's physics.",
   'land.about': 'About the project →',

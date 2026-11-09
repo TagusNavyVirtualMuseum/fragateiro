@@ -43,7 +43,7 @@ export const FR: Record<string, string> = {
   'boat.canoa.desc':
     'Un bateau étroit du Tage avec une grande voile latine triangulaire sur une longue antenne, amurée au beaupré, et un ' +
     'petit tapecul à l’arrière. Des canoas restaurées, comme l’<em>Alma do Tejo</em>, naviguent encore sur le fleuve. ' +
-    'Son modèle 3D a été construit à partir de photos et de ses dimensions.',
+    'Son modèle 3D a été créé à partir de photos avec Meshy, un service qui transforme des photos en 3D.',
   'boat.canoa.facts': '8,8 m · 2,2 m de large · environ 5 t · voile latine (environ 52 m²) et tapecul',
   'land.note': 'Les masses sont les estimations utilisées par la physique du jeu.',
   'land.about': 'À propos du projet →',

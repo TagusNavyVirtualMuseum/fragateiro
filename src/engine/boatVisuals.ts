@@ -265,40 +265,41 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
   },
   canoa: {
     boat: 'canoa',
-    // Generated from numbers and photos: scripts/boats/canoa.mjs (model in metres).
+    // Made with Meshy from photos of the "Alma do Tejo", cut into parts by
+    // scripts/cut-model.mjs (scripts/boats/canoa-meshy.mjs); model in metres, waterline at 0.
     hullNodes: ['Casco'],
     url: canoaUrl,
     unit: 1,
     scale: 1,
-    cgX: 0.3,
+    cgX: 0.59,
     waterline: 0,
     sails: [
       {
         sail: 'main',
-        nodes: ['Vela', 'Verga'],
-        pivot: [-1.2, 0, 0],
-        axis: { base: [-1.2, -0.35, 0], top: [-0.79, 11.3, 0] }, // mast, raked slightly aft
+        // The mast above the gunwale is part of 'Vela': it turns about its own axis.
+        nodes: ['Vela'],
+        pivot: [-0.91, 0, 0],
+        axis: { base: [-0.914, 0.89, 0], top: [-0.722, 11.28, 0] }, // mast, raked slightly aft
       },
       {
         sail: 'mizzen',
-        nodes: ['Vela_mezena', 'Verga_mezena'],
-        pivot: [3.9, 0, 0.15],
-        axis: { base: [3.9, 0.2, 0.15], top: [3.9, 5.6, 0.15] },
+        nodes: ['Vela_mezena'],
+        pivot: [3.77, 0, 0.1],
+        axis: { base: [3.767, 0.93, 0.105], top: [3.987, 4.19, 0.21] }, // the mizzen's luff
       },
     ],
-    // Lateen sheet on an arch over the tiller; mizzen sheet to the end of the bumkin.
-    horse: { x: 2.9, halfWidth: 0.8, footY: 0.8, topY: 1.3 },
+    // Lateen sheet on an arch over the after deck; mizzen sheet to the end of the bumkin.
+    horse: { x: 3.0, halfWidth: 0.75, footY: 0.65, topY: 1.15 },
     sheets: [
-      { sail: 'main', clew: [3.66, 1.49, 0.17], to: 'horse' },
-      { sail: 'mizzen', clew: [5.84, 1.39, 0.29], to: [6.8, 1.15, 0.12] },
+      { sail: 'main', clew: [3.92, 1.6, -0.26], to: 'horse' },
+      { sail: 'mizzen', clew: [6.26, 0.83, 0.16], to: [6.85, 0.93, 0] },
     ],
     rudder: {
-      nodes: ['Leme', 'Cana'],
-      pivot: [4.4, 0, 0],
-      axis: { base: [4.4, -0.62, 0], top: [4.4, 0.95, 0] }, // the sternpost
+      nodes: ['Leme'],
+      pivot: [4.43, 0, 0],
+      axis: { base: [4.43, -0.34, 0], top: [4.43, 0.83, 0] }, // hung on the transom
     },
   },
-
 };
 
 function rangeNums(from: number, to: number): number[] {

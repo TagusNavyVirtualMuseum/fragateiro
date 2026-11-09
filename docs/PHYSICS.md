@@ -103,10 +103,10 @@ best speed at each wind angle for every boat and mode. At 6 m/s (the paper's tes
 current values give, for the Falua: nothing below about 35°, 2.7 kn at 40°, 3.6 kn at 45°,
 5.7 kn on a beam reach and 5 kn running. The Muleta: 3.5 kn at 45°, 5.5 kn on a beam reach;
 the Fragata: 3.6 kn at 45°, 6.3 kn on a beam reach; the Catraio: 3.2 kn at 45°, 5.1 kn on a
-beam reach; the Canoa (52 m² lateen on a narrow 5 t hull): 3.5 kn at 45°, 5.2 kn on a beam
-reach, heeling up to about 9°. Close-hauled the best setting is sheets fully in.
+beam reach; the Canoa (52 m² lateen and a 10 m² mizzen on a narrow 5 t hull): 3.6 kn at 45°, 5.3 kn on a beam
+reach, heeling up to about 10°. Close-hauled the best setting is sheets fully in.
 The masses (Falua 15 t, Muleta 7 t, Fragata 30 t part-loaded, Catraio 5 t, Canoa 5 t) are estimates; they are what makes each boat feel different
-(how it carries its way through a tack and how quickly it picks up speed). Heel stays under about 5° (the Canoa about 9°) and leeway around 0.1–0.2 kn in this wind
+(how it carries its way through a tack and how quickly it picks up speed). Heel stays under about 5° (the Canoa about 10°) and leeway around 0.1–0.2 kn in this wind
 (stability and hull grip were doubled after play-testing). `npm run study` runs a set of fixed
 situations and logs every force; see [physics-study](physics-study/README.md).
 
