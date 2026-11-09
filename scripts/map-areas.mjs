@@ -45,14 +45,14 @@ export const AREAS = {
   aveiro: {
     file: 'aveiro',
     bbox: { south: 40.52, west: -8.82, north: 40.9, east: -8.55 },
-    /** In the lagoon by São Jacinto, inside the Barra. */
+    /** Origin of the map's coordinates (on the São Jacinto spit; the game starts in the lagoon). */
     origin: { lat: 40.655, lon: -8.725 },
     /** Seed the sea from outside the Barra (the lagoon fills through it). */
     seed: { lat: 40.7, lon: -8.8 },
     checks: {
       land: { Aveiro: [40.6405, -8.6538], Ílhavo: [40.6, -8.668], Ovar: [40.86, -8.625] },
       water: { 'sea off the Barra': [40.7, -8.8] },
-      report: { origin: [40.655, -8.725], 'off Torreira': [40.76, -8.69], 'canal de Mira': [40.55, -8.74], 'off Murtosa': [40.74, -8.66] },
+      report: { 'off Torreira': [40.76, -8.69], 'the lagoon': [40.74, -8.69] },
     },
   },
 };

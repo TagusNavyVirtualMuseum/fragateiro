@@ -131,18 +131,33 @@ prints the areas and centres the physics needs. Then continue from step 2.
    version for the other boats on the river (`scripts/lite-models.ts`, see docs/MODELS.md).
 4. Run `npm run polar` and adjust until the speeds look right; add it to the tests.
 
-## The map
+## The maps
 
-`src/assets/map/` holds a land/water mask of the lower Tagus and the coast (20 m cells) plus town names and sea
+There are three sailing areas, each its own map, chosen in the mission menu (or with
+`?area=tejo|arcachon|aveiro`; the choice is remembered): the **lower Tagus** from Vila Franca
+de Xira to Cascais and Cabo Espichel, the **Bassin d'Arcachon** (home of the pinasse) and the
+**Ria de Aveiro**. Each has its ports, regattas and transport routes (`src/world/area.ts`,
+`src/world/missions.ts`); the Tagus also has its landmarks, the Muleta's fishing grounds, and
+dolphins and orcas.
+
+`src/assets/map/` holds, for each area, a land/water mask (20 m cells) plus town names and sea
 marks, built from OpenStreetMap by `scripts/fetch-map.mjs`; the buoys are the same data that
-OpenSeaMap shows. Land heights (40 m grid, `tagus-height.png`) come from the Copernicus
+OpenSeaMap shows. Land heights (40 m grid, `<area>-height.png`) come from the Copernicus
 GLO-30 elevation model via `scripts/fetch-heights.mjs`: the hills of Lisbon and the Almada
 plateau rise behind the shore, and the camera stays above the ground. The land is drawn in
-4 km tiles, detailed only near the camera. The bridges follow their OpenStreetMap deck lines
-(`bridges` in `tagus.json`); all landmarks are built from simple shapes in
-`src/engine/landmarks.ts`. To change the area,
-edit `BBOX` in `fetch-map.mjs` and run the **Update map data** workflow (Actions tab); it
-downloads both and commits the new files. Map data © OpenStreetMap contributors, ODbL.
+4 km tiles, detailed only near the camera. The Tagus bridges follow their OpenStreetMap deck
+lines (`bridges` in `tagus.json`); all landmarks are built from simple shapes in
+`src/engine/landmarks.ts`. The areas' bounds are in `scripts/map-areas.mjs`; to add or change
+one, edit it and run the **Update map data** workflow (Actions tab) with the area's id, or
+locally:
+
+```bash
+node scripts/fetch-map.mjs --area arcachon
+npm install --no-save geotiff@3.0.5 && node scripts/fetch-heights.mjs --area arcachon
+```
+
+(Behind a proxy, set `NODE_USE_ENV_PROXY=1`.) Then add the area to `src/world/area.ts`,
+`src/engine/mapView.ts` and its missions. Map data © OpenStreetMap contributors, ODbL.
 Heights: Copernicus GLO-30 DEM, © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH
 2014-2018, provided under COPERNICUS by the European Union and ESA.
 

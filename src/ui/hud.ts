@@ -1,4 +1,5 @@
 // On-screen display for the sailing games: plain HTML/CSS on top of the 3D canvas.
+import { getArea } from '../world/area';
 import './hud.css';
 import { groupsInMode, rad2deg, toKnots, type BoatSpec, type Controls, type ForceReport, type BoatState, type TrueWind } from '../physics';
 import { CAMERA_VIEWS, DISTANCE_RANGE, type CameraView } from '../engine/cameraRig';
@@ -91,7 +92,7 @@ export class SailingHud {
       cb.onMissions();
     };
     this.missionRow.append(this.missionName, this.levelName, missionsBtn);
-    info.append(el('h1', '', `<a href="../../" title="${t('hud.allGames')}">⟵</a> ${t('hud.title')}`), this.missionRow, this.boatBar, this.modeBar, this.about, this.mapSlot);
+    info.append(el('h1', '', `<a href="../../" title="${t('hud.allGames')}">⟵</a> ${t(getArea().id === 'tejo' ? 'hud.title' : `hud.title.${getArea().id}`)}`), this.missionRow, this.boatBar, this.modeBar, this.about, this.mapSlot);
     for (const b of boats) {
       const btn = el('button', '', b.name);
       btn.dataset.id = b.id;

@@ -6,7 +6,10 @@ import { CAMERA_VIEWS, CameraRig } from '../../src/engine/cameraRig';
 import { ForceArrows } from '../../src/engine/forceArrows';
 import { Input } from '../../src/engine/input';
 import { TouchControls, isTouchDevice } from '../../src/engine/touchControls';
-import { createMapView, loadTagusMask, type MapView } from '../../src/engine/mapView';
+import { createMapView, loadMapMask, type MapView } from '../../src/engine/mapView';
+import { getArea, toMapXY } from '../../src/world/area';
+
+const AREA = getArea();
 import { NetView } from '../../src/engine/netView';
 import { createSailingScene } from '../../src/engine/scene';
 import { WindView } from '../../src/engine/windView';
@@ -22,7 +25,7 @@ import { ShoalView } from '../../src/engine/shoalView';
 import { SailingHud } from '../../src/ui/hud';
 import { getLang, t } from '../../src/i18n';
 import { Minimap } from '../../src/ui/minimap';
-import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
+import { findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
 import { hullAfloat, type LandMask } from '../../src/world/landMask';
 import type { Terrain } from '../../src/world/terrain';
 
@@ -36,7 +39,7 @@ const START_HEADING = deg2rad(90);
 const canvas = document.getElementById('scene') as HTMLCanvasElement;
 const loading = document.getElementById('loading')!;
 loading.textContent = t('game.loading');
-document.title = t('game.pageTitle');
+document.title = t(AREA.id === 'tejo' ? 'game.pageTitle' : `game.pageTitle.${AREA.id}`);
 document.documentElement.lang = getLang();
 const { engine, scene, camera, water, skyColor, sunDirection, fogDensity, sky } = createSailingScene(canvas);
 const cameraRig = new CameraRig(camera);
@@ -50,7 +53,7 @@ const input = new Input();
 const wind = new GustyWind(0, 12 * 0.514444, 0, 0); // 12 knots
 let gusty = false;
 const views = new Map<string, BoatView>();
-let spec: BoatSpec = BOATS[0];
+let spec: BoatSpec = BOATS.find((b) => b.id === AREA.boat) ?? BOATS[0];
 let sim = new SailboatSim(spec, wind, { heading: START_HEADING });
 let view: BoatView;
 let mask: LandMask;
@@ -405,14 +408,15 @@ function keepCameraAboveGround(): void {
 }
 
 async function main(): Promise<void> {
-  const [first, map] = await Promise.all([loadView(spec.id), loadTagusMask()]);
+  const [first, map] = await Promise.all([loadView(spec.id), loadMapMask()]);
   mask = map.mask;
   terrain = map.terrain;
   await document.fonts.ready; // labels and minimap are drawn once, with the period font
-  mapView = createMapView(scene, mask, skyColor, sunDirection, fogDensity, DESTINATION_NAMES, map.terrain);
-  start = mask.nearestWater(0, 0);
+  mapView = createMapView(scene, mask, skyColor, sunDirection, fogDensity, AREA.ports, map.terrain);
+  const s0 = AREA.start ? toMapXY(mask.meta.origin, AREA.start) : { x: 0, y: 0 };
+  start = mask.nearestWater(s0.x, s0.y);
   mask.markReachableFrom(start.x, start.y);
-  destinations = findDestinations(mask, 16);
+  destinations = findDestinations(mask, 16, AREA.ports);
   // In free sailing, click a town on the minimap to sail from there.
   minimap = new Minimap(hud.mapSlot, mask, destinations, (d) => {
     if (!run) teleport(d);
@@ -440,13 +444,14 @@ async function main(): Promise<void> {
   loading.classList.add('done');
   // Other boats on the river (light models, loaded in the background): one of each, and a
   // second Falua.
-  // Only boats of these waters sail around the player (the pinasse stays in Arcachon).
-  const local = BOATS.filter((b) => (b.home ?? 'tejo') === 'tejo');
-  traffic = new Traffic(scene, [...local, local[0]], wind, mask, sim.state);
+  // Only boats of these waters sail around the player (the pinasse stays in Arcachon); where
+  // no boat of ours is at home, a few of the player's kind.
+  const local = BOATS.filter((b) => (b.home ?? 'tejo') === AREA.id);
+  traffic = new Traffic(scene, local.length ? [...local, local[0]] : [spec, spec], wind, mask, sim.state);
   traffic.setVisible(trafficOn);
   // Dolphins (up to Lisbon) and orcas (open Atlantic), now and then.
-  wildlife = new Wildlife(scene, mask);
-  wildlife.onSighting = (species, side) => {
+  if (AREA.tagusExtras) wildlife = new Wildlife(scene, mask);
+  if (wildlife) wildlife.onSighting = (species, side) => {
     const name = t(species === 'orca' ? 'wild.orcas' : 'wild.dolphins');
     hud.toast(side === 'ahead' || side === 'astern' ? t(`wild.${side}`, { name }) : t('wild.side', { name, side: t(`nav.${side}`) }));
   };

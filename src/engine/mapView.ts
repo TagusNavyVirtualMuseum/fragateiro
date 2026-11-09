@@ -1,4 +1,6 @@
-// The Tagus estuary: land drawn from the OpenStreetMap mask, town names and real buoys.
+// The sailing area's map (the Tagus estuary, the Bassin d'Arcachon or the Ria de Aveiro): land
+// drawn from the OpenStreetMap mask, town names and real buoys. Each area's files are only
+// downloaded when it is the one open.
 import {
   Color3,
   DynamicTexture,
@@ -15,9 +17,16 @@ import {
   VertexBuffer,
   type Camera,
 } from '@babylonjs/core';
-import maskUrl from '../assets/map/tagus-mask.png?url';
-import heightUrl from '../assets/map/tagus-height.png?url';
-import metaJson from '../assets/map/tagus.json';
+import tagusMask from '../assets/map/tagus-mask.png?url';
+import tagusHeight from '../assets/map/tagus-height.png?url';
+import tagusJson from '../assets/map/tagus.json';
+import arcachonMask from '../assets/map/arcachon-mask.png?url';
+import arcachonHeight from '../assets/map/arcachon-height.png?url';
+import arcachonJson from '../assets/map/arcachon.json';
+import aveiroMask from '../assets/map/aveiro-mask.png?url';
+import aveiroHeight from '../assets/map/aveiro-height.png?url';
+import aveiroJson from '../assets/map/aveiro.json';
+import { getArea, type AreaId } from '../world/area';
 import { LandMask, type MapMeta } from '../world/landMask';
 import { Terrain, type HeightsMeta } from '../world/terrain';
 import { createLandmarks, type BridgeLine } from './landmarks';
@@ -35,8 +44,17 @@ export interface SeaMark {
 }
 
 export type TagusMeta = MapMeta & { seamarks?: SeaMark[]; source: string; heights?: HeightsMeta & { source: string }; bridges?: Record<string, BridgeLine> };
-export const TAGUS_META = metaJson as unknown as TagusMeta;
-addExtraPlaces(TAGUS_META);
+const FILES: Record<AreaId, { meta: unknown; mask: string; height: string }> = {
+  tejo: { meta: tagusJson, mask: tagusMask, height: tagusHeight },
+  arcachon: { meta: arcachonJson, mask: arcachonMask, height: arcachonHeight },
+  aveiro: { meta: aveiroJson, mask: aveiroMask, height: aveiroHeight },
+};
+const AREA = getArea();
+const maskUrl = FILES[AREA.id].mask;
+const heightUrl = FILES[AREA.id].height;
+/** The open area's map: grid, places, sea marks, heights. */
+export const MAP_META = FILES[AREA.id].meta as TagusMeta;
+addExtraPlaces(MAP_META, AREA.extraPlaces);
 
 /** Pixels of an image (RGBA). */
 async function imagePixels(url: string): Promise<{ image: HTMLImageElement; rgba: Uint8ClampedArray }> {
@@ -52,13 +70,13 @@ async function imagePixels(url: string): Promise<{ image: HTMLImageElement; rgba
 }
 
 /** Download and decode the mask (the red channel is the water map) and the land heights. */
-export async function loadTagusMask(): Promise<{ mask: LandMask; image: HTMLImageElement; terrain?: Terrain }> {
-  const heights = TAGUS_META.heights;
+export async function loadMapMask(): Promise<{ mask: LandMask; image: HTMLImageElement; terrain?: Terrain }> {
+  const heights = MAP_META.heights;
   const [{ image, rgba }, h] = await Promise.all([imagePixels(maskUrl), heights ? imagePixels(heightUrl) : Promise.resolve(null)]);
   const water = new Uint8Array(image.width * image.height);
   for (let i = 0; i < water.length; i++) water[i] = rgba[i * 4];
-  const terrain = heights && h ? Terrain.fromRGBA(heights, TAGUS_META.northWest, h.rgba) : undefined;
-  return { mask: new LandMask(TAGUS_META, water), image, terrain };
+  const terrain = heights && h ? Terrain.fromRGBA(heights, MAP_META.northWest, h.rgba) : undefined;
+  return { mask: new LandMask(MAP_META, water), image, terrain };
 }
 
 Effect.ShadersStore.landVertexShader = /* glsl */ `
@@ -238,15 +256,15 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
     labels.push(label);
   }
 
-  // --- Landmarks: the two bridges, Torre de Belém, Padrão dos Descobrimentos.
-  for (const l of createLandmarks(scene, mask, terrain, mask.meta.origin, TAGUS_META.bridges)) {
+  // --- Landmarks of the Tagus: bridges, towers, lighthouses.
+  for (const l of AREA.tagusExtras ? createLandmarks(scene, mask, terrain, mask.meta.origin, MAP_META.bridges) : []) {
     const label = makeLabel(scene, l.name, false);
     label.position.set(l.x, l.height, l.y);
     labels.push(label);
   }
 
   // --- Sea marks from OpenStreetMap / OpenSeaMap.
-  const buoys = createSeaMarks(scene, TAGUS_META.seamarks ?? []);
+  const buoys = createSeaMarks(scene, MAP_META.seamarks ?? []);
 
   // Destination marker: a tall post with a flag, visible from far away.
   const marker = new TransformNode('destination', scene);

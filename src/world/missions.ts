@@ -2,6 +2,7 @@
 // Plain TypeScript (no 3D), so the rules can be tested.
 import type { LandMask } from './landMask';
 import { t } from '../i18n';
+import { getArea, type AreaId } from './area';
 
 export type Level = 'easy' | 'medium' | 'hard';
 
@@ -27,27 +28,84 @@ export const MISSION_KINDS: { id: MissionKind; title: string; description: strin
   { id: 'free', title: t('kind.free'), description: t('kind.free.desc') },
 ];
 
-/** Regatta courses: laid to the wind off a port. */
-export const REGATTA_COURSES: { id: string; name: string; at: string; buoys: 2 | 3 }[] = [
+export interface RegattaCourse {
+  id: string;
+  name: string;
+  at: string;
+  buoys: 2 | 3;
+}
+export interface Route {
+  id: string;
+  from: string;
+  to: string;
+  boat: string;
+  description: string;
+}
+export interface FishingGroundInfo {
+  id: string;
+  name: string;
+  at: string;
+}
+
+/** Regatta courses on the Tagus: laid to the wind off a port. */
+export const REGATTA_COURSES: RegattaCourse[] = [
   { id: 'lisboa', name: t('course.lisboa'), at: 'Lisboa', buoys: 3 },
   { id: 'cascais', name: t('course.cascais'), at: 'Cascais', buoys: 2 },
   { id: 'oeiras', name: t('course.oeiras'), at: 'Oeiras', buoys: 2 },
 ];
 
-/** Transport routes, with the boat that traditionally sailed them. */
-export const ROUTES: { id: string; from: string; to: string; boat: string; description: string }[] = [
+/** Transport routes on the Tagus, with the boat that traditionally sailed them. */
+export const ROUTES: Route[] = [
   { id: 'lisboa-almada', from: 'Lisboa', to: 'Almada', boat: 'catraio', description: t('route.lisboa-almada') },
   { id: 'moita-lisboa', from: 'Moita', to: 'Lisboa', boat: 'fragata', description: t('route.moita-lisboa') },
   { id: 'sarilhos-barreiro', from: 'Sarilhos Pequenos', to: 'Barreiro', boat: 'fragata', description: t('route.sarilhos-barreiro') },
   { id: 'vfx-lisboa', from: 'Vila Franca de Xira', to: 'Lisboa', boat: 'fragata', description: t('route.vfx-lisboa') },
 ];
 
-/** Fishing grounds of the Muleta. */
-export const FISHING_GROUNDS: { id: string; name: string; at: string }[] = [
+/** Fishing grounds of the Muleta (on the Tagus). */
+export const FISHING_GROUNDS: FishingGroundInfo[] = [
   { id: 'seixal', name: t('ground.seixal'), at: 'Seixal' },
   { id: 'barra', name: t('ground.barra'), at: 'Trafaria' },
   { id: 'cascais', name: t('ground.cascais'), at: 'Cascais' },
 ];
+
+/** The missions of each sailing area. */
+export const AREA_MISSIONS: Record<AreaId, { courses: RegattaCourse[]; routes: Route[]; grounds: FishingGroundInfo[] }> = {
+  tejo: { courses: REGATTA_COURSES, routes: ROUTES, grounds: FISHING_GROUNDS },
+  arcachon: {
+    courses: [
+      { id: 'arcachon', name: t('course.arcachon'), at: 'Arcachon', buoys: 3 },
+      { id: 'andernos', name: t('course.andernos'), at: 'Andernos-les-Bains', buoys: 2 },
+      { id: 'cap-ferret', name: t('course.cap-ferret'), at: 'Le Cap Ferret', buoys: 2 },
+    ],
+    routes: [
+      { id: 'arcachon-capferret', from: 'Arcachon', to: 'Le Cap Ferret', boat: 'pinasse', description: t('route.arcachon-capferret') },
+      { id: 'gujan-andernos', from: 'Gujan-Mestras', to: 'Andernos-les-Bains', boat: 'pinasse', description: t('route.gujan-andernos') },
+      { id: 'arcachon-ileoiseaux', from: 'Arcachon', to: 'Île aux Oiseaux', boat: 'pinasse', description: t('route.arcachon-ileoiseaux') },
+    ],
+    grounds: [],
+  },
+  aveiro: {
+    courses: [
+      { id: 'aveiro-sjacinto', name: t('course.aveiro-sjacinto'), at: 'São Jacinto', buoys: 3 },
+      { id: 'torreira', name: t('course.torreira'), at: 'Torreira', buoys: 2 },
+    ],
+    routes: [
+      { id: 'torreira-aveiro', from: 'Torreira', to: 'Aveiro', boat: 'canoa', description: t('route.torreira-aveiro') },
+      { id: 'sjacinto-costanova', from: 'São Jacinto', to: 'Costa Nova', boat: 'canoa', description: t('route.sjacinto-costanova') },
+    ],
+    grounds: [],
+  },
+};
+
+/** The missions of the area open now. */
+export function areaMissions(): { courses: RegattaCourse[]; routes: Route[]; grounds: FishingGroundInfo[] } {
+  return AREA_MISSIONS[getArea().id];
+}
+const ALL = Object.values(AREA_MISSIONS);
+const findCourse = (id: string) => ALL.flatMap((a) => a.courses).find((x) => x.id === id);
+const findRoute = (id: string) => ALL.flatMap((a) => a.routes).find((x) => x.id === id);
+const findGround = (id: string) => ALL.flatMap((a) => a.grounds).find((x) => x.id === id);
 
 /** Fish to bring home on a fishing trip, kg. */
 export const FISHING_TARGET_KG = 150;
@@ -58,15 +116,15 @@ const boatName = (boats: { id: string; name: string }[], id: string) => boats.fi
 export function makeMission(kind: MissionKind, option: string, boat: string, boats: { id: string; name: string }[]): Mission {
   const b = boatName(boats, boat);
   if (kind === 'regatta') {
-    const c = REGATTA_COURSES.find((x) => x.id === option) ?? REGATTA_COURSES[0];
+    const c = findCourse(option) ?? REGATTA_COURSES[0];
     return { id: `regatta-${c.id}-${boat}`, kind, title: t('title.regatta', { course: t(`course.${c.id}.short`), boat: b }), boat, at: c.at, buoys: c.buoys };
   }
   if (kind === 'transport') {
-    const r = ROUTES.find((x) => x.id === option) ?? ROUTES[0];
+    const r = findRoute(option) ?? ROUTES[0];
     return { id: `transport-${r.id}-${boat}`, kind, title: t('title.transport', { from: r.from, to: r.to, boat: b }), boat, from: r.from, to: r.to };
   }
   if (kind === 'fishing') {
-    const g = FISHING_GROUNDS.find((x) => x.id === option) ?? FISHING_GROUNDS[0];
+    const g = findGround(option) ?? FISHING_GROUNDS[0];
     return { id: `fishing-${g.id}`, kind, title: t('title.fishing', { ground: g.name }), boat: 'muleta', at: g.at, targetKg: FISHING_TARGET_KG };
   }
   return { id: `free-${option}-${boat}`, kind: 'free', title: t('title.free', { boat: b }), boat, from: option };

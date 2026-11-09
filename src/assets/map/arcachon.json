@@ -1,0 +1,2946 @@
+{
+  "source": "OpenStreetMap contributors (ODbL), via the Overpass API",
+  "built": "2026-11-09",
+  "bbox": {
+    "south": 44.52,
+    "west": -1.36,
+    "north": 44.79,
+    "east": -0.98
+  },
+  "origin": {
+    "lat": 44.672,
+    "lon": -1.19
+  },
+  "cellSize": 20,
+  "width": 1505,
+  "height": 1493,
+  "northWest": {
+    "x": -13457.96,
+    "y": 13047.73
+  },
+  "places": [
+    {
+      "name": "Ancien Sanatorium Vincent de Paul",
+      "kind": "hamlet",
+      "x": -348,
+      "y": -3011
+    },
+    {
+      "name": "Andernos-les-Bains",
+      "kind": "town",
+      "x": 7717,
+      "y": 8369
+    },
+    {
+      "name": "Arcachon",
+      "kind": "town",
+      "x": 1583,
+      "y": -1145
+    },
+    {
+      "name": "Arès",
+      "kind": "village",
+      "x": 4117,
+      "y": 10576
+    },
+    {
+      "name": "Audenge",
+      "kind": "village",
+      "x": 13472,
+      "y": 1810
+    },
+    {
+      "name": "Balanos",
+      "kind": "hamlet",
+      "x": 15602,
+      "y": -6804
+    },
+    {
+      "name": "Bas Vallon",
+      "kind": "hamlet",
+      "x": 15084,
+      "y": 50
+    },
+    {
+      "name": "Bois des Sylvains",
+      "kind": "hamlet",
+      "x": 9518,
+      "y": 7206
+    },
+    {
+      "name": "Bois Joli",
+      "kind": "hamlet",
+      "x": 8231,
+      "y": 9286
+    },
+    {
+      "name": "Camicas",
+      "kind": "hamlet",
+      "x": 1682,
+      "y": -2551
+    },
+    {
+      "name": "Canadiens Nord",
+      "kind": "hamlet",
+      "x": 9156,
+      "y": 10232
+    },
+    {
+      "name": "Caudos",
+      "kind": "hamlet",
+      "x": 15631,
+      "y": -13826
+    },
+    {
+      "name": "Chais Ostréicoles",
+      "kind": "hamlet",
+      "x": 1255,
+      "y": 9174
+    },
+    {
+      "name": "Clos de Coubertin",
+      "kind": "hamlet",
+      "x": 7912,
+      "y": 9187
+    },
+    {
+      "name": "Clos des Fauvettes",
+      "kind": "hamlet",
+      "x": 8189,
+      "y": 9125
+    },
+    {
+      "name": "Clos du Bourgeon",
+      "kind": "hamlet",
+      "x": 2669,
+      "y": 12647
+    },
+    {
+      "name": "Comprian",
+      "kind": "hamlet",
+      "x": 14680,
+      "y": -1757
+    },
+    {
+      "name": "Comte",
+      "kind": "hamlet",
+      "x": 6839,
+      "y": 9109
+    },
+    {
+      "name": "Coulin",
+      "kind": "hamlet",
+      "x": 8302,
+      "y": 7941
+    },
+    {
+      "name": "Gujan-Mestras",
+      "kind": "town",
+      "x": 9389,
+      "y": -3970
+    },
+    {
+      "name": "Hameau d'Arguin",
+      "kind": "hamlet",
+      "x": 7581,
+      "y": 9512
+    },
+    {
+      "name": "Hameau de Manolo",
+      "kind": "hamlet",
+      "x": 9666,
+      "y": 7774
+    },
+    {
+      "name": "Hameau de Paco",
+      "kind": "hamlet",
+      "x": 5760,
+      "y": 9550
+    },
+    {
+      "name": "Île aux Oiseaux",
+      "kind": "island",
+      "x": 1331,
+      "y": 2895
+    },
+    {
+      "name": "Île de Malprat",
+      "kind": "island",
+      "x": 13184,
+      "y": -2031
+    },
+    {
+      "name": "Jaumard",
+      "kind": "hamlet",
+      "x": 2937,
+      "y": -12842
+    },
+    {
+      "name": "L'Esquirey",
+      "kind": "hamlet",
+      "x": 7656,
+      "y": 9038
+    },
+    {
+      "name": "La Clé des Champs",
+      "kind": "hamlet",
+      "x": 3281,
+      "y": 12468
+    },
+    {
+      "name": "La Ferme",
+      "kind": "hamlet",
+      "x": 8991,
+      "y": 6702
+    },
+    {
+      "name": "La Haoutère",
+      "kind": "hamlet",
+      "x": 13251,
+      "y": 8187
+    },
+    {
+      "name": "La Mothe",
+      "kind": "hamlet",
+      "x": 15131,
+      "y": -5221
+    },
+    {
+      "name": "La Teste-de-Buch",
+      "kind": "town",
+      "x": 3235,
+      "y": -4457
+    },
+    {
+      "name": "Lanton",
+      "kind": "village",
+      "x": 12189,
+      "y": 3489
+    },
+    {
+      "name": "Le Bétey",
+      "kind": "hamlet",
+      "x": 7660,
+      "y": 7107
+    },
+    {
+      "name": "Le Braou",
+      "kind": "hamlet",
+      "x": 14983,
+      "y": -2408
+    },
+    {
+      "name": "Le Cires",
+      "kind": "hamlet",
+      "x": 7728,
+      "y": 9566
+    },
+    {
+      "name": "Le Clos des Moliettes 1",
+      "kind": "hamlet",
+      "x": 7897,
+      "y": 8543
+    },
+    {
+      "name": "Le Clos des Moliettes 2",
+      "kind": "hamlet",
+      "x": 7970,
+      "y": 8762
+    },
+    {
+      "name": "Le Four",
+      "kind": "hamlet",
+      "x": -65,
+      "y": 6667
+    },
+    {
+      "name": "Le Mauret",
+      "kind": "hamlet",
+      "x": 8659,
+      "y": 6040
+    },
+    {
+      "name": "Le Pas de Bouviers",
+      "kind": "hamlet",
+      "x": 7895,
+      "y": 8820
+    },
+    {
+      "name": "Le Pujau",
+      "kind": "hamlet",
+      "x": 15971,
+      "y": -2412
+    },
+    {
+      "name": "Le Teich",
+      "kind": "village",
+      "x": 13327,
+      "y": -4012
+    },
+    {
+      "name": "Le Tronc",
+      "kind": "hamlet",
+      "x": 15540,
+      "y": -505
+    },
+    {
+      "name": "Lénan",
+      "kind": "hamlet",
+      "x": 12649,
+      "y": 3912
+    },
+    {
+      "name": "Les Allées Forestières",
+      "kind": "hamlet",
+      "x": 3263,
+      "y": 12793
+    },
+    {
+      "name": "Les Arcs du Page",
+      "kind": "hamlet",
+      "x": 8765,
+      "y": 9710
+    },
+    {
+      "name": "Les Bruyères",
+      "kind": "hamlet",
+      "x": 9376,
+      "y": 7889
+    },
+    {
+      "name": "Les Chanterelles",
+      "kind": "hamlet",
+      "x": 7723,
+      "y": 9471
+    },
+    {
+      "name": "Les Chênes de la Forge",
+      "kind": "hamlet",
+      "x": 2616,
+      "y": 13021
+    },
+    {
+      "name": "Les Hauts du Bourgeon",
+      "kind": "hamlet",
+      "x": 2344,
+      "y": 12912
+    },
+    {
+      "name": "Les Jacquets",
+      "kind": "hamlet",
+      "x": -645,
+      "y": 6113
+    },
+    {
+      "name": "Lotissement du Golf",
+      "kind": "hamlet",
+      "x": 11509,
+      "y": 6473
+    },
+    {
+      "name": "Lotissement Les Bruyères",
+      "kind": "hamlet",
+      "x": 11921,
+      "y": 6367
+    },
+    {
+      "name": "Lotissement Les Landes de Mouchon",
+      "kind": "hamlet",
+      "x": 11060,
+      "y": 6603
+    },
+    {
+      "name": "Massurat",
+      "kind": "hamlet",
+      "x": 9250,
+      "y": 6996
+    },
+    {
+      "name": "Mouettes",
+      "kind": "hamlet",
+      "x": 7439,
+      "y": 9584
+    },
+    {
+      "name": "Pas des Moliettes",
+      "kind": "hamlet",
+      "x": 8262,
+      "y": 8793
+    },
+    {
+      "name": "Plein Sud",
+      "kind": "hamlet",
+      "x": 8843,
+      "y": 9155
+    },
+    {
+      "name": "Pointe de l'Aiguillon",
+      "kind": "cape",
+      "x": 4000,
+      "y": -2129
+    },
+    {
+      "name": "Pointe du Cap Ferret",
+      "kind": "hamlet",
+      "x": -4535,
+      "y": -5525
+    },
+    {
+      "name": "Port de Biganos",
+      "kind": "hamlet",
+      "x": 15126,
+      "y": -3190
+    },
+    {
+      "name": "Port des Tuiles",
+      "kind": "hamlet",
+      "x": 14209,
+      "y": -1707
+    },
+    {
+      "name": "Querquillas",
+      "kind": "hamlet",
+      "x": 10891,
+      "y": 11427
+    },
+    {
+      "name": "Résidence \"Andernos\"",
+      "kind": "hamlet",
+      "x": 7751,
+      "y": 9368
+    },
+    {
+      "name": "Résidence Andernos",
+      "kind": "hamlet",
+      "x": 8170,
+      "y": 9956
+    },
+    {
+      "name": "Saint-Hubert",
+      "kind": "hamlet",
+      "x": 7830,
+      "y": 9065
+    },
+    {
+      "name": "Tagon",
+      "kind": "hamlet",
+      "x": 15669,
+      "y": -1686
+    },
+    {
+      "name": "Taluque",
+      "kind": "hamlet",
+      "x": 7656,
+      "y": 8709
+    },
+    {
+      "name": "Tourterelles",
+      "kind": "hamlet",
+      "x": 8363,
+      "y": 9233
+    },
+    {
+      "name": "Vigneau",
+      "kind": "hamlet",
+      "x": 15244,
+      "y": -977
+    },
+    {
+      "name": "Villetorte",
+      "kind": "hamlet",
+      "x": 13642,
+      "y": -4396
+    }
+  ],
+  "seamarks": [
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green;white",
+      "name": "",
+      "x": 2984,
+      "y": -1011
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "ARC 1",
+      "x": 3011,
+      "y": -717
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "ARC 3",
+      "x": 2997,
+      "y": -858
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "ARC 4",
+      "x": 3201,
+      "y": -902
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "ARC 2",
+      "x": 3304,
+      "y": -786
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "No3",
+      "x": 3822,
+      "y": -637
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "",
+      "colour": "yellow",
+      "name": "",
+      "x": 2218,
+      "y": -16369
+    },
+    {
+      "type": "buoy_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "Cap Ferret (blockhaus)",
+      "x": -4263,
+      "y": -5827
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red;white",
+      "name": "",
+      "x": 3070,
+      "y": -1044
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "5 a",
+      "x": 2671,
+      "y": 511
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "No12",
+      "x": 3294,
+      "y": 329
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "No6Bis",
+      "x": 2565,
+      "y": 315
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "M",
+      "x": 2943,
+      "y": 1152
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "red",
+      "name": "6 b",
+      "x": 2338,
+      "y": 1074
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "red",
+      "name": "6 c",
+      "x": 2407,
+      "y": 1722
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "L1",
+      "x": 2498,
+      "y": 2135
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "L 1-1",
+      "x": 2494,
+      "y": 2213
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "L 1-2",
+      "x": 2377,
+      "y": 2285
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "L2",
+      "x": 2303,
+      "y": 2460
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "L3",
+      "x": 2116,
+      "y": 2293
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "red",
+      "name": "6",
+      "x": 1900,
+      "y": 412
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "red",
+      "name": "6 a",
+      "x": 2177,
+      "y": 680
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "L4",
+      "x": 1866,
+      "y": 2022
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "L5",
+      "x": 1661,
+      "y": 1914
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "L6",
+      "x": 1396,
+      "y": 1691
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "L7",
+      "x": 1074,
+      "y": 1421
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "7",
+      "x": 3154,
+      "y": 2424
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "6 d",
+      "x": 2802,
+      "y": 2707
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "No8",
+      "x": 3189,
+      "y": 3068
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "E1",
+      "x": 4212,
+      "y": 2909
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "E 3",
+      "x": 4464,
+      "y": 3021
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 0",
+      "x": 4136,
+      "y": 3570
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "No8a",
+      "x": 2420,
+      "y": 3604
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "No8b",
+      "x": 2004,
+      "y": 3844
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "No10",
+      "x": 1361,
+      "y": 4038
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "10 a",
+      "x": 1143,
+      "y": 4125
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "No9",
+      "x": 217,
+      "y": 4630
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "No4",
+      "x": 253,
+      "y": 456
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "4-1",
+      "x": 227,
+      "y": 1215
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "4-2",
+      "x": 212,
+      "y": 1496
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "4-3",
+      "x": 56,
+      "y": 1898
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "15",
+      "x": -976,
+      "y": -1006
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "No2b Réousse",
+      "x": -646,
+      "y": 594
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "2 a",
+      "x": -2372,
+      "y": 2282
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "2",
+      "x": -2258,
+      "y": 271
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "14",
+      "x": -2290,
+      "y": -1415
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "No1",
+      "x": -2216,
+      "y": -746
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "13",
+      "x": -3602,
+      "y": -4122
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "11",
+      "x": -3689,
+      "y": -5602
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "9 N",
+      "x": -3645,
+      "y": -6672
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "8 N",
+      "x": -3854,
+      "y": -8629
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "7 Na",
+      "x": -3471,
+      "y": -8490
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "6 N",
+      "x": -4768,
+      "y": -9793
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "7 N",
+      "x": -4425,
+      "y": -9841
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "4 N",
+      "x": -6005,
+      "y": -10773
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "5 N",
+      "x": -5912,
+      "y": -10905
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "2 Na",
+      "x": -7033,
+      "y": -11889
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "3 N",
+      "x": -6870,
+      "y": -12075
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "2 N",
+      "x": -8251,
+      "y": -13129
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "1 N",
+      "x": -8132,
+      "y": -13260
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "channel_separation",
+      "colour": "red;white",
+      "name": "Atterrissage",
+      "x": -8692,
+      "y": -13743
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K1",
+      "x": 3954,
+      "y": -1326
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 0-1",
+      "x": 3850,
+      "y": -1624
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 1-1",
+      "x": 4130,
+      "y": -1937
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 1-3",
+      "x": 4147,
+      "y": -2005
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 0-2",
+      "x": 4158,
+      "y": -2129
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 1-5",
+      "x": 3967,
+      "y": -2252
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 1-7",
+      "x": 3693,
+      "y": -2438
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 1-9",
+      "x": 3451,
+      "y": -2636
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 0-3",
+      "x": 3501,
+      "y": -2652
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 1-11",
+      "x": 4444,
+      "y": -2356
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 1-13",
+      "x": 4571,
+      "y": -2390
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 1-15",
+      "x": 4722,
+      "y": -2497
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "K2",
+      "x": 5129,
+      "y": -993
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K3",
+      "x": 5570,
+      "y": -1201
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 3-1",
+      "x": 5542,
+      "y": -1365
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 3-3",
+      "x": 5581,
+      "y": -1510
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 3-5",
+      "x": 5581,
+      "y": -1875
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 3-7",
+      "x": 5699,
+      "y": -2219
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 3-9",
+      "x": 5771,
+      "y": -2453
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 3-11",
+      "x": 5789,
+      "y": -2728
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "K2a",
+      "x": 6359,
+      "y": -935
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K5",
+      "x": 6697,
+      "y": -1020
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 5-1",
+      "x": 6710,
+      "y": -1169
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 5-3",
+      "x": 6747,
+      "y": -1429
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 5-5",
+      "x": 6796,
+      "y": -1728
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 5-7",
+      "x": 6900,
+      "y": -1918
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 5-9",
+      "x": 7092,
+      "y": -2021
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 5-11",
+      "x": 7062,
+      "y": -2242
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 5-13",
+      "x": 7234,
+      "y": -2401
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K 5-15",
+      "x": 7257,
+      "y": -2503
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "K2b",
+      "x": 7079,
+      "y": -732
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 7",
+      "x": 7248,
+      "y": -907
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K2c",
+      "x": 6007,
+      "y": -355
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K9",
+      "x": 8389,
+      "y": -1813
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 10",
+      "x": 8412,
+      "y": -1560
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 9-3",
+      "x": 8443,
+      "y": -2005
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 9-1",
+      "x": 8326,
+      "y": -1857
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4f",
+      "x": 12219,
+      "y": -2415
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4e",
+      "x": 12174,
+      "y": -2331
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "J 5c",
+      "x": 12107,
+      "y": -2208
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 5b",
+      "x": 12148,
+      "y": -2064
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4d",
+      "x": 12195,
+      "y": -1832
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4c",
+      "x": 12293,
+      "y": -1590
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "J 5a",
+      "x": 12192,
+      "y": -1422
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "J 5",
+      "x": 12067,
+      "y": -1308
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4g",
+      "x": 12332,
+      "y": -2505
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4i",
+      "x": 12524,
+      "y": -2584
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "J 5d",
+      "x": 12700,
+      "y": -2587
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "J 5e",
+      "x": 12772,
+      "y": -2628
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4h",
+      "x": 12406,
+      "y": -2541
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K19",
+      "x": 11691,
+      "y": -1465
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K17",
+      "x": 11237,
+      "y": -1625
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K15",
+      "x": 10672,
+      "y": -1849
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 14",
+      "x": 10177,
+      "y": -1834
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K 13a",
+      "x": 9726,
+      "y": -1730
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K13",
+      "x": 9276,
+      "y": -1568
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-1",
+      "x": 9231,
+      "y": -1577
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K11",
+      "x": 8908,
+      "y": -1708
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 9-5",
+      "x": 8578,
+      "y": -2097
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 9-7",
+      "x": 8745,
+      "y": -2208
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 9-9",
+      "x": 8878,
+      "y": -2327
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K 9-CN1",
+      "x": 8948,
+      "y": -2435
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 9-11",
+      "x": 8950,
+      "y": -2605
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 9-L1",
+      "x": 9130,
+      "y": -2650
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K 9-15",
+      "x": 8999,
+      "y": -2895
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 11-1",
+      "x": 8953,
+      "y": -1830
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 11-3",
+      "x": 9026,
+      "y": -1842
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 11-2",
+      "x": 9083,
+      "y": -1895
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 11-4",
+      "x": 9177,
+      "y": -2073
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 11-6",
+      "x": 9230,
+      "y": -2126
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 11-5",
+      "x": 9113,
+      "y": -2028
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 11-9",
+      "x": 9370,
+      "y": -2220
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 11-11",
+      "x": 9562,
+      "y": -2493
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 11-13",
+      "x": 9659,
+      "y": -2770
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 11-8",
+      "x": 9692,
+      "y": -2759
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 11-15",
+      "x": 9656,
+      "y": -2874
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "K 11-10",
+      "x": 9764,
+      "y": -2842
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K 11-CN",
+      "x": 9764,
+      "y": -2924
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-1A",
+      "x": 9303,
+      "y": -1696
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-3",
+      "x": 9313,
+      "y": -1797
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-3A",
+      "x": 9401,
+      "y": -1934
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-5",
+      "x": 9462,
+      "y": -1991
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-9",
+      "x": 9889,
+      "y": -2016
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-11",
+      "x": 9879,
+      "y": -2184
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-7A",
+      "x": 9795,
+      "y": -1977
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-7",
+      "x": 9684,
+      "y": -1966
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-5A",
+      "x": 9582,
+      "y": -1982
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-9A",
+      "x": 9889,
+      "y": -2108
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-11A",
+      "x": 9931,
+      "y": -2321
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-13",
+      "x": 9981,
+      "y": -2445
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "K 13-CN1",
+      "x": 10051,
+      "y": -2494
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-15",
+      "x": 10035,
+      "y": -2722
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "K 13-17",
+      "x": 10199,
+      "y": -2660
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4a",
+      "x": 11114,
+      "y": -1064
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4b",
+      "x": 11802,
+      "y": -895
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 4",
+      "x": 10426,
+      "y": -1043
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 2a",
+      "x": 10153,
+      "y": -863
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "J 1b",
+      "x": 9823,
+      "y": -801
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "H 4",
+      "x": 12280,
+      "y": -863
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "H 4a",
+      "x": 12763,
+      "y": -777
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "H 5b",
+      "x": 13111,
+      "y": -773
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "green",
+      "name": "H 5a",
+      "x": 12794,
+      "y": -824
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "H 5c",
+      "x": 13328,
+      "y": -809
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "H 4b",
+      "x": 13352,
+      "y": -780
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "H 5d",
+      "x": 13613,
+      "y": -1049
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "H 5e",
+      "x": 14244,
+      "y": -2209
+    },
+    {
+      "type": "beacon_special_purpose",
+      "category": "",
+      "colour": "yellow",
+      "name": "G 10",
+      "x": 12711,
+      "y": 417
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "G 8",
+      "x": 12147,
+      "y": 569
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "G 6a",
+      "x": 11977,
+      "y": 724
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "G 9",
+      "x": 11659,
+      "y": 843
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "H 3",
+      "x": 10998,
+      "y": 150
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "G 7",
+      "x": 11265,
+      "y": 777
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "red",
+      "name": "G 6",
+      "x": 11130,
+      "y": 830
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "G 5",
+      "x": 10746,
+      "y": 972
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "G 4a",
+      "x": 10371,
+      "y": 1218
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "H0",
+      "x": 9770,
+      "y": 1098
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "G 2b",
+      "x": 9731,
+      "y": 1347
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "G 4",
+      "x": 9850,
+      "y": 1224
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "H 2",
+      "x": 9790,
+      "y": 565
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "G 2a",
+      "x": 9540,
+      "y": 1542
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "G 2",
+      "x": 9127,
+      "y": 1933
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "G 3",
+      "x": 8605,
+      "y": 1796
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "G1",
+      "x": 7507,
+      "y": 1163
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "G0",
+      "x": 7567,
+      "y": 1766
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 0",
+      "x": 7684,
+      "y": 892
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 0a",
+      "x": 8557,
+      "y": 559
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 0b",
+      "x": 8956,
+      "y": 29
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 0c",
+      "x": 9419,
+      "y": -243
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "J 1a",
+      "x": 9005,
+      "y": -370
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "J 2",
+      "x": 9621,
+      "y": -415
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "J 1",
+      "x": 7490,
+      "y": 509
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "5",
+      "x": 5210,
+      "y": 65
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "14",
+      "x": 5121,
+      "y": 955
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "No16",
+      "x": 5677,
+      "y": 948
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "18",
+      "x": 6745,
+      "y": 1149
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 0",
+      "x": 7147,
+      "y": 1425
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 0a",
+      "x": 7244,
+      "y": 1799
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 0b",
+      "x": 7209,
+      "y": 2129
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "F a",
+      "x": 7514,
+      "y": 2208
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "F b",
+      "x": 7496,
+      "y": 2440
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 0c",
+      "x": 7285,
+      "y": 2618
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "F 1",
+      "x": 7562,
+      "y": 2669
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 2a",
+      "x": 7714,
+      "y": 2982
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 2",
+      "x": 8242,
+      "y": 2921
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 2b",
+      "x": 8237,
+      "y": 3038
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "F 1a",
+      "x": 7923,
+      "y": 2755
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "F 3a",
+      "x": 8300,
+      "y": 2731
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 2c",
+      "x": 8656,
+      "y": 2839
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "F3",
+      "x": 9154,
+      "y": 3027
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 2d",
+      "x": 9691,
+      "y": 3345
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 2e",
+      "x": 9832,
+      "y": 3489
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "F 2f",
+      "x": 10382,
+      "y": 3905
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "E 7a",
+      "x": 8702,
+      "y": 4432
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "E8",
+      "x": 8327,
+      "y": 4334
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "E 6a",
+      "x": 8220,
+      "y": 4213
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "E 7",
+      "x": 8121,
+      "y": 4116
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "E 6",
+      "x": 7838,
+      "y": 4394
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "D10g",
+      "x": 7808,
+      "y": 4485
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "D10f",
+      "x": 7843,
+      "y": 4723
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "E 4c",
+      "x": 7517,
+      "y": 4676
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "D10e",
+      "x": 7654,
+      "y": 5015
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "D10d",
+      "x": 7530,
+      "y": 5287
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "D10c",
+      "x": 7181,
+      "y": 5399
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "D10b",
+      "x": 7164,
+      "y": 5776
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "D10a",
+      "x": 6988,
+      "y": 5948
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 12",
+      "x": 6752,
+      "y": 6086
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 14",
+      "x": 6950,
+      "y": 6355
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 14a",
+      "x": 6822,
+      "y": 6424
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 14b",
+      "x": 6713,
+      "y": 6534
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 14c",
+      "x": 6745,
+      "y": 6733
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 14b",
+      "x": 6745,
+      "y": 6917
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "D14e",
+      "x": 6789,
+      "y": 6979
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "D 15a",
+      "x": 7168,
+      "y": 6468
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "D 15b",
+      "x": 7320,
+      "y": 6581
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "D 15c",
+      "x": 7462,
+      "y": 6683
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 10",
+      "x": 6488,
+      "y": 5554
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "D 9a",
+      "x": 6145,
+      "y": 5105
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 8",
+      "x": 5969,
+      "y": 4997
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 6",
+      "x": 5551,
+      "y": 4925
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 4",
+      "x": 5080,
+      "y": 4895
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "D 2",
+      "x": 4689,
+      "y": 4610
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "E0",
+      "x": 4630,
+      "y": 3825
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "E 2",
+      "x": 5027,
+      "y": 4082
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "north",
+      "colour": "black;yellow",
+      "name": "E 5",
+      "x": 5403,
+      "y": 3856
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "E 2a",
+      "x": 5792,
+      "y": 4379
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "E 2b",
+      "x": 6159,
+      "y": 4499
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "E 4",
+      "x": 6417,
+      "y": 4598
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "E 4a",
+      "x": 6704,
+      "y": 4725
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "E 4b",
+      "x": 6932,
+      "y": 4734
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 5b",
+      "x": 3210,
+      "y": 8450
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 4b",
+      "x": 3176,
+      "y": 8371
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 5a",
+      "x": 3257,
+      "y": 8287
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 4",
+      "x": 3124,
+      "y": 8226
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 3c",
+      "x": 3132,
+      "y": 8079
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 3b",
+      "x": 3045,
+      "y": 7859
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 2a",
+      "x": 2950,
+      "y": 7752
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 2",
+      "x": 3133,
+      "y": 7300
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 3a",
+      "x": 3263,
+      "y": 7325
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C b",
+      "x": 3361,
+      "y": 6917
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 0b",
+      "x": 2756,
+      "y": 7239
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "A 1d",
+      "x": 2958,
+      "y": 7084
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "A 1c",
+      "x": 2679,
+      "y": 7091
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 0a",
+      "x": 2425,
+      "y": 7203
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "A 1b",
+      "x": 2382,
+      "y": 7016
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C a",
+      "x": 2879,
+      "y": 6210
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "C1",
+      "x": 2277,
+      "y": 6297
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "A 1a",
+      "x": 2096,
+      "y": 6001
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "A 0a",
+      "x": 1774,
+      "y": 6167
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "A 0b",
+      "x": 2033,
+      "y": 6700
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "C0",
+      "x": 2202,
+      "y": 7035
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "A 0c",
+      "x": 1890,
+      "y": 7312
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "B 0",
+      "x": 1613,
+      "y": 7959
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "A 0",
+      "x": 296,
+      "y": 5471
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "B1",
+      "x": 1738,
+      "y": 8523
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 7a",
+      "x": 3288,
+      "y": 8644
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 6",
+      "x": 3123,
+      "y": 8652
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 6a",
+      "x": 3273,
+      "y": 8803
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "south",
+      "colour": "yellow;black",
+      "name": "C8",
+      "x": 3340,
+      "y": 8883
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 9a",
+      "x": 3378,
+      "y": 8867
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 9b",
+      "x": 3227,
+      "y": 8996
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 8a",
+      "x": 3458,
+      "y": 9009
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 9c",
+      "x": 3611,
+      "y": 9267
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 6b",
+      "x": 3700,
+      "y": 8610
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "C 7b",
+      "x": 3760,
+      "y": 8607
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "C 6c",
+      "x": 3828,
+      "y": 8833
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": -3883,
+      "y": 198
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "No16b",
+      "x": 4645,
+      "y": 2485
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "16 a",
+      "x": 4939,
+      "y": 2106
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "firing_danger_area",
+      "colour": "yellow",
+      "name": "2",
+      "x": 2001,
+      "y": -16643
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "firing_danger_area",
+      "colour": "yellow",
+      "name": "1",
+      "x": 2108,
+      "y": -16506
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 2077,
+      "y": -16167
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 2070,
+      "y": -16139
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 2059,
+      "y": -16112
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 2044,
+      "y": -16078
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "",
+      "x": 2100,
+      "y": -16147
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "",
+      "x": 2089,
+      "y": -16123
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "",
+      "x": 2076,
+      "y": -16090
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "",
+      "x": 2061,
+      "y": -16060
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "no_entry",
+      "colour": "yellow",
+      "name": "7",
+      "x": 2607,
+      "y": -16743
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "no_entry",
+      "colour": "yellow",
+      "name": "6",
+      "x": 2527,
+      "y": -16668
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "no_entry",
+      "colour": "yellow",
+      "name": "5",
+      "x": 2452,
+      "y": -16591
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "no_entry",
+      "colour": "yellow",
+      "name": "4",
+      "x": 2383,
+      "y": -16520
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "no_entry",
+      "colour": "yellow",
+      "name": "3",
+      "x": 2319,
+      "y": -16458
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "no_entry",
+      "colour": "yellow",
+      "name": "2",
+      "x": 2368,
+      "y": -16344
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "no_entry",
+      "colour": "yellow",
+      "name": "1",
+      "x": 2427,
+      "y": -16231
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 1571,
+      "y": -16378
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "",
+      "x": 1577,
+      "y": -16328
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 1717,
+      "y": -16201
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "",
+      "x": 1738,
+      "y": -16200
+    }
+  ],
+  "bridges": {},
+  "heights": {
+    "source": "Copernicus GLO-30 DEM (© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA)",
+    "cellSize": 40,
+    "width": 753,
+    "height": 747,
+    "scale": 0.1,
+    "offset": -100
+  }
+}

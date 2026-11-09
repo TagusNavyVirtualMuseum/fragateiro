@@ -2,7 +2,11 @@
 // sailing), then where and with which boat. Also the result panel at the end of a mission.
 import type { BoatSpec } from '../physics';
 import { t } from '../i18n';
-import { FISHING_GROUNDS, FISHING_TARGET_KG, LEVELS, MISSION_KINDS, REGATTA_COURSES, ROUTES, makeMission, type Level, type Mission, type MissionKind } from '../world/missions';
+import { FISHING_TARGET_KG, LEVELS, MISSION_KINDS, areaMissions, makeMission, type Level, type Mission, type MissionKind } from '../world/missions';
+import { AREA_IDS, getArea, setArea } from '../world/area';
+
+const AREA = getArea();
+const { courses: COURSES, routes: ROUTES, grounds: GROUNDS } = areaMissions();
 
 /** mm:ss (or h:mm:ss) of a game time in seconds. */
 export function formatTime(seconds: number): string {
@@ -19,10 +23,10 @@ export class MissionMenu {
   private ports: string[] = [];
   /** The choices of the second step, remembered between visits. */
   private choice: Record<MissionKind, { option: string; boat: string }> = {
-    regatta: { option: REGATTA_COURSES[0].id, boat: 'falua' },
-    transport: { option: ROUTES[0].id, boat: ROUTES[0].boat },
-    fishing: { option: FISHING_GROUNDS[0].id, boat: 'muleta' },
-    free: { option: 'Lisboa', boat: 'falua' },
+    regatta: { option: COURSES[0]?.id ?? '', boat: AREA.boat },
+    transport: { option: ROUTES[0]?.id ?? '', boat: ROUTES[0]?.boat ?? AREA.boat },
+    fishing: { option: GROUNDS[0]?.id ?? '', boat: 'muleta' },
+    free: { option: AREA.ports[0], boat: AREA.boat },
   };
 
   constructor(
@@ -47,12 +51,14 @@ export class MissionMenu {
     this.ports = names;
   }
 
-  /** Step 1: the level and the kind of mission. */
+  /** Step 1: the area, the level and the kind of mission. */
   show(): void {
     const panel = this.panel(t('menu.whatToDo'));
-    panel.append(this.levelPicker());
+    panel.append(this.areaPicker(), this.levelPicker());
     const list = el('div', 'mission-list kinds');
+    const offered = { regatta: COURSES.length, transport: ROUTES.length, fishing: GROUNDS.length, free: 1 };
     for (const k of MISSION_KINDS) {
+      if (!offered[k.id]) continue;
       const card = el('button', 'mission-card');
       card.append(el('strong', '', k.title), el('span', 'desc', k.description));
       card.onclick = () => this.showOptions(k.id);
@@ -109,7 +115,7 @@ export class MissionMenu {
     };
 
     if (kind === 'regatta') {
-      optionButtons(t('menu.course'), REGATTA_COURSES.map((r) => ({ id: r.id, label: r.name })));
+      optionButtons(t('menu.course'), COURSES.map((r) => ({ id: r.id, label: r.name })));
       boatButtons();
       body.append(el('p', 'level-text', t('menu.regattaHelp')));
     } else if (kind === 'transport') {
@@ -124,7 +130,7 @@ export class MissionMenu {
       );
       boatButtons();
     } else if (kind === 'fishing') {
-      optionButtons(t('menu.ground'), FISHING_GROUNDS.map((g) => ({ id: g.id, label: g.name })));
+      optionButtons(t('menu.ground'), GROUNDS.map((g) => ({ id: g.id, label: g.name })));
       body.append(
         el('h2', '', t('menu.boatMuleta')),
         el(
@@ -183,6 +189,21 @@ export class MissionMenu {
     this.overlay.append(panel);
     this.overlay.hidden = false;
     return panel;
+  }
+
+  /** Each area is its own map: choosing another reloads the game there. */
+  private areaPicker(): HTMLElement {
+    const box = el('div');
+    const row = el('div', 'buttons levels');
+    for (const id of AREA_IDS) {
+      const b = el('button', id === AREA.id ? 'active' : '', t(`area.${id}`));
+      b.onclick = () => {
+        if (id !== AREA.id) setArea(id);
+      };
+      row.append(b);
+    }
+    box.append(el('h2', '', t('menu.area')), row, el('p', 'level-text', t(`area.${AREA.id}.desc`)));
+    return box;
   }
 
   private levelPicker(): HTMLElement {
