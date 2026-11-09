@@ -16,7 +16,9 @@ built to be easy to maintain and to grow into several small games.
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
   An afternoon sky with clouds drifting downwind, gulls circling over the river, real land
   heights, and other traditional boats sailing around you (each with its own physics and a
-  simple helmsman that tacks upwind and keeps off the shore).
+  simple helmsman that tacks upwind and keeps off the shore). Now and then (about one sighting
+  every five minutes, some twenty seconds long) a pod of dolphins surfaces near the boat
+  anywhere from the sea up to Lisbon, or orcas out on the open Atlantic (src/engine/wildlife.ts).
 
 ### Missions and levels
 

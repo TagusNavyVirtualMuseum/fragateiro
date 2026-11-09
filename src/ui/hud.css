@@ -233,3 +233,5 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
 .map-legend .lg-shoal { color: #1f8a8a; }
 .map-legend .lg-buoy { color: #d9a400; font-weight: bold; }
 .map-legend .lg-target { color: #e3a33b; font-weight: bold; }
+
+.toast { margin-top: 8px; padding: 6px 8px; border-radius: 6px; background: var(--parchment); color: #1f4f7a; border: 1px solid var(--brass-dark); font-family: 'IM Fell English', serif; font-size: 16px; text-align: center; }

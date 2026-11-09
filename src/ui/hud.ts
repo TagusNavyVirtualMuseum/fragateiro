@@ -56,6 +56,8 @@ export class SailingHud {
   private readonly rudderBar = el('div', 'rudder-bar');
   private readonly rudderNeedle = el('div', 'rudder-needle');
   private readonly warning = el('div', 'warning');
+  private readonly toastBox = el('div', 'toast');
+  private toastTimer = 0;
   private readonly forcesBox: HTMLInputElement;
   private readonly soundBox: HTMLInputElement;
   /** Shown next to the speed, so it is clear the clock runs faster. */
@@ -110,7 +112,8 @@ export class SailingHud {
     this.compassBoat = inst.querySelector('g.boat')!;
     this.compassWind = inst.querySelector('g.wind')!;
     this.compassTarget = inst.querySelector('g.target')!;
-    inst.append(this.readout, this.nav, this.warning);
+    inst.append(this.readout, this.nav, this.warning, this.toastBox);
+    this.toastBox.hidden = true;
 
     // --- Bottom left: sails
     const sails = el('section', 'panel sails');
@@ -224,6 +227,14 @@ export class SailingHud {
     this.camOutputs.distOut.textContent = `${Math.round(distance)} m`;
     this.camOutputs.heightOut.textContent = `${Math.round(elevation)}°`;
     this.camHeightLabel.hidden = view === 'top' || view === 'free';
+  }
+
+  /** A short message under the instruments, for a few seconds. */
+  toast(text: string, seconds = 6): void {
+    this.toastBox.textContent = text;
+    this.toastBox.hidden = false;
+    clearTimeout(this.toastTimer);
+    this.toastTimer = window.setTimeout(() => (this.toastBox.hidden = true), seconds * 1000);
   }
 
   setSound(on: boolean): void {

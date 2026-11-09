@@ -12,6 +12,7 @@ import { createSailingScene } from '../../src/engine/scene';
 import { WindView } from '../../src/engine/windView';
 import { Sound } from '../../src/engine/sound';
 import { Birds } from '../../src/engine/birds';
+import { Wildlife } from '../../src/engine/wildlife';
 import { Traffic } from '../../src/engine/traffic';
 import { CourseView } from '../../src/engine/courseView';
 import { MissionMenu } from '../../src/ui/missionMenu';
@@ -53,6 +54,7 @@ let terrain: Terrain | undefined;
 let mapView: MapView;
 let minimap: Minimap;
 let traffic: Traffic | undefined;
+let wildlife: Wildlife | undefined;
 let trafficOn = true;
 let start = { x: 0, y: 0 };
 let aground = false;
@@ -436,11 +438,17 @@ async function main(): Promise<void> {
   // second Falua.
   traffic = new Traffic(scene, [...BOATS, BOATS[0]], wind, mask, sim.state);
   traffic.setVisible(trafficOn);
+  // Dolphins (up to Lisbon) and orcas (open Atlantic), now and then.
+  wildlife = new Wildlife(scene, mask);
+  wildlife.onSighting = (species, side) => {
+    const name = species === 'orca' ? 'Orcas' : 'Dolphins';
+    hud.toast(side === 'ahead' || side === 'astern' ? `${name} ${side}!` : `${name} off the ${side} bow!`);
+  };
   // Start with the mission menu.
   paused = true;
   menu.show();
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { netSweep, get fishing() { return fishing; }, get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
+  Object.assign(window, { game: { get wildlife() { return wildlife; }, netSweep, get fishing() { return fishing; }, get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -515,6 +523,7 @@ async function main(): Promise<void> {
     const still = paused ? 0 : dt;
     sky.update(still * timeScale, w.from, w.speed);
     birds.update(camera.target, -Math.sin(w.from) * w.speed, -Math.cos(w.from) * w.speed, still);
+    wildlife?.update(s, time, still);
     const set = sim.report.sails.filter((x) => x.active);
     sound.update(
       {
