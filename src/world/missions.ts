@@ -96,6 +96,19 @@ export const AREA_MISSIONS: Record<AreaId, { courses: RegattaCourse[]; routes: R
     ],
     grounds: [],
   },
+  pasaia: {
+    courses: [
+      { id: 'concha', name: t('course.concha'), at: 'Donostia / San Sebastián', buoys: 3 },
+      { id: 'pasaia', name: t('course.pasaia'), at: 'Pasaia', buoys: 2 },
+      { id: 'sjdl', name: t('course.sjdl'), at: 'Saint-Jean-de-Luz', buoys: 2 },
+    ],
+    routes: [
+      { id: 'pasaia-donostia', from: 'Pasaia', to: 'Donostia / San Sebastián', boat: 'pinasse', description: t('route.pasaia-donostia') },
+      { id: 'hondarribia-sjdl', from: 'Hondarribia', to: 'Saint-Jean-de-Luz', boat: 'pinasse', description: t('route.hondarribia-sjdl') },
+      { id: 'pasaia-hondarribia', from: 'Pasaia', to: 'Hondarribia', boat: 'pinasse', description: t('route.pasaia-hondarribia') },
+    ],
+    grounds: [],
+  },
 };
 
 /** The missions of the area open now. */

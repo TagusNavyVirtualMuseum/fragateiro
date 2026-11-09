@@ -2,7 +2,7 @@
 // The maps themselves are built by scripts/fetch-map.mjs (areas in scripts/map-areas.mjs).
 import { DESTINATION_NAMES, EXTRA_PLACES } from './destinations';
 
-export type AreaId = 'tejo' | 'arcachon' | 'aveiro';
+export type AreaId = 'tejo' | 'arcachon' | 'aveiro' | 'pasaia';
 
 export interface AreaInfo {
   id: AreaId;
@@ -50,6 +50,13 @@ export const AREAS: Record<AreaId, AreaInfo> = {
     tagusExtras: false,
     extraPlaces: [{ name: 'Cais do Bico', kind: 'hamlet', lat: 40.7298, lon: -8.6455 }],
     start: { lat: 40.74, lon: -8.69 }, // the open lagoon off Torreira
+  },
+  pasaia: {
+    id: 'pasaia',
+    ports: ['Pasaia', 'Donostia / San Sebastián', 'Hondarribia', 'Hendaye', 'Socoa', 'Saint-Jean-de-Luz'],
+    boat: 'pinasse',
+    tagusExtras: false,
+    extraPlaces: [{ name: 'Socoa', kind: 'village', lat: 43.3945, lon: -1.6855 }],
   },
 };
 export const AREA_IDS = Object.keys(AREAS) as AreaId[];

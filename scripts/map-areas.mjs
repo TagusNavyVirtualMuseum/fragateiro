@@ -55,6 +55,21 @@ export const AREAS = {
       report: { 'off Torreira': [40.76, -8.69], 'the lagoon': [40.74, -8.69] },
     },
   },
+
+  // Pasaia (Pasajes) in the Basque Country: its narrow harbour inlet, with San Sebastián and
+  // La Concha to the west, Hondarribia and Hendaye at the mouth of the Bidasoa, and the coast
+  // on to Socoa and Saint-Jean-de-Luz.
+  pasaia: {
+    file: 'pasaia',
+    bbox: { south: 43.29, west: -2.03, north: 43.42, east: -1.63 },
+    /** At sea off the harbour mouth. */
+    origin: { lat: 43.345, lon: -1.93 },
+    checks: {
+      land: { 'San Sebastián': [43.3183, -1.9812], Hondarribia: [43.3626, -1.7915], 'Monte Ulía': [43.3305, -1.955], 'Saint-Jean-de-Luz': [43.3885, -1.661] },
+      water: { origin: [43.345, -1.93], 'off Cabo Higuer': [43.405, -1.8], 'off Saint-Jean-de-Luz': [43.405, -1.68] },
+      report: { 'Pasaia harbour': [43.3215, -1.9235], 'La Concha bay': [43.3195, -1.995], 'Txingudi bay': [43.365, -1.79], 'Saint-Jean-de-Luz bay': [43.393, -1.672] },
+    },
+  },
 };
 
 /** The area named by `--area` on the command line (default: the Tagus). */

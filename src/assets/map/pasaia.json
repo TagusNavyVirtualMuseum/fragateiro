@@ -1,0 +1,1266 @@
+{
+  "source": "OpenStreetMap contributors (ODbL), via the Overpass API",
+  "built": "2026-11-09",
+  "bbox": {
+    "south": 43.29,
+    "west": -2.03,
+    "north": 43.42,
+    "east": -1.63
+  },
+  "origin": {
+    "lat": 43.345,
+    "lon": -1.93
+  },
+  "cellSize": 20,
+  "width": 1620,
+  "height": 719,
+  "northWest": {
+    "x": -8095.57,
+    "y": 8293.05
+  },
+  "places": [
+    {
+      "name": "Agorreta",
+      "kind": "hamlet",
+      "x": 13966,
+      "y": 1455
+    },
+    {
+      "name": "Aielogi Punta",
+      "kind": "cape",
+      "x": 3639,
+      "y": 497
+    },
+    {
+      "name": "Ainarotz Punta",
+      "kind": "cape",
+      "x": 3467,
+      "y": 431
+    },
+    {
+      "name": "Aizpurdi",
+      "kind": "hamlet",
+      "x": 12753,
+      "y": 1186
+    },
+    {
+      "name": "Akerregi Punta",
+      "kind": "cape",
+      "x": 4010,
+      "y": 878
+    },
+    {
+      "name": "Amuitz",
+      "kind": "islet",
+      "x": 11189,
+      "y": 5542
+    },
+    {
+      "name": "Antziola",
+      "kind": "hamlet",
+      "x": 15874,
+      "y": 3234
+    },
+    {
+      "name": "Arando Aundi Punta",
+      "kind": "cape",
+      "x": 196,
+      "y": -1029
+    },
+    {
+      "name": "Arando Txiki Punta",
+      "kind": "cape",
+      "x": -110,
+      "y": -1051
+    },
+    {
+      "name": "Arbes",
+      "kind": "hamlet",
+      "x": 12149,
+      "y": -954
+    },
+    {
+      "name": "Arginenia",
+      "kind": "hamlet",
+      "x": 23777,
+      "y": 375
+    },
+    {
+      "name": "Argorri Labarra",
+      "kind": "cape",
+      "x": 8592,
+      "y": 4465
+    },
+    {
+      "name": "Arrakas Punta",
+      "kind": "cape",
+      "x": 1123,
+      "y": -867
+    },
+    {
+      "name": "Arriberri",
+      "kind": "hamlet",
+      "x": 126,
+      "y": -3055
+    },
+    {
+      "name": "Arrizar",
+      "kind": "hamlet",
+      "x": 67,
+      "y": -2909
+    },
+    {
+      "name": "Artxina Punta",
+      "kind": "cape",
+      "x": 776,
+      "y": -970
+    },
+    {
+      "name": "Atzabatza punta",
+      "kind": "cape",
+      "x": 3821,
+      "y": 660
+    },
+    {
+      "name": "Axaharria",
+      "kind": "hamlet",
+      "x": 20236,
+      "y": 197
+    },
+    {
+      "name": "Azkenportu",
+      "kind": "hamlet",
+      "x": 12693,
+      "y": -415
+    },
+    {
+      "name": "Baltazar Punta",
+      "kind": "cape",
+      "x": 10725,
+      "y": 5247
+    },
+    {
+      "name": "Belaskoenea",
+      "kind": "hamlet",
+      "x": 10290,
+      "y": -996
+    },
+    {
+      "name": "Biosnar Lurmuturra",
+      "kind": "cape",
+      "x": 6577,
+      "y": 3836
+    },
+    {
+      "name": "Biriatou",
+      "kind": "village",
+      "x": 15124,
+      "y": -1270
+    },
+    {
+      "name": "Bordagain",
+      "kind": "hamlet",
+      "x": 20685,
+      "y": 4348
+    },
+    {
+      "name": "Ciboure",
+      "kind": "village",
+      "x": 21241,
+      "y": 4357
+    },
+    {
+      "name": "Donostia / San Sebastián",
+      "kind": "city",
+      "x": -4363,
+      "y": -2497
+    },
+    {
+      "name": "Dorrea",
+      "kind": "hamlet",
+      "x": 23483,
+      "y": 1478
+    },
+    {
+      "name": "Dunboa",
+      "kind": "hamlet",
+      "x": 11869,
+      "y": -520
+    },
+    {
+      "name": "Elitxu",
+      "kind": "hamlet",
+      "x": 10452,
+      "y": -1221
+    },
+    {
+      "name": "Elizalde",
+      "kind": "village",
+      "x": 5643,
+      "y": -5067
+    },
+    {
+      "name": "Eltzaurdia",
+      "kind": "hamlet",
+      "x": 19512,
+      "y": -3851
+    },
+    {
+      "name": "Endarlatsa",
+      "kind": "hamlet",
+      "x": 16185,
+      "y": -5529
+    },
+    {
+      "name": "Erdiko Punta",
+      "kind": "cape",
+      "x": 11252,
+      "y": 5355
+    },
+    {
+      "name": "Erentzintxiki",
+      "kind": "cape",
+      "x": 6171,
+      "y": 3359
+    },
+    {
+      "name": "Erentzinzabal",
+      "kind": "cape",
+      "x": 5659,
+      "y": 3127
+    },
+    {
+      "name": "Erlaitza",
+      "kind": "hamlet",
+      "x": 18619,
+      "y": 5099
+    },
+    {
+      "name": "Errenteria",
+      "kind": "town",
+      "x": 2541,
+      "y": -3591
+    },
+    {
+      "name": "Errepira",
+      "kind": "hamlet",
+      "x": 22743,
+      "y": 4380
+    },
+    {
+      "name": "Errotasein",
+      "kind": "cape",
+      "x": 9388,
+      "y": 4713
+    },
+    {
+      "name": "Estebenea",
+      "kind": "hamlet",
+      "x": 11255,
+      "y": -2356
+    },
+    {
+      "name": "Galea Lurmuturra",
+      "kind": "cape",
+      "x": 2804,
+      "y": 27
+    },
+    {
+      "name": "Galera",
+      "kind": "islet",
+      "x": 11920,
+      "y": 192
+    },
+    {
+      "name": "Garlatz",
+      "kind": "hamlet",
+      "x": 15511,
+      "y": 161
+    },
+    {
+      "name": "Gran Canto Punta",
+      "kind": "cape",
+      "x": 3027,
+      "y": 99
+    },
+    {
+      "name": "Haïcabia",
+      "kind": "hamlet",
+      "x": 15889,
+      "y": 3773
+    },
+    {
+      "name": "Hendaye",
+      "kind": "town",
+      "x": 13629,
+      "y": 2118
+    },
+    {
+      "name": "Herburu",
+      "kind": "hamlet",
+      "x": 19689,
+      "y": -1252
+    },
+    {
+      "name": "Herrera",
+      "kind": "hamlet",
+      "x": -697,
+      "y": -2850
+    },
+    {
+      "name": "Higer lurmuturra",
+      "kind": "cape",
+      "x": 11353,
+      "y": 5274
+    },
+    {
+      "name": "Hondarribia",
+      "kind": "town",
+      "x": 11218,
+      "y": 1929
+    },
+    {
+      "name": "Iratzea",
+      "kind": "hamlet",
+      "x": 23353,
+      "y": 6476
+    },
+    {
+      "name": "Iru Kanale",
+      "kind": "islet",
+      "x": 11986,
+      "y": -97
+    },
+    {
+      "name": "Irun",
+      "kind": "town",
+      "x": 11430,
+      "y": -739
+    },
+    {
+      "name": "Irupuntxa",
+      "kind": "cape",
+      "x": 5925,
+      "y": 3391
+    },
+    {
+      "name": "Irurdietako muturra",
+      "kind": "cape",
+      "x": -1224,
+      "y": -1210
+    },
+    {
+      "name": "Itzaberri",
+      "kind": "islet",
+      "x": 11224,
+      "y": 615
+    },
+    {
+      "name": "Ixaka",
+      "kind": "hamlet",
+      "x": 22727,
+      "y": 4707
+    },
+    {
+      "name": "Ixkiro Lurmuturra",
+      "kind": "cape",
+      "x": 4442,
+      "y": 1997
+    },
+    {
+      "name": "Ixkiro Punta",
+      "kind": "cape",
+      "x": 4712,
+      "y": 2232
+    },
+    {
+      "name": "Jolastokieta",
+      "kind": "hamlet",
+      "x": -573,
+      "y": -2983
+    },
+    {
+      "name": "Kapelaundi",
+      "kind": "cape",
+      "x": 10059,
+      "y": 4886
+    },
+    {
+      "name": "Kapelu Lurmuturra",
+      "kind": "cape",
+      "x": 7504,
+      "y": 4112
+    },
+    {
+      "name": "Kaule",
+      "kind": "hamlet",
+      "x": 22878,
+      "y": -5912
+    },
+    {
+      "name": "Kexiloa",
+      "kind": "hamlet",
+      "x": 20381,
+      "y": 3438
+    },
+    {
+      "name": "Konpantzia",
+      "kind": "islet",
+      "x": 13324,
+      "y": -240
+    },
+    {
+      "name": "Kornabeko Zuloa",
+      "kind": "cape",
+      "x": 11111,
+      "y": 5393
+    },
+    {
+      "name": "La Finca",
+      "kind": "hamlet",
+      "x": 23904,
+      "y": 760
+    },
+    {
+      "name": "Larratxo",
+      "kind": "hamlet",
+      "x": -730,
+      "y": -3412
+    },
+    {
+      "name": "Larrun Zola",
+      "kind": "hamlet",
+      "x": 23386,
+      "y": -408
+    },
+    {
+      "name": "Lezo",
+      "kind": "village",
+      "x": 2460,
+      "y": -2627
+    },
+    {
+      "name": "Maribernatenia",
+      "kind": "hamlet",
+      "x": 20492,
+      "y": 4582
+    },
+    {
+      "name": "Marla Punta",
+      "kind": "cape",
+      "x": 7942,
+      "y": 4315
+    },
+    {
+      "name": "Marrutxipi",
+      "kind": "hamlet",
+      "x": -2372,
+      "y": -2974
+    },
+    {
+      "name": "Monpas lurmuturra",
+      "kind": "cape",
+      "x": -3432,
+      "y": -1047
+    },
+    {
+      "name": "Motelu Punta",
+      "kind": "cape",
+      "x": 5357,
+      "y": 3038
+    },
+    {
+      "name": "Muitago Punta",
+      "kind": "cape",
+      "x": 2257,
+      "y": -346
+    },
+    {
+      "name": "Murgita",
+      "kind": "cape",
+      "x": -1543,
+      "y": -1395
+    },
+    {
+      "name": "Oiartzun",
+      "kind": "town",
+      "x": 5593,
+      "y": -4674
+    },
+    {
+      "name": "Oleta",
+      "kind": "hamlet",
+      "x": -192,
+      "y": -2724
+    },
+    {
+      "name": "Olhette",
+      "kind": "hamlet",
+      "x": 22154,
+      "y": -947
+    },
+    {
+      "name": "Olhette",
+      "kind": "hamlet",
+      "x": 21146,
+      "y": -875
+    },
+    {
+      "name": "Pasaia",
+      "kind": "town",
+      "x": 805,
+      "y": -2323
+    },
+    {
+      "name": "Pikatxia Punta",
+      "kind": "cape",
+      "x": -2617,
+      "y": -774
+    },
+    {
+      "name": "Platantxulo Punta",
+      "kind": "cape",
+      "x": 2430,
+      "y": -194
+    },
+    {
+      "name": "Porrustarri Punta",
+      "kind": "cape",
+      "x": 1402,
+      "y": -706
+    },
+    {
+      "name": "Putakioko baxa",
+      "kind": "cape",
+      "x": -1008,
+      "y": -1111
+    },
+    {
+      "name": "Putiako Punta",
+      "kind": "cape",
+      "x": -742,
+      "y": -1027
+    },
+    {
+      "name": "Roteta",
+      "kind": "hamlet",
+      "x": -113,
+      "y": -3014
+    },
+    {
+      "name": "Saint-Jean-de-Luz",
+      "kind": "town",
+      "x": 21559,
+      "y": 4668
+    },
+    {
+      "name": "Sainte-Croix",
+      "kind": "hamlet",
+      "x": 22150,
+      "y": 3012
+    },
+    {
+      "name": "Sanbuio",
+      "kind": "cape",
+      "x": 7267,
+      "y": 3933
+    },
+    {
+      "name": "Santa Klara",
+      "kind": "islet",
+      "x": -5625,
+      "y": -2611
+    },
+    {
+      "name": "Santiago Aurrera",
+      "kind": "islet",
+      "x": 12281,
+      "y": 12
+    },
+    {
+      "name": "Socoa - Zokoa",
+      "kind": "hamlet",
+      "x": 19748,
+      "y": 5444
+    },
+    {
+      "name": "Sopite",
+      "kind": "hamlet",
+      "x": 14414,
+      "y": 2652
+    },
+    {
+      "name": "Tanbo Punta",
+      "kind": "cape",
+      "x": 1680,
+      "y": -521
+    },
+    {
+      "name": "Trabenea",
+      "kind": "hamlet",
+      "x": 21823,
+      "y": -869
+    },
+    {
+      "name": "Turruia Muturra",
+      "kind": "cape",
+      "x": 4796,
+      "y": 2655
+    },
+    {
+      "name": "Txoritxuloeta Punta",
+      "kind": "cape",
+      "x": -2044,
+      "y": -987
+    },
+    {
+      "name": "Urdanibia",
+      "kind": "hamlet",
+      "x": 8948,
+      "y": -894
+    },
+    {
+      "name": "Urdazuri",
+      "kind": "hamlet",
+      "x": 22412,
+      "y": 4224
+    },
+    {
+      "name": "Urrugne",
+      "kind": "village",
+      "x": 18595,
+      "y": 1932
+    },
+    {
+      "name": "Urthaburu",
+      "kind": "hamlet",
+      "x": 24209,
+      "y": 6324
+    },
+    {
+      "name": "Uxando Lurmuturra",
+      "kind": "cape",
+      "x": 11464,
+      "y": 5067
+    },
+    {
+      "name": "Xantelerreka",
+      "kind": "hamlet",
+      "x": 20102,
+      "y": -5654
+    },
+    {
+      "name": "Xapel Baïta",
+      "kind": "hamlet",
+      "x": 18378,
+      "y": 2570
+    },
+    {
+      "name": "Xara Baïta",
+      "kind": "hamlet",
+      "x": 23403,
+      "y": -83
+    },
+    {
+      "name": "Zuhibar",
+      "kind": "hamlet",
+      "x": 17696,
+      "y": 2201
+    }
+  ],
+  "seamarks": [
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "La Concha Enfilación 158º (transit)",
+      "x": -4931,
+      "y": -3337
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "Punta de la Torre de San Pedro",
+      "x": 677,
+      "y": -2049
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "Arando Grande",
+      "x": 169,
+      "y": -1024
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Punta Teodoro Arroca",
+      "x": 527,
+      "y": -1494
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "green",
+      "name": "",
+      "x": 11337,
+      "y": 4697
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "Hendaye",
+      "x": 11568,
+      "y": 3632
+    },
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 20650,
+      "y": 4475
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Fort de Socoa",
+      "x": 19705,
+      "y": 5533
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "Digue des Criquas",
+      "x": 20425,
+      "y": 5795
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 21335,
+      "y": 4355
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 21135,
+      "y": 4710
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Feux de Sainte-Barbe (1870)",
+      "x": 21835,
+      "y": 5951
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": -4922,
+      "y": -3359
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "Muelle Avanzado",
+      "x": 549,
+      "y": -2414
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "Punta Calparra",
+      "x": 556,
+      "y": -1841
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Castilla de Santa Isabel",
+      "x": 545,
+      "y": -1662
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Ermita de Santa Ana",
+      "x": 849,
+      "y": -2092
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Punta del Mirador",
+      "x": 670,
+      "y": -1844
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "Punta de las Cruces",
+      "x": 350,
+      "y": -1455
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "white",
+      "name": "",
+      "x": 294,
+      "y": -1538
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "Dique de Senocozulua",
+      "x": 301,
+      "y": -1383
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "white",
+      "name": "",
+      "x": 275,
+      "y": -1500
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Senocozulua",
+      "x": 259,
+      "y": -1467
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "East Bancha",
+      "x": 201,
+      "y": -881
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "West Bancha",
+      "x": -105,
+      "y": -854
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "green",
+      "name": "",
+      "x": 11416,
+      "y": 3927
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 11322,
+      "y": 4455
+    },
+    {
+      "type": "beacon_special_purpose",
+      "category": "",
+      "colour": "black;yellow;black",
+      "name": "",
+      "x": 11490,
+      "y": 4560
+    },
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "",
+      "name": "Feu de Sainte Barbe",
+      "x": 21500,
+      "y": 6015
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 11119,
+      "y": 3444
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "green",
+      "name": "",
+      "x": 11184,
+      "y": 3485
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "",
+      "x": 11273,
+      "y": 2976
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 11412,
+      "y": 3103
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 11657,
+      "y": 2542
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "",
+      "x": 11507,
+      "y": 2599
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "",
+      "x": 11769,
+      "y": 2390
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "west",
+      "colour": "yellow;black;yellow",
+      "name": "",
+      "x": 11808,
+      "y": 2496
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 11306,
+      "y": 4714
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "green",
+      "name": "",
+      "x": 11400,
+      "y": 4484
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_left",
+      "colour": "red",
+      "name": "",
+      "x": 21035,
+      "y": 5050
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_right",
+      "colour": "green",
+      "name": "",
+      "x": 20994,
+      "y": 4903
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "",
+      "colour": "yellow",
+      "name": "",
+      "x": 20671,
+      "y": 5325
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_right",
+      "colour": "green",
+      "name": "",
+      "x": 20941,
+      "y": 5032
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_right",
+      "colour": "green",
+      "name": "",
+      "x": 20860,
+      "y": 5161
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_right",
+      "colour": "green",
+      "name": "",
+      "x": 20752,
+      "y": 5325
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_right",
+      "colour": "green",
+      "name": "",
+      "x": 20576,
+      "y": 5584
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_left",
+      "colour": "red",
+      "name": "",
+      "x": 20509,
+      "y": 5548
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_left",
+      "colour": "red",
+      "name": "",
+      "x": 20333,
+      "y": 5492
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_right",
+      "colour": "green",
+      "name": "",
+      "x": 20536,
+      "y": 5658
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_right",
+      "colour": "green",
+      "name": "",
+      "x": 20414,
+      "y": 5602
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_right",
+      "colour": "green",
+      "name": "",
+      "x": 20293,
+      "y": 5546
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_right",
+      "colour": "green",
+      "name": "",
+      "x": 20172,
+      "y": 5491
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "channel_left",
+      "colour": "red",
+      "name": "",
+      "x": 20185,
+      "y": 5455
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "",
+      "colour": "yellow",
+      "name": "",
+      "x": 20374,
+      "y": 5068
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "",
+      "colour": "yellow",
+      "name": "",
+      "x": 20346,
+      "y": 5142
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "",
+      "colour": "yellow",
+      "name": "",
+      "x": 20265,
+      "y": 5290
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "",
+      "colour": "green",
+      "name": "",
+      "x": 20090,
+      "y": 5327
+    },
+    {
+      "type": "beacon_cardinal",
+      "category": "east",
+      "colour": "black;yellow;black",
+      "name": "",
+      "x": 20070,
+      "y": 5127
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "starboard",
+      "colour": "green",
+      "name": "Molla punta",
+      "x": -4850,
+      "y": -2489
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": -4873,
+      "y": -2501
+    },
+    {
+      "type": "buoy_safe_water",
+      "category": "",
+      "colour": "red;white",
+      "name": "Approach - Boya de recalada Pasaia",
+      "x": -658,
+      "y": 1133
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "",
+      "colour": "yellow",
+      "name": "Emisario submarino de Mompás",
+      "x": -2141,
+      "y": 240
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "green",
+      "name": "Dársena de Veteranos - Boya E1",
+      "x": 11745,
+      "y": 2217
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 11519,
+      "y": 1686
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "",
+      "x": 11490,
+      "y": 1710
+    },
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 11745,
+      "y": 1966
+    },
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "green",
+      "name": "",
+      "x": 11694,
+      "y": 1966
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "anchorage",
+      "colour": "yellow",
+      "name": "",
+      "x": 12025,
+      "y": 2229
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "anchorage",
+      "colour": "yellow",
+      "name": "",
+      "x": 12095,
+      "y": 2326
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "anchorage",
+      "colour": "yellow",
+      "name": "",
+      "x": 12486,
+      "y": 2009
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "anchorage",
+      "colour": "yellow",
+      "name": "",
+      "x": 12390,
+      "y": 2485
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "anchorage",
+      "colour": "yellow",
+      "name": "",
+      "x": 12182,
+      "y": 2439
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "anchorage",
+      "colour": "yellow",
+      "name": "",
+      "x": 12081,
+      "y": 1885
+    }
+  ],
+  "bridges": {},
+  "heights": {
+    "source": "Copernicus GLO-30 DEM (© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA)",
+    "cellSize": 40,
+    "width": 810,
+    "height": 360,
+    "scale": 0.1,
+    "offset": -100
+  }
+}
