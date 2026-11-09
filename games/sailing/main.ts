@@ -440,7 +440,9 @@ async function main(): Promise<void> {
   loading.classList.add('done');
   // Other boats on the river (light models, loaded in the background): one of each, and a
   // second Falua.
-  traffic = new Traffic(scene, [...BOATS, BOATS[0]], wind, mask, sim.state);
+  // Only boats of these waters sail around the player (the pinasse stays in Arcachon).
+  const local = BOATS.filter((b) => (b.home ?? 'tejo') === 'tejo');
+  traffic = new Traffic(scene, [...local, local[0]], wind, mask, sim.state);
   traffic.setVisible(trafficOn);
   // Dolphins (up to Lisbon) and orcas (open Atlantic), now and then.
   wildlife = new Wildlife(scene, mask);

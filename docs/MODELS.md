@@ -9,6 +9,7 @@ The boats come from the MiraroTejo project (the lighter versions made for the vi
 | Fragata | `MiraroTejo/Assets/Embarcações/Fragata/Fragata.fbx` (4.7 MB + textures) | `src/assets/models/fragata.glb` | 3.8 MB |
 | Catraio | `MiraroTejo/Assets/Embarcações/Catraio/catraio.fbx` (55 MB, textures inside) | `src/assets/models/catraio.glb` | 3.2 MB |
 | Canoa | Meshy (photo to 3D) of the *Alma do Tejo*, cut by `scripts/cut-model.mjs` with `scripts/boats/canoa-meshy.mjs` (46 MB, one piece) | `src/assets/models/canoa.glb` | 3 MB |
+| Pinasse à voile (Arcachon) | Meshy (photo to 3D), cut by `scripts/cut-model.mjs` with `scripts/boats/pinasse-meshy.mjs` (45 MB, one piece; its mast came out as two poles in a V, merged into one by the config's `move`) | `src/assets/models/pinasse.glb` | 2.3 MB |
 
 The SingraroTejo versions (184 MB and 290 MB) are too heavy for the web.
 

@@ -12,12 +12,14 @@ export { MULETA } from './boats/muleta';
 export { FRAGATA } from './boats/fragata';
 export { CATRAIO } from './boats/catraio';
 export { CANOA } from './boats/canoa';
+export { PINASSE } from './boats/pinasse';
 
 import { CANOA } from './boats/canoa';
 import { CATRAIO } from './boats/catraio';
 import { FALUA } from './boats/falua';
 import { FRAGATA } from './boats/fragata';
 import { MULETA } from './boats/muleta';
-export const BOATS = [FALUA, MULETA, FRAGATA, CATRAIO, CANOA];
+import { PINASSE } from './boats/pinasse';
+export const BOATS = [FALUA, MULETA, FRAGATA, CATRAIO, CANOA, PINASSE];
 /** Boats still being worked on: tested, but not offered in the games yet. */
 export const BOATS_IN_DEVELOPMENT: typeof BOATS = [];

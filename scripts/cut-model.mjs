@@ -9,8 +9,11 @@
 // - `classify(p, piece)`: the part a triangle belongs to, from its centre `p` ({x, y, z})
 //   and `piece` (the rank of its connected piece by size, 0 = the largest), or null to drop
 //   it;
-// - `scale`, `origin`: model units -> metres (a number, or {x, y, z} to fix proportions), and the model point that becomes (0, 0, 0)
-//   (the bow points to -x, y up, z to port, as in the game);
+// - `move(v)` (optional): moves a vertex ({x, y, z}, changed in place) before anything else,
+//   to fix the shape (the pinasse's mast came out as two poles in a V);
+// - `scale`, `origin`: model units -> metres (a number, or {x, y, z} to fix proportions), and
+//   the model point that becomes (0, 0, 0) (the bow points to -x, y up, z to port, as in the
+//   game);
 // - `triangles`: how many triangles each part may keep, roughly;
 // - `textureSize`: largest texture side, px.
 import { NodeIO } from '@gltf-transform/core';
@@ -70,6 +73,13 @@ for (const node of root.listNodes()) {
     const pos = prim.getAttribute('POSITION').getArray();
     const tri = prim.getIndices().getArray();
     const rank = pieces(pos, tri);
+    if (config.move) for (let i = 0; i < pos.length; i += 3) {
+      const v = { x: pos[i], y: pos[i + 1], z: pos[i + 2] };
+      config.move(v);
+      pos[i] = v.x;
+      pos[i + 1] = v.y;
+      pos[i + 2] = v.z;
+    }
     for (let t = 0; t < tri.length; t += 3) {
       const [a, b, c] = [tri[t], tri[t + 1], tri[t + 2]];
       const p = {

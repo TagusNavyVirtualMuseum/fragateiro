@@ -82,6 +82,8 @@ export interface BoatSpec {
   id: string;
   name: string;
   description: string;
+  /** The waters the boat belongs to (default 'tejo'): it sails there as traffic. */
+  home?: string;
   length: number;
   beam: number;
   draft: number;

@@ -13,9 +13,11 @@ import muletaLite from '../assets/models/lite/muleta.glb?url';
 import fragataLite from '../assets/models/lite/fragata.glb?url';
 import catraioLite from '../assets/models/lite/catraio.glb?url';
 import canoaLite from '../assets/models/lite/canoa.glb?url';
+import pinasseUrl from '../assets/models/pinasse.glb?url';
+import pinasseLite from '../assets/models/lite/pinasse.glb?url';
 
 /** Light model of each boat, for the other boats sailing on the river. */
-export const LITE_URLS: Record<string, string> = { falua: faluaLite, muleta: muletaLite, fragata: fragataLite, catraio: catraioLite, canoa: canoaLite };
+export const LITE_URLS: Record<string, string> = { falua: faluaLite, muleta: muletaLite, fragata: fragataLite, catraio: catraioLite, canoa: canoaLite, pinasse: pinasseLite };
 
 type V3 = [number, number, number];
 
@@ -298,6 +300,32 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       nodes: ['Leme'],
       pivot: [4.43, 0, 0],
       axis: { base: [4.43, -0.34, 0], top: [4.43, 0.83, 0] }, // hung on the transom
+    },
+  },
+  pinasse: {
+    boat: 'pinasse',
+    // Made with Meshy from photos, cut into parts by scripts/cut-model.mjs
+    // (scripts/boats/pinasse-meshy.mjs); model in metres, waterline at 0.
+    hullNodes: ['Casco'],
+    url: pinasseUrl,
+    unit: 1,
+    scale: 1,
+    cgX: 0.2,
+    waterline: 0,
+    sails: [
+      {
+        sail: 'main',
+        nodes: ['Vela'],
+        pivot: [-0.95, 0, 0],
+        axis: { base: [-0.967, 0.34, 0], top: [-0.531, 5.7, 0] }, // the mast, raked aft
+      },
+    ],
+    // The sheet from the clew to the stern, by the tiller.
+    sheets: [{ sail: 'main', clew: [3.77, 1.1, 0], to: [3.95, 0.75, 0] }],
+    rudder: {
+      nodes: ['Leme'],
+      pivot: [4.35, 0, 0],
+      axis: { base: [4.35, -0.42, 0], top: [4.35, 1.0, 0] }, // hung on the sternpost
     },
   },
 };

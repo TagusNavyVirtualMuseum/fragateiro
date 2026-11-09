@@ -43,6 +43,12 @@ export const EN: Record<string, string> = {
     'at the stern. Restored canoas, like the <em>Alma do Tejo</em>, still sail on the river. Its 3D model was made from ' +
     'photos of it with Meshy, a photo-to-3D service.',
   'boat.canoa.facts': '8.8 m · 2.2 m beam · about 5 t · lateen sail (about 52 m²) and mizzen',
+  'boat.pinasse.alt': 'The pinasse à voile of Arcachon with its lugsail',
+  'boat.pinasse.desc':
+    'A visitor from France: the light, narrow, pointed fishing boat of the Bassin d’Arcachon, with one lugsail on a ' +
+    'yard and a centreboard. Pinasses fished and dredged oysters in the bay; a few still sail at its regattas. ' +
+    'Its 3D model was made from photos with Meshy.',
+  'boat.pinasse.facts': '8.65 m · 1.82 m beam · about 600 kg · lugsail (about 22 m²) and centreboard',
   'land.note': "Weights are the estimates used by the game's physics.",
   'land.about': 'About the project →',
   'land.paper': 'Read the paper →',

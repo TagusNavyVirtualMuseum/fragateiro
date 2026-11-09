@@ -1,7 +1,7 @@
 # Fragateiro
 
 Browser mini-games with the traditional sailing boats of the Tagus River: the **Falua**, the
-**Muleta** of Seixal, the **Fragata**, the **Catraio** and the **Canoa**. A web successor to the Unity simulator described in
+**Muleta** of Seixal, the **Fragata**, the **Catraio** and the **Canoa**, and a visitor from France, the **pinasse à voile** of Arcachon. A web successor to the Unity simulator described in
 *A sailing simulator for the revival of the Tagus River nautical heritage* (Fazenda et al., 2025),
 built to be easy to maintain and to grow into several small games.
 

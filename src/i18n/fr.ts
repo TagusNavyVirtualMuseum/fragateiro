@@ -45,6 +45,12 @@ export const FR: Record<string, string> = {
     'petit tapecul à l’arrière. Des canoas restaurées, comme l’<em>Alma do Tejo</em>, naviguent encore sur le fleuve. ' +
     'Son modèle 3D a été créé à partir de photos avec Meshy, un service qui transforme des photos en 3D.',
   'boat.canoa.facts': '8,8 m · 2,2 m de large · environ 5 t · voile latine (environ 52 m²) et tapecul',
+  'boat.pinasse.alt': 'La pinasse à voile d’Arcachon et sa voile au tiers',
+  'boat.pinasse.desc':
+    'Une invitée française : la pinasse, bateau de pêche léger, étroit et pointu du Bassin d’Arcachon, avec une voile ' +
+    'au tiers sur une vergue et une dérive. Les pinasses pêchaient et draguaient les huîtres dans le bassin ; ' +
+    'quelques-unes courent encore ses régates. Son modèle 3D a été créé à partir de photos avec Meshy.',
+  'boat.pinasse.facts': '8,65 m · 1,82 m de large · environ 600 kg · voile au tiers (environ 22 m²) et dérive',
   'land.note': 'Les masses sont les estimations utilisées par la physique du jeu.',
   'land.about': 'À propos du projet →',
   'land.paper': 'Lire l’article →',

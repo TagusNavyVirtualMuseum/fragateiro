@@ -43,6 +43,12 @@ export const PT: Record<string, string> = {
     'pequena mezena à popa. Canoas restauradas, como a <em>Alma do Tejo</em>, ainda navegam no rio. O seu modelo 3D foi ' +
     'feito a partir de fotografias com o Meshy, um serviço que transforma fotografias em 3D.',
   'boat.canoa.facts': '8,8 m · 2,2 m de boca · cerca de 5 t · vela latina (cerca de 52 m²) e mezena',
+  'boat.pinasse.alt': 'A pinasse à voile de Arcachon com a sua vela de pendão',
+  'boat.pinasse.desc':
+    'Uma visita de França: o barco de pesca leve, estreito e bicudo da Bacia de Arcachon, com uma vela de pendão ' +
+    'numa verga e um patilhão móvel. As pinasses pescavam e apanhavam ostras na baía; algumas ainda correm nas suas ' +
+    'regatas. O seu modelo 3D foi feito a partir de fotografias com o Meshy.',
+  'boat.pinasse.facts': '8,65 m · 1,82 m de boca · cerca de 600 kg · vela de pendão (cerca de 22 m²) e patilhão',
   'land.note': 'Os pesos são as estimativas usadas pela física do jogo.',
   'land.about': 'Sobre o projeto →',
   'land.paper': 'Ler o artigo →',
