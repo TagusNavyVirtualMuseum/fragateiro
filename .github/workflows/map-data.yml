@@ -1,10 +1,15 @@
 name: Update map data
 
-# Downloads the Tagus coastline from OpenStreetMap and the land heights (Copernicus GLO-30)
-# and commits the game's map files.
-# Run it by hand (Actions -> Update map data -> Run workflow) when the map area changes.
+# Downloads a sailing area's coastline from OpenStreetMap and its land heights (Copernicus
+# GLO-30) and commits the game's map files. Areas are listed in scripts/map-areas.mjs.
+# Run it by hand (Actions -> Update map data -> Run workflow) when an area is added or changes.
 on:
   workflow_dispatch:
+    inputs:
+      area:
+        description: 'Area (tejo, arcachon, aveiro), or several separated by spaces'
+        required: true
+        default: 'tejo'
 
 permissions:
   contents: write
@@ -17,15 +22,24 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/fetch-map.mjs
       - run: npm install --no-save geotiff@3.0.5
-      - run: node scripts/fetch-heights.mjs
-      - name: Commit the map
+      - name: Build the maps
+        env:
+          AREAS: ${{ inputs.area }}
+        run: |
+          for a in $AREAS; do
+            node scripts/fetch-map.mjs --area "$a"
+            node scripts/fetch-heights.mjs --area "$a"
+          done
+      - name: Commit the maps
+        env:
+          AREAS: ${{ inputs.area }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/assets/map
-          if git diff --cached --quiet; then echo "Map unchanged"; else
-            git commit -m "Update Tagus map from OpenStreetMap and Copernicus heights"
+          if git diff --cached --quiet; then echo "Maps unchanged"; else
+            git commit -m "Update maps ($AREAS) from OpenStreetMap and Copernicus heights"
+            git pull --rebase
             git push
           fi

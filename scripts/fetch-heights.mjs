@@ -1,20 +1,23 @@
-// Land heights for the estuary map, from the Copernicus GLO-30 elevation model (30 m,
+// Land heights for a sailing area's map, from the Copernicus GLO-30 elevation model (30 m,
 // © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under
 // COPERNICUS by the European Union and ESA; free to use).
 //
 //   npm install --no-save geotiff@3.0.5
-//   node scripts/fetch-heights.mjs
+//   node scripts/fetch-heights.mjs [--area tejo]
 //
-// Reads the map grid from src/assets/map/tagus.json (written by fetch-map.mjs), samples the
-// elevation at the centre of every 40 m cell and writes:
-//   src/assets/map/tagus-height.png   height = (R * 256 + G) * 0.1 - 100 metres
-//   tagus.json "heights"              grid size, cell size and how to decode
+// Reads the map grid from src/assets/map/<file>.json (written by fetch-map.mjs; areas in
+// scripts/map-areas.mjs), samples the elevation at the centre of every 40 m cell and writes:
+//   src/assets/map/<file>-height.png  height = (R * 256 + G) * 0.1 - 100 metres
+//   <file>.json "heights"             grid size, cell size and how to decode
 // The model is a surface model: towns and woods add their height, which reads well from
 // the river. Over water it is not used (the land is cut out there).
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { fromArrayBuffer } from 'geotiff';
+import { areaFromArgs } from './map-areas.mjs';
+
+const AREA = areaFromArgs();
 
 const OUT_DIR = new URL('../src/assets/map/', import.meta.url);
 // 40 m keeps the image small for the whole area (the source is 30 m).
@@ -22,7 +25,7 @@ const CELL = 40; // m
 const SCALE = 0.1; // m per step
 const OFFSET = -100; // m
 
-const meta = JSON.parse(readFileSync(new URL('tagus.json', OUT_DIR), 'utf8'));
+const meta = JSON.parse(readFileSync(new URL(`${AREA.file}.json`, OUT_DIR), 'utf8'));
 const { origin, northWest, cellSize } = meta;
 // The same projection as fetch-map.mjs.
 const M_PER_DEG_LAT = 110574;
@@ -119,7 +122,7 @@ function png(width, height, data) {
   return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw, { level: 9 })), chunk('IEND', Buffer.alloc(0))]);
 }
 
-writeFileSync(new URL('tagus-height.png', OUT_DIR), png(W, H, rgb));
+writeFileSync(new URL(`${AREA.file}-height.png`, OUT_DIR), png(W, H, rgb));
 meta.heights = {
   source: 'Copernicus GLO-30 DEM (© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA)',
   cellSize: CELL,
@@ -128,5 +131,5 @@ meta.heights = {
   scale: SCALE,
   offset: OFFSET,
 };
-writeFileSync(new URL('tagus.json', OUT_DIR), JSON.stringify(meta, null, 2) + '\n');
-console.log(`wrote tagus-height.png (${W} x ${H}), highest point ${max.toFixed(0)} m`);
+writeFileSync(new URL(`${AREA.file}.json`, OUT_DIR), JSON.stringify(meta, null, 2) + '\n');
+console.log(`wrote ${AREA.file}-height.png (${W} x ${H}), highest point ${max.toFixed(0)} m`);

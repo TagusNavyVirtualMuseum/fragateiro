@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-// Build the land/water map of the Tagus estuary from OpenStreetMap.
+// Build the land/water map of a sailing area from OpenStreetMap (areas: scripts/map-areas.mjs).
 //
-//   node scripts/fetch-map.mjs                 # download from the Overpass API
-//   node scripts/fetch-map.mjs --input osm.json # use a saved Overpass response
+//   node scripts/fetch-map.mjs [--area tejo]      # download from the Overpass API
+//   node scripts/fetch-map.mjs --input osm.json  # use a saved Overpass response
 //
 // Output (committed to the repo, so the game never calls OpenStreetMap):
-//   src/assets/map/tagus-mask.png  R = water (255) / land (0), slightly blurred for smooth shores
+//   src/assets/map/<file>-mask.png R = water (255) / land (0), slightly blurred for smooth shores
 //                                  G = the same, blurred wide (used to colour beaches inland)
-//   src/assets/map/tagus.json      grid size, origin, place names, sea marks (buoys and
+//   src/assets/map/<file>.json     grid size, origin, place names, sea marks (buoys and
 //                                  beacons, as shown on OpenSeaMap)
 //
 // How: draw the coastline into a grid, flood-fill the sea from a point in the river,
@@ -15,30 +15,17 @@
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
+import { areaFromArgs } from './map-areas.mjs';
 
-// --- Area: the Tagus from Vila Franca de Xira to the sea, the coast from Cascais (and the
-// Sintra coast) round to Cabo Espichel and Sesimbra ----------------------------------------
-const BBOX = { south: 38.38, west: -9.5, north: 38.99, east: -8.85 };
-/** Local origin (and flood-fill seed): mid-river between Terreiro do Paço and Barreiro. */
-const ORIGIN = { lat: 38.685, lon: -9.1 };
+// --- Area (scripts/map-areas.mjs) -------------------------------------------------------
+const AREA = areaFromArgs();
+const { bbox: BBOX, origin: ORIGIN, checks: CHECKS } = AREA;
+const BRIDGES = AREA.bridges ?? /^$/;
 // 20 m cells keep the mask under 4096 px a side (the most phones can load as a texture).
 const CELL = 20; // metres
 const OUT_DIR = new URL('../src/assets/map/', import.meta.url);
 
 const PLACES_WANTED = /^(city|town|village|hamlet|island|islet)$/;
-/** Landmark bridges: their deck lines are saved for drawing. */
-const BRIDGES = /^Ponte (25 de Abril|Vasco da Gama|Marechal Carmona)$/;
-/** Must be land / water, or the data is wrong (checked after building the grid). */
-const CHECKS = {
-  land: {
-    Moita: [38.6507, -8.9905], Montijo: [38.7067, -8.9739], Barreiro: [38.6631, -9.0724], Lisboa: [38.7139, -9.1394], Alcochete: [38.7553, -8.9608],
-    Cascais: [38.6979, -9.4215], Sesimbra: [38.4445, -9.1015], 'Vila Franca de Xira': [38.9553, -8.9897], Sintra: [38.8, -9.38],
-  },
-  water: {
-    origin: [ORIGIN.lat, ORIGIN.lon], 'Montijo channel': [38.695, -9.05], 'off Seixal': [38.655, -9.1],
-    'off Cascais': [38.68, -9.42], 'off Cabo Espichel': [38.4, -9.23], 'Sesimbra bay': [38.43, -9.1],
-  },
-};
 
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
 
@@ -71,7 +58,7 @@ async function download() {
   relation["place"~"island|islet"]["name"](${b});
   node["seamark:type"](${b});
   node["natural"="cape"]["name"](${b});
-  way["highway"]["bridge"]["name"~"^Ponte (25 de Abril|Vasco da Gama|Marechal Carmona)$"](${b});
+${AREA.bridges ? `  way["highway"]["bridge"]["name"~"${AREA.bridges.source}"](${b});` : ''}
 );
 out geom;`;
   for (const url of OVERPASS) {
@@ -190,7 +177,7 @@ for (const el of elements) {
 console.log(`coastline ways: ${coast}`);
 // --seed lat,lon overrides the flood-fill start (only useful for testing with other data).
 const seedIdx = args.indexOf('--seed');
-const seed = seedIdx >= 0 ? args[seedIdx + 1].split(',').map(Number) : [ORIGIN.lat, ORIGIN.lon];
+const seed = seedIdx >= 0 ? args[seedIdx + 1].split(',').map(Number) : AREA.seed ? [AREA.seed.lat, AREA.seed.lon] : [ORIGIN.lat, ORIGIN.lon];
 const [sx, sy] = toCell(seed[0], seed[1]).map(Math.floor);
 const sea = floodFill(sx, sy);
 console.log(`sea cells: ${sea} (${((100 * sea) / (W * H)).toFixed(1)} %)`);
@@ -220,8 +207,8 @@ const isWaterAt = (lat, lon) => {
   return water[y * W + x] > 0;
 };
 const problems = [];
-// Upriver, where the river is a water area rather than coastline: report only (for now).
-for (const [name, [lat, lon]] of Object.entries({ 'Tagus off Alhandra': [38.9, -9.03], 'Tagus off Póvoa': [38.86, -9.05], 'Tagus at Vila Franca': [38.955, -8.985] })) {
+// Reported only (e.g. upriver, where the river is a water area rather than coastline).
+for (const [name, [lat, lon]] of Object.entries(CHECKS.report ?? {})) {
   console.log(`${name}: ${isWaterAt(lat, lon) ? 'water' : 'LAND'}`);
 }
 for (const [name, [lat, lon]] of Object.entries(CHECKS.land)) if (isWaterAt(lat, lon)) problems.push(`${name} should be land`);
@@ -327,9 +314,9 @@ for (const el of elements) {
 console.log(`bridges: ${Object.entries(bridges).map(([n, b]) => `${n} ${b.length} m`).join(', ') || 'none'}`);
 
 mkdirSync(OUT_DIR, { recursive: true });
-writeFileSync(new URL('tagus-mask.png', OUT_DIR), png(W, H, rgb));
+writeFileSync(new URL(`${AREA.file}-mask.png`, OUT_DIR), png(W, H, rgb));
 writeFileSync(
-  new URL('tagus.json', OUT_DIR),
+  new URL(`${AREA.file}.json`, OUT_DIR),
   JSON.stringify(
     {
       source: 'OpenStreetMap contributors (ODbL), via the Overpass API',
@@ -349,4 +336,4 @@ writeFileSync(
     2,
   ) + '\n',
 );
-console.log(`wrote tagus-mask.png (${W} x ${H}) and tagus.json with ${places.length} places and ${seamarks.length} sea marks`);
+console.log(`wrote ${AREA.file}-mask.png (${W} x ${H}) and ${AREA.file}.json with ${places.length} places and ${seamarks.length} sea marks`);
