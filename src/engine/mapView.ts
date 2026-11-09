@@ -76,10 +76,15 @@ varying vec2 vUV;
 void main() {
   vec4 wp = world * vec4(position, 1.0);
   vUV = vec2((wp.x - northWest.x) / size.x, 1.0 - (northWest.y - wp.z) / size.y);
-  float inland = 1.0 - texture2D(mask, vUV).g;
+  vec4 m = texture2D(mask, vUV);
+  float inland = 1.0 - m.g;
   // A low bank along the shore; inland, the real ground height (position.y) takes over.
-  float bank = 0.7 + 3.0 * smoothstep(0.0, 1.0, inland);
-  wp.y = max(bank, position.y * smoothstep(0.0, 0.06, inland));
+  float bank = 0.6 + 2.5 * smoothstep(0.0, 1.0, inland);
+  float h = max(bank, position.y * smoothstep(0.0, 0.06, inland));
+  // Off the shore the ground slopes down under the water, so cliffs stand in the water and
+  // flat shores shelve gently, instead of the land being cut off in mid-air.
+  float onLand = 1.0 - smoothstep(0.3, 0.7, m.r);
+  wp.y = mix(-3.0, h, onLand);
   vWorld = wp.xyz;
   vNormal = normalize(mat3(world) * normal);
   gl_Position = viewProjection * wp;
@@ -113,8 +118,9 @@ float fbm(vec2 p) {
 
 void main() {
   vec4 m = texture2D(mask, vUV);
-  // Water is drawn by the water itself.
-  if (m.r > 0.5) discard;
+  // Ground under the water is drawn by the water itself (the coastline keeps the detail of
+  // the 20 m water map on flat shores; cliffs keep their face down to the water).
+  if (m.r > 0.5 && vWorld.y < 0.15) discard;
   float inland = 1.0 - m.g;
   vec3 n = normalize(vNormal);
   float slope = 1.0 - n.y;
@@ -139,8 +145,11 @@ void main() {
   color = mix(color, pine, wood * 0.85);
   // Steep ground (cliffs, valley sides) shows bare rock.
   color = mix(color, rock, smoothstep(0.25, 0.5, slope));
-  // A strip of sand along the shore.
-  color = mix(sand, color, smoothstep(0.06, 0.3, inland));
+  // A narrow strip of sand along low shores only (not on quays, cliffs or high ground).
+  float beach = (1.0 - smoothstep(0.02, 0.1, inland)) * (1.0 - smoothstep(2.0, 4.0, vWorld.y)) * (1.0 - smoothstep(0.15, 0.3, slope));
+  color = mix(color, sand, beach);
+  // Ground under the water line (seen through the shallows) darkens like wet sand and mud.
+  color *= mix(0.55, 1.0, smoothstep(-1.5, 0.3, vWorld.y));
   // Slopes facing the sun are lit, the others in shade: this is what shows the relief.
   float light = max(dot(n, normalize(sunDirection)), 0.0);
   color *= 0.6 + 0.65 * light;
