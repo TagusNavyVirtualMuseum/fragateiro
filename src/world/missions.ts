@@ -1,13 +1,14 @@
 // Missions: regattas round buoys, transport between ports, fishing, or free sailing.
 // Plain TypeScript (no 3D), so the rules can be tested.
 import type { LandMask } from './landMask';
+import { t } from '../i18n';
 
 export type Level = 'easy' | 'medium' | 'hard';
 
 export const LEVELS: { id: Level; name: string; description: string }[] = [
-  { id: 'easy', name: 'Easy', description: 'The crew trims the sails for the best speed; no drift; balanced sails. Just steer.' },
-  { id: 'medium', name: 'Medium', description: 'You trim the sheets; balanced sails.' },
-  { id: 'hard', name: 'Hard', description: 'You trim the sheets; the sails turn the boat, and there is no help through a tack: ease the sheets as you turn through the wind, then steer to hold the new course.' },
+  { id: 'easy', name: t('level.easy'), description: t('level.easy.desc') },
+  { id: 'medium', name: t('level.medium'), description: t('level.medium.desc') },
+  { id: 'hard', name: t('level.hard'), description: t('level.hard.desc') },
 ];
 
 export type MissionKind = 'regatta' | 'transport' | 'fishing' | 'free';
@@ -20,32 +21,32 @@ export type Mission =
 
 /** The four kinds of mission, as the menu shows them first. */
 export const MISSION_KINDS: { id: MissionKind; title: string; description: string }[] = [
-  { id: 'regatta', title: 'Regatta', description: 'Round the buoys against the clock.' },
-  { id: 'transport', title: 'Transport', description: 'Carry passengers or cargo from one port to another.' },
-  { id: 'fishing', title: 'Fishing', description: 'Drift sideways with the Muleta and drag its net through the shoals.' },
-  { id: 'free', title: 'Free sailing', description: 'Any boat, anywhere, no clock.' },
+  { id: 'regatta', title: t('kind.regatta'), description: t('kind.regatta.desc') },
+  { id: 'transport', title: t('kind.transport'), description: t('kind.transport.desc') },
+  { id: 'fishing', title: t('kind.fishing'), description: t('kind.fishing.desc') },
+  { id: 'free', title: t('kind.free'), description: t('kind.free.desc') },
 ];
 
 /** Regatta courses: laid to the wind off a port. */
 export const REGATTA_COURSES: { id: string; name: string; at: string; buoys: 2 | 3 }[] = [
-  { id: 'lisboa', name: 'In front of Lisbon (3 buoys)', at: 'Lisboa', buoys: 3 },
-  { id: 'cascais', name: 'Cascais bay (2 buoys)', at: 'Cascais', buoys: 2 },
-  { id: 'oeiras', name: 'Off Oeiras (2 buoys)', at: 'Oeiras', buoys: 2 },
+  { id: 'lisboa', name: t('course.lisboa'), at: 'Lisboa', buoys: 3 },
+  { id: 'cascais', name: t('course.cascais'), at: 'Cascais', buoys: 2 },
+  { id: 'oeiras', name: t('course.oeiras'), at: 'Oeiras', buoys: 2 },
 ];
 
 /** Transport routes, with the boat that traditionally sailed them. */
 export const ROUTES: { id: string; from: string; to: string; boat: string; description: string }[] = [
-  { id: 'lisboa-almada', from: 'Lisboa', to: 'Almada', boat: 'catraio', description: 'Passengers across the river, as the catraios did every day.' },
-  { id: 'moita-lisboa', from: 'Moita', to: 'Lisboa', boat: 'fragata', description: 'Cargo from the south bank to the city.' },
-  { id: 'sarilhos-barreiro', from: 'Sarilhos Pequenos', to: 'Barreiro', boat: 'fragata', description: 'From the boatyards of Sarilhos to the quays of Barreiro.' },
-  { id: 'vfx-lisboa', from: 'Vila Franca de Xira', to: 'Lisboa', boat: 'fragata', description: 'Down the river from the lezírias: a long haul.' },
+  { id: 'lisboa-almada', from: 'Lisboa', to: 'Almada', boat: 'catraio', description: t('route.lisboa-almada') },
+  { id: 'moita-lisboa', from: 'Moita', to: 'Lisboa', boat: 'fragata', description: t('route.moita-lisboa') },
+  { id: 'sarilhos-barreiro', from: 'Sarilhos Pequenos', to: 'Barreiro', boat: 'fragata', description: t('route.sarilhos-barreiro') },
+  { id: 'vfx-lisboa', from: 'Vila Franca de Xira', to: 'Lisboa', boat: 'fragata', description: t('route.vfx-lisboa') },
 ];
 
 /** Fishing grounds of the Muleta. */
 export const FISHING_GROUNDS: { id: string; name: string; at: string }[] = [
-  { id: 'seixal', name: 'Off Seixal', at: 'Seixal' },
-  { id: 'barra', name: 'The river mouth (Trafaria)', at: 'Trafaria' },
-  { id: 'cascais', name: 'Cascais bay', at: 'Cascais' },
+  { id: 'seixal', name: t('ground.seixal'), at: 'Seixal' },
+  { id: 'barra', name: t('ground.barra'), at: 'Trafaria' },
+  { id: 'cascais', name: t('ground.cascais'), at: 'Cascais' },
 ];
 
 /** Fish to bring home on a fishing trip, kg. */
@@ -58,17 +59,17 @@ export function makeMission(kind: MissionKind, option: string, boat: string, boa
   const b = boatName(boats, boat);
   if (kind === 'regatta') {
     const c = REGATTA_COURSES.find((x) => x.id === option) ?? REGATTA_COURSES[0];
-    return { id: `regatta-${c.id}-${boat}`, kind, title: `Regatta: ${c.name.replace(/ \(.*\)/, '')} · ${b}`, boat, at: c.at, buoys: c.buoys };
+    return { id: `regatta-${c.id}-${boat}`, kind, title: t('title.regatta', { course: t(`course.${c.id}.short`), boat: b }), boat, at: c.at, buoys: c.buoys };
   }
   if (kind === 'transport') {
     const r = ROUTES.find((x) => x.id === option) ?? ROUTES[0];
-    return { id: `transport-${r.id}-${boat}`, kind, title: `${r.from} to ${r.to} · ${b}`, boat, from: r.from, to: r.to };
+    return { id: `transport-${r.id}-${boat}`, kind, title: t('title.transport', { from: r.from, to: r.to, boat: b }), boat, from: r.from, to: r.to };
   }
   if (kind === 'fishing') {
     const g = FISHING_GROUNDS.find((x) => x.id === option) ?? FISHING_GROUNDS[0];
-    return { id: `fishing-${g.id}`, kind, title: `Fishing: ${g.name}`, boat: 'muleta', at: g.at, targetKg: FISHING_TARGET_KG };
+    return { id: `fishing-${g.id}`, kind, title: t('title.fishing', { ground: g.name }), boat: 'muleta', at: g.at, targetKg: FISHING_TARGET_KG };
   }
-  return { id: `free-${option}-${boat}`, kind: 'free', title: `Free sailing · ${b}`, boat, from: option };
+  return { id: `free-${option}-${boat}`, kind: 'free', title: t('title.free', { boat: b }), boat, from: option };
 }
 
 /** Passing this close to a buoy counts as rounding it, m. */
@@ -139,7 +140,7 @@ export class MissionRun {
   get goalName(): string {
     const m = this.mission;
     if (m.kind === 'transport') return m.to;
-    if (this.course) return this.next < this.course.buoys.length ? `Buoy ${this.next + 1} of ${this.course.buoys.length}` : 'Finish line';
+    if (this.course) return this.next < this.course.buoys.length ? t('goal.buoy', { n: this.next + 1, total: this.course.buoys.length }) : t('goal.finish');
     return '';
   }
 

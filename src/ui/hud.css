@@ -235,3 +235,4 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
 .map-legend .lg-target { color: #e3a33b; font-weight: bold; }
 
 .toast { margin-top: 8px; padding: 6px 8px; border-radius: 6px; background: var(--parchment); color: #1f4f7a; border: 1px solid var(--brass-dark); font-family: 'IM Fell English', serif; font-size: 16px; text-align: center; }
+.hud .lang-row .lang-switch { display: flex; gap: 6px; margin: 0; }

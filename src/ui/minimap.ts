@@ -1,6 +1,7 @@
 // Small chart of the river with the boat on it. It shows a window of about 15 km that
 // follows the boat, or (with the button under it) the whole map.
 import type { Destination } from '../world/destinations';
+import { t } from '../i18n';
 import type { LandMask } from '../world/landMask';
 
 // Old chart colours: pale blue-grey water on parchment.
@@ -63,13 +64,13 @@ export class Minimap {
     }
 
     this.canvas.className = 'minimap';
-    this.canvas.title = 'Chart of the river';
+    this.canvas.title = t('map.title');
     this.resize();
 
     // Click near a town to move the boat there.
     if (onPick) {
       this.canvas.style.cursor = 'pointer';
-      this.canvas.title = 'Click a town to sail from there';
+      this.canvas.title = t('map.clickTitle');
       this.canvas.addEventListener('click', (e) => {
         const r = this.canvas.getBoundingClientRect();
         const cx = ((e.clientX - r.left) / r.width) * this.canvas.width;
@@ -89,10 +90,10 @@ export class Minimap {
     }
     const toggle = document.createElement('button');
     toggle.className = 'map-zoom';
-    toggle.textContent = 'Whole map';
+    toggle.textContent = t('map.whole');
     toggle.onclick = () => {
       this.whole = !this.whole;
-      toggle.textContent = this.whole ? 'Near the boat' : 'Whole map';
+      toggle.textContent = this.whole ? t('map.near') : t('map.whole');
       this.resize();
       toggle.blur();
     };
@@ -161,10 +162,10 @@ export class Minimap {
       }
     }
     this.legend.innerHTML =
-      '<span class="lg-me">▲</span> you' +
-      (others.length ? ' · <span class="lg-boat">●</span> other boats' : '') +
-      (marks.length ? (marksAre === 'shoals' ? ' · <span class="lg-shoal">●</span> shoals of fish' : ' · <span class="lg-buoy">○</span> regatta buoys') : '') +
-      (target ? ' · <span class="lg-target">○</span> where to go' : '');
+      `<span class="lg-me">▲</span> ${t('legend.you')}` +
+      (others.length ? ` · <span class="lg-boat">●</span> ${t('legend.boats')}` : '') +
+      (marks.length ? (marksAre === 'shoals' ? ` · <span class="lg-shoal">●</span> ${t('legend.shoals')}` : ` · <span class="lg-buoy">○</span> ${t('legend.buoys')}`) : '') +
+      (target ? ` · <span class="lg-target">○</span> ${t('legend.target')}` : '');
     if (target) {
       const [tx, ty] = this.toPx(target.x, target.y);
       ctx.strokeStyle = '#e3a33b';

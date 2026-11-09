@@ -1,6 +1,7 @@
 // The mission menu, in two steps: first what to do (regatta, transport, fishing, free
 // sailing), then where and with which boat. Also the result panel at the end of a mission.
 import type { BoatSpec } from '../physics';
+import { t } from '../i18n';
 import { FISHING_GROUNDS, FISHING_TARGET_KG, LEVELS, MISSION_KINDS, REGATTA_COURSES, ROUTES, makeMission, type Level, type Mission, type MissionKind } from '../world/missions';
 
 /** mm:ss (or h:mm:ss) of a game time in seconds. */
@@ -48,7 +49,7 @@ export class MissionMenu {
 
   /** Step 1: the level and the kind of mission. */
   show(): void {
-    const panel = this.panel('What would you like to do?');
+    const panel = this.panel(t('menu.whatToDo'));
     panel.append(this.levelPicker());
     const list = el('div', 'mission-list kinds');
     for (const k of MISSION_KINDS) {
@@ -71,7 +72,7 @@ export class MissionMenu {
     const refresh = () => {
       const m = makeMission(kind, c.option, c.boat, this.boats);
       const best = kind === 'free' ? null : this.best(m.id, this.level);
-      bestText.textContent = kind === 'free' ? '' : best !== null ? `Your best: ${formatTime(best)}` : 'Not yet sailed at this level';
+      bestText.textContent = kind === 'free' ? '' : best !== null ? t('menu.best', { time: formatTime(best) }) : t('menu.notYet');
       for (const b of body.querySelectorAll<HTMLButtonElement>('button[data-option]')) b.classList.toggle('active', b.dataset.option === c.option);
       for (const b of body.querySelectorAll<HTMLButtonElement>('button[data-boat]')) b.classList.toggle('active', b.dataset.boat === c.boat);
     };
@@ -93,7 +94,7 @@ export class MissionMenu {
       body.append(row);
     };
     const boatButtons = () => {
-      body.append(el('h2', '', 'Boat'));
+      body.append(el('h2', '', t('menu.boat')));
       const row = el('div', 'buttons');
       for (const boat of this.boats) {
         const b = el('button', '', boat.name);
@@ -108,34 +109,33 @@ export class MissionMenu {
     };
 
     if (kind === 'regatta') {
-      optionButtons('Course', REGATTA_COURSES.map((r) => ({ id: r.id, label: r.name })));
+      optionButtons(t('menu.course'), REGATTA_COURSES.map((r) => ({ id: r.id, label: r.name })));
       boatButtons();
-      body.append(el('p', 'level-text', 'The buoys are laid to the wind: the first one upwind. Round them in order (pass within 45 m) and come back to the line.'));
+      body.append(el('p', 'level-text', t('menu.regattaHelp')));
     } else if (kind === 'transport') {
       optionButtons(
-        'Route',
+        t('menu.route'),
         ROUTES.map((r) => ({
           id: r.id,
           label: `${r.from} → ${r.to}`,
-          note: `traditionally a ${this.boats.find((b) => b.id === r.boat)?.name ?? r.boat}`,
+          note: t('route.traditionally', { boat: this.boats.find((b) => b.id === r.boat)?.name ?? r.boat }),
           onPick: () => (c.boat = r.boat),
         })),
       );
       boatButtons();
     } else if (kind === 'fishing') {
-      optionButtons('Fishing ground', FISHING_GROUNDS.map((g) => ({ id: g.id, label: g.name })));
+      optionButtons(t('menu.ground'), FISHING_GROUNDS.map((g) => ({ id: g.id, label: g.name })));
       body.append(
-        el('h2', '', 'Boat: Muleta'),
+        el('h2', '', t('menu.boatMuleta')),
         el(
           'p',
           'level-text',
-          `Find a shoal (bubbles on the water, gulls over it). Sail to windward of it, switch to lateral fishing (M), ` +
-            `and drift sideways over it: the net on the windward side catches the fish. Bring home ${FISHING_TARGET_KG} kg.`,
+          t('menu.fishingHelp', { kg: FISHING_TARGET_KG }),
         ),
       );
     } else {
       boatButtons();
-      body.append(el('h2', '', 'Start from'));
+      body.append(el('h2', '', t('menu.startFrom')));
       const select = el('select', 'port-select');
       for (const p of this.ports) select.append(new Option(p, p));
       select.value = c.option;
@@ -143,9 +143,9 @@ export class MissionMenu {
       body.append(select);
     }
 
-    const back = el('button', '', '← Back');
+    const back = el('button', '', t('menu.back'));
     back.onclick = () => this.show();
-    const go = el('button', 'go', kind === 'free' ? 'Set sail' : 'Start');
+    const go = el('button', 'go', kind === 'free' ? t('menu.setSail') : t('menu.start'));
     go.onclick = () => this.onStart(makeMission(kind, c.option, c.boat, this.boats), this.level);
     footer.append(back, bestText, go);
     panel.append(body, footer);
@@ -159,17 +159,17 @@ export class MissionMenu {
   /** End of a mission: the time, the best time, and what next. */
   showResult(mission: Mission, level: Level, time: number, best: number | null, record: boolean, onAgain: () => void): void {
     const levelName = LEVELS.find((l) => l.id === level)!.name;
-    const panel = this.panel(record ? 'New best time!' : mission.kind === 'fishing' ? 'The hold is full!' : 'Mission complete');
+    const panel = this.panel(record ? t('result.record') : mission.kind === 'fishing' ? t('result.full') : t('result.done'));
     panel.classList.add('result');
     panel.append(
       el('p', 'result-title', `${mission.title} · ${levelName}`),
       el('div', 'result-time', formatTime(time)),
-      el('p', 'result-best', best !== null && !record ? `Best: ${formatTime(best)}` : 'Sailing time (game clock)'),
+      el('p', 'result-best', best !== null && !record ? t('result.best', { time: formatTime(best) }) : t('result.clock')),
     );
     const row = el('div', 'buttons');
-    const again = el('button', '', 'Sail it again');
+    const again = el('button', '', t('result.again'));
     again.onclick = () => onAgain();
-    const menu = el('button', '', 'Other missions');
+    const menu = el('button', '', t('result.other'));
     menu.onclick = () => this.show();
     row.append(again, menu);
     panel.append(row);
@@ -202,7 +202,7 @@ export class MissionMenu {
       };
       row.append(b);
     }
-    box.append(el('h2', '', 'Level'), row, text);
+    box.append(el('h2', '', t('menu.level')), row, text);
     draw();
     return box;
   }

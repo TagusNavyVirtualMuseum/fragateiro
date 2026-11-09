@@ -20,6 +20,7 @@ import { LEVELS, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, 
 import { FishingGround } from '../../src/world/fishing';
 import { ShoalView } from '../../src/engine/shoalView';
 import { SailingHud } from '../../src/ui/hud';
+import { getLang, t } from '../../src/i18n';
 import { Minimap } from '../../src/ui/minimap';
 import { DESTINATION_NAMES, findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
 import { hullAfloat, type LandMask } from '../../src/world/landMask';
@@ -34,6 +35,9 @@ const START_HEADING = deg2rad(90);
 
 const canvas = document.getElementById('scene') as HTMLCanvasElement;
 const loading = document.getElementById('loading')!;
+loading.textContent = t('game.loading');
+document.title = t('game.pageTitle');
+document.documentElement.lang = getLang();
 const { engine, scene, camera, water, skyColor, sunDirection, fogDensity, sky } = createSailingScene(canvas);
 const cameraRig = new CameraRig(camera);
 const arrows = new ForceArrows(scene);
@@ -427,7 +431,7 @@ async function main(): Promise<void> {
   });
   const credit = document.createElement('div');
   credit.className = 'credit';
-  credit.textContent = 'Map: © OpenStreetMap contributors · Heights: Copernicus GLO-30';
+  credit.textContent = t('map.credit');
   hud.mapSlot.append(credit);
   restart();
   view = first;
@@ -441,8 +445,8 @@ async function main(): Promise<void> {
   // Dolphins (up to Lisbon) and orcas (open Atlantic), now and then.
   wildlife = new Wildlife(scene, mask);
   wildlife.onSighting = (species, side) => {
-    const name = species === 'orca' ? 'Orcas' : 'Dolphins';
-    hud.toast(side === 'ahead' || side === 'astern' ? `${name} ${side}!` : `${name} off the ${side} bow!`);
+    const name = t(species === 'orca' ? 'wild.orcas' : 'wild.dolphins');
+    hud.toast(side === 'ahead' || side === 'astern' ? t(`wild.${side}`, { name }) : t('wild.side', { name, side: t(`nav.${side}`) }));
   };
   // Start with the mission menu.
   paused = true;
@@ -485,8 +489,8 @@ async function main(): Promise<void> {
       // The tall orange post marks the nearest shoal, except on the hard level.
       mapView.setTarget(level === 'hard' ? null : shoal);
       nav = {
-        title: `Catch ${Math.floor(fishing.caught)} of ${mission.targetKg} kg`,
-        name: sim.mode.net ? 'nearest shoal' : 'nearest shoal (M: fish)',
+        title: t('fish.catch', { kg: Math.floor(fishing.caught), target: mission.targetKg }),
+        name: t(sim.mode.net ? 'fish.nearest' : 'fish.nearestM'),
         distance: Math.hypot(dx, dy),
         bearing: ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360,
         elapsed: run.elapsed(s.time),
@@ -542,6 +546,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((e) => {
-  loading.textContent = `Could not start: ${e?.message ?? e}`;
+  loading.textContent = t('game.error', { msg: e?.message ?? e });
   console.error(e);
 });

@@ -50,6 +50,13 @@ Times use the game clock; best times are kept in the browser per mission, boat a
 
 Missions are defined in `src/world/missions.ts`; the trimming in `src/physics/autotrim.ts`.
 
+### Languages
+
+The site and the game are in Portuguese, French and English. The switch is at the top of the
+landing page and in the game's settings; the choice is remembered. `?lang=pt|fr|en` in the URL
+forces one. Texts live in `src/i18n/{pt,fr,en}.ts` (a test checks that all three have the same
+keys); use `t('key')` in code and `data-i18n="key"` in HTML.
+
 ## Run it
 
 ```bash

@@ -39,96 +39,88 @@
       .partners img { height: 56px; width: auto; display: block; }
       footer { margin-top: 28px; font-size: 13px; color: #7d9099; line-height: 1.5; }
       footer a { color: #a9b8bf; }
+      .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+      .lang-switch { display: flex; gap: 6px; }
+      .lang-switch button { font: inherit; font-size: 14px; padding: 3px 10px; border-radius: 6px; border: 1px solid rgba(201, 162, 92, 0.6); background: transparent; color: #e2b866; cursor: pointer; }
+      .lang-switch button.active { background: #e2b866; color: #2a180b; }
     </style>
     <script type="module">
       import '@fontsource/eb-garamond/latin-400.css';
       import '@fontsource/im-fell-english/latin-400.css';
+      import { languageSwitch, t, translatePage } from './src/i18n';
+      translatePage();
+      document.title = t('land.pageTitle');
+      document.getElementById('lang').replaceWith(languageSwitch());
     </script>
   </head>
   <body>
     <main>
-      <h1>Fragateiro</h1>
-      <p>
-        Before bridges and engines, more than 3600 sailing boats worked on the Tagus River. Fewer than 150 remain.
-        These small games let you sail four of them: the <strong>Falua</strong>, a fast passenger and cargo boat with two
-        lateen sails; the <strong>Muleta</strong> of Seixal, which fished by drifting sideways under a crowd of sails; the
-        <strong>Fragata</strong>, the big cargo barge of the river; the small <strong>Catraio</strong>; and the <strong>Canoa</strong>, with its great lateen sail.
-      </p>
+      <div class="top"><h1>Fragateiro</h1><span id="lang"></span></div>
+      <p data-i18n="land.intro"></p>
       <div class="games">
         <a class="card" href="./games/sailing/">
-          <h2>Sailing the Tagus</h2>
-          <p>Free sailing on the estuary with the Falua, Muleta, Fragata, Catraio and Canoa. Trim the sails, steer, and try the Muleta's lateral fishing.</p>
+          <h2 data-i18n="land.game.title"></h2>
+          <p data-i18n="land.game.desc"></p>
         </a>
         <div class="card soon">
-          <h2>Learn to sail</h2>
-          <p>Six short lessons on the points of sail. Coming soon.</p>
+          <h2 data-i18n="land.learn.title"></h2>
+          <p data-i18n="land.learn.desc"></p>
         </div>
-        <div class="card soon">
-          <h2>Fishing with the Muleta</h2>
-          <p>Drag the net sideways and fill it with fish. Coming soon.</p>
-        </div>
+        <a class="card" href="./games/sailing/">
+          <h2 data-i18n="land.fish.title"></h2>
+          <p data-i18n="land.fish.desc"></p>
+        </a>
       </div>
-      <h2 class="section">The boats</h2>
+      <h2 class="section" data-i18n="land.boats"></h2>
       <div class="boats">
         <article class="boat">
-          <img src="./src/assets/boats/falua.jpg" alt="The Falua under sail" />
+          <img src="./src/assets/boats/falua.jpg" alt="" data-i18n-alt="boat.falua.alt" />
           <div>
             <h3>Falua</h3>
-            <p>A fast boat that carried passengers across the Tagus and light cargo to the Lisbon markets. It
-              shares its two triangular lateen sails, and its name (from the Arabic <em>falūka</em>, "small boat"),
-              with the Egyptian felucca. A crew of two or three. No original Falua survives, and nobody alive
-              remembers seeing one.</p>
-            <p class="facts">14–18 m · about 15 t · two lateen sails · crew of 2–3</p>
+            <p data-i18n="boat.falua.desc"></p>
+            <p class="facts" data-i18n="boat.falua.facts"></p>
           </div>
         </article>
         <article class="boat">
-          <img src="./src/assets/boats/muleta.jpg" alt="The Muleta fishing sideways with all its sails set" />
+          <img src="./src/assets/boats/muleta.jpg" alt="" data-i18n-alt="boat.muleta.alt" />
           <div>
             <h3>Muleta</h3>
-            <p>The legendary fishing boat of Seixal, known since the 15th century. It fished by drifting
-              <em>sideways</em> before the wind, dragging its net from long booms at the bow and stern, with up to
-              twelve sails set to balance the drift. The last Muleta disappeared at the end of the 19th century and
-              the technique has been almost entirely lost. In the game, try its lateral fishing mode.</p>
-            <p class="facts">10–12 m · about 7 t · up to 12 sails · crew of about 14</p>
+            <p data-i18n="boat.muleta.desc"></p>
+            <p class="facts" data-i18n="boat.muleta.facts"></p>
           </div>
         </article>
         <article class="boat">
-          <img src="./src/assets/boats/fragata.jpg" alt="The Fragata with its gaff mainsail and jib" />
+          <img src="./src/assets/boats/fragata.jpg" alt="" data-i18n-alt="boat.fragata.alt" />
           <div>
             <h3>Fragata</h3>
-            <p>The big sailing barge of the Tagus, which carried cargo between Lisbon and the towns along the river.
-              A raked mast carries a large gaff mainsail and a jib. A few fragatas have been restored and still
-              sail on the river.</p>
-            <p class="facts">about 18–25 m · about 30 t part-loaded · gaff mainsail and jib</p>
+            <p data-i18n="boat.fragata.desc"></p>
+            <p class="facts" data-i18n="boat.fragata.facts"></p>
           </div>
         </article>
         <article class="boat">
-          <img src="./src/assets/boats/catraio.jpg" alt="The Catraio with its spritsail, jib and mizzen" />
+          <img src="./src/assets/boats/catraio.jpg" alt="" data-i18n-alt="boat.catraio.alt" />
           <div>
             <h3>Catraio</h3>
-            <p>A small Tagus boat for passengers and goods. Its mainsail is held up by a diagonal spar, the sprit
-              (<em>espicha</em>), with a jib on the bowsprit and a small mizzen at the stern.</p>
-            <p class="facts">about 10 m · about 5 t · spritsail, jib and mizzen</p>
+            <p data-i18n="boat.catraio.desc"></p>
+            <p class="facts" data-i18n="boat.catraio.facts"></p>
           </div>
         </article>
         <article class="boat">
-          <img src="./src/assets/boats/canoa.jpg" alt="The Canoa with its lateen sail and mizzen" />
+          <img src="./src/assets/boats/canoa.jpg" alt="" data-i18n-alt="boat.canoa.alt" />
           <div>
             <h3>Canoa</h3>
-            <p>A narrow Tagus boat with one big triangular lateen sail on a long yard, its tack on a bowsprit,
-              and a small mizzen at the stern. Restored canoas, like the <em>Alma do Tejo</em>, still sail on the river. Its 3D model was
-              built from photos and its dimensions.</p>
-            <p class="facts">8.8 m · 2.2 m beam · about 5 t · lateen sail (about 52 m²) and mizzen</p>
+            <p data-i18n="boat.canoa.desc"></p>
+            <p class="facts" data-i18n="boat.canoa.facts"></p>
           </div>
         </article>
       </div>
 
-      <p class="note">Weights are the estimates used by the game's physics.</p>
+      <p class="note" data-i18n="land.note"></p>
 
       <nav class="links">
-        <a href="https://tagusnavyvirtualmuseum.github.io/about.html">About the project →</a>
-        <a href="https://doi.org/10.1016/j.daach.2025.e00475">Read the paper →</a>
-        <a href="https://tagusnavyvirtualmuseum.github.io/">Tagus Navy Virtual Museum →</a>
+        <a href="https://tagusnavyvirtualmuseum.github.io/about.html" data-i18n="land.about"></a>
+        <a href="https://doi.org/10.1016/j.daach.2025.e00475" data-i18n="land.paper"></a>
+        <a href="https://tagusnavyvirtualmuseum.github.io/" data-i18n="land.museum"></a>
       </nav>
       <div class="partners">
         <a href="https://tecnico.ulisboa.pt/" title="Instituto Superior Técnico"><img src="./src/assets/logos/ist.png" alt="Instituto Superior Técnico" /></a>
@@ -136,11 +128,7 @@
         <a href="https://www.isel.pt/" title="Instituto Superior de Engenharia de Lisboa"><img src="./src/assets/logos/isel.png" alt="ISEL" /></a>
         <a href="https://ccm.marinha.pt/pt/museu" title="Museu de Marinha"><img src="./src/assets/logos/museu-marinha.png" alt="Museu de Marinha" style="height: 76px" /></a>
       </div>
-      <footer>
-        Based on P. Fazenda, R. S. Modeliar, N. Covão, L. Baeta, M. Lopes,
-        <a href="https://doi.org/10.1016/j.daach.2025.e00475"><em>A sailing simulator for the revival of the Tagus River nautical heritage</em></a>,
-        Digital Applications in Archaeology and Cultural Heritage 39 (2025) e00475. Open source, CC0.
-      </footer>
+      <footer data-i18n="land.footer"></footer>
     </main>
   </body>
 </html>
