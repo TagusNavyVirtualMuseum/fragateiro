@@ -1,0 +1,474 @@
+{
+  "source": "OpenStreetMap contributors (ODbL), via the Overpass API",
+  "built": "2026-11-10",
+  "bbox": {
+    "south": 32.63,
+    "west": -16.93,
+    "north": 32.83,
+    "east": -16.63
+  },
+  "origin": {
+    "lat": 32.705,
+    "lon": -16.74
+  },
+  "cellSize": 20,
+  "width": 1406,
+  "height": 1106,
+  "northWest": {
+    "x": -17797.63,
+    "y": 13821.75
+  },
+  "places": [
+    {
+      "name": "Achada do Marques",
+      "kind": "village",
+      "x": -15769,
+      "y": 10325
+    },
+    {
+      "name": "Água de Pena",
+      "kind": "village",
+      "x": -2962,
+      "y": 174
+    },
+    {
+      "name": "Baixa de Terra",
+      "kind": "islet",
+      "x": -7928,
+      "y": 7990
+    },
+    {
+      "name": "Camacha",
+      "kind": "village",
+      "x": -9823,
+      "y": -2826
+    },
+    {
+      "name": "Caniçal",
+      "kind": "town",
+      "x": 65,
+      "y": 3771
+    },
+    {
+      "name": "Caniço",
+      "kind": "city",
+      "x": -9458,
+      "y": -5818
+    },
+    {
+      "name": "Cevada",
+      "kind": "islet",
+      "x": 6417,
+      "y": 3223
+    },
+    {
+      "name": "Chão da Rocha",
+      "kind": "hamlet",
+      "x": -12401,
+      "y": 11977
+    },
+    {
+      "name": "Faial",
+      "kind": "village",
+      "x": -10458,
+      "y": 9488
+    },
+    {
+      "name": "Fajã das Murtas",
+      "kind": "village",
+      "x": -12825,
+      "y": 6446
+    },
+    {
+      "name": "Fio Velho",
+      "kind": "hamlet",
+      "x": -12371,
+      "y": 11965
+    },
+    {
+      "name": "Funchal",
+      "kind": "city",
+      "x": -15800,
+      "y": -6120
+    },
+    {
+      "name": "Furilhão",
+      "kind": "islet",
+      "x": 7514,
+      "y": 2428
+    },
+    {
+      "name": "Ilha",
+      "kind": "village",
+      "x": -16122,
+      "y": 11663
+    },
+    {
+      "name": "Ilha da Madeira",
+      "kind": "island",
+      "x": -15763,
+      "y": 3147
+    },
+    {
+      "name": "Ilhéu da Forja",
+      "kind": "islet",
+      "x": -17794,
+      "y": -7655
+    },
+    {
+      "name": "Ilhéu da Rocha do Navio",
+      "kind": "islet",
+      "x": -11592,
+      "y": 11662
+    },
+    {
+      "name": "Ilhéu de Porto da Cruz",
+      "kind": "islet",
+      "x": -7847,
+      "y": 8135
+    },
+    {
+      "name": "Ilhéu de Santa Catarina",
+      "kind": "islet",
+      "x": -3133,
+      "y": -1583
+    },
+    {
+      "name": "Ilhéu de São José",
+      "kind": "islet",
+      "x": -16643,
+      "y": -7051
+    },
+    {
+      "name": "Ilhéu do Farol",
+      "kind": "islet",
+      "x": 7609,
+      "y": 2658
+    },
+    {
+      "name": "Ilhéu do Guincho",
+      "kind": "islet",
+      "x": 4336,
+      "y": 5430
+    },
+    {
+      "name": "Lombo de Cima",
+      "kind": "village",
+      "x": -11662,
+      "y": 7233
+    },
+    {
+      "name": "Lombo do Galego",
+      "kind": "village",
+      "x": -12569,
+      "y": 7545
+    },
+    {
+      "name": "Machico",
+      "kind": "city",
+      "x": -2427,
+      "y": 1977
+    },
+    {
+      "name": "Maroços",
+      "kind": "village",
+      "x": -5463,
+      "y": 3602
+    },
+    {
+      "name": "Ponta da Atalaia",
+      "kind": "cape",
+      "x": -7325,
+      "y": -6015
+    },
+    {
+      "name": "Ponta da Oliveira",
+      "kind": "cape",
+      "x": -8546,
+      "y": -7140
+    },
+    {
+      "name": "Ponta da Queimada",
+      "kind": "cape",
+      "x": -2018,
+      "y": 246
+    },
+    {
+      "name": "Ponta das Gaivotas",
+      "kind": "cape",
+      "x": 3403,
+      "y": 3735
+    },
+    {
+      "name": "Ponta de Catarina Pires",
+      "kind": "cape",
+      "x": -11578,
+      "y": 11423
+    },
+    {
+      "name": "Ponta de Santa Catarina",
+      "kind": "cape",
+      "x": -3139,
+      "y": -1554
+    },
+    {
+      "name": "Ponta do Altar",
+      "kind": "cape",
+      "x": -686,
+      "y": 2955
+    },
+    {
+      "name": "Ponta do Bode",
+      "kind": "cape",
+      "x": 287,
+      "y": 5157
+    },
+    {
+      "name": "Ponta do Buraco",
+      "kind": "cape",
+      "x": 3991,
+      "y": 3983
+    },
+    {
+      "name": "Ponta do Clérigo",
+      "kind": "cape",
+      "x": -10763,
+      "y": 11314
+    },
+    {
+      "name": "Ponta do Espigão Amarelo",
+      "kind": "cape",
+      "x": -4614,
+      "y": 6638
+    },
+    {
+      "name": "Ponta do Furado",
+      "kind": "cape",
+      "x": 5354,
+      "y": 3560
+    },
+    {
+      "name": "Ponta do Garajau",
+      "kind": "cape",
+      "x": -10307,
+      "y": -7542
+    },
+    {
+      "name": "Ponta do Guindaste",
+      "kind": "cape",
+      "x": -5940,
+      "y": -4610
+    },
+    {
+      "name": "Ponta do Rosto",
+      "kind": "cape",
+      "x": 2948,
+      "y": 5131
+    },
+    {
+      "name": "Ponta dos Reis Magos",
+      "kind": "cape",
+      "x": -7901,
+      "y": -6543
+    },
+    {
+      "name": "Porta da Abra",
+      "kind": "cape",
+      "x": 4042,
+      "y": 4532
+    },
+    {
+      "name": "Porto da Cruz",
+      "kind": "town",
+      "x": -8300,
+      "y": 7465
+    },
+    {
+      "name": "Ribeira Seca",
+      "kind": "village",
+      "x": -3560,
+      "y": 3505
+    },
+    {
+      "name": "Ribeiro Frio",
+      "kind": "village",
+      "x": -13764,
+      "y": 3828
+    },
+    {
+      "name": "Rocha das Ovelhas",
+      "kind": "cape",
+      "x": -838,
+      "y": 2601
+    },
+    {
+      "name": "Santa Cruz",
+      "kind": "city",
+      "x": -4797,
+      "y": -1938
+    },
+    {
+      "name": "Santana",
+      "kind": "city",
+      "x": -13236,
+      "y": 11047
+    },
+    {
+      "name": "Santo António da Serra",
+      "kind": "village",
+      "x": -7543,
+      "y": 2127
+    },
+    {
+      "name": "São Jorge",
+      "kind": "village",
+      "x": -15895,
+      "y": 13429
+    },
+    {
+      "name": "São Roque do Faial",
+      "kind": "village",
+      "x": -10923,
+      "y": 7282
+    }
+  ],
+  "seamarks": [
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "white",
+      "name": "Ponta de Sao Lourenco",
+      "x": 7798,
+      "y": 2802
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": -15631,
+      "y": -6966
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Sao Roque",
+      "x": -2252,
+      "y": 1011
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "Cais Machico",
+      "x": -1917,
+      "y": 1336
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Cabos Lagoa",
+      "x": -8343,
+      "y": 7692
+    },
+    {
+      "type": "beacon",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 2429,
+      "y": 3927
+    },
+    {
+      "type": "beacon",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 2486,
+      "y": 3995
+    },
+    {
+      "type": "buoy_installation",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 1539,
+      "y": 3612
+    },
+    {
+      "type": "buoy_installation",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 1459,
+      "y": 3614
+    },
+    {
+      "type": "buoy_installation",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 1549,
+      "y": 3817
+    },
+    {
+      "type": "buoy_installation",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 1474,
+      "y": 3830
+    },
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "green",
+      "name": "Berth No 8 Turismo E Dolphin",
+      "x": -15494,
+      "y": -6575
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Marina Molhe E Head",
+      "x": -15994,
+      "y": -6662
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "odas",
+      "colour": "yellow",
+      "name": "CSA94",
+      "x": 1358,
+      "y": 2635
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "odas",
+      "colour": "yellow",
+      "name": "",
+      "x": 4465,
+      "y": 2469
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "odas",
+      "colour": "yellow",
+      "name": "",
+      "x": 4866,
+      "y": 2058
+    }
+  ],
+  "bridges": {},
+  "heights": {
+    "source": "Copernicus GLO-30 DEM (© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA)",
+    "cellSize": 40,
+    "width": 703,
+    "height": 553,
+    "scale": 0.1,
+    "offset": -100
+  }
+}

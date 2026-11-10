@@ -1,0 +1,1544 @@
+{
+  "source": "OpenStreetMap contributors (ODbL), via the Overpass API",
+  "built": "2026-11-10",
+  "bbox": {
+    "south": 38.38,
+    "west": -28.85,
+    "north": 38.76,
+    "east": -28.02
+  },
+  "origin": {
+    "lat": 38.52,
+    "lon": -28.56
+  },
+  "cellSize": 20,
+  "width": 3615,
+  "height": 2101,
+  "northWest": {
+    "x": -25257.77,
+    "y": 26537.76
+  },
+  "places": [
+    {
+      "name": "Algar",
+      "kind": "hamlet",
+      "x": -9585,
+      "y": 1041
+    },
+    {
+      "name": "Almagreira",
+      "kind": "hamlet",
+      "x": 25919,
+      "y": -11568
+    },
+    {
+      "name": "Almanços de Baixo",
+      "kind": "hamlet",
+      "x": -12625,
+      "y": 832
+    },
+    {
+      "name": "Almas",
+      "kind": "hamlet",
+      "x": 20121,
+      "y": 1139
+    },
+    {
+      "name": "Altamora",
+      "kind": "hamlet",
+      "x": 43135,
+      "y": -10416
+    },
+    {
+      "name": "Amoreirinhas",
+      "kind": "hamlet",
+      "x": -10349,
+      "y": 2226
+    },
+    {
+      "name": "Arcos",
+      "kind": "hamlet",
+      "x": 13041,
+      "y": 4381
+    },
+    {
+      "name": "Areia Funda",
+      "kind": "hamlet",
+      "x": 2576,
+      "y": 1439
+    },
+    {
+      "name": "Areia Larga",
+      "kind": "hamlet",
+      "x": 2210,
+      "y": 801
+    },
+    {
+      "name": "Arieiro",
+      "kind": "hamlet",
+      "x": 6658,
+      "y": -8904
+    },
+    {
+      "name": "Arrife",
+      "kind": "hamlet",
+      "x": 29629,
+      "y": -14193
+    },
+    {
+      "name": "Arrochela",
+      "kind": "hamlet",
+      "x": -4872,
+      "y": 6022
+    },
+    {
+      "name": "Atalaia",
+      "kind": "hamlet",
+      "x": -10551,
+      "y": 1456
+    },
+    {
+      "name": "Baía de Canas",
+      "kind": "hamlet",
+      "x": 28118,
+      "y": -3334
+    },
+    {
+      "name": "Baixa",
+      "kind": "hamlet",
+      "x": 42442,
+      "y": -8516
+    },
+    {
+      "name": "Bandeiras",
+      "kind": "village",
+      "x": 9171,
+      "y": 2297
+    },
+    {
+      "name": "Beira",
+      "kind": "hamlet",
+      "x": 30456,
+      "y": 20012
+    },
+    {
+      "name": "Biscoitos",
+      "kind": "hamlet",
+      "x": 45980,
+      "y": 10543
+    },
+    {
+      "name": "Boa Vista",
+      "kind": "hamlet",
+      "x": -5858,
+      "y": 6755
+    },
+    {
+      "name": "Cabeço Chão",
+      "kind": "hamlet",
+      "x": 7076,
+      "y": 2502
+    },
+    {
+      "name": "Cabeço Redondo",
+      "kind": "hamlet",
+      "x": -6606,
+      "y": 6120
+    },
+    {
+      "name": "Cabo Branco",
+      "kind": "hamlet",
+      "x": 3346,
+      "y": 1086
+    },
+    {
+      "name": "Cabrito",
+      "kind": "hamlet",
+      "x": 14895,
+      "y": 4088
+    },
+    {
+      "name": "Cachorro",
+      "kind": "hamlet",
+      "x": 9889,
+      "y": 3947
+    },
+    {
+      "name": "Cais do Galego",
+      "kind": "hamlet",
+      "x": 44446,
+      "y": -9601
+    },
+    {
+      "name": "Cais do Mourato",
+      "kind": "hamlet",
+      "x": 6910,
+      "y": 4158
+    },
+    {
+      "name": "Cais do Pico",
+      "kind": "hamlet",
+      "x": 20739,
+      "y": 473
+    },
+    {
+      "name": "Calhau",
+      "kind": "hamlet",
+      "x": 43288,
+      "y": -9326
+    },
+    {
+      "name": "Calhau",
+      "kind": "hamlet",
+      "x": 1899,
+      "y": -3717
+    },
+    {
+      "name": "Calheta de Nesquim",
+      "kind": "village",
+      "x": 41486,
+      "y": -12618
+    },
+    {
+      "name": "Caminho de Baixo",
+      "kind": "hamlet",
+      "x": 27520,
+      "y": 21451
+    },
+    {
+      "name": "Caminho de Cima",
+      "kind": "hamlet",
+      "x": 31345,
+      "y": -13038
+    },
+    {
+      "name": "Caminho de Cima",
+      "kind": "hamlet",
+      "x": 27729,
+      "y": 21899
+    },
+    {
+      "name": "Campo Raso",
+      "kind": "hamlet",
+      "x": 5564,
+      "y": -8093
+    },
+    {
+      "name": "Canadas",
+      "kind": "hamlet",
+      "x": 41157,
+      "y": -13130
+    },
+    {
+      "name": "Cancela",
+      "kind": "hamlet",
+      "x": -13622,
+      "y": 799
+    },
+    {
+      "name": "Candelária",
+      "kind": "village",
+      "x": 4016,
+      "y": -6063
+    },
+    {
+      "name": "Canto da Areia",
+      "kind": "hamlet",
+      "x": 32028,
+      "y": -6620
+    },
+    {
+      "name": "Capelo",
+      "kind": "village",
+      "x": -20415,
+      "y": 6891
+    },
+    {
+      "name": "Caralhete",
+      "kind": "islet",
+      "x": 21121,
+      "y": 25751
+    },
+    {
+      "name": "Caralhete Norte",
+      "kind": "islet",
+      "x": 21158,
+      "y": 26114
+    },
+    {
+      "name": "Carreira",
+      "kind": "hamlet",
+      "x": -14141,
+      "y": 232
+    },
+    {
+      "name": "Castelo Branco",
+      "kind": "village",
+      "x": -14276,
+      "y": 466
+    },
+    {
+      "name": "Cedros",
+      "kind": "village",
+      "x": -12575,
+      "y": 12660
+    },
+    {
+      "name": "Chã da Cruz",
+      "kind": "hamlet",
+      "x": -4579,
+      "y": 7252
+    },
+    {
+      "name": "Chão Frio",
+      "kind": "hamlet",
+      "x": -6478,
+      "y": 4884
+    },
+    {
+      "name": "Companhia de Baixo",
+      "kind": "hamlet",
+      "x": 19668,
+      "y": -11498
+    },
+    {
+      "name": "Companhia de Cima",
+      "kind": "hamlet",
+      "x": 18013,
+      "y": -11355
+    },
+    {
+      "name": "Courelas",
+      "kind": "hamlet",
+      "x": -8354,
+      "y": 1602
+    },
+    {
+      "name": "Criação Velha",
+      "kind": "village",
+      "x": 2727,
+      "y": -913
+    },
+    {
+      "name": "Engrade",
+      "kind": "hamlet",
+      "x": 45653,
+      "y": -10667
+    },
+    {
+      "name": "Espalhafatos",
+      "kind": "hamlet",
+      "x": -6836,
+      "y": 9620
+    },
+    {
+      "name": "Extremo",
+      "kind": "hamlet",
+      "x": -12389,
+      "y": 316
+    },
+    {
+      "name": "Facho",
+      "kind": "hamlet",
+      "x": -4649,
+      "y": 3192
+    },
+    {
+      "name": "Fajã",
+      "kind": "hamlet",
+      "x": -17436,
+      "y": 9862
+    },
+    {
+      "name": "Fajã da Ribeira da Areia",
+      "kind": "hamlet",
+      "x": 46455,
+      "y": 16637
+    },
+    {
+      "name": "Fajã das Almas",
+      "kind": "hamlet",
+      "x": 41736,
+      "y": 12060
+    },
+    {
+      "name": "Fajã de Além",
+      "kind": "hamlet",
+      "x": 42291,
+      "y": 17698
+    },
+    {
+      "name": "Fajã de João Dias",
+      "kind": "hamlet",
+      "x": 28950,
+      "y": 23268
+    },
+    {
+      "name": "Fajã de Santo Amaro",
+      "kind": "hamlet",
+      "x": 34239,
+      "y": 16121
+    },
+    {
+      "name": "Fajã do Ouvidor",
+      "kind": "hamlet",
+      "x": 44301,
+      "y": 17159
+    },
+    {
+      "name": "Fajã Grande",
+      "kind": "hamlet",
+      "x": 45674,
+      "y": 10105
+    },
+    {
+      "name": "Farrobim",
+      "kind": "hamlet",
+      "x": -11620,
+      "y": 1195
+    },
+    {
+      "name": "Feiteira",
+      "kind": "hamlet",
+      "x": 42530,
+      "y": -12560
+    },
+    {
+      "name": "Fetais",
+      "kind": "hamlet",
+      "x": 12508,
+      "y": 2298
+    },
+    {
+      "name": "Fetais",
+      "kind": "hamlet",
+      "x": 43518,
+      "y": -11833
+    },
+    {
+      "name": "Feteira",
+      "kind": "village",
+      "x": -10258,
+      "y": 432
+    },
+    {
+      "name": "Figueiras",
+      "kind": "hamlet",
+      "x": 28834,
+      "y": 20723
+    },
+    {
+      "name": "Flamengos",
+      "kind": "village",
+      "x": -7875,
+      "y": 3493
+    },
+    {
+      "name": "Foros",
+      "kind": "hamlet",
+      "x": 38983,
+      "y": -12299
+    },
+    {
+      "name": "Gingeira",
+      "kind": "hamlet",
+      "x": 8092,
+      "y": -8816
+    },
+    {
+      "name": "Granja",
+      "kind": "hamlet",
+      "x": -10058,
+      "y": 1526
+    },
+    {
+      "name": "Horta",
+      "kind": "city",
+      "x": -6106,
+      "y": 1858
+    },
+    {
+      "name": "Ilha de São Jorge",
+      "kind": "island",
+      "x": 44820,
+      "y": 13083
+    },
+    {
+      "name": "Ilha do Faial",
+      "kind": "island",
+      "x": -10695,
+      "y": 4526
+    },
+    {
+      "name": "Ilha do Pico",
+      "kind": "island",
+      "x": 20137,
+      "y": -5029
+    },
+    {
+      "name": "Ilhéu das Moças",
+      "kind": "islet",
+      "x": 7700,
+      "y": -9549
+    },
+    {
+      "name": "Ilhéu Deitado",
+      "kind": "islet",
+      "x": 1180,
+      "y": 1703
+    },
+    {
+      "name": "Ilhéu em Pé",
+      "kind": "islet",
+      "x": 1362,
+      "y": 1944
+    },
+    {
+      "name": "Ilhéu Escamirro",
+      "kind": "islet",
+      "x": 29268,
+      "y": -3904
+    },
+    {
+      "name": "Ilhéu Redondo",
+      "kind": "islet",
+      "x": 9438,
+      "y": -10608
+    },
+    {
+      "name": "Ilhéus da Gaivota",
+      "kind": "islet",
+      "x": -10584,
+      "y": -41
+    },
+    {
+      "name": "Jogo",
+      "kind": "hamlet",
+      "x": -13277,
+      "y": 236
+    },
+    {
+      "name": "Jogo da Bola",
+      "kind": "hamlet",
+      "x": 40939,
+      "y": -12060
+    },
+    {
+      "name": "Lajes do Pico",
+      "kind": "town",
+      "x": 26806,
+      "y": -13882
+    },
+    {
+      "name": "Lajido",
+      "kind": "hamlet",
+      "x": 11559,
+      "y": 4089
+    },
+    {
+      "name": "Lajido do Meio",
+      "kind": "hamlet",
+      "x": 11745,
+      "y": 2947
+    },
+    {
+      "name": "Lajinha",
+      "kind": "hamlet",
+      "x": -8570,
+      "y": 647
+    },
+    {
+      "name": "Lomba",
+      "kind": "hamlet",
+      "x": -5989,
+      "y": 3633
+    },
+    {
+      "name": "Lombega",
+      "kind": "hamlet",
+      "x": -15898,
+      "y": 1885
+    },
+    {
+      "name": "Madalena",
+      "kind": "town",
+      "x": 3105,
+      "y": 1804
+    },
+    {
+      "name": "Manadas (Santa Bárbara)",
+      "kind": "village",
+      "x": 40827,
+      "y": 12588
+    },
+    {
+      "name": "Manhenha",
+      "kind": "hamlet",
+      "x": 45427,
+      "y": -11765
+    },
+    {
+      "name": "Miragaia",
+      "kind": "hamlet",
+      "x": -6467,
+      "y": 6693
+    },
+    {
+      "name": "Mirateca",
+      "kind": "hamlet",
+      "x": 4632,
+      "y": -7356
+    },
+    {
+      "name": "Monte",
+      "kind": "hamlet",
+      "x": 2857,
+      "y": -3190
+    },
+    {
+      "name": "Morro de Lemos",
+      "kind": "cape",
+      "x": 29197,
+      "y": 19126
+    },
+    {
+      "name": "Morro Grande",
+      "kind": "cape",
+      "x": 29497,
+      "y": 17857
+    },
+    {
+      "name": "Norte Grande",
+      "kind": "village",
+      "x": 43532,
+      "y": 16526
+    },
+    {
+      "name": "Norte Pequeno",
+      "kind": "hamlet",
+      "x": -20869,
+      "y": 9237
+    },
+    {
+      "name": "Outeiro",
+      "kind": "hamlet",
+      "x": 2707,
+      "y": 642
+    },
+    {
+      "name": "Pasteleiro",
+      "kind": "hamlet",
+      "x": -7331,
+      "y": 872
+    },
+    {
+      "name": "Pedregulho",
+      "kind": "hamlet",
+      "x": -11531,
+      "y": 309
+    },
+    {
+      "name": "Pedro Miguel",
+      "kind": "village",
+      "x": -5191,
+      "y": 5806
+    },
+    {
+      "name": "Piedade",
+      "kind": "village",
+      "x": 43632,
+      "y": -10523
+    },
+    {
+      "name": "Ponta",
+      "kind": "hamlet",
+      "x": 25685,
+      "y": 22560
+    },
+    {
+      "name": "Ponta Alta",
+      "kind": "cape",
+      "x": 11302,
+      "y": -10930
+    },
+    {
+      "name": "Ponta da Baixa",
+      "kind": "cape",
+      "x": 12862,
+      "y": 4482
+    },
+    {
+      "name": "Ponta da Baleia",
+      "kind": "cape",
+      "x": 44773,
+      "y": -9460
+    },
+    {
+      "name": "Ponta da Batoca",
+      "kind": "cape",
+      "x": 21904,
+      "y": 226
+    },
+    {
+      "name": "Ponta da Espalamaca",
+      "kind": "cape",
+      "x": -3985,
+      "y": 2690
+    },
+    {
+      "name": "Ponta da Faca",
+      "kind": "cape",
+      "x": 10067,
+      "y": -10982
+    },
+    {
+      "name": "Ponta da Feiteira",
+      "kind": "cape",
+      "x": 42963,
+      "y": -12990
+    },
+    {
+      "name": "Ponta da Ilha",
+      "kind": "hamlet",
+      "x": 44308,
+      "y": -10897
+    },
+    {
+      "name": "Ponta da Ilha",
+      "kind": "cape",
+      "x": 46220,
+      "y": -11947
+    },
+    {
+      "name": "Ponta da Luzerna",
+      "kind": "cape",
+      "x": 20370,
+      "y": 1521
+    },
+    {
+      "name": "Ponta da Queimada",
+      "kind": "cape",
+      "x": 27897,
+      "y": -15205
+    },
+    {
+      "name": "Ponta da Queimada",
+      "kind": "cape",
+      "x": 31824,
+      "y": 16883
+    },
+    {
+      "name": "Ponta da Ribeirinha",
+      "kind": "cape",
+      "x": -3447,
+      "y": 8090
+    },
+    {
+      "name": "Ponta da Rocha",
+      "kind": "cape",
+      "x": 32837,
+      "y": -6316
+    },
+    {
+      "name": "Ponta das Baixas",
+      "kind": "cape",
+      "x": 17972,
+      "y": 2684
+    },
+    {
+      "name": "Ponta das Eiras",
+      "kind": "cape",
+      "x": 30345,
+      "y": 17560
+    },
+    {
+      "name": "Ponta das Formigas",
+      "kind": "cape",
+      "x": 11697,
+      "y": -10825
+    },
+    {
+      "name": "Ponta das Trombetas",
+      "kind": "cape",
+      "x": 43314,
+      "y": -8436
+    },
+    {
+      "name": "Ponta de Gil Afonso",
+      "kind": "cape",
+      "x": 43763,
+      "y": -12722
+    },
+    {
+      "name": "Ponta de João Salino",
+      "kind": "cape",
+      "x": 33472,
+      "y": -6687
+    },
+    {
+      "name": "Ponta do Arrife",
+      "kind": "cape",
+      "x": 29346,
+      "y": -14687
+    },
+    {
+      "name": "Ponta do Boqueirão",
+      "kind": "cape",
+      "x": 31258,
+      "y": -4913
+    },
+    {
+      "name": "Ponta do Castelete",
+      "kind": "cape",
+      "x": 45485,
+      "y": -9980
+    },
+    {
+      "name": "Ponta do Castelete",
+      "kind": "cape",
+      "x": 26816,
+      "y": -14718
+    },
+    {
+      "name": "Ponta do Castelete",
+      "kind": "cape",
+      "x": 38112,
+      "y": 13231
+    },
+    {
+      "name": "Ponta do Espigão",
+      "kind": "cape",
+      "x": 38187,
+      "y": -7734
+    },
+    {
+      "name": "Ponta do Lajido",
+      "kind": "cape",
+      "x": 43821,
+      "y": -8803
+    },
+    {
+      "name": "Ponta do Mistério",
+      "kind": "cape",
+      "x": 27689,
+      "y": -2400
+    },
+    {
+      "name": "Ponta do Norte Grande",
+      "kind": "cape",
+      "x": 44394,
+      "y": 17751
+    },
+    {
+      "name": "Ponta do Salão",
+      "kind": "cape",
+      "x": -8924,
+      "y": 12146
+    },
+    {
+      "name": "Ponta do Varadouro",
+      "kind": "cape",
+      "x": -19289,
+      "y": 4939
+    },
+    {
+      "name": "Ponta dos Cedros",
+      "kind": "cape",
+      "x": -13546,
+      "y": 13667
+    },
+    {
+      "name": "Ponta dos Namorados",
+      "kind": "cape",
+      "x": 37257,
+      "y": 13771
+    },
+    {
+      "name": "Ponta dos Ouriços",
+      "kind": "cape",
+      "x": 46281,
+      "y": -11539
+    },
+    {
+      "name": "Ponta dos Rosais",
+      "kind": "cape",
+      "x": 21574,
+      "y": 25855
+    },
+    {
+      "name": "Ponta Furada",
+      "kind": "cape",
+      "x": -8319,
+      "y": 348
+    },
+    {
+      "name": "Ponta Gorda",
+      "kind": "cape",
+      "x": 42419,
+      "y": -8204
+    },
+    {
+      "name": "Ponta Grande",
+      "kind": "cape",
+      "x": 37775,
+      "y": 13587
+    },
+    {
+      "name": "Ponta Grossa",
+      "kind": "cape",
+      "x": 7075,
+      "y": -9238
+    },
+    {
+      "name": "Ponta João Dias",
+      "kind": "cape",
+      "x": -3874,
+      "y": 5482
+    },
+    {
+      "name": "Ponta Negra",
+      "kind": "cape",
+      "x": 14797,
+      "y": 4215
+    },
+    {
+      "name": "Ponta Rasa",
+      "kind": "cape",
+      "x": 21726,
+      "y": 435
+    },
+    {
+      "name": "Ponta Ruiva",
+      "kind": "cape",
+      "x": 26148,
+      "y": 21369
+    },
+    {
+      "name": "Pontas Negras",
+      "kind": "hamlet",
+      "x": 34411,
+      "y": -12057
+    },
+    {
+      "name": "Portela",
+      "kind": "hamlet",
+      "x": -9614,
+      "y": 1888
+    },
+    {
+      "name": "Praia",
+      "kind": "hamlet",
+      "x": -4439,
+      "y": 3962
+    },
+    {
+      "name": "Praia de Baixo",
+      "kind": "hamlet",
+      "x": -17318,
+      "y": 8936
+    },
+    {
+      "name": "Praia de Cima",
+      "kind": "hamlet",
+      "x": -16653,
+      "y": 9372
+    },
+    {
+      "name": "Praia do Almoxarife",
+      "kind": "village",
+      "x": -5488,
+      "y": 4368
+    },
+    {
+      "name": "Praia do Norte",
+      "kind": "village",
+      "x": -17144,
+      "y": 9084
+    },
+    {
+      "name": "Prainha",
+      "kind": "village",
+      "x": 31024,
+      "y": -5657
+    },
+    {
+      "name": "Prainha de Cima",
+      "kind": "hamlet",
+      "x": 28693,
+      "y": -4247
+    },
+    {
+      "name": "Queimada",
+      "kind": "hamlet",
+      "x": 32702,
+      "y": 16494
+    },
+    {
+      "name": "Ramada",
+      "kind": "hamlet",
+      "x": -6408,
+      "y": 4415
+    },
+    {
+      "name": "Relvas",
+      "kind": "hamlet",
+      "x": 7051,
+      "y": -8432
+    },
+    {
+      "name": "Ribeira da Areia",
+      "kind": "hamlet",
+      "x": 46074,
+      "y": 15580
+    },
+    {
+      "name": "Ribeira do Cabo",
+      "kind": "hamlet",
+      "x": -17920,
+      "y": 5537
+    },
+    {
+      "name": "Ribeira do Meio",
+      "kind": "hamlet",
+      "x": 26376,
+      "y": -12410
+    },
+    {
+      "name": "Ribeira do Nabo",
+      "kind": "hamlet",
+      "x": 35994,
+      "y": 15409
+    },
+    {
+      "name": "Ribeira Funda",
+      "kind": "hamlet",
+      "x": -14961,
+      "y": 11153
+    },
+    {
+      "name": "Ribeira Grande",
+      "kind": "hamlet",
+      "x": -12881,
+      "y": 245
+    },
+    {
+      "name": "Ribeira Grande",
+      "kind": "hamlet",
+      "x": 36555,
+      "y": -12230
+    },
+    {
+      "name": "Ribeira Pequena",
+      "kind": "hamlet",
+      "x": -13692,
+      "y": 245
+    },
+    {
+      "name": "Ribeira Seca",
+      "kind": "hamlet",
+      "x": 35541,
+      "y": -12044
+    },
+    {
+      "name": "Ribeiras",
+      "kind": "village",
+      "x": 32066,
+      "y": -12018
+    },
+    {
+      "name": "Ribeirinha",
+      "kind": "village",
+      "x": -4670,
+      "y": 8338
+    },
+    {
+      "name": "Ribeirinha",
+      "kind": "village",
+      "x": 40993,
+      "y": -8861
+    },
+    {
+      "name": "Ribeirinha",
+      "kind": "hamlet",
+      "x": -12717,
+      "y": 473
+    },
+    {
+      "name": "Rosais",
+      "kind": "village",
+      "x": 26829,
+      "y": 22179
+    },
+    {
+      "name": "Rua de Cima",
+      "kind": "hamlet",
+      "x": 12553,
+      "y": -10015
+    },
+    {
+      "name": "Salão",
+      "kind": "village",
+      "x": -8884,
+      "y": 10984
+    },
+    {
+      "name": "Santa Bárbara",
+      "kind": "hamlet",
+      "x": 30455,
+      "y": -13771
+    },
+    {
+      "name": "Santa Bárbara",
+      "kind": "hamlet",
+      "x": -7689,
+      "y": 1582
+    },
+    {
+      "name": "Santa Cruz das Ribeiras",
+      "kind": "hamlet",
+      "x": 32280,
+      "y": -12564
+    },
+    {
+      "name": "Santa Luzia",
+      "kind": "village",
+      "x": 13997,
+      "y": 3071
+    },
+    {
+      "name": "Santana",
+      "kind": "hamlet",
+      "x": 16223,
+      "y": 2874
+    },
+    {
+      "name": "Santo Amaro",
+      "kind": "village",
+      "x": 32757,
+      "y": 17744
+    },
+    {
+      "name": "Santo Amaro",
+      "kind": "village",
+      "x": 34291,
+      "y": -7075
+    },
+    {
+      "name": "Santo Amaro",
+      "kind": "hamlet",
+      "x": -6496,
+      "y": 3051
+    },
+    {
+      "name": "Santo António",
+      "kind": "hamlet",
+      "x": 40158,
+      "y": 17699
+    },
+    {
+      "name": "Santo António",
+      "kind": "village",
+      "x": 18988,
+      "y": 1798
+    },
+    {
+      "name": "São Caetano",
+      "kind": "village",
+      "x": 11374,
+      "y": -9834
+    },
+    {
+      "name": "São João",
+      "kind": "village",
+      "x": 19378,
+      "y": -11508
+    },
+    {
+      "name": "São Lourenço",
+      "kind": "hamlet",
+      "x": -7235,
+      "y": 3372
+    },
+    {
+      "name": "São Mateus",
+      "kind": "village",
+      "x": 9231,
+      "y": -9532
+    },
+    {
+      "name": "São Miguel Arcanjo",
+      "kind": "hamlet",
+      "x": 23523,
+      "y": -1843
+    },
+    {
+      "name": "São Pedro",
+      "kind": "hamlet",
+      "x": -10730,
+      "y": 1178
+    },
+    {
+      "name": "São Pedro",
+      "kind": "hamlet",
+      "x": 30232,
+      "y": 19064
+    },
+    {
+      "name": "São Roque",
+      "kind": "hamlet",
+      "x": 21878,
+      "y": -668
+    },
+    {
+      "name": "São Roque do Pico",
+      "kind": "town",
+      "x": 20889,
+      "y": -726
+    },
+    {
+      "name": "São Vicente",
+      "kind": "hamlet",
+      "x": 17780,
+      "y": 2353
+    },
+    {
+      "name": "Sete Cidades",
+      "kind": "hamlet",
+      "x": 4275,
+      "y": 1402
+    },
+    {
+      "name": "Silveira",
+      "kind": "hamlet",
+      "x": 24234,
+      "y": -11552
+    },
+    {
+      "name": "Terra Alta",
+      "kind": "hamlet",
+      "x": 35955,
+      "y": -7496
+    },
+    {
+      "name": "Terra do Pão",
+      "kind": "hamlet",
+      "x": 14297,
+      "y": -10631
+    },
+    {
+      "name": "Terras",
+      "kind": "hamlet",
+      "x": 28866,
+      "y": -14469
+    },
+    {
+      "name": "Toledo",
+      "kind": "hamlet",
+      "x": 35928,
+      "y": 19564
+    },
+    {
+      "name": "Toledos",
+      "kind": "hamlet",
+      "x": 4695,
+      "y": 2821
+    },
+    {
+      "name": "Urzelina (São Mateus)",
+      "kind": "village",
+      "x": 37758,
+      "y": 13892
+    },
+    {
+      "name": "Valverde",
+      "kind": "hamlet",
+      "x": 3746,
+      "y": 290
+    },
+    {
+      "name": "Varadouro",
+      "kind": "hamlet",
+      "x": -18954,
+      "y": 5431
+    },
+    {
+      "name": "Velas",
+      "kind": "town",
+      "x": 30893,
+      "y": 17665
+    },
+    {
+      "name": "Volta",
+      "kind": "hamlet",
+      "x": -6058,
+      "y": 3232
+    }
+  ],
+  "seamarks": [
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "white",
+      "name": "Ponta dos Cedros",
+      "x": -14066,
+      "y": 13061
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "white",
+      "name": "Ponta da Ribeirnha",
+      "x": -3706,
+      "y": 8370
+    },
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "",
+      "name": "Ponta da Ilha",
+      "x": 46120,
+      "y": -11885
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "white",
+      "name": "Ponta Rosais",
+      "x": 21638,
+      "y": 25835
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": -4226,
+      "y": 3651
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "white",
+      "name": "Horta",
+      "x": -5338,
+      "y": 1538
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "",
+      "x": -5711,
+      "y": 1895
+    },
+    {
+      "type": "beacon_special_purpose",
+      "category": "leading",
+      "colour": "red;white",
+      "name": "",
+      "x": -5689,
+      "y": 841
+    },
+    {
+      "type": "beacon_special_purpose",
+      "category": "leading",
+      "colour": "red;white",
+      "name": "",
+      "x": -5692,
+      "y": 830
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": -7050,
+      "y": 568
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Madalena",
+      "x": 2350,
+      "y": 1793
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 1832,
+      "y": -3741
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 1850,
+      "y": -3752
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Ponta do Sao Mateus",
+      "x": 9720,
+      "y": -10745
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Cabos Galeao",
+      "x": 11957,
+      "y": -10468
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 26749,
+      "y": -13490
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 26773,
+      "y": -13486
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Santa Cruz das Ribeiras",
+      "x": 32559,
+      "y": -12640
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Cais do Pico",
+      "x": 20903,
+      "y": 774
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "",
+      "x": 20977,
+      "y": 1196
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Prainha",
+      "x": 31305,
+      "y": -4985
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Cais das Velas",
+      "x": 31094,
+      "y": 17470
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "",
+      "name": "Cabos Velas",
+      "x": 31035,
+      "y": 17526
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 30701,
+      "y": 17496
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "white",
+      "name": "Quimada",
+      "x": 31964,
+      "y": 16496
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "white",
+      "name": "Vale Formoso",
+      "x": -21870,
+      "y": 6759
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "green;white",
+      "name": "",
+      "x": -5404,
+      "y": 1956
+    },
+    {
+      "type": "beacon_lateral",
+      "category": "port",
+      "colour": "green;white",
+      "name": "",
+      "x": -5638,
+      "y": 1297
+    },
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "",
+      "name": "Farao",
+      "x": 44309,
+      "y": 17719
+    },
+    {
+      "type": "buoy_special_purpose",
+      "category": "",
+      "colour": "yellow",
+      "name": "",
+      "x": 12774,
+      "y": -14559
+    },
+    {
+      "type": "buoy_lateral",
+      "category": "port",
+      "colour": "red",
+      "name": "",
+      "x": 1621,
+      "y": 7064
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "",
+      "x": 2154,
+      "y": 1713
+    }
+  ],
+  "bridges": {},
+  "heights": {
+    "source": "Copernicus GLO-30 DEM (© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA)",
+    "cellSize": 40,
+    "width": 1808,
+    "height": 1051,
+    "scale": 0.1,
+    "offset": -100
+  }
+}
