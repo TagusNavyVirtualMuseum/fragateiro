@@ -21,6 +21,8 @@ export const PT: Record<string, string> = {
   'sail.lug.text': 'Uma vela de quatro lados numa verga que cruza o mastro: o Moliceiro e a Pinasse. Uma só vela que pode ser caçada até ao longo do casco.',
   'sail.square.title': 'Vela redonda',
   'sail.square.text': 'Uma vela atravessada no barco numa verga: o Rabelo, feito para o vento que desce o vale do Douro. Não bolina: em vez de virar por d’avante, vira em roda.',
+  'land.areas': 'Zonas de navegação',
+  'land.areasNote': 'Mapas reais das águas de cada barco, com as suas costas, portos, boias e montes. Clique numa para navegar lá.',
   'land.boats': 'Os barcos',
   'boat.falua.alt': 'A Falua à vela',
   'boat.falua.desc':

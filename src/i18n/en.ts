@@ -21,6 +21,8 @@ export const EN: Record<string, string> = {
   'sail.lug.text': 'A four-sided sail on a yard that crosses the mast: the Moliceiro and the Pinasse. One sail that can be hauled right in along the hull.',
   'sail.square.title': 'Square sail',
   'sail.square.text': 'A sail set across the boat on a yard: the Rabelo, made for the wind blowing down the Douro valley. It cannot sail close to the wind: it turns away from it (wears) instead of tacking.',
+  'land.areas': 'Sailing areas',
+  'land.areasNote': 'Real maps of each boat’s waters, with their coasts, ports, buoys and hills. Click one to sail there.',
   'land.boats': 'The boats',
   'boat.falua.alt': 'The Falua under sail',
   'boat.falua.desc':

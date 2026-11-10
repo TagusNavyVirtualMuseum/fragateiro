@@ -56,6 +56,13 @@
       .rig { padding: 14px 18px; border: 1px solid rgba(201, 162, 92, 0.6); border-radius: 12px; background: rgba(0, 0, 0, 0.18); }
       .rig h3 { font-family: 'IM Fell English', Georgia, serif; font-weight: 400; font-size: 20px; margin: 0 0 6px; }
       .rig p { margin: 0; font-size: 15px; }
+      .areas { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-top: 18px; }
+      .area { display: block; border: 1px solid rgba(201, 162, 92, 0.6); border-radius: 12px; overflow: hidden; background: rgba(0, 0, 0, 0.18); color: inherit; text-decoration: none; }
+      .area:hover { border-color: #e2b866; }
+      .area img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; border-bottom: 2px solid rgba(201, 162, 92, 0.6); }
+      .area div { padding: 12px 16px 14px; }
+      .area h3 { font-family: 'IM Fell English', Georgia, serif; font-weight: 400; font-size: 21px; margin: 0 0 4px; }
+      .area p { margin: 0; font-size: 14px; }
     </style>
     <script type="module">
       import '@fontsource/eb-garamond/latin-400.css';
@@ -152,6 +159,27 @@
         </article>
       </div>
 
+      <h2 class="section" data-i18n="land.areas"></h2>
+      <p class="note" data-i18n="land.areasNote"></p>
+      <div class="areas">
+        <a class="area" href="./games/sailing/?area=tejo">
+          <img src="./src/assets/areas/tejo.jpg" alt="" />
+          <div><h3 data-i18n="area.tejo"></h3><p data-i18n="area.tejo.desc"></p></div>
+        </a>
+        <a class="area" href="./games/sailing/?area=aveiro">
+          <img src="./src/assets/areas/aveiro.jpg" alt="" />
+          <div><h3 data-i18n="area.aveiro"></h3><p data-i18n="area.aveiro.desc"></p></div>
+        </a>
+        <a class="area" href="./games/sailing/?area=azores">
+          <img src="./src/assets/areas/azores.jpg" alt="" />
+          <div><h3 data-i18n="area.azores"></h3><p data-i18n="area.azores.desc"></p></div>
+        </a>
+        <a class="area" href="./games/sailing/?area=madeira">
+          <img src="./src/assets/areas/madeira.jpg" alt="" />
+          <div><h3 data-i18n="area.madeira"></h3><p data-i18n="area.madeira.desc"></p></div>
+        </a>
+      </div>
+
       <h2 class="section" data-i18n="land.sailing"></h2>
       <div class="rigs">
         <div class="rig"><h3 data-i18n="sail.how.title"></h3><p data-i18n="sail.how.text"></p></div>
@@ -164,6 +192,12 @@
 
       <h2 class="section" data-i18n="land.france"></h2>
       <p class="note" data-i18n="land.franceNote"></p>
+      <div class="areas">
+        <a class="area" href="./games/sailing/?area=arcachon">
+          <img src="./src/assets/areas/arcachon.jpg" alt="" />
+          <div><h3 data-i18n="area.arcachon"></h3><p data-i18n="area.arcachon.desc"></p></div>
+        </a>
+      </div>
       <div class="boats">
         <article class="boat dev">
           <img src="./src/assets/boats/pinasse.jpg" alt="" data-i18n-alt="boat.pinasse.alt" />

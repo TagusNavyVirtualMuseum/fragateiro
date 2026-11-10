@@ -21,6 +21,8 @@ export const FR: Record<string, string> = {
   'sail.lug.text': 'Une voile à quatre côtés sur une vergue qui croise le mât : le Moliceiro et la Pinasse. Une seule voile qu’on peut border jusque dans l’axe.',
   'sail.square.title': 'Voile carrée',
   'sail.square.text': 'Une voile en travers du bateau sur une vergue : le Rabelo, fait pour le vent qui descend la vallée du Douro. Il ne remonte pas au vent : il vire lof pour lof au lieu de virer de bord.',
+  'land.areas': 'Plans d’eau',
+  'land.areasNote': 'Des cartes réelles des eaux de chaque bateau, avec leurs côtes, ports, bouées et reliefs. Cliquez sur l’une pour y naviguer.',
   'land.boats': 'Les bateaux',
   'boat.falua.alt': 'La Falua sous voiles',
   'boat.falua.desc':
