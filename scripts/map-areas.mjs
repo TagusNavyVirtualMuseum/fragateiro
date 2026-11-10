@@ -70,6 +70,34 @@ export const AREAS = {
       report: { 'Pasaia harbour': [43.3215, -1.9235], 'La Concha bay': [43.3195, -1.995], 'Txingudi bay': [43.365, -1.79], 'Saint-Jean-de-Luz bay': [43.393, -1.672] },
     },
   },
+
+  // The Azores' central group: Faial (Horta), Pico (São Roque do Pico, Madalena) and São Jorge
+  // (Velas), with the channels between them.
+  azores: {
+    file: 'azores',
+    bbox: { south: 38.38, west: -28.85, north: 38.76, east: -28.02 },
+    /** In the Faial–Pico channel, off Horta. */
+    origin: { lat: 38.52, lon: -28.56 },
+    checks: {
+      land: { Horta: [38.5364, -28.6295], 'Pico summit': [38.4685, -28.399], 'São Jorge': [38.66, -28.15] },
+      water: { origin: [38.52, -28.56], 'Pico–São Jorge channel': [38.6, -28.3], 'south of Pico': [38.39, -28.3] },
+      report: { 'Horta marina': [38.531, -28.623], 'off São Roque': [38.53, -28.32], 'off Velas': [38.675, -28.205] },
+    },
+  },
+
+  // The east end of Madeira: Santa Cruz, Machico and Porto da Cruz, and the long Ponta de
+  // São Lourenço.
+  madeira: {
+    file: 'madeira',
+    bbox: { south: 32.63, west: -16.93, north: 32.83, east: -16.63 },
+    /** At sea off Machico. */
+    origin: { lat: 32.705, lon: -16.74 },
+    checks: {
+      land: { 'Santa Cruz': [32.689, -16.795], Machico: [32.72, -16.765], 'Ponta de São Lourenço': [32.743, -16.7] },
+      water: { origin: [32.705, -16.74], 'north coast': [32.8, -16.8], 'off the point': [32.73, -16.65] },
+      report: { 'off Porto da Cruz': [32.775, -16.825], 'off Santa Cruz': [32.686, -16.785] },
+    },
+  },
 };
 
 /** The area named by `--area` on the command line (default: the Tagus). */
