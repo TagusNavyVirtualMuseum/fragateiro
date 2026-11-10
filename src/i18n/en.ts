@@ -58,8 +58,9 @@ export const EN: Record<string, string> = {
   'boat.rabelo.desc':
     'The boat that brought the casks of port wine down the Douro to Porto. One square sail for a following wind, and ' +
     'the <em>espadela</em>, a long oar over the stern, worked from a platform by the mast. It cannot sail close to the wind: ' +
-    'turn it away from the wind (wear) instead of tacking. Its 3D model was made from photos with Meshy.',
+    'it is not in the game yet.',
   'boat.rabelo.facts': '20 m · 4.5 m beam · about 40 t loaded · square sail',
+  'land.dev': 'under development',
   'land.note': "Weights are the estimates used by the game's physics.",
   'land.about': 'About the project →',
   'land.paper': 'Read the paper →',

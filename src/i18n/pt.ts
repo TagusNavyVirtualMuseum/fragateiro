@@ -57,9 +57,10 @@ export const PT: Record<string, string> = {
   'boat.rabelo.alt': 'O rabelo do Douro carregado de pipas de vinho do Porto',
   'boat.rabelo.desc':
     'O barco que trazia as pipas de vinho do Porto pelo Douro abaixo. Uma vela quadrada para o vento de popa e a ' +
-    '<em>espadela</em>, um remo comprido à popa, manobrado de uma plataforma junto ao mastro. Não bolina: em vez de virar ' +
-    'por d’avante, vire em roda. O seu modelo 3D foi feito a partir de fotografias com o Meshy.',
+    '<em>espadela</em>, um remo comprido à popa, manobrado de uma plataforma junto ao mastro. O seu modelo 3D está a ser melhorado: ' +
+    'ainda não está no jogo.',
   'boat.rabelo.facts': '20 m · 4,5 m de boca · cerca de 40 t carregado · vela redonda',
+  'land.dev': 'em desenvolvimento',
   'land.note': 'Os pesos são as estimativas usadas pela física do jogo.',
   'land.about': 'Sobre o projeto →',
   'land.paper': 'Ler o artigo →',

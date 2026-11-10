@@ -59,9 +59,10 @@ export const FR: Record<string, string> = {
   'boat.rabelo.alt': 'Le rabelo du Douro chargé de fûts de porto',
   'boat.rabelo.desc':
     'Le bateau qui descendait le Douro avec les fûts de porto. Une voile carrée pour le vent arrière et l’<em>espadela</em>, ' +
-    'un long aviron de queue manœuvré depuis une plateforme près du mât. Il ne remonte pas au vent : virez lof pour lof ' +
-    'plutôt que de virer de bord. Son modèle 3D a été créé à partir de photos avec Meshy.',
+    'un long aviron de queue manœuvré depuis une plateforme près du mât. Son modèle 3D est en cours d’amélioration : ' +
+    'il n’est pas encore dans le jeu.',
   'boat.rabelo.facts': '20 m · 4,5 m de large · environ 40 t chargé · voile carrée',
+  'land.dev': 'en préparation',
   'land.note': 'Les masses sont les estimations utilisées par la physique du jeu.',
   'land.about': 'À propos du projet →',
   'land.paper': 'Lire l’article →',
