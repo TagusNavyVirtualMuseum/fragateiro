@@ -240,3 +240,41 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
 
 .toast { margin-top: 8px; padding: 6px 8px; border-radius: 6px; background: var(--parchment); color: #1f4f7a; border: 1px solid var(--brass-dark); font-family: 'IM Fell English', serif; font-size: 16px; text-align: center; }
 .hud .lang-row .lang-switch { display: flex; gap: 6px; margin: 0; }
+
+/* ---- Layout: chart alone top left; settings (boats, mission, wind, view) closed by default,
+   opened with the ⚙ button or J; directions and warnings large at the top centre. ------- */
+.info { width: 280px; padding: 8px; }
+.info .map-slot { margin-top: 0; }
+.map-slot .map-zoom { margin-top: 6px; }
+.options { display: none; }
+.options.open { display: block; top: auto; bottom: 64px; right: 16px; left: auto; width: 320px; max-height: calc(100vh - 290px); overflow-y: auto; z-index: 2; }
+.settings-toggle { display: block !important; top: auto !important; bottom: 16px !important; right: 16px !important; left: auto !important; padding: 8px 12px; font-size: 20px; line-height: 1; color: var(--parchment) !important; }
+.settings-toggle small { font-size: 11px; color: var(--muted); }
+.settings-header h1 { margin-top: 0; }
+.settings-header { border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 8px; }
+.settings-slot .map-legend { margin-top: 8px; font-size: 12px; }
+.settings-slot .credit { font-size: 10px; color: var(--muted); margin-top: 6px; }
+.readout .big { display: flex; align-items: baseline; justify-content: center; gap: 10px; }
+.readout .drift { font-family: 'EB Garamond', Georgia, serif; font-size: 14px; font-weight: 400; color: var(--muted); }
+.banner { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); width: min(520px, calc(100vw - 640px)); min-width: 300px; display: grid; gap: 8px; pointer-events: none; z-index: 1; }
+.banner .nav { margin: 0; font-size: 17px; text-align: center; padding: 8px 14px; }
+.banner .nav strong { font-size: 24px; }
+.banner .warning { margin: 0; font-size: 20px; text-align: center; padding: 8px 14px; font-family: 'IM Fell English', serif; }
+.banner .toast { margin: 0; font-size: 20px; padding: 8px 14px; }
+@media (max-width: 900px) {
+  .info { display: none; }
+  .options.open { left: 16px; right: 16px; width: auto; bottom: 64px; max-height: calc(100vh - 96px); }
+  .banner { width: calc(100vw - 32px); min-width: 0; }
+  .banner .nav { font-size: 13px; padding: 4px 8px; }
+  .banner .nav strong { font-size: 17px; }
+  .banner .warning, .banner .toast { font-size: 15px; }
+  .settings-toggle { bottom: auto !important; top: 16px !important; }
+  .options.open { top: 64px; bottom: auto; }
+}
+.options.open { top: 300px; bottom: 64px; max-height: none; }
+@media (max-width: 900px) {
+  .banner { left: 16px; transform: none; width: calc(100vw - 32px - 64px); }
+  .readout .big { flex-wrap: wrap; gap: 0 6px; }
+  .readout .drift { font-size: 11px; width: 100%; text-align: center; }
+  .options.open { top: 64px; bottom: 16px; }
+}

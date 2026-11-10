@@ -20,6 +20,7 @@ export interface HudCallbacks {
   onSound(on: boolean): void;
   onTraffic(on: boolean): void;
   onMissions(): void;
+  onTimeOfDay(id: string): void;
 }
 
 export interface Navigation {
@@ -41,6 +42,17 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, html?: 
   if (cls) e.className = cls;
   if (html !== undefined) e.innerHTML = html;
   return e;
+}
+
+/** The time of day chosen last (remembered in the browser), or day. */
+export function loadTimeOfDay(): string {
+  try {
+    const v = localStorage.getItem('fragateiro.timeOfDay');
+    if (v === 'sunrise' || v === 'day' || v === 'sunset') return v;
+  } catch {
+    // storage blocked
+  }
+  return 'day';
 }
 
 export class SailingHud {
@@ -94,7 +106,10 @@ export class SailingHud {
       cb.onMissions();
     };
     this.missionRow.append(this.missionName, this.levelName, missionsBtn);
-    info.append(el('h1', '', `<a href="../../" title="${t('hud.allGames')}">⟵</a> ${t(getArea().id === 'tejo' ? 'hud.title' : `hud.title.${getArea().id}`)}`), this.missionRow, this.boatBar, this.modeBar, this.about, this.mapSlot);
+    // The top-left panel holds only the chart; everything else is in the settings panel.
+    info.append(this.mapSlot);
+    const header = el('div', 'settings-header');
+    header.append(el('h1', '', `<a href="../../" title="${t('hud.allGames')}">⟵</a> ${t(getArea().id === 'tejo' ? 'hud.title' : `hud.title.${getArea().id}`)}`), this.missionRow, this.boatBar, this.modeBar, this.about, this.settingsSlot);
     for (const b of boats) {
       const btn = el('button', '', b.name);
       btn.dataset.id = b.id;
@@ -119,7 +134,10 @@ export class SailingHud {
     const key = el('div', 'wind-key', `<span class="true">↓</span> ${t('ro.trueWind')} <span class="app">↓</span> ${t('ro.apparentWind')}`);
     inst.querySelector('svg')!.after(key);
     this.compassTarget = inst.querySelector('g.target')!;
-    inst.append(this.readout, this.nav, this.warning, this.toastBox);
+    inst.append(this.readout);
+    // Directions, warnings and notes: large, at the top centre of the screen.
+    const banner = el('section', 'banner');
+    banner.append(this.nav, this.warning, this.toastBox);
     this.toastBox.hidden = true;
 
     // --- Bottom centre: one panel for the sheets and the rudder (touch-friendly)
@@ -140,6 +158,11 @@ export class SailingHud {
       <label>${t('opts.speed')} <input type="range" min="2" max="30" step="1" name="speed"> <output name="speedOut"></output></label>
       <label class="check"><input type="checkbox" name="gusty"> ${t('opts.gusty')}</label>
       <label class="check"><input type="checkbox" name="windVisible" checked> ${t('opts.showWind')}</label>
+      <label>${t('opts.timeOfDay')} <select name="timeOfDay">
+        <option value="sunrise">${t('opts.sunrise')}</option>
+        <option value="day">${t('opts.day')}</option>
+        <option value="sunset">${t('opts.sunset')}</option>
+      </select></label>
       <h2>${t('opts.camera')} <small>${t('opts.cameraHint')}</small></h2>
       <div class="cam-buttons"></div>
       <label>${t('opts.distance')} <input type="range" min="${DISTANCE_RANGE.min}" max="${DISTANCE_RANGE.max}" step="1" name="camDist"> <output name="camDistOut"></output></label>
@@ -209,6 +232,16 @@ export class SailingHud {
     this.soundBox.addEventListener('change', () => cb.onSound(this.soundBox.checked));
     const traffic = opts.querySelector<HTMLInputElement>('[name=traffic]')!;
     traffic.addEventListener('change', () => cb.onTraffic(traffic.checked));
+    const tod = opts.querySelector<HTMLSelectElement>('[name=timeOfDay]')!;
+    tod.value = loadTimeOfDay();
+    tod.addEventListener('change', () => {
+      try {
+        localStorage.setItem('fragateiro.timeOfDay', tod.value);
+      } catch {
+        // storage blocked: only this visit
+      }
+      cb.onTimeOfDay(tod.value);
+    });
     const windVisible = opts.querySelector<HTMLInputElement>('[name=windVisible]')!;
     windVisible.addEventListener('change', () => cb.onWindVisible(windVisible.checked));
 
@@ -216,15 +249,29 @@ export class SailingHud {
     // Let the arrow keys steer the boat instead of moving a focused slider.
     opts.addEventListener('change', (e) => (e.target as HTMLElement).blur());
 
-    // On small screens the options panel opens from a button.
-    const toggle = el('button', 'panel settings-toggle', '⚙');
+    // The settings panel (boats, mission, wind, view) starts closed and opens from the button
+    // or the J key.
+    opts.prepend(header);
+    const toggle = el('button', 'panel settings-toggle', `⚙ <small>J</small>`);
     toggle.title = t('hud.settingsTitle');
-    toggle.onclick = () => opts.classList.toggle('open');
+    toggle.onclick = () => {
+      this.toggleSettings();
+      toggle.blur();
+    };
+    this.opts = opts;
 
-    root.append(info, inst, helm, opts, toggle);
+    root.append(info, inst, banner, helm, opts, toggle);
   }
 
   private camOutputs!: { distOut: HTMLOutputElement; heightOut: HTMLOutputElement };
+  private opts!: HTMLElement;
+  /** Where the chart's legend, its credit and the "Sail to" list go (in the settings panel). */
+  readonly settingsSlot = el('div', 'settings-slot');
+
+  /** Open or close the settings panel (J). */
+  toggleSettings(open = !this.opts.classList.contains('open')): void {
+    this.opts.classList.toggle('open', open);
+  }
 
   /** Show the current camera settings (also after the mouse or keys changed them). */
   setCamera(view: CameraView, distance: number, elevation: number): void {
@@ -336,7 +383,7 @@ export class SailingHud {
       select.blur();
     });
     label.append(select);
-    this.mapSlot.before(label);
+    this.settingsSlot.prepend(label);
   }
 
   /** A list of places to sail to; the instruments then show distance and bearing. */
@@ -351,7 +398,7 @@ export class SailingHud {
       select.blur();
     });
     label.append(select);
-    this.mapSlot.before(label);
+    this.settingsSlot.prepend(label);
   }
 
   update(state: BoatState, controls: Controls, report: ForceReport, wind: TrueWind, paused: boolean, aground = false, nav: Navigation | null = null): void {
@@ -361,14 +408,13 @@ export class SailingHud {
     const pointOfSail =
       t(twa < 36 ? 'pos.irons' : twa < 60 ? 'pos.closeHauled' : twa < 80 ? 'pos.closeReach' : twa < 110 ? 'pos.beamReach' : twa < 150 ? 'pos.broadReach' : 'pos.running');
     const tack = t(report.trueWindAngleDeg >= 0 ? 'tack.starboard' : 'tack.port');
+    const drift = this.easy ? '' : `<span class="drift" title="${t('ro.drift')}">${t('ro.driftShort')} ${toKnots(Math.abs(state.v)).toFixed(1)} ${state.v >= 0 ? '→' : '←'}</span>`;
     this.readout.innerHTML = `
-      <div class="big">${toKnots(Math.hypot(state.u, state.v)).toFixed(1)}<small> kn</small></div>
+      <div class="big">${toKnots(Math.hypot(state.u, state.v)).toFixed(1)}<small> kn</small>${drift}</div>
       <div class="tscale" title="${t('ro.timeTitle')}">${this.timeScale === 1 ? t('ro.realTime') : t('ro.timeX', { n: this.timeScale })}</div>
       <dl>
         <dt>${t('ro.heading')}</dt><dd>${heading.toFixed(0)}°</dd>
         <dt>${t('ro.pointOfSail')}</dt><dd>${pointOfSail}${twa >= 36 ? `, ${tack}` : ''}</dd>
-        <dt>${t('ro.heel')}</dt><dd>${Math.abs(rad2deg(state.heel)).toFixed(0)}°</dd>
-        <dt>${t('ro.drift')}</dt><dd>${this.easy ? t('ro.driftEasy') : `${toKnots(state.v).toFixed(1)} kn ${state.v >= 0 ? '→' : '←'}`}</dd>
       </dl>`;
     this.compassBoat.setAttribute('transform', `rotate(${heading})`);
     this.compassWind.setAttribute('transform', `rotate(${rad2deg(wind.from)})`);

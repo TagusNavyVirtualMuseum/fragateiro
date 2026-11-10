@@ -102,20 +102,26 @@ Node 22 or newer.
 | Rudder | A / D or ← / → | ◀ ▶ buttons, or drag one finger left/right on the view |
 | Sheets (all sails) | W / S or ↑ / ↓ | one slider per sail group, or drag one finger up (in) / down (out) |
 | Change mode (Muleta) | M | mode buttons |
-| Change boat (free sailing) | B | boat buttons |
+| Change boat (free sailing) | B | boat buttons (settings panel) |
 | Show forces | F | checkbox |
 | Camera view: behind, ahead, port, starboard, top, free | 1–6 (C = behind) | camera buttons |
 | Camera distance and height | mouse wheel | sliders, or pinch with two fingers |
 | Orbit freely | drag the view with the mouse (switches to *free*) | |
 | Move to a place, in free sailing (21 ports, from Cascais, Sesimbra and Setúbal to Vila Franca de Xira, including the Alfeite naval base) | T (next place) | click it on the minimap |
 | Minimap: 15 km around the boat, or the whole map | | button under the minimap |
-| Destination: distance, bearing and time | | *Sail to* list |
+| Destination: distance, bearing and time | | *Sail to* list (settings panel) |
 | Game speed (1×, 2×, 3× default, 5×, 10×; speeds shown stay real, "time ×3" under the speed) | | setting |
 | Show the wind (streaks over the water) | | wind settings |
 | Sound of wind, water and flapping sails (synthesised, starts on the first click or key) | N | checkbox |
 | Other boats on the river (shown as dots on the minimap) | | checkbox |
 | Pause / restart (a mission starts again) | P / R | |
 | Missions and level | | *Missions* button |
+| Settings panel: boats, mission, *Sail to*, map legend, wind, time of day, camera, sound, language (starts closed) | J | ⚙ button, bottom right |
+| Time of day: sunrise, day or sunset (remembered) | | setting |
+
+On screen: the chart alone at the top left, directions and messages large at the top centre,
+the compass with the true (blue) and apparent (green) wind, the speed with the drift beside it,
+and the sheets and rudder at the bottom centre.
 
 ## How it is organised
 

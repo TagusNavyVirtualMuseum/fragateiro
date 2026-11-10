@@ -20,6 +20,7 @@ export interface SailingScene {
   camera: ArcRotateCamera;
   water: Water;
   sunDirection: Vector3;
+  setTimeOfDay(id: TimeOfDay): void;
   skyColor: Color3;
   fogDensity: number;
   sky: Sky;
@@ -42,6 +43,7 @@ precision highp float;
 uniform vec3 horizon;
 uniform vec3 zenith;
 uniform vec3 sunDirection;
+uniform vec3 sunColor;
 // How far the clouds have drifted (m on the cloud layer), and how much of the sky they cover.
 uniform vec2 cloudOffset;
 uniform float cloudCover;
@@ -68,7 +70,7 @@ void main() {
   vec3 c = mix(horizon, zenith, pow(up, 0.6));
   float s = max(dot(d, sun), 0.0);
   // Soft glow around the sun, brighter near the horizon haze.
-  c += vec3(1.0, 0.85, 0.6) * (pow(s, 8.0) * 0.12 + pow(s, 96.0) * 0.25);
+  c += sunColor * vec3(1.0, 0.85, 0.6) * (pow(s, 8.0) * 0.25 + pow(s, 96.0) * 0.25);
 
   // Clouds: a flat layer seen from below, so they bunch up towards the horizon.
   if (d.y > 0.0) {
@@ -79,13 +81,13 @@ void main() {
     density *= smoothstep(0.0, 0.08, d.y);
     // Lit from the sun's side, greyer underneath where they are thick.
     float shade = 0.9 + 0.15 * pow(s, 4.0) - 0.12 * smoothstep(0.5, 1.0, density);
-    vec3 cloud = vec3(1.0, 0.98, 0.95) * shade;
+    vec3 cloud = vec3(1.0, 0.98, 0.95) * shade * mix(vec3(1.0), sunColor, 0.55 + 0.35 * pow(s, 2.0));
     c = mix(c, cloud, density * 0.95);
   }
 
   // The sun's disc, dimmed when a cloud passes in front.
   float disc = smoothstep(0.99955, 0.99975, s);
-  c += vec3(1.0, 0.95, 0.8) * disc * 3.0;
+  c += sunColor * vec3(1.0, 0.95, 0.8) * disc * 3.0;
   gl_FragColor = vec4(c, 1.0);
 }
 `;
@@ -95,6 +97,63 @@ export interface Sky {
   /** Call every frame: clouds drift downwind (wind speed in m/s, from = radians). */
   update(dt: number, windFrom: number, windSpeed: number): void;
 }
+
+export type TimeOfDay = 'sunrise' | 'day' | 'sunset';
+export const TIMES_OF_DAY: TimeOfDay[] = ['sunrise', 'day', 'sunset'];
+
+interface Light {
+  horizon: Color3;
+  zenith: Color3;
+  /** Towards the sun (x east, y up, z north). */
+  sun: Vector3;
+  sunColor: Color3;
+  sunIntensity: number;
+  skyIntensity: number;
+  ground: Color3;
+  deep: Color3;
+  shallow: Color3;
+  fog: number;
+}
+
+/** The light of each time of day: a low sun in the east at dawn, in the west at dusk. */
+const LIGHTS: Record<TimeOfDay, Light> = {
+  day: {
+    horizon: new Color3(0.78, 0.85, 0.9),
+    zenith: new Color3(0.35, 0.55, 0.8),
+    sun: new Vector3(-0.4, 0.24, -0.6),
+    sunColor: new Color3(1, 1, 1),
+    sunIntensity: 2.2,
+    skyIntensity: 0.9,
+    ground: new Color3(0.25, 0.3, 0.32),
+    deep: new Color3(0.05, 0.2, 0.26),
+    shallow: new Color3(0.16, 0.38, 0.4),
+    fog: 0.00012,
+  },
+  sunrise: {
+    horizon: new Color3(0.96, 0.78, 0.62),
+    zenith: new Color3(0.38, 0.5, 0.74),
+    sun: new Vector3(0.95, 0.09, 0.2),
+    sunColor: new Color3(1, 0.72, 0.48),
+    sunIntensity: 1.6,
+    skyIntensity: 0.65,
+    ground: new Color3(0.3, 0.26, 0.28),
+    deep: new Color3(0.07, 0.16, 0.24),
+    shallow: new Color3(0.2, 0.3, 0.38),
+    fog: 0.00014,
+  },
+  sunset: {
+    horizon: new Color3(0.98, 0.64, 0.42),
+    zenith: new Color3(0.26, 0.33, 0.6),
+    sun: new Vector3(-0.95, 0.07, -0.25),
+    sunColor: new Color3(1, 0.55, 0.3),
+    sunIntensity: 1.5,
+    skyIntensity: 0.55,
+    ground: new Color3(0.3, 0.22, 0.24),
+    deep: new Color3(0.08, 0.13, 0.22),
+    shallow: new Color3(0.24, 0.24, 0.32),
+    fog: 0.00014,
+  },
+};
 
 export function createSailingScene(canvas: HTMLCanvasElement): SailingScene {
   const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true, antialias: true });
@@ -117,11 +176,12 @@ export function createSailingScene(canvas: HTMLCanvasElement): SailingScene {
   const dome = MeshBuilder.CreateSphere('skyDome', { diameter: 30000, segments: 16, sideOrientation: 1 }, scene);
   const skyMat = new ShaderMaterial('skyMat', scene, { vertex: 'sky', fragment: 'sky' }, {
     attributes: ['position'],
-    uniforms: ['worldViewProjection', 'horizon', 'zenith', 'sunDirection', 'cloudOffset', 'cloudCover'],
+    uniforms: ['worldViewProjection', 'horizon', 'zenith', 'sunDirection', 'sunColor', 'cloudOffset', 'cloudCover'],
   });
   skyMat.setColor3('horizon', HORIZON);
   skyMat.setColor3('zenith', ZENITH);
   skyMat.setVector3('sunDirection', sunDirection);
+  skyMat.setColor3('sunColor', new Color3(1, 1, 1));
   skyMat.setFloat('cloudCover', 0.5);
   const cloudOffset = new Vector2(0, 0);
   skyMat.setVector2('cloudOffset', cloudOffset);
@@ -155,5 +215,39 @@ export function createSailingScene(canvas: HTMLCanvasElement): SailingScene {
   const water = createWater(scene, HORIZON, sunDirection, FOG_DENSITY);
 
   window.addEventListener('resize', () => engine.resize());
-  return { engine, scene, camera, water, sunDirection, skyColor: HORIZON, fogDensity: FOG_DENSITY, sky };
+  /** Change the light (sky, sun, water and land colours) without rebuilding anything. */
+  const setTimeOfDay = (id: TimeOfDay) => {
+    const l = LIGHTS[id];
+    // The colours and the sun's direction are shared by reference with the map's materials.
+    HORIZON.copyFrom(l.horizon);
+    sunDirection.copyFrom(l.sun.normalizeToNew());
+    scene.clearColor.set(l.horizon.r, l.horizon.g, l.horizon.b, 1);
+    scene.fogColor = HORIZON;
+    scene.fogDensity = l.fog;
+    sun.direction = sunDirection.scale(-1);
+    sun.intensity = l.sunIntensity;
+    sun.diffuse = l.sunColor;
+    sun.specular = l.sunColor;
+    skyLight.intensity = l.skyIntensity;
+    skyLight.diffuse = Color3.Lerp(new Color3(1, 1, 1), l.horizon, 0.4);
+    skyLight.groundColor = l.ground;
+    skyMat.setColor3('horizon', HORIZON);
+    skyMat.setColor3('zenith', l.zenith);
+    skyMat.setVector3('sunDirection', sunDirection);
+    skyMat.setColor3('sunColor', l.sunColor);
+    for (const name of ['waterMat', 'landMat']) {
+      const m = scene.getMaterialByName(name) as ShaderMaterial | null;
+      if (!m) continue;
+      m.setColor3('skyColor', HORIZON);
+      m.setVector3('sunDirection', sunDirection.clone());
+      m.setColor3('sunColor', l.sunColor);
+      m.setFloat('fogDensity', l.fog);
+      if (name === 'waterMat') {
+        m.setColor3('deepColor', l.deep);
+        m.setColor3('shallowColor', l.shallow);
+      }
+    }
+  };
+
+  return { engine, scene, camera, water, sunDirection, skyColor: HORIZON, fogDensity: FOG_DENSITY, sky, setTimeOfDay };
 }

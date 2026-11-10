@@ -39,6 +39,7 @@ Effect.ShadersStore.waterFragmentShader = /* glsl */ `
 precision highp float;
 uniform vec3 cameraPosition;
 uniform vec3 sunDirection;
+uniform vec3 sunColor;
 uniform vec3 deepColor;
 uniform vec3 shallowColor;
 uniform vec3 skyColor;
@@ -89,7 +90,7 @@ void main() {
   vec3 water = mix(deepColor, shallowColor, clamp(n.y * 0.5 - 0.2 + (vWorld.y + 0.3) * 0.6, 0.0, 1.0));
   vec3 color = mix(water, skyColor, fresnel);
   vec3 r = reflect(-sunDirection, n);
-  color += vec3(1.0, 0.95, 0.85) * pow(max(dot(r, v), 0.0), 180.0) * 1.5;
+  color += sunColor * vec3(1.0, 0.95, 0.85) * pow(max(dot(r, v), 0.0), 180.0) * 1.5;
   float fog = 1.0 - exp(-pow(dist * fogDensity, 2.0));
   // Slightly see-through close by (the net and the hull show under the surface), opaque
   // at grazing angles and in the distance.
@@ -136,7 +137,7 @@ export function createWater(scene: Scene, skyColor: Color3, sunDirection: Vector
   const mesh = MeshBuilder.CreateGround('water', { width: size, height: size, subdivisions: 240 }, scene);
   const mat = new ShaderMaterial('waterMat', scene, { vertex: 'water', fragment: 'water' }, {
     attributes: ['position'],
-    uniforms: ['world', 'viewProjection', 'time', 'waveScale', 'dirK', 'ampPhase', 'cameraPosition', 'sunDirection', 'deepColor', 'shallowColor', 'skyColor', 'fogDensity', 'hull', 'hullRange', 'hullWidth', 'hullWidthHigh', 'hullLevels', 'inner'],
+    uniforms: ['world', 'viewProjection', 'time', 'waveScale', 'dirK', 'ampPhase', 'cameraPosition', 'sunDirection', 'sunColor', 'deepColor', 'shallowColor', 'skyColor', 'fogDensity', 'hull', 'hullRange', 'hullWidth', 'hullWidthHigh', 'hullLevels', 'inner'],
   });
   mat.setFloat('waveScale', 1);
   const { dirK, ampPhase } = waveUniforms();
@@ -146,6 +147,7 @@ export function createWater(scene: Scene, skyColor: Color3, sunDirection: Vector
   mat.setColor3('shallowColor', new Color3(0.16, 0.38, 0.4));
   mat.setColor3('skyColor', skyColor);
   mat.setVector3('sunDirection', sunDirection.normalizeToNew());
+  mat.setColor3('sunColor', new Color3(1, 1, 1));
   mat.setFloat('fogDensity', fogDensity);
   mat.backFaceCulling = false;
   mat.needAlphaBlending = () => true;

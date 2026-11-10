@@ -128,6 +128,7 @@ uniform sampler2D mask;
 uniform vec3 cameraPosition;
 uniform vec3 skyColor;
 uniform vec3 sunDirection;
+uniform vec3 sunColor;
 uniform float fogDensity;
 varying vec3 vWorld;
 varying vec3 vNormal;
@@ -183,7 +184,7 @@ void main() {
   color *= mix(0.55, 1.0, smoothstep(-1.5, 0.3, vWorld.y));
   // Slopes facing the sun are lit, the others in shade: this is what shows the relief.
   float light = max(dot(n, normalize(sunDirection)), 0.0);
-  color *= 0.6 + 0.65 * light;
+  color *= 0.6 * mix(vec3(1.0), sunColor, 0.3) + 0.65 * light * sunColor;
   float dist = length(cameraPosition - vWorld);
   float fog = 1.0 - exp(-pow(dist * fogDensity, 2.0));
   gl_FragColor = vec4(mix(color, skyColor, fog), 1.0);
@@ -207,7 +208,7 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
   tex.wrapU = tex.wrapV = Texture.CLAMP_ADDRESSMODE;
   const mat = new ShaderMaterial('landMat', scene, { vertex: 'land', fragment: 'land' }, {
     attributes: ['position', 'normal'],
-    uniforms: ['world', 'viewProjection', 'northWest', 'size', 'cameraPosition', 'skyColor', 'sunDirection', 'fogDensity'],
+    uniforms: ['world', 'viewProjection', 'northWest', 'size', 'cameraPosition', 'skyColor', 'sunDirection', 'sunColor', 'fogDensity'],
     samplers: ['mask'],
   });
   mat.setTexture('mask', tex);
@@ -215,6 +216,7 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
   mat.setVector2('size', new Vector2(width, height));
   mat.setColor3('skyColor', skyColor);
   mat.setVector3('sunDirection', sunDirection);
+  mat.setColor3('sunColor', new Color3(1, 1, 1));
   mat.setFloat('fogDensity', fogDensity);
   mat.backFaceCulling = false;
 

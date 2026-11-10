@@ -16,7 +16,7 @@ import { getEdition } from '../../src/world/edition';
 
 const AREA = getArea();
 import { NetView } from '../../src/engine/netView';
-import { createSailingScene } from '../../src/engine/scene';
+import { createSailingScene, type TimeOfDay } from '../../src/engine/scene';
 import { WindView } from '../../src/engine/windView';
 import { Sound } from '../../src/engine/sound';
 import { Birds } from '../../src/engine/birds';
@@ -27,7 +27,7 @@ import { MissionMenu } from '../../src/ui/missionMenu';
 import { LEVELS, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
 import { FishingGround } from '../../src/world/fishing';
 import { ShoalView } from '../../src/engine/shoalView';
-import { SailingHud } from '../../src/ui/hud';
+import { SailingHud, loadTimeOfDay } from '../../src/ui/hud';
 import { getLang, t } from '../../src/i18n';
 import { Minimap } from '../../src/ui/minimap';
 import { findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
@@ -46,7 +46,7 @@ const loading = document.getElementById('loading')!;
 loading.textContent = t('game.loading');
 document.title = t(AREA.id === 'tejo' ? 'game.pageTitle' : `game.pageTitle.${AREA.id}`);
 document.documentElement.lang = getLang();
-const { engine, scene, camera, water, skyColor, sunDirection, fogDensity, sky } = createSailingScene(canvas);
+const { engine, scene, camera, water, skyColor, sunDirection, fogDensity, sky, setTimeOfDay } = createSailingScene(canvas);
 const cameraRig = new CameraRig(camera);
 const arrows = new ForceArrows(scene);
 const netView = new NetView(scene);
@@ -121,6 +121,7 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onCameraDistance: (d) => cameraRig.setDistance(d),
   onCameraHeight: (h) => cameraRig.setElevation(h),
   onTimeScale: (k) => (timeScale = k),
+  onTimeOfDay: (id) => setTimeOfDay(id as TimeOfDay),
   onMissions: () => {
     paused = true;
     menu.show();
@@ -250,6 +251,7 @@ input.onPress('KeyB', () => {
   void switchBoat(BOATS[(i + 1) % BOATS.length].id);
 });
 input.onPress('KeyP', () => (paused = !paused));
+input.onPress('KeyJ', () => hud.toggleSettings());
 input.onPress('KeyN', () => {
   sound.setMuted(sound.enabled);
   hud.setSound(sound.enabled);
@@ -577,7 +579,11 @@ async function main(): Promise<void> {
   const credit = document.createElement('div');
   credit.className = 'credit';
   credit.textContent = t('map.credit');
-  hud.mapSlot.append(credit);
+  // The chart alone in its panel; its legend and credit go in the settings panel.
+  const legend = hud.mapSlot.querySelector('.map-legend');
+  if (legend) hud.settingsSlot.append(legend);
+  hud.settingsSlot.append(credit);
+  setTimeOfDay(loadTimeOfDay() as TimeOfDay);
   restart();
   view = first;
   view.setVisible(true);
