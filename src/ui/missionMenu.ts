@@ -4,7 +4,7 @@ import type { BoatSpec } from '../physics';
 import { t } from '../i18n';
 import { TRASH_COUNT } from '../world/challenges';
 import { FISHING_TARGET_KG, LEVELS, placeName, MISSION_KINDS, areaMissions, makeMission, type Level, type Mission, type MissionKind } from '../world/missions';
-import { AREA_IDS, getArea, setArea } from '../world/area';
+import { MENU_AREAS, getArea, setArea } from '../world/area';
 
 const AREA = getArea();
 const { courses: COURSES, routes: ROUTES, grounds: GROUNDS, cleanups: CLEANUPS, supplies: SUPPLIES } = areaMissions();
@@ -209,7 +209,7 @@ export class MissionMenu {
   private areaPicker(): HTMLElement {
     const box = el('div');
     const row = el('div', 'buttons levels');
-    for (const id of AREA_IDS) {
+    for (const id of MENU_AREAS) {
       const b = el('button', id === AREA.id ? 'active' : '', t(`area.${id}`));
       b.onclick = () => {
         if (id !== AREA.id) setArea(id);

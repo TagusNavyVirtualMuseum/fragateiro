@@ -634,7 +634,7 @@ async function main(): Promise<void> {
     if (fishing && run && mission.kind === 'fishing') {
       const dx = (shoal?.x ?? s.x) - s.x;
       const dy = (shoal?.y ?? s.y) - s.y;
-      // The tall orange post marks the nearest shoal, except on the hard level.
+      // The arrow marks the nearest shoal, except on the hard level.
       mapView.setTarget(level === 'hard' ? null : shoal);
       nav = {
         title: t('fish.catch', { kg: Math.floor(fishing.caught), target: mission.targetKg }),
@@ -645,10 +645,9 @@ async function main(): Promise<void> {
         arrived: missionDone,
       };
     } else if (trash && run) {
-      // The tall orange post marks the nearest piece (not on the hard level), until it is
-      // close enough to see.
+      // The arrow marks the nearest piece (not on the hard level).
       const to = toward(piece ?? s);
-      mapView.setTarget(level === 'hard' || to.distance < 150 ? null : piece);
+      mapView.setTarget(level === 'hard' ? null : piece);
       nav = {
         title: t('trash.title', { n: trash.picked, total: trash.items.length }),
         name: t('trash.nearest'),
@@ -657,8 +656,7 @@ async function main(): Promise<void> {
         arrived: missionDone,
       };
     } else if (supply && run && mission.kind === 'supply') {
-      // The post marks where to go, until the boat at anchor is close enough to see.
-      mapView.setTarget(supply.phase !== 'home' && toward(supply.meet).distance < 300 ? null : supply.goal);
+      mapView.setTarget(supply.goal);
       const m = mission;
       const boatName = BOATS.find((b) => b.id === m.meetBoat)?.name ?? '';
       const close = Math.hypot(supply.meet.x - s.x, supply.meet.y - s.y) < 35;

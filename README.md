@@ -143,7 +143,7 @@ prints the areas and centres the physics needs. Then continue from step 2.
 ## The maps
 
 There are four sailing areas, each its own map, chosen in the mission menu (or with
-`?area=tejo|arcachon|aveiro|pasaia`; the choice is remembered): the **lower Tagus** from Vila
+`?area=tejo|arcachon|aveiro`; the choice is remembered; the Pasaia map is hidden from the menu for now but opens with `?area=pasaia`): the **lower Tagus** from Vila
 Franca de Xira to Cascais and Cabo Espichel, the **Bassin d'Arcachon** (home of the pinasse,
 with the Cap Ferret lighthouse, the Thiers and Eyrac piers and the huts on stilts), the **Ria
 de Aveiro**, and the Basque coast at **Pasaia** (Pasajes), from San Sebastián to

@@ -60,6 +60,8 @@ export const AREAS: Record<AreaId, AreaInfo> = {
   },
 };
 export const AREA_IDS = Object.keys(AREAS) as AreaId[];
+/** Areas offered in the menu (Pasaia is hidden for now; ?area=pasaia still opens it). */
+export const MENU_AREAS: AreaId[] = AREA_IDS.filter((id) => id !== 'pasaia');
 
 const KEY = 'fragateiro.area';
 

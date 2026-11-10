@@ -274,19 +274,26 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
   // --- Sea marks from OpenStreetMap / OpenSeaMap.
   const buoys = createSeaMarks(scene, MAP_META.seamarks ?? []);
 
-  // Destination marker: a tall post with a flag, visible from far away.
+  // Where to go: a small arrow pointing down at the spot, bobbing gently and turning, with a
+  // ring on the water. It keeps about the same size on screen whatever the distance.
   const marker = new TransformNode('destination', scene);
   const markMat = new StandardMaterial('destinationMat', scene);
-  markMat.diffuseColor = new Color3(0.9, 0.55, 0.15);
-  markMat.emissiveColor = new Color3(0.6, 0.3, 0.05);
+  markMat.diffuseColor = new Color3(0.95, 0.6, 0.15);
+  markMat.emissiveColor = new Color3(0.75, 0.4, 0.08);
+  markMat.specularColor = Color3.Black();
   markMat.fogEnabled = false;
-  const post = MeshBuilder.CreateCylinder('destinationPost', { height: 30, diameter: 0.8, tessellation: 8 }, scene);
-  post.position.y = 15;
-  const flag = MeshBuilder.CreatePlane('destinationFlag', { width: 8, height: 5, sideOrientation: Mesh.DOUBLESIDE }, scene);
-  flag.position.set(4, 27, 0);
-  for (const m of [post, flag]) {
+  const arrow = new TransformNode('destinationArrow', scene);
+  arrow.parent = marker;
+  const head = MeshBuilder.CreateCylinder('destinationHead', { height: 3, diameterTop: 3.2, diameterBottom: 0, tessellation: 4 }, scene);
+  head.position.y = 1.5;
+  const shaft = MeshBuilder.CreateBox('destinationShaft', { width: 1, height: 3, depth: 1 }, scene);
+  shaft.position.y = 4.5;
+  const ring = MeshBuilder.CreateTorus('destinationRing', { diameter: 7, thickness: 0.35, tessellation: 32 }, scene);
+  ring.position.y = 0.3;
+  for (const m of [head, shaft]) m.parent = arrow;
+  ring.parent = marker;
+  for (const m of [head, shaft, ring]) {
     m.material = markMat;
-    m.parent = marker;
     m.isPickable = false;
   }
   marker.setEnabled(false);
@@ -300,7 +307,12 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
       updateTiles(camera);
       if (marker.isEnabled()) {
         const d = Vector3.Distance(camera.globalPosition, marker.position);
-        marker.scaling.setAll(Math.max(1, d / 400));
+        const k = Math.max(1, d / 110);
+        arrow.scaling.setAll(k);
+        ring.scaling.setAll(Math.min(k, 6));
+        arrow.position.y = k * (5 + 1.5 * Math.sin(time * 2.5));
+        arrow.rotation.y = time * 1.2;
+        marker.position.y = waveHeight(marker.position.x, marker.position.z, time);
       }
       for (const b of buoys) if (b.metadata?.floats) b.position.y = waveHeight(b.position.x, b.position.z, time);
       // Keep labels a readable size on screen, whatever the distance.
