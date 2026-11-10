@@ -108,9 +108,11 @@ reach, heeling up to about 10°; the Pinasse (22 m² lugsail, 600 kg): 3.5 kn at
 reach, heeling up to about 14°; the Moliceiro (70 m² lugsail, 6 t): 4.1 kn at 45°, 5.7 kn on a
 beam reach; the Rabelo (75 m² square sail, 40 t loaded): no way below about 50° (a square sail
 cannot be braced closer than 35°: it wears round instead of tacking), 4.4 kn on a beam reach.
+The Baleeiro (39 m², 500 kg, its crew of seven to windward): 4.3 kn at 45°, 6.4 kn on a beam
+reach, the fastest; the Bac (60 m², 2.9 t): 3.8 kn at 45°, 5.8 kn on a beam reach.
 Single-sail fore-and-aft rigs (Pinasse, Moliceiro) can be hauled right in, along the hull
 (`minAngle: 0`); other working sails stop at 20°. Close-hauled the best setting is sheets fully in.
-The masses (Falua 15 t, Muleta 7 t, Fragata 30 t part-loaded, Catraio 5 t, Canoa 5 t, Pinasse 0.6 t, Moliceiro 6 t, Rabelo 40 t) are estimates; they are what makes each boat feel different
+The masses (Falua 15 t, Muleta 7 t, Fragata 30 t part-loaded, Catraio 5 t, Canoa 5 t, Pinasse 0.6 t, Moliceiro 6 t, Rabelo 40 t, Baleeiro 0.5 t, Bac 2.9 t) are estimates; they are what makes each boat feel different
 (how it carries its way through a tack and how quickly it picks up speed). Heel stays under about 5° (the Canoa about 10°) and leeway around 0.1–0.2 kn in this wind
 (stability and hull grip were doubled after play-testing). `npm run study` runs a set of fixed
 situations and logs every force; see [physics-study](physics-study/README.md).

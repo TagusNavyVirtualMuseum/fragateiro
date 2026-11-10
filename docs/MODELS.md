@@ -12,6 +12,8 @@ The boats come from the MiraroTejo project (the lighter versions made for the vi
 | Pinasse à voile (Arcachon) | Meshy (photo to 3D), cut by `scripts/cut-model.mjs` with `scripts/boats/pinasse-meshy.mjs` (45 MB, one piece; its mast came out as two poles in a V, merged into one by the config's `move`) | `src/assets/models/pinasse.glb` | 2.3 MB |
 | Moliceiro (Aveiro) | Meshy, cut by `scripts/cut-model.mjs` with `scripts/boats/moliceiro-meshy.mjs` (51 MB; the flag dropped, the hull narrowed from 4.4 to 2.5 m) | `src/assets/models/moliceiro.glb` | 2.4 MB |
 | Barco rabelo (Douro) | Meshy, cut with `scripts/boats/rabelo-meshy.mjs` (70 MB; bow towards +x; the square sail is modelled across the boat: `restAngle: π/2` in `boatVisuals.ts`; the espadela is the rudder) | `src/assets/models/rabelo.glb` | 2.8 MB |
+| Bote baleeiro (Azores) | Meshy, cut with `scripts/boats/baleeiro-meshy.mjs` (59 MB; hull narrowed from 3.1 to 2 m) | `src/assets/models/baleeiro.glb` | 2.4 MB |
+| Bac à voile (Arcachon) | Meshy, cut with `scripts/boats/bac-meshy.mjs` (45 MB; hull widened from 2.6 to 3.5 m) | `src/assets/models/bac.glb` | 2.3 MB |
 
 The SingraroTejo versions (184 MB and 290 MB) are too heavy for the web.
 

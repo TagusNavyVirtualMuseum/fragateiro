@@ -19,9 +19,13 @@ import moliceiroUrl from '../assets/models/moliceiro.glb?url';
 import moliceiroLite from '../assets/models/lite/moliceiro.glb?url';
 import rabeloUrl from '../assets/models/rabelo.glb?url';
 import rabeloLite from '../assets/models/lite/rabelo.glb?url';
+import baleeiroUrl from '../assets/models/baleeiro.glb?url';
+import baleeiroLite from '../assets/models/lite/baleeiro.glb?url';
+import bacUrl from '../assets/models/bac.glb?url';
+import bacLite from '../assets/models/lite/bac.glb?url';
 
 /** Light model of each boat, for the other boats sailing on the river. */
-export const LITE_URLS: Record<string, string> = { falua: faluaLite, muleta: muletaLite, fragata: fragataLite, catraio: catraioLite, canoa: canoaLite, pinasse: pinasseLite, moliceiro: moliceiroLite, rabelo: rabeloLite };
+export const LITE_URLS: Record<string, string> = { falua: faluaLite, muleta: muletaLite, fragata: fragataLite, catraio: catraioLite, canoa: canoaLite, pinasse: pinasseLite, moliceiro: moliceiroLite, rabelo: rabeloLite, baleeiro: baleeiroLite, bac: bacLite };
 
 type V3 = [number, number, number];
 
@@ -384,6 +388,44 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       pivot: [-9.92, 0, 0.4],
       axis: { base: [-9.92, -1, 0.4], top: [-9.92, 3, 0.4] },
     },
+  },
+  baleeiro: {
+    boat: 'baleeiro',
+    // Made with Meshy from photos, cut by scripts/cut-model.mjs (scripts/boats/baleeiro-meshy.mjs).
+    hullNodes: ['Casco'],
+    url: baleeiroUrl,
+    unit: 1,
+    scale: 1,
+    cgX: 0.3,
+    waterline: 0,
+    sails: [
+      { sail: 'jib', nodes: ['Bujarrona'], pivot: [-5.46, 0, 0], axis: { base: [-5.46, 2.21, 0], top: [-1.93, 6.96, 0] } }, // the forestay
+      { sail: 'main', nodes: ['Vela'], pivot: [-1.93, 0, 0], axis: { base: [-1.93, 2.0, 0], top: [-1.93, 8.8, 0] } }, // the mast
+    ],
+    sheets: [
+      { sail: 'main', clew: [6.16, 2.27, 0], to: [5.4, 1.4, 0] },
+      { sail: 'jib', clew: [-2.25, 2.47, 0], to: { port: [-1.4, 1.5, 0.7], starboard: [-1.4, 1.5, -0.7] } },
+    ],
+    rudder: { nodes: ['Leme'], pivot: [5.68, 0, 0], axis: { base: [5.68, -0.25, 0], top: [5.68, 2.4, 0] } },
+  },
+  bac: {
+    boat: 'bac',
+    // Made with Meshy from photos, cut by scripts/cut-model.mjs (scripts/boats/bac-meshy.mjs).
+    hullNodes: ['Casco'],
+    url: bacUrl,
+    unit: 1,
+    scale: 1,
+    cgX: 0.3,
+    waterline: 0,
+    sails: [
+      { sail: 'jib', nodes: ['Foc'], pivot: [-5.71, 0, 0], axis: { base: [-5.71, 1.33, 0], top: [-1.6, 9.06, 0] } }, // the forestay
+      { sail: 'main', nodes: ['Vela'], pivot: [-1.49, 0, 0], axis: { base: [-1.49, 1.53, 0], top: [-1.49, 11.15, 0] } }, // the mast
+    ],
+    sheets: [
+      { sail: 'main', clew: [5.47, 2.04, 0], to: [4.6, 1.4, 0] },
+      { sail: 'jib', clew: [-1.65, 1.78, 0], to: { port: [-0.8, 1.5, 1.2], starboard: [-0.8, 1.5, -1.2] } },
+    ],
+    rudder: { nodes: ['Leme'], pivot: [4.98, 0, 0], axis: { base: [4.98, -0.6, 0], top: [4.98, 1.65, 0] } },
   },
 };
 

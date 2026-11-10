@@ -62,6 +62,14 @@ export const FR: Record<string, string> = {
     'un long aviron de queue manœuvré depuis une plateforme près du mât. Son modèle 3D est en cours d’amélioration : ' +
     'il n’est pas encore dans le jeu.',
   'boat.rabelo.facts': '20 m · 4,5 m de large · environ 40 t chargé · voile carrée',
+  'boat.baleeiro.alt': 'La baleinière des Açores sous foc et grand-voile',
+  'boat.baleeiro.desc':
+    'La <em>bote baleeiro</em> des Açores : une embarcation ouverte, longue, légère et étroite, qui partait des îles à la ' +
+    'chasse au cachalot jusqu’en 1987, à l’aviron ou à la voile, avec un foc et une grande voile. Elle court aujourd’hui des régates à Horta et au Pico.',
+  'boat.baleeiro.facts': '12 m · 2 m de large · environ 500 kg · foc et grand-voile',
+  'boat.bac.alt': 'Le bac à voile d’Arcachon, sa grand-voile à corne et son foc',
+  'boat.bac.desc': 'Un voilier ponté du Bassin d’Arcachon, avec une grand-voile à corne sur bôme et un foc.',
+  'boat.bac.facts': '11,5 m · 3,5 m de large · environ 2,9 t · grand-voile à corne et foc',
   'land.dev': 'en préparation',
   'land.devBoats': 'Bateaux en préparation',
   'land.devNote': 'Ces bateaux peuvent déjà naviguer (sauf le rabelo), mais leurs modèles 3D et leur comportement sont encore en cours de travail.',

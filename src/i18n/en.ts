@@ -60,6 +60,14 @@ export const EN: Record<string, string> = {
     'the <em>espadela</em>, a long oar over the stern, worked from a platform by the mast. It cannot sail close to the wind: ' +
     'it is not in the game yet.',
   'boat.rabelo.facts': '20 m · 4.5 m beam · about 40 t loaded · square sail',
+  'boat.baleeiro.alt': 'The Azorean whaleboat under jib and mainsail',
+  'boat.baleeiro.desc':
+    'The <em>bote baleeiro</em> of the Azores: a long, light, narrow open boat that went out after sperm whales from the ' +
+    'islands until 1987, rowed or sailed with a jib and a big mainsail. Today they race in regattas at Horta and Pico.',
+  'boat.baleeiro.facts': '12 m · 2 m beam · about 500 kg · jib and mainsail',
+  'boat.bac.alt': 'The bac à voile of Arcachon with its gaff mainsail and jib',
+  'boat.bac.desc': 'A decked sailing boat of the Bassin d’Arcachon, with a gaff mainsail on a boom and a jib.',
+  'boat.bac.facts': '11.5 m · 3.5 m beam · about 2.9 t · gaff mainsail and jib',
   'land.dev': 'under development',
   'land.devBoats': 'Boats under development',
   'land.devNote': 'These boats can already be sailed (except the rabelo), but their 3D models and sailing are still being worked on.',

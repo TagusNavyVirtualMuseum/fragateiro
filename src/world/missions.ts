@@ -144,9 +144,9 @@ export const AREA_MISSIONS: Record<AreaId, { courses: RegattaCourse[]; routes: R
       { id: 'sroque', name: t('course.sroque'), at: 'São Roque do Pico', buoys: 2 },
     ],
     routes: [
-      { id: 'horta-madalena', from: 'Horta', to: 'Madalena', boat: 'falua', description: t('route.horta-madalena') },
-      { id: 'horta-sroque', from: 'Horta', to: 'São Roque do Pico', boat: 'falua', description: t('route.horta-sroque') },
-      { id: 'sroque-velas', from: 'São Roque do Pico', to: 'Velas', boat: 'falua', description: t('route.sroque-velas') },
+      { id: 'horta-madalena', from: 'Horta', to: 'Madalena', boat: 'baleeiro', description: t('route.horta-madalena') },
+      { id: 'horta-sroque', from: 'Horta', to: 'São Roque do Pico', boat: 'baleeiro', description: t('route.horta-sroque') },
+      { id: 'sroque-velas', from: 'São Roque do Pico', to: 'Velas', boat: 'baleeiro', description: t('route.sroque-velas') },
     ],
     grounds: [],
   },

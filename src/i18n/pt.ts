@@ -60,6 +60,14 @@ export const PT: Record<string, string> = {
     '<em>espadela</em>, um remo comprido à popa, manobrado de uma plataforma junto ao mastro. O seu modelo 3D está a ser melhorado: ' +
     'ainda não está no jogo.',
   'boat.rabelo.facts': '20 m · 4,5 m de boca · cerca de 40 t carregado · vela redonda',
+  'boat.baleeiro.alt': 'O bote baleeiro dos Açores com bujarrona e vela grande',
+  'boat.baleeiro.desc':
+    'O bote baleeiro dos Açores: um barco aberto comprido, leve e estreito, que saía das ilhas à caça do cachalote até ' +
+    '1987, a remos ou à vela, com bujarrona e uma grande vela. Hoje corre em regatas na Horta e no Pico.',
+  'boat.baleeiro.facts': '12 m · 2 m de boca · cerca de 500 kg · bujarrona e vela grande',
+  'boat.bac.alt': 'O bac à voile de Arcachon com vela de carangueja e estai',
+  'boat.bac.desc': 'Um veleiro de convés da Bacia de Arcachon, com vela de carangueja numa retranca e um estai.',
+  'boat.bac.facts': '11,5 m · 3,5 m de boca · cerca de 2,9 t · vela de carangueja e estai',
   'land.dev': 'em desenvolvimento',
   'land.devBoats': 'Barcos em desenvolvimento',
   'land.devNote': 'Estes barcos já podem ser navegados (exceto o rabelo), mas os seus modelos 3D e a navegação ainda estão a ser trabalhados.',

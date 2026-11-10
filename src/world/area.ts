@@ -61,7 +61,7 @@ export const AREAS: Record<AreaId, AreaInfo> = {
   azores: {
     id: 'azores',
     ports: ['Horta', 'Madalena', 'São Roque do Pico', 'Velas'],
-    boat: 'falua',
+    boat: 'baleeiro',
     tagusExtras: false,
     // The harbours (OpenStreetMap places sit inland, in the towns).
     extraPlaces: [

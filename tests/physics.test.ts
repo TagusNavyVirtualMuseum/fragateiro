@@ -7,6 +7,8 @@ import {
   PINASSE,
   MOLICEIRO,
   RABELO,
+  BALEEIRO,
+  BAC,
   FALUA,
   FRAGATA,
   MULETA,
@@ -63,6 +65,8 @@ for (const [boat, mode] of [
   [PINASSE, 'sailing'],
   [MOLICEIRO, 'sailing'],
   [RABELO, 'sailing'],
+  [BALEEIRO, 'sailing'],
+  [BAC, 'sailing'],
 ] as const) {
   describe(`${boat.name} (${mode}) points of sail`, () => {
     const angles = [30, 45, 90, 180];
@@ -158,7 +162,7 @@ describe('rudder with balanced sails', () => {
 
 describe('in irons', () => {
   it('a boat stopped head to wind only creeps backwards (under 1 kn after 40 s)', () => {
-    for (const boat of [FALUA, MULETA, FRAGATA, CATRAIO, CANOA, PINASSE, MOLICEIRO, RABELO]) {
+    for (const boat of [FALUA, MULETA, FRAGATA, CATRAIO, CANOA, PINASSE, MOLICEIRO, RABELO, BALEEIRO, BAC]) {
       const sim = new SailboatSim(boat, new SteadyWind(0, WIND), { heading: 0, u: 0.5 });
       sim.controls.mode = boat.modes[0].id;
       for (let i = 0; i < 40 * 30; i++) sim.step(1 / 30);
