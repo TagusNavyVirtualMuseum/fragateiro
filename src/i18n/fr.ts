@@ -1,19 +1,26 @@
 // Français. Les clés sont celles de en.ts.
 export const FR: Record<string, string> = {
   // --- Page d'accueil
-  'land.pageTitle': 'Fragateiro — jeux de voile sur le Tage',
-  'land.intro':
-    "Avant les ponts et les moteurs, plus de 3600 bateaux à voile travaillaient sur le Tage. Il en reste moins de 150. " +
-    'Ces petits jeux vous font naviguer sur cinq d’entre eux : la <strong>Falua</strong>, rapide, pour les passagers et la ' +
-    'marchandise, avec deux voiles latines ; la <strong>Muleta</strong> de Seixal, qui pêchait en dérivant par le travers sous ' +
-    'une foule de voiles ; la <strong>Fragata</strong>, la grande barge de charge du fleuve ; le petit <strong>Catraio</strong> ; ' +
-    'et la <strong>Canoa</strong>, avec sa grande voile latine.',
-  'land.game.title': 'Naviguer sur le Tage',
-  'land.game.desc': 'Régates, transports, pêche avec la Muleta ou navigation libre de Vila Franca de Xira à Cascais et au cap Espichel, avec cinq bateaux traditionnels.',
-  'land.learn.title': 'Apprendre à naviguer',
-  'land.learn.desc': 'Six courtes leçons sur les allures. Bientôt.',
-  'land.fish.title': 'Pêcher avec la Muleta',
-  'land.fish.desc': 'Dérivez par le travers et traînez le filet à travers les bancs de poissons. Dans le jeu, choisissez <em>Pêche</em>.',
+  'land.pageTitle': 'Fragateiro — bateaux traditionnels à voile du Portugal',
+  'land.tagline': 'Bateaux traditionnels à voile du Portugal',
+  'land.intro': 'Pendant des siècles le Portugal a transporté ses marchandises, ses gens et son poisson à la voile : fragatas et faluas sur le Tage, moliceiros sur la Ria de Aveiro, rabelos descendant le Douro, baleinières aux Açores. Avant les ponts et les moteurs, plus de 3600 bateaux à voile travaillaient sur le seul Tage ; il en reste moins de 150. Fragateiro vous permet de les mener sur des cartes réelles de leurs eaux, avec une physique propre à chaque bateau et à son gréement : régates autour des bouées, transport de passagers et de marchandises, pêche, nettoyage des eaux, ou simple navigation.',
+  'land.play': 'Jouer',
+  'land.boatsNote': 'Chaque bateau navigue avec le gréement qu’il portait vraiment. Les trois premiers sont terminés ; les autres sont en préparation.',
+  'land.sailing': 'Comment ils naviguent',
+  'land.france': 'De France',
+  'land.franceNote': 'Deux bateaux du Bassin d’Arcachon, invités de la flotte portugaise.',
+  'sail.how.title': 'Remonter au vent',
+  'sail.how.text': 'Une voile fonctionne comme une aile : le vent qui la contourne tire le bateau vers l’avant et sur le côté, et la coque s’accroche à l’eau pour avancer. Aucun bateau ne va droit contre le vent : ces bateaux traditionnels remontent à environ 50° et tirent des bords pour gagner au vent. Bordez les écoutes au près, choquez-les quand le vent vient de l’arrière.',
+  'sail.lateen.title': 'Voile latine',
+  'sail.lateen.text': 'Un grand triangle sur une longue antenne hissée en biais sur le mât : la Falua et la Canoa. Très bonne au près ; l’antenne doit passer de l’autre côté du mât à chaque virement.',
+  'sail.sprit.title': 'Voile à livarde',
+  'sail.sprit.text': 'Une voile à quatre côtés tenue par une perche en diagonale, l’<em>espicha</em> : le Catraio. Simple et facile à manœuvrer avec peu d’équipage.',
+  'sail.gaff.title': 'Voile à corne',
+  'sail.gaff.text': 'Une voile à quatre côtés, la tête sur une corne et la bordure sur une bôme : la Fragata (avec un foc) et le Bac. Puissante et facile à réduire.',
+  'sail.lug.title': 'Voile au tiers',
+  'sail.lug.text': 'Une voile à quatre côtés sur une vergue qui croise le mât : le Moliceiro et la Pinasse. Une seule voile qu’on peut border jusque dans l’axe.',
+  'sail.square.title': 'Voile carrée',
+  'sail.square.text': 'Une voile en travers du bateau sur une vergue : le Rabelo, fait pour le vent qui descend la vallée du Douro. Il ne remonte pas au vent : il vire lof pour lof au lieu de virer de bord.',
   'land.boats': 'Les bateaux',
   'boat.falua.alt': 'La Falua sous voiles',
   'boat.falua.desc':

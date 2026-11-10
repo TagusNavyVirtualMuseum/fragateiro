@@ -1,18 +1,26 @@
 // English texts (the reference: every key must exist here). {name} marks a value filled in.
 export const EN: Record<string, string> = {
   // --- Landing page
-  'land.pageTitle': 'Fragateiro — Tagus sailing games',
-  'land.intro':
-    'Before bridges and engines, more than 3600 sailing boats worked on the Tagus River. Fewer than 150 remain. ' +
-    'These small games let you sail five of them: the <strong>Falua</strong>, a fast passenger and cargo boat with two ' +
-    'lateen sails; the <strong>Muleta</strong> of Seixal, which fished by drifting sideways under a crowd of sails; the ' +
-    '<strong>Fragata</strong>, the big cargo barge of the river; the small <strong>Catraio</strong>; and the <strong>Canoa</strong>, with its great lateen sail.',
-  'land.game.title': 'Sailing the Tagus',
-  'land.game.desc': 'Regattas, transport runs, fishing with the Muleta, or free sailing from Vila Franca de Xira to Cascais and Cabo Espichel, with five traditional boats.',
-  'land.learn.title': 'Learn to sail',
-  'land.learn.desc': 'Six short lessons on the points of sail. Coming soon.',
-  'land.fish.title': 'Fishing with the Muleta',
-  'land.fish.desc': 'Drift sideways and drag the net through the shoals. In the game, choose <em>Fishing</em>.',
+  'land.pageTitle': 'Fragateiro — traditional sailing boats of Portugal',
+  'land.tagline': 'Traditional sailing boats of Portugal',
+  'land.intro': 'For centuries Portugal moved its goods, its people and its fish under sail: fragatas and faluas on the Tagus, moliceiros in the Ria de Aveiro, rabelos down the Douro, whaleboats in the Azores. Before bridges and engines more than 3600 sailing boats worked on the Tagus alone; fewer than 150 remain. Fragateiro lets you sail them on real maps of their waters, with physics that follow each boat and its rig: race round buoys, carry passengers and cargo, fish, clean the water, or just sail.',
+  'land.play': 'Play',
+  'land.boatsNote': 'Each boat is sailed with the rig it really carried. The first three are complete; the others are under development.',
+  'land.sailing': 'How they sail',
+  'land.france': 'From France',
+  'land.franceNote': 'Two boats of the Bassin d’Arcachon, guests of the Portuguese fleet.',
+  'sail.how.title': 'Sailing against the wind',
+  'sail.how.text': 'A sail works like a wing: the wind flowing round it pulls the boat forward and sideways, and the hull grips the water so it goes forward. No boat sails straight into the wind: these traditional boats point about 50° off it and zig-zag (tack) to go upwind. Haul the sheets in close to the wind, let them out as the wind comes from behind.',
+  'sail.lateen.title': 'Lateen sail',
+  'sail.lateen.text': 'A big triangle on a long yard hoisted slanting up the mast: the Falua and the Canoa. Very good close to the wind; the yard has to be shifted round the mast when tacking.',
+  'sail.sprit.title': 'Spritsail',
+  'sail.sprit.text': 'A four-sided sail held up by a diagonal spar, the <em>espicha</em>: the Catraio. Simple and easy to handle in a small crew.',
+  'sail.gaff.title': 'Gaff sail',
+  'sail.gaff.text': 'A four-sided sail with its head on a gaff and its foot on a boom: the Fragata (with a jib) and the Bac. Powerful and easy to reef.',
+  'sail.lug.title': 'Lugsail',
+  'sail.lug.text': 'A four-sided sail on a yard that crosses the mast: the Moliceiro and the Pinasse. One sail that can be hauled right in along the hull.',
+  'sail.square.title': 'Square sail',
+  'sail.square.text': 'A sail set across the boat on a yard: the Rabelo, made for the wind blowing down the Douro valley. It cannot sail close to the wind: it turns away from it (wears) instead of tacking.',
   'land.boats': 'The boats',
   'boat.falua.alt': 'The Falua under sail',
   'boat.falua.desc':

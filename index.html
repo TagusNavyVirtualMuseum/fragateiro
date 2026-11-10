@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Fragateiro — Tagus sailing games</title>
-    <meta name="description" content="Browser mini-games with the traditional sailing boats of the Tagus River." />
+    <title>Fragateiro — traditional sailing boats of Portugal</title>
+    <meta name="description" content="Sail the traditional sailing boats of Portugal in your browser." />
     <style>
       :root { font-family: 'EB Garamond', Georgia, serif; font-size: 17px; color: #f5e9cf; background: radial-gradient(circle at 50% 0, #5d3a1f, #2a180b 70%); }
       h1, h2 { font-family: 'IM Fell English', Georgia, serif; font-weight: 400; }
@@ -48,6 +48,14 @@
       .lang-switch { display: flex; gap: 6px; }
       .lang-switch button { font: inherit; font-size: 14px; padding: 3px 10px; border-radius: 6px; border: 1px solid rgba(201, 162, 92, 0.6); background: transparent; color: #e2b866; cursor: pointer; }
       .lang-switch button.active { background: #e2b866; color: #2a180b; }
+      .hero { margin-top: 18px; }
+      h2.tagline { font-size: 26px; margin: 0 0 8px; color: #f5e9cf; }
+      .play { display: inline-block; margin-top: 14px; padding: 14px 44px; border-radius: 12px; background: #e2b866; color: #2a180b; font-family: 'IM Fell English', Georgia, serif; font-size: 26px; text-decoration: none; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35); }
+      .play:hover { background: #f0cc84; }
+      .rigs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 18px; }
+      .rig { padding: 14px 18px; border: 1px solid rgba(201, 162, 92, 0.6); border-radius: 12px; background: rgba(0, 0, 0, 0.18); }
+      .rig h3 { font-family: 'IM Fell English', Georgia, serif; font-weight: 400; font-size: 20px; margin: 0 0 6px; }
+      .rig p { margin: 0; font-size: 15px; }
     </style>
     <script type="module">
       import '@fontsource/eb-garamond/latin-400.css';
@@ -61,22 +69,14 @@
   <body>
     <main>
       <div class="top"><h1>Fragateiro</h1><span id="lang"></span></div>
-      <p data-i18n="land.intro"></p>
-      <div class="games">
-        <a class="card" href="./games/sailing/">
-          <h2 data-i18n="land.game.title"></h2>
-          <p data-i18n="land.game.desc"></p>
-        </a>
-        <div class="card soon">
-          <h2 data-i18n="land.learn.title"></h2>
-          <p data-i18n="land.learn.desc"></p>
-        </div>
-        <a class="card" href="./games/sailing/">
-          <h2 data-i18n="land.fish.title"></h2>
-          <p data-i18n="land.fish.desc"></p>
-        </a>
-      </div>
+      <section class="hero">
+        <h2 class="tagline" data-i18n="land.tagline"></h2>
+        <p data-i18n="land.intro"></p>
+        <a class="play" href="./games/sailing/" data-i18n="land.play"></a>
+      </section>
+
       <h2 class="section" data-i18n="land.boats"></h2>
+      <p class="note" data-i18n="land.boatsNote"></p>
       <div class="boats">
         <article class="boat">
           <img src="./src/assets/boats/falua.jpg" alt="" data-i18n-alt="boat.falua.alt" />
@@ -105,11 +105,6 @@
             <p class="credits">v0.2: Pedro Oliveira, Daniela Santos<br />v0.1 · <span data-i18n="credit.model"></span>: Duarte Gonçalves, Rodrigo Pereira</p>
           </div>
         </article>
-      </div>
-
-      <h2 class="section" data-i18n="land.devBoats"></h2>
-      <p class="note" data-i18n="land.devNote"></p>
-      <div class="boats">
         <article class="boat dev">
           <img src="./src/assets/boats/catraio.jpg" alt="" data-i18n-alt="boat.catraio.alt" />
           <div>
@@ -125,15 +120,6 @@
             <h3>Canoa <span class="badge" data-i18n="land.dev"></span></h3>
             <p data-i18n="boat.canoa.desc"></p>
             <p class="facts" data-i18n="boat.canoa.facts"></p>
-            <p class="credits" data-i18n="credit.ai"></p>
-          </div>
-        </article>
-        <article class="boat dev">
-          <img src="./src/assets/boats/pinasse.jpg" alt="" data-i18n-alt="boat.pinasse.alt" />
-          <div>
-            <h3>Pinasse à voile <span class="badge" data-i18n="land.dev"></span></h3>
-            <p data-i18n="boat.pinasse.desc"></p>
-            <p class="facts" data-i18n="boat.pinasse.facts"></p>
             <p class="credits" data-i18n="credit.ai"></p>
           </div>
         </article>
@@ -161,6 +147,30 @@
             <h3>Bote baleeiro <span class="badge" data-i18n="land.dev"></span></h3>
             <p data-i18n="boat.baleeiro.desc"></p>
             <p class="facts" data-i18n="boat.baleeiro.facts"></p>
+            <p class="credits" data-i18n="credit.ai"></p>
+          </div>
+        </article>
+      </div>
+
+      <h2 class="section" data-i18n="land.sailing"></h2>
+      <div class="rigs">
+        <div class="rig"><h3 data-i18n="sail.how.title"></h3><p data-i18n="sail.how.text"></p></div>
+        <div class="rig"><h3 data-i18n="sail.lateen.title"></h3><p data-i18n="sail.lateen.text"></p></div>
+        <div class="rig"><h3 data-i18n="sail.sprit.title"></h3><p data-i18n="sail.sprit.text"></p></div>
+        <div class="rig"><h3 data-i18n="sail.gaff.title"></h3><p data-i18n="sail.gaff.text"></p></div>
+        <div class="rig"><h3 data-i18n="sail.lug.title"></h3><p data-i18n="sail.lug.text"></p></div>
+        <div class="rig"><h3 data-i18n="sail.square.title"></h3><p data-i18n="sail.square.text"></p></div>
+      </div>
+
+      <h2 class="section" data-i18n="land.france"></h2>
+      <p class="note" data-i18n="land.franceNote"></p>
+      <div class="boats">
+        <article class="boat dev">
+          <img src="./src/assets/boats/pinasse.jpg" alt="" data-i18n-alt="boat.pinasse.alt" />
+          <div>
+            <h3>Pinasse à voile <span class="badge" data-i18n="land.dev"></span></h3>
+            <p data-i18n="boat.pinasse.desc"></p>
+            <p class="facts" data-i18n="boat.pinasse.facts"></p>
             <p class="credits" data-i18n="credit.ai"></p>
           </div>
         </article>

@@ -1,18 +1,26 @@
 // Português (europeu). As chaves são as de en.ts.
 export const PT: Record<string, string> = {
   // --- Página inicial
-  'land.pageTitle': 'Fragateiro — jogos de vela no Tejo',
-  'land.intro':
-    'Antes das pontes e dos motores, mais de 3600 barcos à vela trabalhavam no rio Tejo. Restam menos de 150. ' +
-    'Estes pequenos jogos deixam-no navegar em cinco deles: a <strong>Falua</strong>, rápida, de passageiros e carga, com duas ' +
-    'velas latinas; a <strong>Muleta</strong> do Seixal, que pescava a derivar de lado sob uma multidão de velas; a ' +
-    '<strong>Fragata</strong>, a grande barcaça de carga do rio; o pequeno <strong>Catraio</strong>; e a <strong>Canoa</strong>, com a sua grande vela latina.',
-  'land.game.title': 'Navegar no Tejo',
-  'land.game.desc': 'Regatas, transportes, pesca com a Muleta ou navegação livre de Vila Franca de Xira a Cascais e ao Cabo Espichel, com cinco barcos tradicionais.',
-  'land.learn.title': 'Aprender a velejar',
-  'land.learn.desc': 'Seis lições curtas sobre os rumos à vela. Em breve.',
-  'land.fish.title': 'Pescar com a Muleta',
-  'land.fish.desc': 'Derive de lado e arraste a rede pelos cardumes. No jogo, escolha <em>Pesca</em>.',
+  'land.pageTitle': 'Fragateiro — barcos tradicionais à vela de Portugal',
+  'land.tagline': 'Barcos tradicionais à vela de Portugal',
+  'land.intro': 'Durante séculos Portugal transportou mercadorias, pessoas e peixe à vela: fragatas e faluas no Tejo, moliceiros na Ria de Aveiro, rabelos pelo Douro abaixo, botes baleeiros nos Açores. Antes das pontes e dos motores, mais de 3600 barcos à vela trabalhavam só no Tejo; restam menos de 150. O Fragateiro deixa-o navegar neles em mapas reais das suas águas, com uma física própria de cada barco e do seu aparelho: regatas entre boias, transporte de passageiros e carga, pesca, limpeza das águas, ou simplesmente navegar.',
+  'land.play': 'Jogar',
+  'land.boatsNote': 'Cada barco navega com o aparelho que de facto usava. Os três primeiros estão completos; os outros estão em desenvolvimento.',
+  'land.sailing': 'Como navegam',
+  'land.france': 'De França',
+  'land.franceNote': 'Dois barcos da Bacia de Arcachon, convidados da frota portuguesa.',
+  'sail.how.title': 'Navegar contra o vento',
+  'sail.how.text': 'Uma vela funciona como uma asa: o vento que passa por ela puxa o barco para a frente e para o lado, e o casco agarra-se à água para que avance. Nenhum barco navega diretamente contra o vento: estes barcos tradicionais bolinam a cerca de 50° dele e vão bordejando para subir ao vento. Cace as escotas com o vento pela proa, folgue-as quando o vento vem de trás.',
+  'sail.lateen.title': 'Vela latina',
+  'sail.lateen.text': 'Um grande triângulo numa verga comprida, içada inclinada no mastro: a Falua e a Canoa. Muito boa à bolina; a verga tem de passar para o outro lado do mastro ao virar.',
+  'sail.sprit.title': 'Vela de espicha',
+  'sail.sprit.text': 'Uma vela de quatro lados sustentada por uma vara em diagonal, a <em>espicha</em>: o Catraio. Simples e fácil de manobrar com pouca tripulação.',
+  'sail.gaff.title': 'Vela de carangueja',
+  'sail.gaff.text': 'Uma vela de quatro lados com a testa numa carangueja e a esteira numa retranca: a Fragata (com estai) e o Bac. Potente e fácil de rizar.',
+  'sail.lug.title': 'Vela de pendão',
+  'sail.lug.text': 'Uma vela de quatro lados numa verga que cruza o mastro: o Moliceiro e a Pinasse. Uma só vela que pode ser caçada até ao longo do casco.',
+  'sail.square.title': 'Vela redonda',
+  'sail.square.text': 'Uma vela atravessada no barco numa verga: o Rabelo, feito para o vento que desce o vale do Douro. Não bolina: em vez de virar por d’avante, vira em roda.',
   'land.boats': 'Os barcos',
   'boat.falua.alt': 'A Falua à vela',
   'boat.falua.desc':
