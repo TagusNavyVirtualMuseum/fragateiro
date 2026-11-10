@@ -52,6 +52,7 @@ export class SailingHud {
   private readonly readout = el('div', 'readout');
   private readonly compassBoat: SVGGElement;
   private readonly compassWind: SVGGElement;
+  private readonly compassApparent: SVGGElement;
   private readonly compassTarget: SVGGElement;
   private readonly nav = el('div', 'nav');
   private readonly rudderBar = el('div', 'rudder-bar');
@@ -108,20 +109,21 @@ export class SailingHud {
         <text y="-34" class="n">N</text><text x="36" y="4" class="t">E</text><text y="42" class="t">S</text><text x="-36" y="4" class="t">W</text>
         <g class="target" visibility="hidden"><path d="M0,-47 L-5,-38 L5,-38 Z"/></g>
         <g class="wind"><path d="M0,-44 L0,-20 M-6,-28 L0,-20 L6,-28"/></g>
+        <g class="apparent"><path d="M0,-44 L0,-24 M-5,-31 L0,-24 L5,-31"/></g>
         <g class="boat"><path d="M0,-22 C7,-10 7,12 5,20 L-5,20 C-7,12 -7,-10 0,-22 Z"/></g>
       </svg>`;
     this.compassBoat = inst.querySelector('g.boat')!;
     this.compassWind = inst.querySelector('g.wind')!;
+    this.compassApparent = inst.querySelector('g.apparent')!;
+    const key = el('div', 'wind-key', `<span class="true">↓</span> ${t('ro.trueWind')} <span class="app">↓</span> ${t('ro.apparentWind')}`);
+    inst.querySelector('svg')!.after(key);
     this.compassTarget = inst.querySelector('g.target')!;
     inst.append(this.readout, this.nav, this.warning, this.toastBox);
     this.toastBox.hidden = true;
 
-    // --- Bottom left: sails
-    const sails = el('section', 'panel sails');
-    sails.append(el('h2', '', `${t('hud.sheets')} <small class="keys-hint">${t('hud.sheetsKeys')}</small><small class="touch-hint">${t('hud.sheetsTouch')}</small>`), this.sheets);
-
-    // --- Bottom centre: rudder (touch-friendly)
+    // --- Bottom centre: one panel for the sheets and the rudder (touch-friendly)
     const helm = el('section', 'panel helm');
+    helm.append(el('h2', '', `${t('hud.sheets')} <small class="keys-hint">${t('hud.sheetsKeys')}</small><small class="touch-hint">${t('hud.sheetsTouch')}</small>`), this.sheets);
     this.rudderLeft = el('button', 'hold', t('hud.port'));
     this.rudderRight = el('button', 'hold', t('hud.starboard'));
     this.rudderBar.append(this.rudderNeedle);
@@ -217,7 +219,7 @@ export class SailingHud {
     toggle.title = t('hud.settingsTitle');
     toggle.onclick = () => opts.classList.toggle('open');
 
-    root.append(info, inst, sails, helm, opts, toggle);
+    root.append(info, inst, helm, opts, toggle);
   }
 
   private camOutputs!: { distOut: HTMLOutputElement; heightOut: HTMLOutputElement };
@@ -363,13 +365,13 @@ export class SailingHud {
       <dl>
         <dt>${t('ro.heading')}</dt><dd>${heading.toFixed(0)}°</dd>
         <dt>${t('ro.pointOfSail')}</dt><dd>${pointOfSail}${twa >= 36 ? `, ${tack}` : ''}</dd>
-        <dt>${t('ro.trueWind')}</dt><dd>${twa.toFixed(0)}° · ${toKnots(wind.speed).toFixed(0)} kn</dd>
-        <dt>${t('ro.apparentWind')}</dt><dd>${Math.abs(report.apparentWindAngleDeg).toFixed(0)}° · ${toKnots(report.apparentWindSpeed).toFixed(0)} kn</dd>
         <dt>${t('ro.heel')}</dt><dd>${Math.abs(rad2deg(state.heel)).toFixed(0)}°</dd>
         <dt>${t('ro.drift')}</dt><dd>${this.easy ? t('ro.driftEasy') : `${toKnots(state.v).toFixed(1)} kn ${state.v >= 0 ? '→' : '←'}`}</dd>
       </dl>`;
     this.compassBoat.setAttribute('transform', `rotate(${heading})`);
     this.compassWind.setAttribute('transform', `rotate(${rad2deg(wind.from)})`);
+    // The apparent wind, as felt on board: from the boat's heading plus its angle.
+    this.compassApparent.setAttribute('transform', `rotate(${heading + report.apparentWindAngleDeg})`);
     this.rudderNeedle.style.left = `${50 + controls.rudder * 45}%`;
     for (const [g, input] of this.sliders) {
       if (document.activeElement !== input) input.value = String(controls.sheets[g] ?? 0.5);

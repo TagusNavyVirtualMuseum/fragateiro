@@ -56,11 +56,16 @@ canvas { width: 100%; height: 100%; display: block; touch-action: none; outline:
 .readout dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
 .warning { margin-top: 8px; padding: 6px 8px; border-radius: 6px; background: rgba(227, 163, 59, 0.2); color: #ffd28a; }
 
-.sails { bottom: 16px; left: 16px; width: 320px; }
+/* Sheets and rudder share one panel at the bottom centre. */
+.helm .sheet + h2, .helm .sheets + h2 { margin-top: 8px; }
+.wind-key { text-align: center; font-size: 11px; color: var(--muted); margin: -2px 0 4px; }
+.wind-key .true { color: #1f4f7a; font-weight: bold; }
+.wind-key .app { color: #2a8a4a; font-weight: bold; }
+.compass .apparent path { stroke: #2a8a4a; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .sheet .name { width: 86px; }
 .sheet .end { color: var(--muted); font-size: 11px; }
 
-.helm { bottom: 16px; left: 50%; transform: translateX(-50%); width: 340px; }
+.helm { bottom: 16px; left: 50%; transform: translateX(-50%); width: 380px; }
 .helm-row { display: flex; align-items: center; gap: 8px; }
 .helm button.hold { padding: 10px 12px; user-select: none; touch-action: none; }
 .rudder-bar { position: relative; flex: 1; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.12); }
@@ -88,7 +93,6 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
   .compass { width: 70px; height: 70px; }
   .readout .big { font-size: 24px; }
   .readout dl { display: none; }
-  .sails { bottom: 100px; width: calc(100vw - 32px); }
   .helm { bottom: 16px; left: 16px; transform: none; width: calc(100vw - 32px); }
   .options { display: none; }
 }
@@ -166,7 +170,6 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
 }
 @media (max-width: 900px) {
   /* Commands on the left, compass and speed on the right of them. */
-  .sails { bottom: 92px; left: 16px; width: calc(100vw - 32px - 128px); padding: 8px 10px; }
   .helm { bottom: 16px; left: 16px; width: calc(100vw - 32px - 128px); padding: 8px 10px; }
   .helm button.hold { padding: 8px 6px; font-size: 13px; }
   .sheet .name { width: 64px; }
