@@ -93,7 +93,7 @@ export const AREAS = {
     /** At sea off Machico. */
     origin: { lat: 32.705, lon: -16.74 },
     checks: {
-      land: { 'Santa Cruz': [32.689, -16.795], Machico: [32.72, -16.765], 'Ponta de São Lourenço': [32.743, -16.7] },
+      land: { 'Santa Cruz': [32.695, -16.81], Machico: [32.72, -16.765], 'Ponta de São Lourenço': [32.743, -16.7] },
       water: { origin: [32.705, -16.74], 'north coast': [32.8, -16.8], 'off the point': [32.73, -16.65] },
       report: { 'off Porto da Cruz': [32.775, -16.825], 'off Santa Cruz': [32.686, -16.785] },
     },
