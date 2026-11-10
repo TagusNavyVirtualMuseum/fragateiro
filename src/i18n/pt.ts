@@ -49,6 +49,17 @@ export const PT: Record<string, string> = {
     'numa verga e um patilhão móvel. As pinasses pescavam e apanhavam ostras na baía; algumas ainda correm nas suas ' +
     'regatas. O seu modelo 3D foi feito a partir de fotografias com o Meshy.',
   'boat.pinasse.facts': '8,65 m · 1,82 m de boca · cerca de 600 kg · vela de pendão (cerca de 22 m²) e patilhão',
+  'boat.moliceiro.alt': 'O moliceiro de Aveiro com a sua proa pintada e vela de pendão',
+  'boat.moliceiro.desc':
+    'O barco da Ria de Aveiro, feito para apanhar o moliço na laguna: comprido, chato e de pouco calado, com a proa alta ' +
+    'e recurvada pintada com cenas coloridas e uma grande vela de pendão. O seu modelo 3D foi feito a partir de fotografias com o Meshy.',
+  'boat.moliceiro.facts': '15 m · 2,5 m de boca · cerca de 6 t · vela de pendão',
+  'boat.rabelo.alt': 'O rabelo do Douro carregado de pipas de vinho do Porto',
+  'boat.rabelo.desc':
+    'O barco que trazia as pipas de vinho do Porto pelo Douro abaixo. Uma vela quadrada para o vento de popa e a ' +
+    '<em>espadela</em>, um remo comprido à popa, manobrado de uma plataforma junto ao mastro. Não bolina: em vez de virar ' +
+    'por d’avante, vire em roda. O seu modelo 3D foi feito a partir de fotografias com o Meshy.',
+  'boat.rabelo.facts': '20 m · 4,5 m de boca · cerca de 40 t carregado · vela redonda',
   'land.note': 'Os pesos são as estimativas usadas pela física do jogo.',
   'land.about': 'Sobre o projeto →',
   'land.paper': 'Ler o artigo →',

@@ -15,9 +15,13 @@ import catraioLite from '../assets/models/lite/catraio.glb?url';
 import canoaLite from '../assets/models/lite/canoa.glb?url';
 import pinasseUrl from '../assets/models/pinasse.glb?url';
 import pinasseLite from '../assets/models/lite/pinasse.glb?url';
+import moliceiroUrl from '../assets/models/moliceiro.glb?url';
+import moliceiroLite from '../assets/models/lite/moliceiro.glb?url';
+import rabeloUrl from '../assets/models/rabelo.glb?url';
+import rabeloLite from '../assets/models/lite/rabelo.glb?url';
 
 /** Light model of each boat, for the other boats sailing on the river. */
-export const LITE_URLS: Record<string, string> = { falua: faluaLite, muleta: muletaLite, fragata: fragataLite, catraio: catraioLite, canoa: canoaLite, pinasse: pinasseLite };
+export const LITE_URLS: Record<string, string> = { falua: faluaLite, muleta: muletaLite, fragata: fragataLite, catraio: catraioLite, canoa: canoaLite, pinasse: pinasseLite, moliceiro: moliceiroLite, rabelo: rabeloLite };
 
 type V3 = [number, number, number];
 
@@ -36,6 +40,8 @@ export interface PartVisual {
 export interface SailVisual extends PartVisual {
   /** Physics sail id. */
   sail: string;
+  /** The sail's angle as modelled, rad (0: along the hull; a square sail drawn across: π/2). */
+  restAngle?: number;
 }
 
 export interface BoatVisual {
@@ -326,6 +332,57 @@ export const BOAT_VISUALS: Record<string, BoatVisual> = {
       nodes: ['Leme'],
       pivot: [4.35, 0, 0],
       axis: { base: [4.35, -0.42, 0], top: [4.35, 1.0, 0] }, // hung on the sternpost
+    },
+  },
+  moliceiro: {
+    boat: 'moliceiro',
+    // Made with Meshy from photos, cut by scripts/cut-model.mjs (scripts/boats/moliceiro-meshy.mjs).
+    hullNodes: ['Casco'],
+    url: moliceiroUrl,
+    unit: 1,
+    scale: 1,
+    cgX: 1.0,
+    waterline: 0,
+    sails: [
+      {
+        sail: 'main',
+        nodes: ['Vela'],
+        pivot: [-1.9, 0, 0],
+        axis: { base: [-1.875, 0.94, 0], top: [1.15, 12.4, 0] }, // the mast, raked aft
+      },
+    ],
+    sheets: [{ sail: 'main', clew: [6.04, 1.35, 0], to: [6.7, 1.0, 0] }],
+    rudder: {
+      nodes: ['Leme'],
+      pivot: [8.2, 0, 0],
+      axis: { base: [8.2, -0.6, 0], top: [8.2, 2.2, 0] }, // hung on the stern
+    },
+  },
+  rabelo: {
+    boat: 'rabelo',
+    // Made with Meshy from photos, cut by scripts/cut-model.mjs (scripts/boats/rabelo-meshy.mjs).
+    // Bow towards +x; the square sail is modelled across the boat.
+    bowPositiveX: true,
+    hullNodes: ['Casco'],
+    url: rabeloUrl,
+    unit: 1,
+    scale: 1,
+    cgX: -0.5,
+    waterline: 0,
+    sails: [
+      {
+        sail: 'main',
+        nodes: ['Vela'],
+        restAngle: Math.PI / 2,
+        pivot: [-0.64, 0, 0],
+        axis: { base: [-0.64, 1.5, 0], top: [-0.64, 13.6, 0] }, // the mast
+      },
+    ],
+    // The espadela, the long steering oar, turns about the sternpost.
+    rudder: {
+      nodes: ['Leme'],
+      pivot: [-9.92, 0, 0.4],
+      axis: { base: [-9.92, -1, 0.4], top: [-9.92, 3, 0.4] },
     },
   },
 };

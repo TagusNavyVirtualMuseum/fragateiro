@@ -49,6 +49,17 @@ export const EN: Record<string, string> = {
     'yard and a centreboard. Pinasses fished and dredged oysters in the bay; a few still sail at its regattas. ' +
     'Its 3D model was made from photos with Meshy.',
   'boat.pinasse.facts': '8.65 m · 1.82 m beam · about 600 kg · lugsail (about 22 m²) and centreboard',
+  'boat.moliceiro.alt': 'The moliceiro of Aveiro with its painted prow and lugsail',
+  'boat.moliceiro.desc':
+    'The boat of the Ria de Aveiro, built to gather seaweed (<em>moliço</em>) from the lagoon: long, flat and shallow, with ' +
+    'a high curling prow painted with bright scenes and one big lugsail. Its 3D model was made from photos with Meshy.',
+  'boat.moliceiro.facts': '15 m · 2.5 m beam · about 6 t · lugsail',
+  'boat.rabelo.alt': 'The rabelo of the Douro loaded with casks of port wine',
+  'boat.rabelo.desc':
+    'The boat that brought the casks of port wine down the Douro to Porto. One square sail for a following wind, and ' +
+    'the <em>espadela</em>, a long oar over the stern, worked from a platform by the mast. It cannot sail close to the wind: ' +
+    'turn it away from the wind (wear) instead of tacking. Its 3D model was made from photos with Meshy.',
+  'boat.rabelo.facts': '20 m · 4.5 m beam · about 40 t loaded · square sail',
   'land.note': "Weights are the estimates used by the game's physics.",
   'land.about': 'About the project →',
   'land.paper': 'Read the paper →',

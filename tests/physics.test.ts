@@ -5,6 +5,8 @@ import {
   CATRAIO,
   CANOA,
   PINASSE,
+  MOLICEIRO,
+  RABELO,
   FALUA,
   FRAGATA,
   MULETA,
@@ -59,6 +61,8 @@ for (const [boat, mode] of [
   [CATRAIO, 'sailing'],
   [CANOA, 'sailing'],
   [PINASSE, 'sailing'],
+  [MOLICEIRO, 'sailing'],
+  [RABELO, 'sailing'],
 ] as const) {
   describe(`${boat.name} (${mode}) points of sail`, () => {
     const angles = [30, 45, 90, 180];
@@ -68,8 +72,11 @@ for (const [boat, mode] of [
       expect(p30.surgeKn).toBeLessThan(0.5);
     });
 
-    it('can sail close-hauled at about 45°', () => {
-      expect(p45.surgeKn).toBeGreaterThan(1);
+    // A square sail cannot be braced close enough to sail at 45°: it makes way from about 60°.
+    const square = boat.sails.every((x) => x.minAngle >= 30);
+    it(square ? 'makes way with the wind at 60° (square rig)' : 'can sail close-hauled at about 45°', () => {
+      if (square) expect(polar(boat, mode, WIND, [60], 5)[0].surgeKn).toBeGreaterThan(1);
+      else expect(p45.surgeKn).toBeGreaterThan(1);
     });
 
     it('is faster on a beam reach than close-hauled, with plausible speeds', () => {
@@ -151,7 +158,7 @@ describe('rudder with balanced sails', () => {
 
 describe('in irons', () => {
   it('a boat stopped head to wind only creeps backwards (under 1 kn after 40 s)', () => {
-    for (const boat of [FALUA, MULETA, FRAGATA, CATRAIO, CANOA, PINASSE]) {
+    for (const boat of [FALUA, MULETA, FRAGATA, CATRAIO, CANOA, PINASSE, MOLICEIRO, RABELO]) {
       const sim = new SailboatSim(boat, new SteadyWind(0, WIND), { heading: 0, u: 0.5 });
       sim.controls.mode = boat.modes[0].id;
       for (let i = 0; i < 40 * 30; i++) sim.step(1 / 30);
@@ -163,7 +170,9 @@ describe('in irons', () => {
 describe('tacking', () => {
   // Close-hauled with the wind 50° on the starboard bow, then hard rudder towards the wind:
   // the boat must carry its way through the wind onto the other tack.
-  for (const boat of [FALUA, MULETA, FRAGATA, CATRAIO, CANOA, PINASSE]) {
+  for (const boat of [FALUA, MULETA, FRAGATA, CATRAIO, CANOA, PINASSE, MOLICEIRO, RABELO]) {
+    // A square-rigged boat wears round (turns through downwind) instead: not tested here.
+    if (boat.sails.every((x) => x.minAngle >= 30)) continue;
     it(`${boat.name} can tack`, () => {
       const mode = boat.modes[0].id;
       const sim = new SailboatSim(boat, new SteadyWind(0, WIND), { heading: deg2rad(-50) });

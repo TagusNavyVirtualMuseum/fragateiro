@@ -51,6 +51,17 @@ export const FR: Record<string, string> = {
     'au tiers sur une vergue et une dérive. Les pinasses pêchaient et draguaient les huîtres dans le bassin ; ' +
     'quelques-unes courent encore ses régates. Son modèle 3D a été créé à partir de photos avec Meshy.',
   'boat.pinasse.facts': '8,65 m · 1,82 m de large · environ 600 kg · voile au tiers (environ 22 m²) et dérive',
+  'boat.moliceiro.alt': 'Le moliceiro d’Aveiro, sa proue peinte et sa voile au tiers',
+  'boat.moliceiro.desc':
+    'Le bateau de la Ria de Aveiro, fait pour récolter les algues (<em>moliço</em>) de la lagune : long, plat et peu profond, ' +
+    'avec une haute proue recourbée peinte de scènes colorées et une grande voile au tiers. Son modèle 3D a été créé à partir de photos avec Meshy.',
+  'boat.moliceiro.facts': '15 m · 2,5 m de large · environ 6 t · voile au tiers',
+  'boat.rabelo.alt': 'Le rabelo du Douro chargé de fûts de porto',
+  'boat.rabelo.desc':
+    'Le bateau qui descendait le Douro avec les fûts de porto. Une voile carrée pour le vent arrière et l’<em>espadela</em>, ' +
+    'un long aviron de queue manœuvré depuis une plateforme près du mât. Il ne remonte pas au vent : virez lof pour lof ' +
+    'plutôt que de virer de bord. Son modèle 3D a été créé à partir de photos avec Meshy.',
+  'boat.rabelo.facts': '20 m · 4,5 m de large · environ 40 t chargé · voile carrée',
   'land.note': 'Les masses sont les estimations utilisées par la physique du jeu.',
   'land.about': 'À propos du projet →',
   'land.paper': 'Lire l’article →',

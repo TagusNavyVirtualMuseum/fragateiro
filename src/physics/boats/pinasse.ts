@@ -36,7 +36,7 @@ export const PINASSE: BoatSpec = {
   },
   rudder: { area: 0.5, x: -4.15, liftSlope: 3.5, stallDeg: 25, maxAngleDeg: 35 },
   sails: [
-    { id: 'main', name: 'Lugsail', group: 'main', area: 22, pivot: [1.15, 0], ceDistance: 1.15, ceHeight: 3.0, minAngle: 20, maxAngle: 80, efficiency: 0.8 },
+    { id: 'main', name: 'Lugsail', group: 'main', area: 22, pivot: [1.15, 0], ceDistance: 1.15, ceHeight: 3.0, minAngle: 0, maxAngle: 80, efficiency: 0.8 },
   ],
   modes: [{ id: 'sailing', name: 'Sailing', description: 'Lugsail set, centreboard down.', sails: ['main'] }],
 };

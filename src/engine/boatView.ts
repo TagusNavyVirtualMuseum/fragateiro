@@ -29,6 +29,8 @@ interface Pivot {
   axis: Vector3;
   /** 0..1, eases the flapping in and out. */
   flap: number;
+  /** The sail's angle as modelled (a square sail drawn across the boat: π/2). */
+  rest?: number;
 }
 
 /**
@@ -106,6 +108,7 @@ export class BoatView {
     for (const sv of visual.sails) {
       const p = makePivot(`${spec.id}-sail-${sv.sail}`, sv);
       p.sail = sv.sail;
+      p.rest = sv.restAngle;
       this.sails.set(sv.sail, p);
     }
     this.rudder = makePivot(`${spec.id}-rudder`, visual.rudder);
@@ -339,7 +342,11 @@ export class BoatView {
       for (const m of p.parts) m.setEnabled(active);
       p.flap += ((r?.luffing && active ? 1 : 0) - p.flap) * Math.min(1, dt / 0.5);
       const flap = p.flap * 0.045 * Math.sin(time * 7 + i * 1.3) * (0.7 + 0.3 * Math.sin(time * 2.3 + i));
-      Quaternion.RotationAxisToRef(p.axis, (state.sailAngles[id] ?? 0) + flap, p.node.rotationQuaternion!);
+      // A sail modelled at an angle (a square sail across the boat) turns from there, its
+      // belly always forward.
+      const a = state.sailAngles[id] ?? 0;
+      const turn = p.rest ? (a >= 0 ? a - p.rest : a + p.rest) : a;
+      Quaternion.RotationAxisToRef(p.axis, turn + flap, p.node.rotationQuaternion!);
       i++;
     }
     this.root.computeWorldMatrix(true);
