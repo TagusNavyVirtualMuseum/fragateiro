@@ -29,6 +29,12 @@ import aveiroJson from '../assets/map/aveiro.json';
 import pasaiaMask from '../assets/map/pasaia-mask.png?url';
 import pasaiaHeight from '../assets/map/pasaia-height.png?url';
 import pasaiaJson from '../assets/map/pasaia.json';
+import azoresMask from '../assets/map/azores-mask.png?url';
+import azoresHeight from '../assets/map/azores-height.png?url';
+import azoresJson from '../assets/map/azores.json';
+import madeiraMask from '../assets/map/madeira-mask.png?url';
+import madeiraHeight from '../assets/map/madeira-height.png?url';
+import madeiraJson from '../assets/map/madeira.json';
 import { getArea, type AreaId } from '../world/area';
 import { LandMask, type MapMeta } from '../world/landMask';
 import { Terrain, type HeightsMeta } from '../world/terrain';
@@ -53,6 +59,8 @@ const FILES: Record<AreaId, { meta: unknown; mask: string; height: string }> = {
   arcachon: { meta: arcachonJson, mask: arcachonMask, height: arcachonHeight },
   aveiro: { meta: aveiroJson, mask: aveiroMask, height: aveiroHeight },
   pasaia: { meta: pasaiaJson, mask: pasaiaMask, height: pasaiaHeight },
+  azores: { meta: azoresJson, mask: azoresMask, height: azoresHeight },
+  madeira: { meta: madeiraJson, mask: madeiraMask, height: madeiraHeight },
 };
 const AREA = getArea();
 const maskUrl = FILES[AREA.id].mask;

@@ -153,12 +153,13 @@ prints the areas and centres the physics needs. Then continue from step 2.
 
 ## The maps
 
-There are four sailing areas, each its own map, chosen in the mission menu (or with
-`?area=tejo|arcachon|aveiro`; the choice is remembered; the Pasaia map is hidden from the menu for now but opens with `?area=pasaia`): the **lower Tagus** from Vila
+There are six sailing areas, each its own map, chosen in the mission menu (or with
+`?area=tejo|arcachon|aveiro|azores|madeira`; the choice is remembered; the Pasaia map is hidden from the menu for now but opens with `?area=pasaia`): the **lower Tagus** from Vila
 Franca de Xira to Cascais and Cabo Espichel, the **Bassin d'Arcachon** (home of the pinasse,
 with the Cap Ferret lighthouse, the Thiers and Eyrac piers and the huts on stilts), the **Ria
-de Aveiro**, and the Basque coast at **Pasaia** (Pasajes), from San Sebastián to
-Saint-Jean-de-Luz. Each has its ports, regattas and transport routes (`src/world/area.ts`,
+de Aveiro**, the central **Azores** (Horta, Madalena, São Roque do Pico, Velas), the east of
+**Madeira** (Santa Cruz, Machico, Porto da Cruz, Ponta de São Lourenço), and the Basque coast
+at **Pasaia** (Pasajes), from San Sebastián to Saint-Jean-de-Luz. Each has its ports, regattas and transport routes (`src/world/area.ts`,
 `src/world/missions.ts`); the Tagus also has its landmarks, the Muleta's fishing grounds, and
 dolphins and orcas.
 

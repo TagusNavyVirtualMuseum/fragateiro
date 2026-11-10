@@ -2,7 +2,7 @@
 // The maps themselves are built by scripts/fetch-map.mjs (areas in scripts/map-areas.mjs).
 import { DESTINATION_NAMES, EXTRA_PLACES } from './destinations';
 
-export type AreaId = 'tejo' | 'arcachon' | 'aveiro' | 'pasaia';
+export type AreaId = 'tejo' | 'arcachon' | 'aveiro' | 'pasaia' | 'azores' | 'madeira';
 
 export interface AreaInfo {
   id: AreaId;
@@ -57,6 +57,31 @@ export const AREAS: Record<AreaId, AreaInfo> = {
     boat: 'pinasse',
     tagusExtras: false,
     extraPlaces: [{ name: 'Socoa', kind: 'village', lat: 43.3945, lon: -1.6855 }],
+  },
+  azores: {
+    id: 'azores',
+    ports: ['Horta', 'Madalena', 'São Roque do Pico', 'Velas'],
+    boat: 'falua',
+    tagusExtras: false,
+    // The harbours (OpenStreetMap places sit inland, in the towns).
+    extraPlaces: [
+      { name: 'Horta', kind: 'town', lat: 38.531, lon: -28.625 },
+      { name: 'Madalena', kind: 'town', lat: 38.536, lon: -28.53 },
+      { name: 'São Roque do Pico', kind: 'village', lat: 38.527, lon: -28.319 },
+      { name: 'Velas', kind: 'town', lat: 38.681, lon: -28.208 },
+    ],
+  },
+  madeira: {
+    id: 'madeira',
+    ports: ['Santa Cruz', 'Machico', 'Ponta de São Lourenço', 'Porto da Cruz'],
+    boat: 'falua',
+    tagusExtras: false,
+    extraPlaces: [
+      { name: 'Santa Cruz', kind: 'town', lat: 32.687, lon: -16.79 },
+      { name: 'Machico', kind: 'town', lat: 32.716, lon: -16.762 },
+      { name: 'Ponta de São Lourenço', kind: 'village', lat: 32.744, lon: -16.705 }, // the quay in the Baía d'Abra
+      { name: 'Porto da Cruz', kind: 'village', lat: 32.773, lon: -16.826 },
+    ],
   },
 };
 export const AREA_IDS = Object.keys(AREAS) as AreaId[];

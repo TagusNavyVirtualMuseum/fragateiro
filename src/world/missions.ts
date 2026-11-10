@@ -138,6 +138,30 @@ export const AREA_MISSIONS: Record<AreaId, { courses: RegattaCourse[]; routes: R
     ],
     grounds: [],
   },
+  azores: {
+    courses: [
+      { id: 'horta', name: t('course.horta'), at: 'Horta', buoys: 3 },
+      { id: 'sroque', name: t('course.sroque'), at: 'São Roque do Pico', buoys: 2 },
+    ],
+    routes: [
+      { id: 'horta-madalena', from: 'Horta', to: 'Madalena', boat: 'falua', description: t('route.horta-madalena') },
+      { id: 'horta-sroque', from: 'Horta', to: 'São Roque do Pico', boat: 'falua', description: t('route.horta-sroque') },
+      { id: 'sroque-velas', from: 'São Roque do Pico', to: 'Velas', boat: 'falua', description: t('route.sroque-velas') },
+    ],
+    grounds: [],
+  },
+  madeira: {
+    courses: [
+      { id: 'machico', name: t('course.machico'), at: 'Machico', buoys: 3 },
+      { id: 'santacruz', name: t('course.santacruz'), at: 'Santa Cruz', buoys: 2 },
+    ],
+    routes: [
+      { id: 'santacruz-slourenco', from: 'Santa Cruz', to: 'Ponta de São Lourenço', boat: 'falua', description: t('route.santacruz-slourenco') },
+      { id: 'portocruz-slourenco', from: 'Porto da Cruz', to: 'Ponta de São Lourenço', boat: 'falua', description: t('route.portocruz-slourenco') },
+      { id: 'machico-santacruz', from: 'Machico', to: 'Santa Cruz', boat: 'falua', description: t('route.machico-santacruz') },
+    ],
+    grounds: [],
+  },
 };
 
 /** Clean-ups: rubbish to pick up off a port, in every area. */
@@ -150,6 +174,8 @@ export const CLEANUPS: Record<AreaId, CleanupInfo[]> = {
   arcachon: [{ id: 'clean-arcachon', name: t('cleanup.arcachon'), at: 'Arcachon' }],
   aveiro: [{ id: 'clean-sjacinto', name: t('cleanup.sjacinto'), at: 'São Jacinto' }],
   pasaia: [{ id: 'clean-concha', name: t('cleanup.concha'), at: 'Donostia / San Sebastián' }],
+  azores: [{ id: 'clean-horta', name: t('cleanup.horta'), at: 'Horta' }],
+  madeira: [{ id: 'clean-machico', name: t('cleanup.machico'), at: 'Machico' }],
 };
 
 /** Supply runs: out to a fishing boat at anchor and back. */
@@ -168,6 +194,8 @@ export const SUPPLIES: Record<AreaId, SupplyInfo[]> = {
   arcachon: [],
   aveiro: [],
   pasaia: [],
+  azores: [],
+  madeira: [],
 };
 
 /** The missions of the area open now. */

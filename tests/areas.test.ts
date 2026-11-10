@@ -4,7 +4,7 @@ import { AREAS, AREA_IDS } from '../src/world/area';
 import { AREA_MISSIONS, CLEANUPS, SUPPLIES } from '../src/world/missions';
 import { BOATS } from '../src/physics';
 
-const FILES = { tejo: 'tagus', arcachon: 'arcachon', aveiro: 'aveiro', pasaia: 'pasaia' } as const;
+const FILES = { tejo: 'tagus', arcachon: 'arcachon', aveiro: 'aveiro', pasaia: 'pasaia', azores: 'azores', madeira: 'madeira' } as const;
 
 describe('sailing areas', () => {
   for (const id of AREA_IDS) {
