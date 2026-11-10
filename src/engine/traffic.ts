@@ -19,6 +19,8 @@ interface Boat {
   sim: SailboatSim;
   pilot: Pilot;
   view?: BoatView;
+  /** One of a crowd added for a busy challenge (removed after it). */
+  crowd?: boolean;
 }
 
 export class Traffic {
@@ -42,10 +44,17 @@ export class Traffic {
     void this.loadModels();
   }
 
-  private async loadModels(): Promise<void> {
-    for (const b of this.boats) {
+  private async loadModels(boats = this.boats): Promise<void> {
+    for (const b of boats) {
+      if (b.view || !this.boats.includes(b)) continue;
       try {
-        b.view = await BoatView.load(this.scene, b.spec, { ...BOAT_VISUALS[b.spec.id], url: LITE_URLS[b.spec.id] });
+        const view = await BoatView.load(this.scene, b.spec, { ...BOAT_VISUALS[b.spec.id], url: LITE_URLS[b.spec.id] });
+        // The crowd may have gone while this one was loading.
+        if (!this.boats.includes(b)) {
+          view.dispose();
+          continue;
+        }
+        b.view = view;
         b.view.setVisible(this.visible);
       } catch (e) {
         console.warn(`could not load the light ${b.spec.id}`, e);
@@ -69,6 +78,54 @@ export class Traffic {
     const s = b.sim.state;
     const w = pickWaypoint(this.mask, s.x, s.y, Math.random, 600, 2000);
     if (w) Object.assign(b.pilot, { wx: w.x, wy: w.y });
+  }
+
+  /**
+   * A crowd for a busy crossing: more boats, close around the player (200-1200 m), each
+   * heading somewhere across the area. Removed by clearCrowd().
+   */
+  addCrowd(specs: BoatSpec[], player: { x: number; y: number }): void {
+    const added: Boat[] = [];
+    for (const spec of specs) {
+      const boat: Boat = { spec, sim: new SailboatSim(spec, this.wind, {}), pilot: { wx: 0, wy: 0, tack: 1, nextTack: 0, lastTack: 0 }, crowd: true };
+      const spot = pickWaypoint(this.mask, player.x, player.y, Math.random, 200, 1200);
+      if (!spot) continue;
+      const t = this.boats[0]?.sim.state.time ?? 0;
+      const heading = sailableHeading(this.mask, spot.x, spot.y, Math.random() * Math.PI * 2, this.wind.at(t, spot.x, spot.y).from, spec.length);
+      boat.sim = new SailboatSim(spec, this.wind, { x: spot.x, y: spot.y, heading, u: 1.5, time: t });
+      boat.sim.controls.balanced = true;
+      this.newWaypoint(boat);
+      this.boats.push(boat);
+      added.push(boat);
+    }
+    void this.loadModels(added);
+  }
+
+  clearCrowd(): void {
+    for (const b of this.boats.filter((x) => x.crowd)) {
+      b.view?.dispose();
+      this.boats.splice(this.boats.indexOf(b), 1);
+    }
+  }
+
+  /** The boats' hulls (centre, heading, length), for collisions. */
+  get hulls(): { x: number; y: number; heading: number; length: number; push: (dx: number, dy: number) => void }[] {
+    if (!this.visible) return [];
+    return this.boats.map((b) => {
+      const s = b.sim.state;
+      return {
+        x: s.x,
+        y: s.y,
+        heading: s.heading,
+        length: b.spec.length,
+        push: (dx: number, dy: number) => {
+          s.x += dx;
+          s.y += dy;
+          s.u *= 0.3;
+          s.v = 0;
+        },
+      };
+    });
   }
 
   setVisible(on: boolean): void {

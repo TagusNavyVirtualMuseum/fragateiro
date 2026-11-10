@@ -5,7 +5,7 @@ export const DESTINATION_NAMES = [
   // The coast, from the west
   'Cascais', 'Oeiras', 'Trafaria', 'Cabo Espichel', 'Sesimbra', 'Setúbal',
   // The estuary
-  'Lisboa', 'Almada', 'Alfeite', 'Seixal', 'Amora', 'Barreiro', 'Alhos Vedros', 'Moita', 'Sarilhos Pequenos', 'Montijo', 'Ilha do Rato', 'Alcochete',
+  'Lisboa', 'Almada', 'Alfeite', 'Seixal', 'Amora', 'Barreiro', 'Alhos Vedros', 'Moita', 'Sarilhos Pequenos', 'Montijo', 'Ilha do Rato', 'Alcochete', 'Gaio-Rosário',
   // Upriver
   'Sacavém', 'Alverca do Ribatejo', 'Vila Franca de Xira',
 ];
@@ -14,7 +14,11 @@ export const DESTINATION_NAMES = [
  * Places that are not named towns in OpenStreetMap, added by their latitude and longitude
  * (the Lisbon naval base at Alfeite).
  */
-export const EXTRA_PLACES: { name: string; kind: string; lat: number; lon: number }[] = [{ name: 'Alfeite', kind: 'village', lat: 38.6575, lon: -9.1335 }];
+export const EXTRA_PLACES: { name: string; kind: string; lat: number; lon: number }[] = [
+  { name: 'Alfeite', kind: 'village', lat: 38.6575, lon: -9.1335 },
+  // A race mark (not a port) 2 km north of Sarilhos Pequenos.
+  { name: 'Boia de Sarilhos', kind: 'mark', lat: 38.69913, lon: -8.98506 },
+];
 
 /** Add places (EXTRA_PLACES for the Tagus) to the map's places (once), with the projection of scripts/fetch-map.mjs. */
 export function addExtraPlaces(

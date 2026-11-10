@@ -118,7 +118,7 @@ export class Minimap {
   }
 
   /** Redraw with the boat at (x east, y north) and its heading (rad). */
-  draw(x: number, y: number, heading: number, target?: { x: number; y: number }, others: { x: number; y: number }[] = [], marks: { x: number; y: number }[] = [], marksAre: 'buoys' | 'shoals' = 'buoys'): void {
+  draw(x: number, y: number, heading: number, target?: { x: number; y: number }, others: { x: number; y: number }[] = [], marks: { x: number; y: number }[] = [], marksAre: 'buoys' | 'shoals' | 'trash' = 'buoys'): void {
     const m = this.mask.meta;
     const { width, height } = this.mask.sizeMetres;
     if (this.whole) {
@@ -147,7 +147,11 @@ export class Minimap {
     for (const m of marks) {
       const [mx, my] = this.toPx(m.x, m.y);
       ctx.beginPath();
-      if (marksAre === 'shoals') {
+      if (marksAre === 'trash') {
+        ctx.arc(mx, my, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#e0702a';
+        ctx.fill();
+      } else if (marksAre === 'shoals') {
         ctx.arc(mx, my, 6, 0, Math.PI * 2);
         ctx.fillStyle = '#1f8a8a';
         ctx.fill();
@@ -164,7 +168,13 @@ export class Minimap {
     this.legend.innerHTML =
       `<span class="lg-me">▲</span> ${t('legend.you')}` +
       (others.length ? ` · <span class="lg-boat">●</span> ${t('legend.boats')}` : '') +
-      (marks.length ? (marksAre === 'shoals' ? ` · <span class="lg-shoal">●</span> ${t('legend.shoals')}` : ` · <span class="lg-buoy">○</span> ${t('legend.buoys')}`) : '') +
+      (marks.length
+        ? marksAre === 'trash'
+          ? ` · <span class="lg-trash">●</span> ${t('legend.trash')}`
+          : marksAre === 'shoals'
+            ? ` · <span class="lg-shoal">●</span> ${t('legend.shoals')}`
+            : ` · <span class="lg-buoy">○</span> ${t('legend.buoys')}`
+        : '') +
       (target ? ` · <span class="lg-target">○</span> ${t('legend.target')}` : '');
     if (target) {
       const [tx, ty] = this.toPx(target.x, target.y);

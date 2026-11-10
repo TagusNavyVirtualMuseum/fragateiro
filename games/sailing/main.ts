@@ -1,6 +1,8 @@
 // Free sailing on the Tagus: switch between the Falua and the Muleta.
 import { BOATS, GustyWind, SailboatSim, defaultControls, deg2rad, groupsInMode, type BoatSpec } from '../../src/physics';
-import { BOAT_VISUALS } from '../../src/engine/boatVisuals';
+import { BOAT_VISUALS, LITE_URLS } from '../../src/engine/boatVisuals';
+import { TrashView } from '../../src/engine/trashView';
+import { COLLISION_PENALTY, SupplyRun, TrashField, touching } from '../../src/world/challenges';
 import { BoatView } from '../../src/engine/boatView';
 import { CAMERA_VIEWS, CameraRig } from '../../src/engine/cameraRig';
 import { ForceArrows } from '../../src/engine/forceArrows';
@@ -75,6 +77,15 @@ let level: Level = loadLevel();
 let mission: Mission = makeMission('free', 'Lisboa', BOATS[0].id, BOATS);
 /** The shoals of the fishing ground, during a fishing trip. */
 let fishing: FishingGround | null = null;
+/** Clean-up: the rubbish to pick up. */
+let trash: TrashField | null = null;
+/** Supply run: its phases, and the boat at anchor it goes to. */
+let supply: SupplyRun | null = null;
+let anchored: { sim: SailboatSim; view?: BoatView; x: number; y: number } | null = null;
+/** A busy crossing is on (crowd, gusts and wind shifts). */
+let busy = false;
+/** Game time of the last collision (one penalty per contact). */
+let lastHit = -Infinity;
 let run: MissionRun | null = null;
 let missionDone = false;
 /** Boat a mission requires (others cannot be chosen meanwhile), or null in free sailing. */
@@ -269,6 +280,43 @@ function applyInput(dt: number): void {
 
 const courseView = new CourseView(scene);
 const shoalView = new ShoalView(scene);
+const trashView = new TrashView(scene);
+
+/** Where a mission place is: a port's mooring, or a mark (a named place that is not a port). */
+function placeTarget(name: string): { x: number; y: number } | null {
+  const d = destinations.find((x) => x.name === name);
+  if (d) return d;
+  const p = mask.meta.places.find((x) => x.name === name);
+  return p ? mask.nearestWater(p.x, p.y, 2000, (a, b) => mask.isReachable(a, b)) : null;
+}
+
+/** Undo what the last challenge set up: rubbish, the boat at anchor, the crowd and the gusts. */
+function clearChallenge(): void {
+  trash = null;
+  trashView.setField(null);
+  supply = null;
+  anchored?.view?.dispose();
+  anchored = null;
+  if (busy) {
+    traffic?.clearCrowd();
+    wind.gust = gusty ? 0.3 : 0;
+    wind.shiftDeg = gusty ? 15 : 0;
+    busy = false;
+  }
+}
+
+/** A boat lying at anchor (for a supply run), drawn with its light model. */
+function anchorBoat(id: string, x: number, y: number): void {
+  const aspec = BOATS.find((b) => b.id === id);
+  if (!aspec) return;
+  const a = { sim: new SailboatSim(aspec, wind, { x, y, heading: wind.at(sim.state.time, x, y).from, time: sim.state.time }), x, y } as NonNullable<typeof anchored>;
+  for (const g of Object.keys(a.sim.controls.sheets)) a.sim.controls.sheets[g] = 1; // sails let fly
+  anchored = a;
+  void BoatView.load(scene, aspec, { ...BOAT_VISUALS[id], url: LITE_URLS[id] }).then((v) => {
+    if (anchored === a) a.view = v;
+    else v.dispose();
+  });
+}
 const menu = new MissionMenu(document.getElementById('hud')!, BOATS, readBest, (m, l) => void startMission(m, l), level);
 
 function loadLevel(): Level {
@@ -304,6 +352,7 @@ async function startMission(m: Mission, l: Level): Promise<void> {
   run = null;
   fishing = null;
   shoalView.clear();
+  clearChallenge();
   courseView.setCourse(null);
   target = null;
   mapView.setTarget(null);
@@ -327,10 +376,40 @@ async function startMission(m: Mission, l: Level): Promise<void> {
     }
   } else if (m.kind === 'transport') {
     const from = destinations.find((d) => d.name === m.from);
-    const to = destinations.find((d) => d.name === m.to);
+    const to = placeTarget(m.to);
     if (from && to) {
       teleport(from);
       run = new MissionRun(m, sim.state.time, null, { x: to.x, y: to.y });
+      if (m.busy && traffic) {
+        // Busy waters: a crowd of the river's boats, strong gusts and the wind swinging.
+        busy = true;
+        const local = BOATS.filter((b) => (b.home ?? 'tejo') === AREA.id);
+        traffic.addCrowd(Array.from({ length: 12 }, (_, i) => local[i % local.length]), sim.state);
+        wind.gust = 0.45;
+        wind.shiftDeg = 35;
+        hud.toast(t('busy.toast'));
+      }
+    }
+  } else if (m.kind === 'cleanup') {
+    const at = destinations.find((d) => d.name === m.at);
+    if (at) {
+      teleport(at);
+      // The rubbish drifts about a kilometre off the port.
+      let centre = { x: at.x + Math.sin(at.heading) * 900, y: at.y + Math.cos(at.heading) * 900 };
+      if (!mask.isReachable(centre.x, centre.y)) centre = { x: at.x, y: at.y };
+      trash = new TrashField(mask, centre, m.count, Math.random, { x: sim.state.x, y: sim.state.y });
+      trashView.setField(trash);
+      run = new MissionRun(m, sim.state.time, null, null);
+    }
+  } else if (m.kind === 'supply') {
+    const from = destinations.find((d) => d.name === m.from);
+    if (from) {
+      teleport(from);
+      const p = toMapXY(mask.meta.origin, m.meet);
+      const meet = mask.nearestWater(p.x, p.y, 2000, (a, b) => mask.isReachable(a, b));
+      supply = new SupplyRun(meet, { x: from.x, y: from.y }, ARRIVAL_RADIUS);
+      anchorBoat(m.meetBoat, meet.x, meet.y);
+      run = new MissionRun(m, sim.state.time, null, null);
     }
   } else if (m.kind === 'regatta') {
     const at = destinations.find((d) => d.name === m.at);
@@ -407,6 +486,33 @@ function keepCameraAboveGround(): void {
   camera.beta = Math.max(0.05, Math.min(camera.beta, Math.acos(c)));
 }
 
+/**
+ * Collisions with the other boats: both are pushed apart and slowed; during a mission each
+ * contact costs COLLISION_PENALTY seconds.
+ */
+function collide(): void {
+  if (!traffic) return;
+  const s = sim.state;
+  for (const h of traffic.hulls) {
+    const me = { x: s.x, y: s.y, length: spec.length };
+    if (!touching(me, h)) continue;
+    const dx = s.x - h.x;
+    const dy = s.y - h.y;
+    const d = Math.hypot(dx, dy) || 1;
+    const gap = 0.4 * (spec.length + h.length) * 0.5 + 2 - d;
+    s.x += (dx / d) * gap * 0.5;
+    s.y += (dy / d) * gap * 0.5;
+    h.push((-dx / d) * gap * 0.5, (-dy / d) * gap * 0.5);
+    s.u *= 0.3;
+    s.v = 0;
+    if (run && !missionDone && s.time - lastHit > 4) {
+      run.penalty += COLLISION_PENALTY;
+      hud.toast(t('collision.toast', { s: COLLISION_PENALTY }), 3);
+    }
+    lastHit = s.time;
+  }
+}
+
 async function main(): Promise<void> {
   const [first, map] = await Promise.all([loadView(spec.id), loadMapMask()]);
   mask = map.mask;
@@ -459,7 +565,7 @@ async function main(): Promise<void> {
   paused = true;
   menu.show();
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get wildlife() { return wildlife; }, netSweep, get fishing() { return fishing; }, get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
+  Object.assign(window, { game: { get wildlife() { return wildlife; }, netSweep, get fishing() { return fishing; }, get trash() { return trash; }, get supply() { return supply; }, get anchored() { return anchored; }, get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -467,7 +573,10 @@ async function main(): Promise<void> {
       applyInput(dt);
       sim.controls.balanced = level !== 'hard';
       sim.controls.noDrift = level === 'easy';
+      const before = sim.state.time;
       stepWithLand(dt * timeScale);
+      /** Game seconds this frame actually advanced (slow frames are capped). */
+      const gameDt = sim.state.time - before;
       time += dt;
       if (fishing && run && !missionDone) {
         fishing.update(netSweep(), dt * timeScale);
@@ -475,7 +584,22 @@ async function main(): Promise<void> {
           run.finishedAt = sim.state.time;
           finishMission();
         }
+      } else if (trash && run && !missionDone) {
+        const got = trash.update(sim.state.x, sim.state.y, sim.state.time);
+        if (got.length) hud.toast(t('trash.got', { n: trash.picked, total: trash.items.length }), 3);
+        if (trash.left === 0) {
+          run.finishedAt = sim.state.time;
+          finishMission();
+        }
+      } else if (supply && run && !missionDone) {
+        const was = supply.phase;
+        const st = sim.state;
+        if (supply.update(st.x, st.y, Math.hypot(st.u, st.v), gameDt)) {
+          run.finishedAt = st.time;
+          finishMission();
+        } else if (was !== 'home' && supply.phase === 'home' && mission.kind === 'supply') hud.toast(t('supply.loaded', { port: mission.from }));
       } else if (run && !missionDone && run.update(sim.state.x, sim.state.y, sim.state.time)) finishMission();
+      collide();
     }
     const s = sim.state;
     const w = wind.at(s.time, s.x, s.y);
@@ -484,12 +608,29 @@ async function main(): Promise<void> {
     netView.update(view.root, spec.net, !!sim.mode.net, s, sim.report.trueWindAngleDeg >= 0, time);
     mapView.update(time, camera);
     traffic?.update(s, paused ? 0 : dt * timeScale, time, dt);
+    if (anchored) {
+      // At anchor: the bow swings into the wind, the sails let fly.
+      const a = anchored.sim;
+      a.state.heading = wind.at(a.state.time, anchored.x, anchored.y).from;
+      a.step(paused ? 0 : Math.min(0.25, dt * timeScale));
+      Object.assign(a.state, { x: anchored.x, y: anchored.y, u: 0, v: 0, r: 0 });
+      anchored.view?.update(a.state, a.report, 0, time, dt);
+    }
+    trashView.update(time, s.time);
     courseView.update(run?.next ?? -1, time);
     if (fishing) shoalView.update(fishing.shoals, sim.state.time, dt);
     const shoal = fishing ? fishing.nearest(s.x, s.y) : null;
-    const goal = fishing ? shoal : run ? run.goal : target;
-    minimap.draw(s.x, s.y, s.heading, goal ?? undefined, traffic?.positions, run?.course?.buoys ?? fishing?.shoals.filter((x) => x.kg >= 5), fishing ? 'shoals' : 'buoys');
+    const piece = trash ? trash.nearest(s.x, s.y) : null;
+    const goal = fishing ? shoal : trash ? piece : supply ? supply.goal : run ? run.goal : target;
+    const others = [...(traffic?.positions ?? []), ...(anchored ? [anchored] : [])];
+    if (trash) minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, trash.items.filter((x) => x.pickedAt === null), 'trash');
+    else minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, run?.course?.buoys ?? fishing?.shoals.filter((x) => x.kg >= 5), fishing ? 'shoals' : 'buoys');
     let nav = null;
+    const toward = (g: { x: number; y: number }) => {
+      const dx = g.x - s.x;
+      const dy = g.y - s.y;
+      return { distance: Math.hypot(dx, dy), bearing: ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360 };
+    };
     if (fishing && run && mission.kind === 'fishing') {
       const dx = (shoal?.x ?? s.x) - s.x;
       const dy = (shoal?.y ?? s.y) - s.y;
@@ -500,6 +641,38 @@ async function main(): Promise<void> {
         name: t(sim.mode.net ? 'fish.nearest' : 'fish.nearestM'),
         distance: Math.hypot(dx, dy),
         bearing: ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360,
+        elapsed: run.elapsed(s.time),
+        arrived: missionDone,
+      };
+    } else if (trash && run) {
+      // The tall orange post marks the nearest piece (not on the hard level), until it is
+      // close enough to see.
+      const to = toward(piece ?? s);
+      mapView.setTarget(level === 'hard' || to.distance < 150 ? null : piece);
+      nav = {
+        title: t('trash.title', { n: trash.picked, total: trash.items.length }),
+        name: t('trash.nearest'),
+        ...to,
+        elapsed: run.elapsed(s.time),
+        arrived: missionDone,
+      };
+    } else if (supply && run && mission.kind === 'supply') {
+      // The post marks where to go, until the boat at anchor is close enough to see.
+      mapView.setTarget(supply.phase !== 'home' && toward(supply.meet).distance < 300 ? null : supply.goal);
+      const m = mission;
+      const boatName = BOATS.find((b) => b.id === m.meetBoat)?.name ?? '';
+      const close = Math.hypot(supply.meet.x - s.x, supply.meet.y - s.y) < 35;
+      nav = {
+        title:
+          supply.phase === 'alongside'
+            ? t('supply.alongside', { pct: Math.round(supply.progress * 100) })
+            : supply.phase === 'out' && close
+              ? t('supply.slow')
+              : supply.phase === 'out'
+                ? t('supply.out', { boat: boatName })
+                : t('supply.home'),
+        name: supply.phase === 'home' || supply.phase === 'done' ? m.from : boatName,
+        ...toward(supply.goal),
         elapsed: run.elapsed(s.time),
         arrived: missionDone,
       };

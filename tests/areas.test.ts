@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { AREAS, AREA_IDS } from '../src/world/area';
-import { AREA_MISSIONS } from '../src/world/missions';
+import { AREA_MISSIONS, CLEANUPS, SUPPLIES } from '../src/world/missions';
 import { BOATS } from '../src/physics';
 
 const FILES = { tejo: 'tagus', arcachon: 'arcachon', aveiro: 'aveiro', pasaia: 'pasaia' } as const;
@@ -16,8 +16,16 @@ describe('sailing areas', () => {
     });
     it(`${id}: missions start and end at its ports, with a boat the game has`, () => {
       const m = AREA_MISSIONS[id];
-      const places = [...m.courses.map((c) => c.at), ...m.routes.flatMap((r) => [r.from, r.to]), ...m.grounds.map((g) => g.at)];
-      expect(places.filter((p) => !area.ports.includes(p))).toEqual([]);
+      const marks = area.extraPlaces.filter((p) => p.kind === 'mark').map((p) => p.name);
+      const places = [
+        ...m.courses.map((c) => c.at),
+        ...m.routes.flatMap((r) => [r.from, r.to]),
+        ...m.grounds.map((g) => g.at),
+        ...CLEANUPS[id].map((c) => c.at),
+        ...SUPPLIES[id].map((c) => c.from),
+      ];
+      expect(places.filter((p) => !area.ports.includes(p) && !marks.includes(p))).toEqual([]);
+      expect(SUPPLIES[id].filter((c) => !BOATS.some((b) => b.id === c.boat) || !BOATS.some((b) => b.id === c.meetBoat))).toEqual([]);
       expect(m.routes.filter((r) => !BOATS.some((b) => b.id === r.boat))).toEqual([]);
       expect(BOATS.some((b) => b.id === area.boat)).toBe(true);
     });

@@ -2,11 +2,12 @@
 // sailing), then where and with which boat. Also the result panel at the end of a mission.
 import type { BoatSpec } from '../physics';
 import { t } from '../i18n';
-import { FISHING_TARGET_KG, LEVELS, MISSION_KINDS, areaMissions, makeMission, type Level, type Mission, type MissionKind } from '../world/missions';
+import { TRASH_COUNT } from '../world/challenges';
+import { FISHING_TARGET_KG, LEVELS, placeName, MISSION_KINDS, areaMissions, makeMission, type Level, type Mission, type MissionKind } from '../world/missions';
 import { AREA_IDS, getArea, setArea } from '../world/area';
 
 const AREA = getArea();
-const { courses: COURSES, routes: ROUTES, grounds: GROUNDS } = areaMissions();
+const { courses: COURSES, routes: ROUTES, grounds: GROUNDS, cleanups: CLEANUPS, supplies: SUPPLIES } = areaMissions();
 
 /** mm:ss (or h:mm:ss) of a game time in seconds. */
 export function formatTime(seconds: number): string {
@@ -26,6 +27,8 @@ export class MissionMenu {
     regatta: { option: COURSES[0]?.id ?? '', boat: AREA.boat },
     transport: { option: ROUTES[0]?.id ?? '', boat: ROUTES[0]?.boat ?? AREA.boat },
     fishing: { option: GROUNDS[0]?.id ?? '', boat: 'muleta' },
+    cleanup: { option: CLEANUPS[0]?.id ?? '', boat: AREA.boat },
+    supply: { option: SUPPLIES[0]?.id ?? '', boat: SUPPLIES[0]?.boat ?? AREA.boat },
     free: { option: AREA.ports[0], boat: AREA.boat },
   };
 
@@ -56,7 +59,7 @@ export class MissionMenu {
     const panel = this.panel(t('menu.whatToDo'));
     panel.append(this.areaPicker(), this.levelPicker());
     const list = el('div', 'mission-list kinds');
-    const offered = { regatta: COURSES.length, transport: ROUTES.length, fishing: GROUNDS.length, free: 1 };
+    const offered = { regatta: COURSES.length, transport: ROUTES.length, cleanup: CLEANUPS.length, supply: SUPPLIES.length, fishing: GROUNDS.length, free: 1 };
     for (const k of MISSION_KINDS) {
       if (!offered[k.id]) continue;
       const card = el('button', 'mission-card');
@@ -123,12 +126,23 @@ export class MissionMenu {
         t('menu.route'),
         ROUTES.map((r) => ({
           id: r.id,
-          label: `${r.from} → ${r.to}`,
-          note: t('route.traditionally', { boat: this.boats.find((b) => b.id === r.boat)?.name ?? r.boat }),
+          label: `${r.from} → ${placeName(r.to)}`,
+          note: r.busy ? r.description : t('route.traditionally', { boat: this.boats.find((b) => b.id === r.boat)?.name ?? r.boat }),
           onPick: () => (c.boat = r.boat),
         })),
       );
       boatButtons();
+    } else if (kind === 'cleanup') {
+      optionButtons(t('menu.cleanupWhere'), CLEANUPS.map((c) => ({ id: c.id, label: c.name })));
+      boatButtons();
+      body.append(el('p', 'level-text', t('menu.cleanupHelp', { count: TRASH_COUNT })));
+    } else if (kind === 'supply') {
+      optionButtons(
+        t('menu.supplyRun'),
+        SUPPLIES.map((r) => ({ id: r.id, label: r.name, note: r.description, onPick: () => (c.boat = r.boat) })),
+      );
+      boatButtons();
+      body.append(el('p', 'level-text', t('menu.supplyHelp')));
     } else if (kind === 'fishing') {
       optionButtons(t('menu.ground'), GROUNDS.map((g) => ({ id: g.id, label: g.name })));
       body.append(

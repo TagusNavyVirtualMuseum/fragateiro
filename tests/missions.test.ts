@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { LandMask, type MapMeta } from '../src/world/landMask';
 import { BOATS } from '../src/physics';
-import { FISHING_GROUNDS, MISSION_KINDS, REGATTA_COURSES, ROUTES, MissionRun, buildCourse, makeMission } from '../src/world/missions';
+import { CLEANUPS, FISHING_GROUNDS, MISSION_KINDS, SUPPLIES, REGATTA_COURSES, ROUTES, MissionRun, buildCourse, makeMission } from '../src/world/missions';
 
 // 20 x 20 km: open water, land in the east (x >= 4 km).
 function mask(): LandMask {
@@ -44,7 +44,18 @@ describe('missions', () => {
   it('builds a mission for every choice, with ids that keep best times apart', () => {
     const ids = new Set<string>();
     for (const k of MISSION_KINDS) {
-      const options = k.id === 'regatta' ? REGATTA_COURSES.map((c) => c.id) : k.id === 'transport' ? ROUTES.map((r) => r.id) : k.id === 'fishing' ? FISHING_GROUNDS.map((g) => g.id) : ['Lisboa'];
+      const options =
+        k.id === 'regatta'
+          ? REGATTA_COURSES.map((c) => c.id)
+          : k.id === 'transport'
+            ? ROUTES.map((r) => r.id)
+            : k.id === 'cleanup'
+              ? CLEANUPS.tejo.map((c) => c.id)
+              : k.id === 'supply'
+                ? SUPPLIES.tejo.map((c) => c.id)
+                : k.id === 'fishing'
+                  ? FISHING_GROUNDS.map((g) => g.id)
+                  : ['Lisboa'];
       for (const o of options) {
         for (const b of BOATS) {
           const m = makeMission(k.id, o, b.id, BOATS);
@@ -55,7 +66,9 @@ describe('missions', () => {
         }
       }
     }
-    // Regattas and transport keep one best time per boat; fishing is always the Muleta.
-    expect(ids.size).toBe(REGATTA_COURSES.length * BOATS.length + ROUTES.length * BOATS.length + FISHING_GROUNDS.length + BOATS.length);
+    // Regattas, transport, clean-ups and supply runs keep one best time per boat; fishing is
+    // always the Muleta.
+    const perBoat = REGATTA_COURSES.length + ROUTES.length + CLEANUPS.tejo.length + SUPPLIES.tejo.length + 1;
+    expect(ids.size).toBe(perBoat * BOATS.length + FISHING_GROUNDS.length);
   });
 });

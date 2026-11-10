@@ -231,6 +231,7 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
 .map-legend .lg-me { color: #c0262d; }
 .map-legend .lg-boat { color: #3b2312; text-shadow: 0 0 2px #ead9b4; }
 .map-legend .lg-shoal { color: #1f8a8a; }
+.map-legend .lg-trash { color: #e0702a; }
 .map-legend .lg-buoy { color: #d9a400; font-weight: bold; }
 .map-legend .lg-target { color: #e3a33b; font-weight: bold; }
 

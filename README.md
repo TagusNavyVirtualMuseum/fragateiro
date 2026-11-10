@@ -30,7 +30,16 @@ do, then where and with which boat.
   in order (within 45 m), then back to the line.
 - **Transport:** Lisbon–Almada, Moita–Lisbon, Sarilhos–Barreiro, Vila Franca–Lisbon, with any
   boat (the menu suggests the one that traditionally sailed the route). Ends within 150 m of
-  the port.
+  the port. Also two short races (Moita to Gaio-Rosário; Sarilhos Pequenos to a buoy 2 km
+  north) and the **busy crossing** Almada–Lisbon: a crowd of a dozen more boats about, strong
+  gusts and the wind swinging up to 35°; each collision costs 15 s.
+- **Clean-up** (every area): 12 pieces of rubbish (bottles, bags, crates, barrels, lost nets)
+  float off a port; sail over each one (within 14 m) to pick it up. They show on the chart
+  as orange dots; on easy and medium the orange post marks the nearest until it is in sight.
+- **Supply run:** a Muleta lies at anchor 2 km south of the Bugio. Sail out from Trafaria,
+  come alongside slowly (under 1.5 kn, within 35 m) and stay 25 s while the goods go across
+  and the fish come back, then sail home. Rules in `src/world/challenges.ts` (tested).
+- Collisions with the other boats push both apart and slow them, in any mission.
 - **Fishing** (Muleta): off Seixal, at the river mouth or in Cascais bay. Shoals show as dark
   patches of bubbling water with fish jumping and gulls circling over them. Sail to windward
   of one, switch to lateral fishing (M) and drift sideways over it: the net on the windward

@@ -1,7 +1,8 @@
 // Missions: regattas round buoys, transport between ports, fishing, or free sailing.
 // Plain TypeScript (no 3D), so the rules can be tested.
 import type { LandMask } from './landMask';
-import { t } from '../i18n';
+import { t, tMaybe } from '../i18n';
+import { TRASH_COUNT } from './challenges';
 import { getArea, type AreaId } from './area';
 
 export type Level = 'easy' | 'medium' | 'hard';
@@ -12,18 +13,22 @@ export const LEVELS: { id: Level; name: string; description: string }[] = [
   { id: 'hard', name: t('level.hard'), description: t('level.hard.desc') },
 ];
 
-export type MissionKind = 'regatta' | 'transport' | 'fishing' | 'free';
+export type MissionKind = 'regatta' | 'transport' | 'cleanup' | 'supply' | 'fishing' | 'free';
 
 export type Mission =
-  | { id: string; kind: 'transport'; title: string; boat: string; from: string; to: string }
+  | { id: string; kind: 'transport'; title: string; boat: string; from: string; to: string; busy?: boolean }
+  | { id: string; kind: 'cleanup'; title: string; boat: string; at: string; count: number }
+  | { id: string; kind: 'supply'; title: string; boat: string; from: string; meet: { lat: number; lon: number }; meetBoat: string }
   | { id: string; kind: 'regatta'; title: string; boat: string; at: string; buoys: 2 | 3 }
   | { id: string; kind: 'fishing'; title: string; boat: string; at: string; targetKg: number }
   | { id: string; kind: 'free'; title: string; boat: string; from: string };
 
-/** The four kinds of mission, as the menu shows them first. */
+/** The kinds of mission, as the menu shows them first. */
 export const MISSION_KINDS: { id: MissionKind; title: string; description: string }[] = [
   { id: 'regatta', title: t('kind.regatta'), description: t('kind.regatta.desc') },
   { id: 'transport', title: t('kind.transport'), description: t('kind.transport.desc') },
+  { id: 'cleanup', title: t('kind.cleanup'), description: t('kind.cleanup.desc') },
+  { id: 'supply', title: t('kind.supply'), description: t('kind.supply.desc') },
   { id: 'fishing', title: t('kind.fishing'), description: t('kind.fishing.desc') },
   { id: 'free', title: t('kind.free'), description: t('kind.free.desc') },
 ];
@@ -37,7 +42,28 @@ export interface RegattaCourse {
 export interface Route {
   id: string;
   from: string;
+  /** A port, or a mark (a place on the map that is not a port, e.g. a race buoy). */
   to: string;
+  boat: string;
+  description: string;
+  /** A crowded crossing: many boats about, strong gusts and big wind shifts. */
+  busy?: boolean;
+}
+export interface CleanupInfo {
+  id: string;
+  name: string;
+  at: string;
+}
+export interface SupplyInfo {
+  id: string;
+  name: string;
+  /** The port one sails from, and back to. */
+  from: string;
+  /** Where the fishing boat lies at anchor. */
+  meet: { lat: number; lon: number };
+  /** Which boat that is. */
+  meetBoat: string;
+  /** The boat that does the run. */
   boat: string;
   description: string;
 }
@@ -60,6 +86,9 @@ export const ROUTES: Route[] = [
   { id: 'moita-lisboa', from: 'Moita', to: 'Lisboa', boat: 'fragata', description: t('route.moita-lisboa') },
   { id: 'sarilhos-barreiro', from: 'Sarilhos Pequenos', to: 'Barreiro', boat: 'fragata', description: t('route.sarilhos-barreiro') },
   { id: 'vfx-lisboa', from: 'Vila Franca de Xira', to: 'Lisboa', boat: 'fragata', description: t('route.vfx-lisboa') },
+  { id: 'moita-gaio', from: 'Moita', to: 'Gaio-Rosário', boat: 'catraio', description: t('route.moita-gaio') },
+  { id: 'sarilhos-boia', from: 'Sarilhos Pequenos', to: 'Boia de Sarilhos', boat: 'catraio', description: t('route.sarilhos-boia') },
+  { id: 'almada-lisboa-busy', from: 'Almada', to: 'Lisboa', boat: 'catraio', description: t('route.almada-lisboa-busy'), busy: true },
 ];
 
 /** Fishing grounds of the Muleta (on the Tagus). */
@@ -111,17 +140,53 @@ export const AREA_MISSIONS: Record<AreaId, { courses: RegattaCourse[]; routes: R
   },
 };
 
+/** Clean-ups: rubbish to pick up off a port, in every area. */
+export const CLEANUPS: Record<AreaId, CleanupInfo[]> = {
+  tejo: [
+    { id: 'clean-lisboa', name: t('cleanup.lisboa'), at: 'Lisboa' },
+    { id: 'clean-seixal', name: t('cleanup.seixal'), at: 'Seixal' },
+    { id: 'clean-cascais', name: t('cleanup.cascais'), at: 'Cascais' },
+  ],
+  arcachon: [{ id: 'clean-arcachon', name: t('cleanup.arcachon'), at: 'Arcachon' }],
+  aveiro: [{ id: 'clean-sjacinto', name: t('cleanup.sjacinto'), at: 'São Jacinto' }],
+  pasaia: [{ id: 'clean-concha', name: t('cleanup.concha'), at: 'Donostia / San Sebastián' }],
+};
+
+/** Supply runs: out to a fishing boat at anchor and back. */
+export const SUPPLIES: Record<AreaId, SupplyInfo[]> = {
+  tejo: [
+    {
+      id: 'bugio-muleta',
+      name: t('supply.bugio'),
+      from: 'Trafaria',
+      meet: { lat: 38.64, lon: -9.3 }, // about 2.4 km south of the Bugio
+      meetBoat: 'muleta',
+      boat: 'falua',
+      description: t('supply.bugio.desc'),
+    },
+  ],
+  arcachon: [],
+  aveiro: [],
+  pasaia: [],
+};
+
 /** The missions of the area open now. */
-export function areaMissions(): { courses: RegattaCourse[]; routes: Route[]; grounds: FishingGroundInfo[] } {
-  return AREA_MISSIONS[getArea().id];
+export function areaMissions(): { courses: RegattaCourse[]; routes: Route[]; grounds: FishingGroundInfo[]; cleanups: CleanupInfo[]; supplies: SupplyInfo[] } {
+  const id = getArea().id;
+  return { ...AREA_MISSIONS[id], cleanups: CLEANUPS[id], supplies: SUPPLIES[id] };
 }
 const ALL = Object.values(AREA_MISSIONS);
 const findCourse = (id: string) => ALL.flatMap((a) => a.courses).find((x) => x.id === id);
 const findRoute = (id: string) => ALL.flatMap((a) => a.routes).find((x) => x.id === id);
 const findGround = (id: string) => ALL.flatMap((a) => a.grounds).find((x) => x.id === id);
+const findCleanup = (id: string) => Object.values(CLEANUPS).flat().find((x) => x.id === id);
+const findSupply = (id: string) => Object.values(SUPPLIES).flat().find((x) => x.id === id);
 
 /** Fish to bring home on a fishing trip, kg. */
 export const FISHING_TARGET_KG = 150;
+
+/** A place's name as shown (marks such as race buoys have translated names). */
+export const placeName = (name: string) => tMaybe(`place.${name}`) ?? name;
 
 const boatName = (boats: { id: string; name: string }[], id: string) => boats.find((b) => b.id === id)?.name ?? id;
 
@@ -134,7 +199,15 @@ export function makeMission(kind: MissionKind, option: string, boat: string, boa
   }
   if (kind === 'transport') {
     const r = findRoute(option) ?? ROUTES[0];
-    return { id: `transport-${r.id}-${boat}`, kind, title: t('title.transport', { from: r.from, to: r.to, boat: b }), boat, from: r.from, to: r.to };
+    return { id: `transport-${r.id}-${boat}`, kind, title: t(r.busy ? 'title.busy' : 'title.transport', { from: r.from, to: placeName(r.to), boat: b }), boat, from: r.from, to: r.to, busy: r.busy };
+  }
+  if (kind === 'cleanup') {
+    const c = findCleanup(option) ?? CLEANUPS.tejo[0];
+    return { id: `cleanup-${c.id}-${boat}`, kind, title: t('title.cleanup', { at: c.name, boat: b }), boat, at: c.at, count: TRASH_COUNT };
+  }
+  if (kind === 'supply') {
+    const c = findSupply(option) ?? SUPPLIES.tejo[0];
+    return { id: `supply-${c.id}-${boat}`, kind, title: t('title.supply', { name: c.name, boat: b }), boat, from: c.from, meet: c.meet, meetBoat: c.meetBoat };
   }
   if (kind === 'fishing') {
     const g = findGround(option) ?? FISHING_GROUNDS[0];
@@ -194,6 +267,8 @@ export class MissionRun {
   /** Index of the next buoy (regatta); equals buoys.length when heading for the finish. */
   next = 0;
   finishedAt: number | null = null;
+  /** Seconds added for collisions. */
+  penalty = 0;
 
   constructor(
     readonly mission: Mission,
@@ -210,7 +285,7 @@ export class MissionRun {
 
   get goalName(): string {
     const m = this.mission;
-    if (m.kind === 'transport') return m.to;
+    if (m.kind === 'transport') return placeName(m.to);
     if (this.course) return this.next < this.course.buoys.length ? t('goal.buoy', { n: this.next + 1, total: this.course.buoys.length }) : t('goal.finish');
     return '';
   }
@@ -230,7 +305,7 @@ export class MissionRun {
   }
 
   elapsed(time: number): number {
-    return (this.finishedAt ?? time) - this.startedAt;
+    return (this.finishedAt ?? time) - this.startedAt + this.penalty;
   }
 }
 
