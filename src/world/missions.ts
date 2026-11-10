@@ -13,11 +13,12 @@ export const LEVELS: { id: Level; name: string; description: string }[] = [
   { id: 'hard', name: t('level.hard'), description: t('level.hard.desc') },
 ];
 
-export type MissionKind = 'regatta' | 'transport' | 'cleanup' | 'supply' | 'fishing' | 'free';
+export type MissionKind = 'regatta' | 'transport' | 'cleanup' | 'supply' | 'whaling' | 'fishing' | 'free';
 
 export type Mission =
   | { id: string; kind: 'transport'; title: string; boat: string; from: string; to: string; busy?: boolean }
   | { id: string; kind: 'cleanup'; title: string; boat: string; at: string; count: number }
+  | { id: string; kind: 'whaling'; title: string; boat: string; from: string }
   | { id: string; kind: 'supply'; title: string; boat: string; from: string; meet: { lat: number; lon: number }; meetBoat: string }
   | { id: string; kind: 'regatta'; title: string; boat: string; at: string; buoys: 2 | 3 }
   | { id: string; kind: 'fishing'; title: string; boat: string; at: string; targetKg: number }
@@ -29,6 +30,7 @@ export const MISSION_KINDS: { id: MissionKind; title: string; description: strin
   { id: 'transport', title: t('kind.transport'), description: t('kind.transport.desc') },
   { id: 'cleanup', title: t('kind.cleanup'), description: t('kind.cleanup.desc') },
   { id: 'supply', title: t('kind.supply'), description: t('kind.supply.desc') },
+  { id: 'whaling', title: t('kind.whaling'), description: t('kind.whaling.desc') },
   { id: 'fishing', title: t('kind.fishing'), description: t('kind.fishing.desc') },
   { id: 'free', title: t('kind.free'), description: t('kind.free.desc') },
 ];
@@ -198,10 +200,20 @@ export const SUPPLIES: Record<AreaId, SupplyInfo[]> = {
   madeira: [],
 };
 
+/** Whaling: the ports a whale hunt can start from (the Azores only). */
+export const WHALING: Record<AreaId, string[]> = {
+  tejo: [],
+  arcachon: [],
+  aveiro: [],
+  pasaia: [],
+  azores: ['Horta', 'Madalena', 'São Roque do Pico', 'Velas'],
+  madeira: [],
+};
+
 /** The missions of the area open now. */
-export function areaMissions(): { courses: RegattaCourse[]; routes: Route[]; grounds: FishingGroundInfo[]; cleanups: CleanupInfo[]; supplies: SupplyInfo[] } {
+export function areaMissions(): { courses: RegattaCourse[]; routes: Route[]; grounds: FishingGroundInfo[]; cleanups: CleanupInfo[]; supplies: SupplyInfo[]; whaling: string[] } {
   const id = getArea().id;
-  return { ...AREA_MISSIONS[id], cleanups: CLEANUPS[id], supplies: SUPPLIES[id] };
+  return { ...AREA_MISSIONS[id], cleanups: CLEANUPS[id], supplies: SUPPLIES[id], whaling: WHALING[id] };
 }
 const ALL = Object.values(AREA_MISSIONS);
 const findCourse = (id: string) => ALL.flatMap((a) => a.courses).find((x) => x.id === id);
@@ -228,6 +240,9 @@ export function makeMission(kind: MissionKind, option: string, boat: string, boa
   if (kind === 'transport') {
     const r = findRoute(option) ?? ROUTES[0];
     return { id: `transport-${r.id}-${boat}`, kind, title: t(r.busy ? 'title.busy' : 'title.transport', { from: r.from, to: placeName(r.to), boat: b }), boat, from: r.from, to: r.to, busy: r.busy };
+  }
+  if (kind === 'whaling') {
+    return { id: `whaling-${option}-${boat}`, kind, title: t('title.whaling', { from: option, boat: b }), boat, from: option };
   }
   if (kind === 'cleanup') {
     const c = findCleanup(option) ?? CLEANUPS.tejo[0];

@@ -2,6 +2,8 @@
 import { BOATS, GustyWind, SailboatSim, defaultControls, deg2rad, groupsInMode, type BoatSpec } from '../../src/physics';
 import { BOAT_VISUALS, LITE_URLS } from '../../src/engine/boatVisuals';
 import { TrashView } from '../../src/engine/trashView';
+import { WhaleView } from '../../src/engine/whaleView';
+import { WhaleHunt } from '../../src/world/whaling';
 import { COLLISION_PENALTY, SupplyRun, TrashField, touching } from '../../src/world/challenges';
 import { BoatView } from '../../src/engine/boatView';
 import { CAMERA_VIEWS, CameraRig } from '../../src/engine/cameraRig';
@@ -84,6 +86,10 @@ let trash: TrashField | null = null;
 /** Supply run: its phases, and the boat at anchor it goes to. */
 let supply: SupplyRun | null = null;
 let anchored: { sim: SailboatSim; view?: BoatView; x: number; y: number } | null = null;
+/** Whaling: the hunt and its whale. */
+let hunt: WhaleHunt | null = null;
+/** Where the whale was last seen (its blow), shown while it is under water. */
+let lastSeen: { x: number; y: number } | null = null;
 /** A busy crossing is on (crowd, gusts and wind shifts). */
 let busy = false;
 /** Game time of the last collision (one penalty per contact). */
@@ -283,6 +289,7 @@ function applyInput(dt: number): void {
 const courseView = new CourseView(scene);
 const shoalView = new ShoalView(scene);
 const trashView = new TrashView(scene);
+const whaleView = new WhaleView(scene);
 
 /** Where a mission place is: a port's mooring, or a mark (a named place that is not a port). */
 function placeTarget(name: string): { x: number; y: number } | null {
@@ -296,6 +303,9 @@ function placeTarget(name: string): { x: number; y: number } | null {
 function clearChallenge(): void {
   trash = null;
   trashView.setField(null);
+  hunt = null;
+  lastSeen = null;
+  whaleView.update(null, 0, 0);
   supply = null;
   anchored?.view?.dispose();
   anchored = null;
@@ -391,6 +401,15 @@ async function startMission(m: Mission, l: Level): Promise<void> {
         wind.shiftDeg = 35;
         hud.toast(t('busy.toast'));
       }
+    }
+  } else if (m.kind === 'whaling') {
+    const from = destinations.find((d) => d.name === m.from);
+    if (from) {
+      teleport(from);
+      hunt = new WhaleHunt(mask, { x: from.x, y: from.y }, sim.state.time, Math.random, EDITION.whaleDistance);
+      lastSeen = { x: hunt.whale.x, y: hunt.whale.y };
+      run = new MissionRun(m, sim.state.time, null, null);
+      hud.toast(t('whale.spotted'));
     }
   } else if (m.kind === 'cleanup') {
     const at = destinations.find((d) => d.name === m.at);
@@ -581,7 +600,7 @@ async function main(): Promise<void> {
   paused = true;
   menu.show();
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get wildlife() { return wildlife; }, netSweep, get fishing() { return fishing; }, get trash() { return trash; }, get supply() { return supply; }, get anchored() { return anchored; }, get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
+  Object.assign(window, { game: { get wildlife() { return wildlife; }, netSweep, get fishing() { return fishing; }, get trash() { return trash; }, get hunt() { return hunt; }, get supply() { return supply; }, get anchored() { return anchored; }, get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -598,6 +617,15 @@ async function main(): Promise<void> {
         fishing.update(netSweep(), dt * timeScale);
         if (mission.kind === 'fishing' && fishing.caught >= mission.targetKg) {
           run.finishedAt = sim.state.time;
+          finishMission();
+        }
+      } else if (hunt && run && !missionDone) {
+        const ev = hunt.update(sim.state, sim.state.time, gameDt);
+        if (hunt.visible) lastSeen = { x: hunt.whale.x, y: hunt.whale.y };
+        if (ev === 'fright') hud.toast(t('whale.fright'));
+        if (ev === 'struck') {
+          run.finishedAt = sim.state.time;
+          hud.toast(t('whale.struck'));
           finishMission();
         }
       } else if (trash && run && !missionDone) {
@@ -633,13 +661,15 @@ async function main(): Promise<void> {
       anchored.view?.update(a.state, a.report, 0, time, dt);
     }
     trashView.update(time, s.time);
+    whaleView.update(hunt?.whale ?? null, time, s.time);
     courseView.update(run?.next ?? -1, time);
     if (fishing) shoalView.update(fishing.shoals, sim.state.time, dt);
     const shoal = fishing ? fishing.nearest(s.x, s.y) : null;
     const piece = trash ? trash.nearest(s.x, s.y) : null;
-    const goal = fishing ? shoal : trash ? piece : supply ? supply.goal : run ? run.goal : target;
+    const goal = fishing ? shoal : hunt ? (hunt.visible ? hunt.whale : lastSeen) : trash ? piece : supply ? supply.goal : run ? run.goal : target;
     const others = [...(traffic?.positions ?? []), ...(anchored ? [anchored] : [])];
-    if (trash) minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, trash.items.filter((x) => x.pickedAt === null), 'trash');
+    if (hunt) minimap.draw(s.x, s.y, s.heading, (hunt.visible ? hunt.whale : lastSeen) ?? undefined, others, hunt.visible ? [hunt.whale] : [], 'shoals');
+    else if (trash) minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, trash.items.filter((x) => x.pickedAt === null), 'trash');
     else minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, run?.course?.buoys ?? fishing?.shoals.filter((x) => x.kg >= 5), fishing ? 'shoals' : 'buoys');
     let nav = null;
     const toward = (g: { x: number; y: number }) => {
@@ -657,6 +687,18 @@ async function main(): Promise<void> {
         name: t(sim.mode.net ? 'fish.nearest' : 'fish.nearestM'),
         distance: Math.hypot(dx, dy),
         bearing: ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360,
+        elapsed: run.elapsed(s.time),
+        arrived: missionDone,
+      };
+    } else if (hunt && run) {
+      // The arrow marks the whale while it is up (not on the hard level); under water, where it
+      // was last seen.
+      const g = hunt.visible ? hunt.whale : lastSeen;
+      mapView.setTarget(level === 'hard' || !g ? null : g);
+      nav = {
+        title: t(hunt.visible ? (hunt.whale.phase === 'fluke' ? 'whale.fluke' : 'whale.up') : 'whale.down'),
+        name: t('whale.name'),
+        ...toward(g ?? s),
         elapsed: run.elapsed(s.time),
         arrived: missionDone,
       };

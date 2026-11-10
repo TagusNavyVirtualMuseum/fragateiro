@@ -39,6 +39,11 @@ do, then where and with which boat.
 - **Supply run:** a Muleta lies at anchor 2 km south of the Bugio. Sail out from Trafaria,
   come alongside slowly (under 1.5 kn, within 35 m) and stay 25 s while the goods go across
   and the fish come back, then sail home. Rules in `src/world/challenges.ts` (tested).
+- **Whaling** (Azores, from any of its ports): the lookout has seen a sperm whale's blow. Sail
+  out and come up on it from astern, where it cannot see you, while it is at the surface (within
+  22 m). Seen from ahead or the side within 140 m it lifts its tail and sounds, coming up further
+  away. It breathes for about two minutes, then dives for two or three. Rules in
+  `src/world/whaling.ts` (tested).
 - Collisions with the other boats push both apart and slow them, in any mission.
 - **Fishing** (Muleta): off Seixal, at the river mouth or in Cascais bay. Shoals show as dark
   patches of bubbling water with fish jumping and gulls circling over them. Sail to windward

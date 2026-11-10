@@ -7,7 +7,7 @@ import { FISHING_TARGET_KG, LEVELS, placeName, MISSION_KINDS, areaMissions, make
 import { MENU_AREAS, getArea, setArea } from '../world/area';
 
 const AREA = getArea();
-const { courses: COURSES, routes: ROUTES, grounds: GROUNDS, cleanups: CLEANUPS, supplies: SUPPLIES } = areaMissions();
+const { courses: COURSES, routes: ROUTES, grounds: GROUNDS, cleanups: CLEANUPS, supplies: SUPPLIES, whaling: WHALING } = areaMissions();
 
 /** mm:ss (or h:mm:ss) of a game time in seconds. */
 export function formatTime(seconds: number): string {
@@ -29,6 +29,7 @@ export class MissionMenu {
     fishing: { option: GROUNDS[0]?.id ?? '', boat: 'muleta' },
     cleanup: { option: CLEANUPS[0]?.id ?? '', boat: AREA.boat },
     supply: { option: SUPPLIES[0]?.id ?? '', boat: SUPPLIES[0]?.boat ?? AREA.boat },
+    whaling: { option: WHALING[0] ?? '', boat: 'baleeiro' },
     free: { option: AREA.ports[0], boat: AREA.boat },
   };
 
@@ -71,7 +72,7 @@ export class MissionMenu {
     const panel = this.panel(t('menu.whatToDo'));
     panel.append(this.areaPicker(), this.levelPicker());
     const list = el('div', 'mission-list kinds');
-    const offered = { regatta: COURSES.length, transport: this.routes.length, cleanup: CLEANUPS.length, supply: SUPPLIES.length, fishing: GROUNDS.length, free: 1 };
+    const offered = { regatta: COURSES.length, transport: this.routes.length, cleanup: CLEANUPS.length, supply: SUPPLIES.length, whaling: WHALING.length, fishing: GROUNDS.length, free: 1 };
     for (const k of MISSION_KINDS) {
       if (!offered[k.id]) continue;
       const card = el('button', 'mission-card');
@@ -144,6 +145,10 @@ export class MissionMenu {
         })),
       );
       boatButtons();
+    } else if (kind === 'whaling') {
+      optionButtons(t('menu.whalingFrom'), WHALING.map((p) => ({ id: p, label: p })));
+      boatButtons();
+      body.append(el('p', 'level-text', t('menu.whalingHelp')));
     } else if (kind === 'cleanup') {
       optionButtons(t('menu.cleanupWhere'), CLEANUPS.map((c) => ({ id: c.id, label: c.name })));
       boatButtons();
