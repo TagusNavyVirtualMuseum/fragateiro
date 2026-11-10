@@ -59,6 +59,17 @@ Times use the game clock; best times are kept in the browser per mission, boat a
 
 Missions are defined in `src/world/missions.ts`; the trimming in `src/physics/autotrim.ts`.
 
+### Museum and home editions
+
+One game with two settings, chosen with `?edition=museum` or `?edition=home` (remembered; home
+by default), in `src/world/edition.ts`. The museum edition is for a visit of a few minutes:
+regatta legs of 350 m instead of 600 m, 6 pieces of rubbish within 800 m instead of 12 within
+1.6 km, supply runs starting 900 m from the boat at anchor with a 12 s transfer instead of 25 s,
+only transport routes under 4 km, and the clock at ×5 instead of ×3. Museum best times are kept
+apart. The map stays at real scale: halving it would make the boats twice too big for the
+rivers (narrow channels such as Pasaia's would become unsailable) and the hills and landmarks
+look wrong, so the challenges are shortened instead.
+
 ### Languages
 
 The site and the game are in Portuguese, French and English. The switch is at the top of the

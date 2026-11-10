@@ -100,6 +100,8 @@ export class SupplyRun {
     readonly meet: { x: number; y: number },
     readonly home: { x: number; y: number },
     readonly arrival = 150,
+    /** Game seconds alongside to finish the transfer. */
+    readonly transferTime = TRANSFER_TIME,
   ) {}
 
   /** Where to sail now. */
@@ -109,7 +111,7 @@ export class SupplyRun {
 
   /** Share of the transfer done, 0..1. */
   get progress(): number {
-    return Math.min(1, this.transferred / TRANSFER_TIME);
+    return Math.min(1, this.transferred / this.transferTime);
   }
 
   /** Call every step with the boat's position and speed (m/s); returns true when it ends. */
@@ -123,7 +125,7 @@ export class SupplyRun {
     if (close && speed < ALONGSIDE_SPEED) {
       this.phase = 'alongside';
       this.transferred += dt;
-      if (this.transferred >= TRANSFER_TIME) this.phase = 'home';
+      if (this.transferred >= this.transferTime) this.phase = 'home';
     } else if (this.phase === 'alongside') {
       // Drifted off or too fast: the transfer pauses (what was passed stays aboard).
       this.phase = 'out';

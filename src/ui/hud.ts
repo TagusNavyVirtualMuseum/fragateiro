@@ -1,5 +1,6 @@
 // On-screen display for the sailing games: plain HTML/CSS on top of the 3D canvas.
 import { getArea } from '../world/area';
+import { getEdition } from '../world/edition';
 import './hud.css';
 import { groupsInMode, rad2deg, toKnots, type BoatSpec, type Controls, type ForceReport, type BoatState, type TrueWind } from '../physics';
 import { CAMERA_VIEWS, DISTANCE_RANGE, type CameraView } from '../engine/cameraRig';
@@ -63,7 +64,7 @@ export class SailingHud {
   private readonly forcesBox: HTMLInputElement;
   private readonly soundBox: HTMLInputElement;
   /** Shown next to the speed, so it is clear the clock runs faster. */
-  private timeScale = 3;
+  private timeScale = getEdition().timeScale;
   private readonly camButtons = el('div', 'buttons');
   private readonly camDistance: HTMLInputElement;
   private readonly camHeight: HTMLInputElement;
@@ -149,7 +150,7 @@ export class SailingHud {
       <label>${t('opts.gameSpeed')} <select name="timeScale">
         <option value="1">${t('opts.ts1')}</option>
         <option value="2">${t('opts.tsN', { n: 2 })}</option>
-        <option value="3" selected>${t('opts.tsN', { n: 3 })}</option>
+        <option value="3">${t('opts.tsN', { n: 3 })}</option>
         <option value="5">${t('opts.tsN', { n: 5 })}</option>
         <option value="10">${t('opts.tsN', { n: 10 })}</option>
       </select></label>
@@ -199,6 +200,7 @@ export class SailingHud {
     });
     this.camOutputs = { distOut, heightOut };
     const timeScale = opts.querySelector<HTMLSelectElement>('[name=timeScale]')!;
+    timeScale.value = String(this.timeScale);
     timeScale.addEventListener('change', () => {
       cb.onTimeScale(Number(timeScale.value));
       this.timeScale = Number(timeScale.value);

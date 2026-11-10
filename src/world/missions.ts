@@ -2,7 +2,7 @@
 // Plain TypeScript (no 3D), so the rules can be tested.
 import type { LandMask } from './landMask';
 import { t, tMaybe } from '../i18n';
-import { TRASH_COUNT } from './challenges';
+import { getEdition } from './edition';
 import { getArea, type AreaId } from './area';
 
 export type Level = 'easy' | 'medium' | 'hard';
@@ -203,7 +203,7 @@ export function makeMission(kind: MissionKind, option: string, boat: string, boa
   }
   if (kind === 'cleanup') {
     const c = findCleanup(option) ?? CLEANUPS.tejo[0];
-    return { id: `cleanup-${c.id}-${boat}`, kind, title: t('title.cleanup', { at: c.name, boat: b }), boat, at: c.at, count: TRASH_COUNT };
+    return { id: `cleanup-${c.id}-${boat}`, kind, title: t('title.cleanup', { at: c.name, boat: b }), boat, at: c.at, count: getEdition().trashCount };
   }
   if (kind === 'supply') {
     const c = findSupply(option) ?? SUPPLIES.tejo[0];
@@ -311,5 +311,7 @@ export class MissionRun {
 
 /** Best times, kept in the browser: key per mission and level. */
 export function bestTimeKey(missionId: string, level: Level): string {
-  return `fragateiro.best.${missionId}.${level}`;
+  // The museum edition's shorter challenges keep their own best times.
+  const ed = getEdition().id === 'museum' ? '.museum' : '';
+  return `fragateiro.best.${missionId}.${level}${ed}`;
 }

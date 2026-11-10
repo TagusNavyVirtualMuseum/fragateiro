@@ -10,6 +10,7 @@ import { Input } from '../../src/engine/input';
 import { TouchControls, isTouchDevice } from '../../src/engine/touchControls';
 import { createMapView, loadMapMask, type MapView } from '../../src/engine/mapView';
 import { getArea, toMapXY } from '../../src/world/area';
+import { getEdition } from '../../src/world/edition';
 
 const AREA = getArea();
 import { NetView } from '../../src/engine/netView';
@@ -70,7 +71,8 @@ let aground = false;
 let destinations: Destination[] = [];
 let nextDestination = 0;
 /** Simulated seconds per real second: speeds stay realistic, the trip goes faster. */
-let timeScale = 3;
+const EDITION = getEdition();
+let timeScale = EDITION.timeScale;
 /** Difficulty: easy trims the sails automatically; hard turns off the balanced sails and
  * the help with tacking that comes with them. */
 let level: Level = loadLevel();
@@ -397,7 +399,7 @@ async function startMission(m: Mission, l: Level): Promise<void> {
       // The rubbish drifts about a kilometre off the port.
       let centre = { x: at.x + Math.sin(at.heading) * 900, y: at.y + Math.cos(at.heading) * 900 };
       if (!mask.isReachable(centre.x, centre.y)) centre = { x: at.x, y: at.y };
-      trash = new TrashField(mask, centre, m.count, Math.random, { x: sim.state.x, y: sim.state.y });
+      trash = new TrashField(mask, centre, m.count, Math.random, { x: sim.state.x, y: sim.state.y }, EDITION.trashRadius);
       trashView.setField(trash);
       run = new MissionRun(m, sim.state.time, null, null);
     }
@@ -407,7 +409,15 @@ async function startMission(m: Mission, l: Level): Promise<void> {
       teleport(from);
       const p = toMapXY(mask.meta.origin, m.meet);
       const meet = mask.nearestWater(p.x, p.y, 2000, (a, b) => mask.isReachable(a, b));
-      supply = new SupplyRun(meet, { x: from.x, y: from.y }, ARRIVAL_RADIUS);
+      supply = new SupplyRun(meet, { x: from.x, y: from.y }, ARRIVAL_RADIUS, EDITION.transferTime);
+      // Museum edition: start part of the way out, and come home to that spot.
+      const d = Math.hypot(from.x - meet.x, from.y - meet.y);
+      if (EDITION.supplyStart !== null && d > EDITION.supplyStart) {
+        const k = EDITION.supplyStart / d;
+        const p0 = mask.nearestWater(meet.x + (from.x - meet.x) * k, meet.y + (from.y - meet.y) * k, 1000, (a, b) => mask.isReachable(a, b));
+        teleport({ ...from, x: p0.x, y: p0.y, heading: Math.atan2(meet.x - p0.x, meet.y - p0.y) });
+        supply = new SupplyRun(meet, p0, ARRIVAL_RADIUS, EDITION.transferTime);
+      }
       anchorBoat(m.meetBoat, meet.x, meet.y);
       run = new MissionRun(m, sim.state.time, null, null);
     }
@@ -418,7 +428,7 @@ async function startMission(m: Mission, l: Level): Promise<void> {
       let centre = { x: at.x + Math.sin(at.heading) * 700, y: at.y + Math.cos(at.heading) * 700 };
       if (!mask.isReachable(centre.x, centre.y)) centre = { x: at.x, y: at.y };
       const windFrom = wind.at(sim.state.time, centre.x, centre.y).from;
-      const course = buildCourse(mask, centre, windFrom, m.buoys);
+      const course = buildCourse(mask, centre, windFrom, m.buoys, EDITION.regattaLength);
       if (course) {
         // Start just to leeward of the line, sailing across the wind.
         const sx = course.start.x - Math.sin(windFrom) * 80;
@@ -528,6 +538,12 @@ async function main(): Promise<void> {
     if (!run) teleport(d);
   });
   menu.setPorts(destinations.map((d) => d.name));
+  // The museum edition offers only the shorter routes.
+  menu.setRouteFilter((r) => {
+    const a = placeTarget(r.from);
+    const b = placeTarget(r.to);
+    return !a || !b || Math.hypot(a.x - b.x, a.y - b.y) <= EDITION.maxRoute;
+  });
   hud.setTargets(destinations.map((d) => d.name), (name) => {
     target = destinations.find((d) => d.name === name) ?? null;
     targetSince = sim.state.time;

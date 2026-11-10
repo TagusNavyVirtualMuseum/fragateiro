@@ -65,3 +65,25 @@ describe('collisions', () => {
     expect(touching({ x: 0, y: 0, length: 10 }, { x: 10, y: 0, length: 10 })).toBe(false);
   });
 });
+
+describe('editions', () => {
+  it('the museum edition is shorter in every challenge', async () => {
+    const { EDITIONS } = await import('../src/world/edition');
+    const m = EDITIONS.museum;
+    const h = EDITIONS.home;
+    expect(m.regattaLength).toBeLessThan(h.regattaLength);
+    expect(m.trashCount).toBeLessThan(h.trashCount);
+    expect(m.trashRadius).toBeLessThan(h.trashRadius);
+    expect(m.transferTime).toBeLessThan(h.transferTime);
+    expect(m.maxRoute).toBeLessThan(h.maxRoute);
+    expect(m.timeScale).toBeGreaterThan(h.timeScale);
+  });
+
+  it('a supply run takes the transfer time it is given', () => {
+    const r = new SupplyRun({ x: 0, y: 0 }, { x: 1000, y: 0 }, 150, 10);
+    r.update(5, 0, 0.2, 9);
+    expect(r.phase).toBe('alongside');
+    r.update(5, 0, 0.2, 1.5);
+    expect(r.phase).toBe('home');
+  });
+});
