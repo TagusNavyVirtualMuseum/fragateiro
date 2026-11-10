@@ -36,6 +36,11 @@
       .links a:hover { text-decoration: underline; }
       .partners { margin-top: 32px; padding: 18px 20px; border-radius: 12px; background: #fff; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: 20px 28px; }
       .partners a { display: block; }
+      h2.section.small { font-size: 20px; margin-top: 32px; }
+      h2.section.small + .partners { margin-top: 12px; }
+      .partners.ack { justify-content: flex-start; }
+      .partners.ack p { margin: 0; color: #3b3b3b; font-size: 15px; flex: 1; min-width: 220px; }
+      .boat .credits { margin-top: 8px; font-size: 13px; color: #a9b8bf; line-height: 1.45; }
       .partners img { height: 56px; width: auto; display: block; }
       footer { margin-top: 28px; font-size: 13px; color: #7d9099; line-height: 1.5; }
       footer a { color: #a9b8bf; }
@@ -79,6 +84,7 @@
             <h3>Falua</h3>
             <p data-i18n="boat.falua.desc"></p>
             <p class="facts" data-i18n="boat.falua.facts"></p>
+            <p class="credits">v0.2 · <span data-i18n="credit.gamification"></span>: Rama Modeliar<br />v0.1 · <span data-i18n="credit.model"></span>: Laura Baeta</p>
           </div>
         </article>
         <article class="boat">
@@ -87,6 +93,7 @@
             <h3>Muleta</h3>
             <p data-i18n="boat.muleta.desc"></p>
             <p class="facts" data-i18n="boat.muleta.facts"></p>
+            <p class="credits">v0.2 · <span data-i18n="credit.trawling"></span>: Nuno Covão, João Costa<br />v0.1 · <span data-i18n="credit.model"></span>: Mafalda Perdigão, Pedro Ulisses</p>
           </div>
         </article>
         <article class="boat">
@@ -95,38 +102,48 @@
             <h3>Fragata</h3>
             <p data-i18n="boat.fragata.desc"></p>
             <p class="facts" data-i18n="boat.fragata.facts"></p>
+            <p class="credits">v0.2: Pedro Oliveira, Daniela Santos<br />v0.1 · <span data-i18n="credit.model"></span>: Duarte Gonçalves, Rodrigo Pereira</p>
           </div>
         </article>
-        <article class="boat">
+      </div>
+
+      <h2 class="section" data-i18n="land.devBoats"></h2>
+      <p class="note" data-i18n="land.devNote"></p>
+      <div class="boats">
+        <article class="boat dev">
           <img src="./src/assets/boats/catraio.jpg" alt="" data-i18n-alt="boat.catraio.alt" />
           <div>
-            <h3>Catraio</h3>
+            <h3>Catraio <span class="badge" data-i18n="land.dev"></span></h3>
             <p data-i18n="boat.catraio.desc"></p>
             <p class="facts" data-i18n="boat.catraio.facts"></p>
+            <p class="credits" data-i18n="credit.miraro"></p>
           </div>
         </article>
-        <article class="boat">
+        <article class="boat dev">
           <img src="./src/assets/boats/canoa.jpg" alt="" data-i18n-alt="boat.canoa.alt" />
           <div>
-            <h3>Canoa</h3>
+            <h3>Canoa <span class="badge" data-i18n="land.dev"></span></h3>
             <p data-i18n="boat.canoa.desc"></p>
             <p class="facts" data-i18n="boat.canoa.facts"></p>
+            <p class="credits" data-i18n="credit.ai"></p>
           </div>
         </article>
-        <article class="boat">
+        <article class="boat dev">
           <img src="./src/assets/boats/pinasse.jpg" alt="" data-i18n-alt="boat.pinasse.alt" />
           <div>
-            <h3>Pinasse à voile</h3>
+            <h3>Pinasse à voile <span class="badge" data-i18n="land.dev"></span></h3>
             <p data-i18n="boat.pinasse.desc"></p>
             <p class="facts" data-i18n="boat.pinasse.facts"></p>
+            <p class="credits" data-i18n="credit.ai"></p>
           </div>
         </article>
-        <article class="boat">
+        <article class="boat dev">
           <img src="./src/assets/boats/moliceiro.jpg" alt="" data-i18n-alt="boat.moliceiro.alt" />
           <div>
-            <h3>Moliceiro</h3>
+            <h3>Moliceiro <span class="badge" data-i18n="land.dev"></span></h3>
             <p data-i18n="boat.moliceiro.desc"></p>
             <p class="facts" data-i18n="boat.moliceiro.facts"></p>
+            <p class="credits" data-i18n="credit.ai"></p>
           </div>
         </article>
         <article class="boat dev">
@@ -135,6 +152,7 @@
             <h3>Barco rabelo <span class="badge" data-i18n="land.dev"></span></h3>
             <p data-i18n="boat.rabelo.desc"></p>
             <p class="facts" data-i18n="boat.rabelo.facts"></p>
+            <p class="credits" data-i18n="credit.ai"></p>
           </div>
         </article>
       </div>
@@ -146,11 +164,16 @@
         <a href="https://doi.org/10.1016/j.daach.2025.e00475" data-i18n="land.paper"></a>
         <a href="https://tagusnavyvirtualmuseum.github.io/" data-i18n="land.museum"></a>
       </nav>
+      <h2 class="section small" data-i18n="land.partners"></h2>
       <div class="partners">
         <a href="https://tecnico.ulisboa.pt/" title="Instituto Superior Técnico"><img src="./src/assets/logos/ist.png" alt="Instituto Superior Técnico" /></a>
         <a href="https://www.inesc-id.pt/" title="INESC-ID"><img src="./src/assets/logos/inesc-id.png" alt="INESC-ID Lisboa" /></a>
         <a href="https://www.isel.pt/" title="Instituto Superior de Engenharia de Lisboa"><img src="./src/assets/logos/isel.png" alt="ISEL" /></a>
+      </div>
+      <h2 class="section small" data-i18n="land.ack"></h2>
+      <div class="partners ack">
         <a href="https://ccm.marinha.pt/pt/museu" title="Museu de Marinha"><img src="./src/assets/logos/museu-marinha.png" alt="Museu de Marinha" style="height: 76px" /></a>
+        <p data-i18n="land.ackText"></p>
       </div>
       <footer data-i18n="land.footer"></footer>
     </main>
