@@ -156,6 +156,15 @@ describe('workshop builder (model mode)', () => {
     expect(await sailTris(project([[5, 6], [5, 1]]))).toBeLessThan(tris / 2);
     // Its contour clicked round it: all of it.
     expect(await sailTris(project([[5, 6.1], [4.4, 5.6], [3.7, 4.2], [3.7, 2.8], [4.4, 1.4], [5, 0.9], [5.15, 3.5]]))).toBe(tris);
+    const contour: [number, number][] = [[5, 6.1], [4.4, 5.6], [3.7, 4.2], [3.7, 2.8], [4.4, 1.4], [5, 0.9], [5.15, 3.5]];
+    // A stay drawn across it on the side view (kept with the hull) no longer cuts a band out of it.
+    const withStay: Project = { ...project(contour), ropes: [{ a: [0, 0], b: [5, 6], mode: 'fixed' }], ropeRadius: 0.3 };
+    expect(await sailTris(withStay)).toBe(tris);
+    // What still takes pieces of sail is named: here a mast drawn through the belly, too thick.
+    const thick: Project = { ...project(contour), masts: [{ foot: [4, 0], top: [4, 7] }], sparRadius: 0.5 };
+    const r = await buildBoat(thick, cloneDocument(doc), { simplify: false });
+    expect(r.report.triangles.Vela_sq).toBeLessThan(tris);
+    expect(r.report.sailWarnings.join(' ')).toMatch(/the mast/);
   });
 
   it('a model turned off the side view: Straighten finds the turn that undoes it', async () => {

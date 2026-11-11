@@ -566,6 +566,7 @@ function report(b: BuildResult & { glb: Uint8Array }): string {
     <h2>Preview</h2>
     <label><span>Check parts</span><input type="checkbox" id="p-check" ${checking ? 'checked' : ''} /></label>
     <p class="note">Colours each part (hull grey, sails in their colours, rudder green) and swings the sails and the rudder from side to side: anything that moves in the wrong colour was cut wrongly.</p>
+    ${b.report.sailWarnings.map((w) => `<p class="note warn">${esc(w)} If those are pieces of sail: draw the outline wider there, make that part thinner, or draw the rope elsewhere.</p>`).join('')}
     <label><span>Wind from</span><input type="range" min="0" max="180" id="p-wind" value="${pctl.windDeg}" /></label>
     <label><span>Sheets</span><input type="range" min="0" max="1" step="0.01" id="p-sheet" value="${pctl.sheet}" /></label>
     <label><span>Rudder</span><input type="range" min="-1" max="1" step="0.01" id="p-rudder" value="${pctl.rudder}" /></label>

@@ -82,7 +82,15 @@ export interface BuildResult {
   /** The entry for src/engine/boatVisuals.ts (without the url). */
   visual: Record<string, unknown>;
   /** Measurements, for the report. */
-  report: { waterlineLength: number; draft: number; cgX: number; triangles: Record<string, number>; level: number };
+  report: {
+    waterlineLength: number;
+    draft: number;
+    cgX: number;
+    triangles: Record<string, number>;
+    level: number;
+    /** Sail triangles another part took (inside a sail's outline), as messages for the user. */
+    sailWarnings: string[];
+  };
 }
 
 const hex = (h: string): [number, number, number] => {
@@ -197,6 +205,8 @@ export async function buildBoat(project: Project, source: Document | null, opts:
     m.get(prim)!.push(a, b, c);
   };
   const worldPositions = new Map<Primitive, Float32Array>();
+  /** Triangles inside a sail's outline that another part took, by sail and by what took them. */
+  const stolen = new Map<string, Map<string, number>>();
   const oldMeshes = root.listMeshes();
   if (P.source === 'model') {
     const outlines = P.sails.map((x) => outline(x, P.sparRadius));
@@ -233,25 +243,41 @@ export async function buildBoat(project: Project, source: Document | null, opts:
   }
 
   function classify(p: P2, z: number, outlines: P2[][], spars: [P2, P2][][]): string {
+    const name = pick(p, z, outlines, spars);
+    P.sails.forEach((sl, i) => {
+      const own = sl.keep ? `Vela_${sl.id}` : 'drop';
+      if (name.what === own || !(sl.rig === 'square' || Math.abs(z) < P.sailWidth) || !nearPolygon(p, outlines[i], P.sparRadius)) return;
+      const m = stolen.get(sl.id) ?? new Map<string, number>();
+      m.set(name.why, (m.get(name.why) ?? 0) + 1);
+      stolen.set(sl.id, m);
+    });
+    return name.what;
+  }
+
+  function pick(p: P2, z: number, outlines: P2[][], spars: [P2, P2][][]): { what: string; why: string } {
     const az = Math.abs(z);
-    if (P.hullAreas?.some((a) => a.length >= 3 && pointInPolygon(p, a))) return 'Casco';
-    if (P.rudder.length >= 3 && az < P.sailWidth * 1.5 && nearPolygon(p, P.rudder, P.sparRadius * 0.5)) return 'Leme';
-    if (P.tiller && az < P.sailWidth && distToSegment(p, P.tiller[0], P.tiller[1]) < P.sparRadius * 1.5) return 'Leme';
+    if (P.hullAreas?.some((a) => a.length >= 3 && pointInPolygon(p, a))) return { what: 'Casco', why: 'a "keep with hull" area' };
+    if (P.rudder.length >= 3 && az < P.sailWidth * 1.5 && nearPolygon(p, P.rudder, P.sparRadius * 0.5)) return { what: 'Leme', why: 'the rudder' };
+    if (P.tiller && az < P.sailWidth && distToSegment(p, P.tiller[0], P.tiller[1]) < P.sparRadius * 1.5) return { what: 'Leme', why: 'the tiller' };
+    // Inside a square sail's outline the sail wins over the ropes: a rope line crossing it on
+    // the side view would otherwise take a band right across the sail.
+    const inSquare = P.sails.findIndex((sl, i) => sl.rig === 'square' && sl.points.length >= 3 && pointInPolygon(p, outlines[i]));
     for (const r of P.ropes) {
-      if (distToSegment(p, r.a, r.b) < P.ropeRadius) return r.mode === 'remove' ? 'drop' : r.mode === 'fixed' ? 'Casco' : `Vela_${r.sail}`;
+      if (inSquare >= 0 && r.sail !== P.sails[inSquare].id) continue;
+      if (distToSegment(p, r.a, r.b) < P.ropeRadius) return { what: r.mode === 'remove' ? 'drop' : r.mode === 'fixed' ? 'Casco' : `Vela_${r.sail}`, why: 'a rope (rope thickness)' };
     }
     for (let i = 0; i < P.sails.length; i++) {
       const sl = P.sails[i];
       const name = sl.keep ? `Vela_${sl.id}` : 'drop';
-      if (az < P.sailWidth && spars[i].some(([a, b]) => distToSegment(p, a, b) < P.sparRadius * 1.3)) return name;
+      if (az < P.sailWidth && spars[i].some(([a, b]) => distToSegment(p, a, b) < P.sparRadius * 1.3)) return { what: name, why: `the spars of sail "${sl.id}"` };
     }
-    for (const m of P.masts) if (az < P.sparRadius * 2.5 && distToSegment(p, m.foot, m.top) < P.sparRadius) return 'Casco';
+    for (const m of P.masts) if (az < P.sparRadius * 2.5 && distToSegment(p, m.foot, m.top) < P.sparRadius) return { what: 'Casco', why: 'the mast (spar thickness)' };
     for (let i = 0; i < P.sails.length; i++) {
       const sl = P.sails[i];
       const wide = sl.rig === 'square'; // a square sail spreads across the boat
-      if ((wide || az < P.sailWidth) && nearPolygon(p, outlines[i], P.sparRadius)) return sl.keep ? `Vela_${sl.id}` : 'drop';
+      if ((wide || az < P.sailWidth) && nearPolygon(p, outlines[i], P.sparRadius)) return { what: sl.keep ? `Vela_${sl.id}` : 'drop', why: `sail "${sl.id}"` };
     }
-    return 'Casco';
+    return { what: 'Casco', why: 'the hull' };
   }
 
   // Source units -> metres (x, y); z by the measured beam.
@@ -577,7 +603,8 @@ export async function buildBoat(project: Project, source: Document | null, opts:
     sheets,
     rudder: { nodes: ['Leme'], pivot: [f(rx), 0, 0], axis: { base: [f(rx), f(ry[0]), 0], top: [f(rx), f(ry[1]), 0] } },
   };
-  return { doc, spec, visual, report: { waterlineLength: fl.waterlineLength, draft: fl.draft, cgX: cg, triangles, level } };
+  const sailWarnings = [...stolen].map(([id, m]) => `Sail "${id}": ${[...m].map(([why, n]) => `${n} triangles inside its outline went to ${why}`).join('; ')}.`);
+  return { doc, spec, visual, report: { waterlineLength: fl.waterlineLength, draft: fl.draft, cgX: cg, triangles, level, sailWarnings } };
 }
 
 /** Smooth normals from the triangles. */

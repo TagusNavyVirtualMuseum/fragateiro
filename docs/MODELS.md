@@ -83,7 +83,9 @@ beam and weight, then click on the side view:
   tack), sprit (the same, the sprit from tack to peak), jib (tack, head, clew) or square sail
   (its whole outline as seen from the side, clicked all the way round, plus the yard length:
   a square sail is round and wide, so everything inside the outline goes with the sail; its
-  top is taken as the yard and its bottom as the foot). For a model, keep its own sail or have a new one
+  top is taken as the yard and its bottom as the foot; inside it the sail wins over the ropes,
+  and the report after a build says which part took any pieces left inside a sail's outline:
+  a too-thick mast, the rudder, a "keep with hull" area). For a model, keep its own sail or have a new one
   built from the points (useful when Meshy gets a sail's shape wrong);
 - the rudder blade's outline and the tiller (a steering oar is drawn the same way);
 - for a model, the ropes: remove them, leave them with the hull (stays, shrouds), or move
