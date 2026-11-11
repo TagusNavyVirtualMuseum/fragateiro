@@ -98,6 +98,25 @@ export const AREAS = {
       report: { 'off Porto da Cruz': [32.775, -16.825], 'off Santa Cruz': [32.686, -16.785] },
     },
   },
+
+  // The middle Tagus: Vila Nova da Barquinha, Tancos, the castle of Almourol on its island,
+  // Constância where the Zêzere joins, and Abrantes. No coast here: the water is the river's
+  // own outlines (natural=water), drawn at 10 m for a river 150-300 m wide.
+  medio: {
+    file: 'medio',
+    inland: true,
+    cell: 10,
+    bbox: { south: 39.42, west: -8.46, north: 39.5, east: -8.17 },
+    /** The narrow channel north of the island of Almourol, which the data leaves closed. */
+    extraWater: [{ width: 25, points: [[39.46216, -8.38799], [39.46243, -8.3859], [39.46279, -8.3845], [39.4627, -8.38264]] }],
+    /** In the river by the castle of Almourol. */
+    origin: { lat: 39.4595, lon: -8.385 },
+    checks: {
+      land: { Constância: [39.4757, -8.338], Abrantes: [39.4636, -8.1974] },
+      water: {},
+      report: { 'by Almourol': [39.4595, -8.385], 'off Constância': [39.4715, -8.338], 'off Barquinha': [39.4555, -8.433] },
+    },
+  },
 };
 
 /** The area named by `--area` on the command line (default: the Tagus). */

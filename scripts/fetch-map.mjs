@@ -22,7 +22,7 @@ const AREA = areaFromArgs();
 const { bbox: BBOX, origin: ORIGIN, checks: CHECKS } = AREA;
 const BRIDGES = AREA.bridges ?? /^$/;
 // 20 m cells keep the mask under 4096 px a side (the most phones can load as a texture).
-const CELL = 20; // metres
+const CELL = AREA.cell ?? 20; // metres (narrow rivers: 10)
 const OUT_DIR = new URL('../src/assets/map/', import.meta.url);
 
 const PLACES_WANTED = /^(city|town|village|hamlet|island|islet)$/;
@@ -179,7 +179,8 @@ console.log(`coastline ways: ${coast}`);
 const seedIdx = args.indexOf('--seed');
 const seed = seedIdx >= 0 ? args[seedIdx + 1].split(',').map(Number) : AREA.seed ? [AREA.seed.lat, AREA.seed.lon] : [ORIGIN.lat, ORIGIN.lon];
 const [sx, sy] = toCell(seed[0], seed[1]).map(Math.floor);
-const sea = floodFill(sx, sy);
+// Inland (no coast in the area): the water is only the river's own outlines, added below.
+const sea = AREA.inland ? 0 : floodFill(sx, sy);
 console.log(`sea cells: ${sea} (${((100 * sea) / (W * H)).toFixed(1)} %)`);
 
 let lakes = 0;
@@ -196,6 +197,24 @@ for (const el of elements) {
   }
 }
 console.log(`water areas: ${lakes}`);
+
+// Channels the data leaves closed (e.g. round a river island): polylines of [lat, lon], width m.
+for (const ch of AREA.extraWater ?? []) {
+  const pts = ch.points.map(([lat, lon]) => toCell(lat, lon));
+  const r = ch.width / 2 / CELL;
+  for (let k = 0; k + 1 < pts.length; k++) {
+    const [ax, ay] = pts[k];
+    const [bx, by] = pts[k + 1];
+    const len = Math.hypot(bx - ax, by - ay);
+    for (let t = 0; t <= len; t += 0.5) {
+      const cx = ax + ((bx - ax) * t) / len;
+      const cy = ay + ((by - ay) * t) / len;
+      for (let y = Math.floor(cy - r); y <= Math.ceil(cy + r); y++)
+        for (let x = Math.floor(cx - r); x <= Math.ceil(cx + r); x++)
+          if (x >= 0 && y >= 0 && x < W && y < H && Math.hypot(x - cx, y - cy) <= r) grid[y * W + x] = WATER;
+    }
+  }
+}
 
 // Shoreline cells count as land; everything not water is land.
 const water = new Uint8Array(W * H);
