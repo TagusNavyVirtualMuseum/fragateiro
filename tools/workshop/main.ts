@@ -19,13 +19,14 @@ import {
   Scene,
   StandardMaterial,
   Texture,
+  TransformNode,
   Vector3,
   type AssetContainer,
 } from '@babylonjs/core';
 import '@babylonjs/loaders/glTF';
 import { WebIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
-import { buildBoat, specSource, visualSource, type BuildResult, type Project, type SailInput } from '../../src/workshop/build';
+import { buildBoat, estimateTurn, specSource, visualSource, type BuildResult, type Project, type SailInput } from '../../src/workshop/build';
 import { RIGS, RIG_TYPES, sailComplete, type RigType } from '../../src/workshop/rigs';
 import type { P2 } from '../../src/workshop/geometry';
 import { SailboatSim, SteadyWind, groupsInMode, polar, type BoatSpec } from '../../src/physics';
@@ -209,6 +210,11 @@ async function loadModel(bytes: Uint8Array) {
   const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'model/gltf-binary' }));
   source = await LoadAssetContainerAsync(url, side, { pluginExtension: '.glb' });
   source.addAllToScene();
+  // Everything under one node, to turn the model square to the side view.
+  turnNode?.dispose();
+  turnNode = new TransformNode('turn', side);
+  for (const n of [...source.meshes, ...source.transformNodes]) if (!n.parent) n.parent = turnNode;
+  applyTurn();
   sideFrames = 120; // textures arrive over a few frames
   let min = new Vector3(Infinity, Infinity, Infinity);
   let max = new Vector3(-Infinity, -Infinity, -Infinity);
@@ -227,6 +233,16 @@ async function loadModel(bytes: Uint8Array) {
     project.ropeRadius = +(0.006 * L).toFixed(4);
   }
   status(`Model loaded: ${(bytes.length / 1e6).toFixed(1)} MB.`);
+  redraw();
+}
+
+/** The model turned about the vertical by the project's `turnDeg` (as the builder turns it). */
+let turnNode: TransformNode | null = null;
+function applyTurn() {
+  if (!turnNode) return;
+  // Babylon's z is the model's -z, so this matches the builder's turn.
+  turnNode.rotation.y = ((project.turnDeg ?? 0) * Math.PI) / 180;
+  sideFrames = Math.max(sideFrames, 10);
   redraw();
 }
 
@@ -470,6 +486,9 @@ function render() {
         ? `<label><span>Sails off centre</span><input type="number" step="0.005" id="t-sail" value="${P.sailWidth}" /></label>
            <label><span>Spar thickness</span><input type="number" step="0.002" id="t-spar" value="${P.sparRadius}" /></label>
            <label><span>Rope thickness</span><input type="number" step="0.002" id="t-rope" value="${P.ropeRadius}" /></label>
+           <label><span>Turn (°)</span><input type="number" step="0.5" id="t-turn" value="${P.turnDeg ?? 0}" /></label>
+           <div class="row"><button id="t-straighten" class="secondary">Straighten</button></div>
+           <p class="note">If the model is not exactly side on (a square sail's yard shows as a bar, not a point), turn it: Straighten finds the angle from the hull; adjust by hand until the yard is a point. Do this before clicking the points.</p>
            <p class="note">In the model's units: how far a sail may bulge from the centreline, how thick the masts and yards are. Make them larger if parts of a sail stay behind, smaller if bits of the hull go with it.</p>`
         : `<div class="row">${okMark(P.sheer.length > 1)}<button id="c-sheer">Sheer line</button>${okMark(P.keel.length > 1)}<button id="c-keel">Keel line</button></div>
            <p class="note">Sheer: the top edge of the side, from bow to stern (several points). Keel: the bottom of the hull (several points).</p>
@@ -600,6 +619,18 @@ function bind() {
   tol('t-sail', 'sailWidth');
   tol('t-spar', 'sparRadius');
   tol('t-rope', 'ropeRadius');
+  on('t-turn', 'change', () => {
+    P.turnDeg = num('t-turn');
+    applyTurn();
+    save();
+  });
+  on('t-straighten', 'click', async () => {
+    if (!sourceBytes) return;
+    const doc = await new WebIO().registerExtensions(ALL_EXTENSIONS).readBinary(sourceBytes);
+    P.turnDeg = estimateTurn(doc);
+    applyTurn();
+    changed();
+  });
   const mastCapture = (i: number | null) =>
     startCapture({
       labels: ['the foot of the mast (where it meets the deck)', 'the top of the mast'],
@@ -754,3 +785,6 @@ async function showPreview() {
 
 render();
 redraw();
+
+// Handy in the browser console and for automated checks.
+Object.assign(window, { workshop: { scene: side, get project() { return project; }, applyTurn } });

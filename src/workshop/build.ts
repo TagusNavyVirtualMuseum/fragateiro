@@ -49,6 +49,12 @@ export interface Project {
   rudder: P2[];
   tiller?: [P2, P2];
   ropes: RopeInput[];
+  /**
+   * Model mode: turn about the vertical (degrees) so the model is seen exactly from the side
+   * (a model a few degrees off shows a square sail's yard as a bar). The built boat is turned
+   * the same way.
+   */
+  turnDeg?: number;
   /** Outlines on the side view whose triangles always stay with the hull (fixes for wrong cuts). */
   hullAreas?: P2[][];
   /** Model mode: how far (source units) the sails stand off the centreline, the spars' and ropes' thickness. */
@@ -132,6 +138,44 @@ function sparsOf(s: SailInput): [P2, P2][] {
   return rig.spars.map(([na, nb]) => [s.points[rig.points.indexOf(na)], s.points[rig.points.indexOf(nb)]]);
 }
 
+/**
+ * How far a model is turned off the side view (degrees, for `turnDeg`): the long axis of its
+ * lower half (the hull, not the rig) in plan view.
+ */
+export function estimateTurn(doc: Document): number {
+  const pts: number[][] = [];
+  for (const node of doc.getRoot().listNodes()) {
+    const mesh = node.getMesh();
+    if (!mesh) continue;
+    const m = node.getWorldMatrix();
+    for (const prim of mesh.listPrimitives()) {
+      const a = prim.getAttribute('POSITION')?.getArray();
+      if (!a) continue;
+      const step = Math.max(3, Math.floor(a.length / 3 / 20000) * 3); // a sample is enough
+      for (let i = 0; i < a.length; i += step) {
+        const [x, y, z] = [a[i], a[i + 1], a[i + 2]];
+        pts.push([m[0] * x + m[4] * y + m[8] * z + m[12], m[1] * x + m[5] * y + m[9] * z + m[13], m[2] * x + m[6] * y + m[10] * z + m[14]]);
+      }
+    }
+  }
+  if (!pts.length) return 0;
+  const ys = pts.map((p) => p[1]);
+  const mid = (Math.min(...ys) + Math.max(...ys)) / 2;
+  const low = pts.filter((p) => p[1] <= mid);
+  const mx = low.reduce((s, p) => s + p[0], 0) / low.length;
+  const mz = low.reduce((s, p) => s + p[2], 0) / low.length;
+  let sxx = 0;
+  let szz = 0;
+  let sxz = 0;
+  for (const p of low) {
+    sxx += (p[0] - mx) ** 2;
+    szz += (p[2] - mz) ** 2;
+    sxz += (p[0] - mx) * (p[2] - mz);
+  }
+  const phi = 0.5 * Math.atan2(2 * sxz, sxx - szz); // the long axis, from x towards z
+  return +((-phi * 180) / Math.PI).toFixed(1);
+}
+
 export async function buildBoat(project: Project, source: Document | null, opts: BuildOptions = {}): Promise<BuildResult> {
   const P = project;
   const { length: L, beam: B, mass } = P.info;
@@ -164,11 +208,15 @@ export async function buildBoat(project: Project, source: Document | null, opts:
       for (const prim of mesh.listPrimitives()) {
         const src = prim.getAttribute('POSITION')!.getArray()!;
         const pos = new Float32Array(src.length);
+        const turn = ((P.turnDeg ?? 0) * Math.PI) / 180;
+        const [tc, ts] = [Math.cos(turn), Math.sin(turn)];
         for (let i = 0; i < src.length; i += 3) {
           const [x, y, z] = [src[i], src[i + 1], src[i + 2]];
-          pos[i] = mtx[0] * x + mtx[4] * y + mtx[8] * z + mtx[12];
+          const wx = mtx[0] * x + mtx[4] * y + mtx[8] * z + mtx[12];
+          const wz = mtx[2] * x + mtx[6] * y + mtx[10] * z + mtx[14];
+          pos[i] = wx * tc - wz * ts;
           pos[i + 1] = mtx[1] * x + mtx[5] * y + mtx[9] * z + mtx[13];
-          pos[i + 2] = mtx[2] * x + mtx[6] * y + mtx[10] * z + mtx[14];
+          pos[i + 2] = wx * ts + wz * tc;
         }
         worldPositions.set(prim, pos);
         const idx = prim.getIndices()?.getArray() ?? Uint32Array.from({ length: pos.length / 3 }, (_, i) => i);
@@ -298,10 +346,14 @@ export async function buildBoat(project: Project, source: Document | null, opts:
               arr[k + 2] *= zs;
             }
           } else if (sem === 'NORMAL') {
+            const turn = ((P.turnDeg ?? 0) * Math.PI) / 180;
+            const [tc, ts] = [Math.cos(turn), Math.sin(turn)];
             for (let k = 0; k < arr.length; k += 3) {
-              const nx = (flip ? -1 : 1) * (arr[k] / s);
+              const tx = arr[k] * tc - arr[k + 2] * ts; // turned as the positions
+              const tz = arr[k] * ts + arr[k + 2] * tc;
+              const nx = (flip ? -1 : 1) * (tx / s);
               const ny = arr[k + 1] / s;
-              const nz = arr[k + 2] / zs;
+              const nz = tz / zs;
               const l = Math.hypot(nx, ny, nz) || 1;
               arr[k] = nx / l;
               arr[k + 1] = ny / l;

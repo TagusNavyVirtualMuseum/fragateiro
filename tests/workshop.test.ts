@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { clipBelow, floatHull, hullMesh, nearPolygon, polygonAreaCentroid, type P3 } from '../src/workshop/geometry';
-import { buildBoat, specSource, visualSource, type Project } from '../src/workshop/build';
+import { buildBoat, estimateTurn, specSource, visualSource, type Project } from '../src/workshop/build';
 import { polar } from '../src/physics';
 
 describe('workshop geometry', () => {
@@ -156,5 +156,22 @@ describe('workshop builder (model mode)', () => {
     expect(await sailTris(project([[5, 6], [5, 1]]))).toBeLessThan(tris / 2);
     // Its contour clicked round it: all of it.
     expect(await sailTris(project([[5, 6.1], [4.4, 5.6], [3.7, 4.2], [3.7, 2.8], [4.4, 1.4], [5, 0.9], [5.15, 3.5]]))).toBe(tris);
+  });
+
+  it('a model turned off the side view: Straighten finds the turn that undoes it', async () => {
+    const doc = await model();
+    const b = (7 * Math.PI) / 180;
+    for (const prim of doc.getRoot().listMeshes()[0].listPrimitives()) {
+      const a = prim.getAttribute('POSITION')!;
+      const arr = a.getArray()!.slice();
+      for (let i = 0; i < arr.length; i += 3) {
+        const [x, z] = [arr[i], arr[i + 2]];
+        arr[i] = x * Math.cos(b) - z * Math.sin(b);
+        arr[i + 2] = x * Math.sin(b) + z * Math.cos(b);
+      }
+      a.setArray(arr);
+    }
+    expect(estimateTurn(doc)).toBeCloseTo(-7, 0);
+    expect(estimateTurn(await model())).toBeCloseTo(0, 1);
   });
 });

@@ -73,6 +73,10 @@ only work in Vite.)
 scripts. Load a GLB from Meshy (or another model) **or** a side photo, give the name, length,
 beam and weight, then click on the side view:
 
+- for a model not exactly side on (Meshy models are often a few degrees off: a square sail's
+  yard shows as a bar instead of a point), its turn about the vertical: Straighten finds it
+  from the hull (the long axis of the model's lower half), and it can be adjusted by hand;
+  the built boat is turned the same way. Set it before clicking the points;
 - the bow and the stern (their distance is the length);
 - each mast (foot and top);
 - each sail, by rig type: lateen (tack, peak, clew), lugsail and gaff (throat, peak, clew,
