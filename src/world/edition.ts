@@ -1,6 +1,6 @@
 // One game, two settings: the museum edition (a visit of a few minutes: short challenges, the
 // clock faster) and the home edition (the full challenges). Chosen with ?edition=museum or
-// ?edition=home (remembered); museum by default. Plain TypeScript, so the rules can be tested.
+// ?edition=home; museum by default. Plain TypeScript, so the rules can be tested.
 
 export type EditionId = 'museum' | 'home';
 
@@ -30,26 +30,11 @@ export const EDITIONS: Record<EditionId, Edition> = {
   home: { id: 'home', regattaLength: 600, trashCount: 12, trashRadius: 1600, transferTime: 25, supplyStart: null, maxRoute: Infinity, runDistance: 1500, whaleDistance: 2500, timeScale: 3 },
 };
 
-const KEY = 'fragateiro.edition';
-
 function detect(): EditionId {
+  // Only from the address (not remembered: a browser that once opened the home edition would
+  // otherwise skip the museum's mini-games). Areas keep the address's parameters when reloading.
   if (typeof location === 'undefined') return 'museum';
-  const fromUrl = new URLSearchParams(location.search).get('edition');
-  if (fromUrl === 'museum' || fromUrl === 'home') {
-    try {
-      localStorage.setItem(KEY, fromUrl);
-    } catch {
-      // storage blocked: only this visit
-    }
-    return fromUrl;
-  }
-  try {
-    const saved = localStorage.getItem(KEY);
-    if (saved === 'museum' || saved === 'home') return saved;
-  } catch {
-    // storage blocked
-  }
-  return 'museum';
+  return new URLSearchParams(location.search).get('edition') === 'home' ? 'home' : 'museum';
 }
 
 const current = EDITIONS[detect()];
