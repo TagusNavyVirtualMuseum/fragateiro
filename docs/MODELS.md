@@ -91,7 +91,12 @@ it to metres, floats it at its weight (waterline at 0), simplifies it and shrink
 textures, and measures what the physics needs: sail areas and centres, the pivots, the
 waterline length, draft, lateral area and the rudder. It shows the speeds at each wind angle,
 sails the boat in a 3D preview (the game's own boat view and physics), and downloads the
-model, the physics file and the wiring for `boatVisuals.ts`. The points are kept in the
+model, the physics file and the wiring for `boatVisuals.ts`.
+
+**Check parts** (in the preview) paints each part in its own colour (hull grey, each sail in
+its colour, rudder green) and swings the sails and the rudder through their range: a piece
+of the hull that moves with them shows up at once. To fix it, draw a **Keep with hull** area
+round that piece on the side view (everything inside stays with the hull) and build again. The points are kept in the
 browser; *Save project* writes them to a file to reopen later. The builder is
 `src/workshop/build.ts` (tested in `tests/workshop.test.ts`).
 

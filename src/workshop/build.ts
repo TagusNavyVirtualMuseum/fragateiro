@@ -7,7 +7,7 @@ import { prune, simplifyPrimitive, weldPrimitive } from '@gltf-transform/functio
 import { MeshoptSimplifier } from 'meshoptimizer';
 import type { BoatSpec, SailSpec } from '../physics/types';
 import { RIGS, type RigType } from './rigs';
-import { clipBelow, distToSegment, floatHull, hullMesh, nearPolygon, polygonAreaCentroid, sailMesh, sparMesh, xAt, type MeshData, type P2, type P3 } from './geometry';
+import { clipBelow, distToSegment, floatHull, hullMesh, nearPolygon, pointInPolygon, polygonAreaCentroid, sailMesh, sparMesh, xAt, type MeshData, type P2, type P3 } from './geometry';
 
 export interface SailInput {
   id: string;
@@ -49,6 +49,8 @@ export interface Project {
   rudder: P2[];
   tiller?: [P2, P2];
   ropes: RopeInput[];
+  /** Outlines on the side view whose triangles always stay with the hull (fixes for wrong cuts). */
+  hullAreas?: P2[][];
   /** Model mode: how far (source units) the sails stand off the centreline, the spars' and ropes' thickness. */
   sailWidth: number;
   sparRadius: number;
@@ -170,6 +172,7 @@ export async function buildBoat(project: Project, source: Document | null, opts:
 
   function classify(p: P2, z: number, outlines: P2[][], spars: [P2, P2][][]): string {
     const az = Math.abs(z);
+    if (P.hullAreas?.some((a) => a.length >= 3 && pointInPolygon(p, a))) return 'Casco';
     if (P.rudder.length >= 3 && az < P.sailWidth * 1.5 && nearPolygon(p, P.rudder, P.sparRadius * 0.5)) return 'Leme';
     if (P.tiller && az < P.sailWidth && distToSegment(p, P.tiller[0], P.tiller[1]) < P.sparRadius * 1.5) return 'Leme';
     for (const r of P.ropes) {

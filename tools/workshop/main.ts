@@ -128,6 +128,42 @@ let psim: SailboatSim | null = null;
 let pspec: BoatSpec | null = null;
 const pctl = { windDeg: 60, sheet: 0.3, rudder: 0 };
 let time = 0;
+/** Check mode: parts in flat colours, sails and rudder swinging. */
+let checking = false;
+const partColours = new Map<string, Color3>();
+const originalMaterials = new Map<Mesh, StandardMaterial | null>();
+function setCheck(on: boolean) {
+  checking = on;
+  if (!pview) return;
+  for (const m of preview.meshes) {
+    // The part a mesh belongs to: its own name or an ancestor's (Casco, Vela_x, Leme).
+    let n: { name: string; parent: unknown } | null = m as unknown as { name: string; parent: unknown };
+    let part = '';
+    while (n) {
+      if (/^(Casco|Leme|Vela_.+)$/.test(n.name.replace(/_primitive\d+$/, ''))) {
+        part = n.name.replace(/_primitive\d+$/, '');
+        break;
+      }
+      n = n.parent as typeof n;
+    }
+    if (!part) continue;
+    const mesh = m as Mesh;
+    if (on) {
+      if (!originalMaterials.has(mesh)) originalMaterials.set(mesh, mesh.material as StandardMaterial | null);
+      if (!partColours.has(part)) {
+        const i = pspec?.sails.findIndex((s) => `Vela_${s.id}` === part) ?? -1;
+        partColours.set(part, part === 'Casco' ? new Color3(0.38, 0.38, 0.4) : part === 'Leme' ? new Color3(0.1, 0.8, 0.2) : Color3.FromHexString(SAIL_COLOURS[Math.max(0, i) % SAIL_COLOURS.length]));
+      }
+      const mat = new StandardMaterial(`check-${part}`, preview);
+      mat.diffuseColor = partColours.get(part)!;
+      mat.backFaceCulling = false;
+      mesh.material = mat;
+    } else if (originalMaterials.has(mesh)) {
+      mesh.material = originalMaterials.get(mesh)!;
+    }
+  }
+  if (!on) originalMaterials.clear();
+}
 
 engine.runRenderLoop(() => {
   const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -145,7 +181,12 @@ engine.runRenderLoop(() => {
       psim.step(dt);
       // Held in place, heading free: the wind turns with the slider.
       Object.assign(psim.state, { x: 0, y: 0 });
-      pview.update(psim.state, psim.report, psim.controls.rudder, time, dt);
+      if (checking) {
+        // Swing every sail through its range and the rudder from side to side, the boat still.
+        const st = { ...psim.state, heel: 0, heading: 0, sailAngles: { ...psim.state.sailAngles } };
+        for (const s of pspec.sails) st.sailAngles[s.id] = Math.sin(time * 0.8) * ((s.maxAngle * Math.PI) / 180);
+        pview.update(st, psim.report, Math.sin(time * 1.3), time, dt);
+      } else pview.update(psim.state, psim.report, psim.controls.rudder, time, dt);
       const kn = (Math.hypot(psim.state.u, psim.state.v) / 0.514444).toFixed(1);
       const twa = Math.round(psim.report.trueWindAngleDeg);
       const out = document.getElementById('pspeed');
@@ -353,6 +394,7 @@ function redraw() {
   });
   line(P.rudder, '#00c060', true);
   if (P.tiller) line(P.tiller, '#00c060');
+  for (const a of P.hullAreas ?? []) line(a, '#40c0ff', true);
   for (const r of P.ropes) line([r.a, r.b], r.mode === 'remove' ? '#ff00ff' : r.mode === 'fixed' ? '#666666' : '#ff8c00');
   if (capture) {
     for (const p of capture.points) mark(p, '#ff8c00');
@@ -457,6 +499,14 @@ function render() {
     <h2>5 · Rudder</h2>
     <div class="row">${okMark(P.rudder.length >= 3)}<button id="c-rudder">Blade outline</button>${okMark(!!P.tiller)}<button id="c-tiller">Tiller</button></div>
     <p class="note">The blade: click round its outline (Enter to close). The tiller: its two ends. A steering oar (like the rabelo's) is drawn the same way.</p>
+    ${
+      model
+        ? `<h2>Keep with hull</h2>
+           ${(P.hullAreas ?? []).map((_, i) => `<div class="item"><div class="head"><strong>Area ${i + 1}</strong><button class="secondary" data-area-del="${i}">✕</button></div></div>`).join('')}
+           <button id="add-area">+ Area (click round it, Enter to close)</button>
+           <p class="note">If the check shows bits of the hull moving with a sail or the rudder, draw round them here: everything inside stays with the hull. Then build again.</p>`
+        : ''
+    }
 
     ${
       model
@@ -495,6 +545,8 @@ function report(b: BuildResult & { glb: Uint8Array }): string {
     <table><tr><th>wind</th>${pol.map((p) => `<th>${p.twaDeg}°</th>`).join('')}</tr><tr><td>knots</td>${pol.map((p) => `<td>${p.surgeKn.toFixed(1)}</td>`).join('')}</tr><tr><td>heel</td>${pol.map((p) => `<td>${Math.abs(p.heelDeg).toFixed(0)}°</td>`).join('')}</tr></table>
     <p class="note">Speeds in 12 knots of wind, sheets at their best.</p>
     <h2>Preview</h2>
+    <label><span>Check parts</span><input type="checkbox" id="p-check" ${checking ? 'checked' : ''} /></label>
+    <p class="note">Colours each part (hull grey, sails in their colours, rudder green) and swings the sails and the rudder from side to side: anything that moves in the wrong colour was cut wrongly.</p>
     <label><span>Wind from</span><input type="range" min="0" max="180" id="p-wind" value="${pctl.windDeg}" /></label>
     <label><span>Sheets</span><input type="range" min="0" max="1" step="0.01" id="p-sheet" value="${pctl.sheet}" /></label>
     <label><span>Rudder</span><input type="range" min="-1" max="1" step="0.01" id="p-rudder" value="${pctl.rudder}" /></label>
@@ -602,6 +654,9 @@ function bind() {
   panel.querySelectorAll<HTMLSelectElement>('[data-rope-sail]').forEach((b) => (b.onchange = () => ((P.ropes[Number(b.dataset.ropeSail)].sail = b.value), save())));
   panel.querySelectorAll<HTMLElement>('[data-rope-del]').forEach((b) => (b.onclick = () => (P.ropes.splice(Number(b.dataset.ropeDel), 1), changed())));
   on('build', 'click', () => void build());
+  on('add-area', 'click', () => startCapture({ labels: ['round the part that must stay with the hull'], min: 3, done: (pts) => (P.hullAreas = [...(P.hullAreas ?? []), pts]) }));
+  panel.querySelectorAll<HTMLElement>('[data-area-del]').forEach((b) => (b.onclick = () => (P.hullAreas!.splice(Number(b.dataset.areaDel), 1), changed())));
+  on('p-check', 'change', (e) => setCheck((e.target as HTMLInputElement).checked));
   on('p-wind', 'input', (e) => {
     pctl.windDeg = Number((e.target as HTMLInputElement).value);
     if (psim) psim.state.heading = (pctl.windDeg * Math.PI) / 180;
@@ -682,6 +737,8 @@ async function build() {
 
 async function showPreview() {
   if (!built) return;
+  checking = false;
+  originalMaterials.clear();
   pview?.dispose();
   const url = URL.createObjectURL(new Blob([built.glb as BlobPart], { type: 'model/gltf-binary' }));
   pspec = built.spec;

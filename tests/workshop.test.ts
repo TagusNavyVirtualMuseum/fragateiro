@@ -76,3 +76,48 @@ describe('workshop builder (photo mode)', () => {
     expect(zAtStern(hullMesh({ ...shape, transom: true }))).toBeGreaterThan(0.4);
   });
 });
+
+describe('workshop builder (model mode)', () => {
+  /** A flat strip of triangles along x (a 'hull' 0..10) and a blade beyond the stern (10..11). */
+  async function model() {
+    const { Document } = await import('@gltf-transform/core');
+    const doc = new Document();
+    const buf = doc.createBuffer();
+    const pos: number[] = [];
+    const idx: number[] = [];
+    for (let x = 0; x < 11; x += 0.25) {
+      for (const [y0, y1] of [[-1, -0.5], [-0.5, 0]]) {
+        const o = pos.length / 3;
+        pos.push(x, y0, 0.4, x + 0.25, y0, 0.4, x, y1, 0.4, x + 0.25, y1, 0.4);
+        idx.push(o, o + 1, o + 2, o + 1, o + 3, o + 2);
+        const p = pos.length / 3;
+        pos.push(x, y0, -0.4, x + 0.25, y0, -0.4, x, y1, -0.4, x + 0.25, y1, -0.4);
+        idx.push(p, p + 2, p + 1, p + 1, p + 2, p + 3);
+      }
+    }
+    const prim = doc.createPrimitive();
+    prim.setAttribute('POSITION', doc.createAccessor().setType('VEC3').setArray(new Float32Array(pos)).setBuffer(buf));
+    prim.setIndices(doc.createAccessor().setType('SCALAR').setArray(new Uint32Array(idx)).setBuffer(buf));
+    doc.createScene().addChild(doc.createNode('m').setMesh(doc.createMesh('m').addPrimitive(prim)));
+    return doc;
+  }
+  const base: Project = {
+    ...photo,
+    source: 'model',
+    bow: [0, 0],
+    stern: [10, 0],
+    masts: [],
+    sails: [{ id: 'jib', rig: 'jib', points: [[1, 0.5], [3, 5], [3, 0.5]], keep: false }],
+    // Drawn too far forward: it takes the last metre of the hull with it.
+    rudder: [[9, 0.1], [11, 0.1], [11, -1.1], [9, -1.1]],
+    tiller: undefined,
+    sailWidth: 1,
+  };
+  const legTriangles = async (p: Project) => (await buildBoat(p, await model(), { simplify: false })).report.triangles.Leme;
+  it('a "keep with hull" area takes back the hull caught by a too-large rudder outline', async () => {
+    const wrong = await legTriangles(base);
+    const fixed = await legTriangles({ ...base, hullAreas: [[[8.9, 0.2], [10, 0.2], [10, -1.2], [8.9, -1.2]]] });
+    expect(fixed).toBeLessThan(wrong);
+    expect(fixed).toBeGreaterThan(0);
+  });
+});
