@@ -54,20 +54,6 @@ export function nearPolygon(p: P2, poly: P2[], margin: number): boolean {
   return false;
 }
 
-/**
- * A square sail's curve seen from the side: from the yard through the belly (its furthest
- * point) to the foot, as a smooth arc of `n` + 1 points (a parabola through the three).
- */
-export function bellyCurve(top: P2, belly: P2, foot: P2, n = 16): P2[] {
-  // Control point of the quadratic Bezier that passes through the belly half way.
-  const c: P2 = [2 * belly[0] - (top[0] + foot[0]) / 2, 2 * belly[1] - (top[1] + foot[1]) / 2];
-  return Array.from({ length: n + 1 }, (_, i) => {
-    const t = i / n;
-    const u = 1 - t;
-    return [u * u * top[0] + 2 * u * t * c[0] + t * t * foot[0], u * u * top[1] + 2 * u * t * c[1] + t * t * foot[1]] as P2;
-  });
-}
-
 /** The part of a polygon below y = level (Sutherland–Hodgman against one line). */
 export function clipBelow(poly: P2[], level: number): P2[] {
   const out: P2[] = [];

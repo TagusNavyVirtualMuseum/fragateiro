@@ -121,20 +121,25 @@ describe('workshop builder (model mode)', () => {
     expect(fixed).toBeGreaterThan(0);
   });
 
-  it('a square sail takes its whole belly, round as it is from the side', async () => {
+  it('a square sail drawn by its contour is taken whole, round and wide as it is', async () => {
     const { cloneDocument } = await import('@gltf-transform/functions');
     const doc = await model(); // the hull
     const buf = doc.getRoot().listBuffers()[0];
     const pos: number[] = [];
     const idx: number[] = [];
-    // A sail across the boat (z -2..2) from y = 6 down to y = 1, bulging 1.2 m forward of x = 5.
-    const bx = (y: number) => 5 - 1.2 * Math.sin((Math.PI * (6 - y)) / 5);
+    // A sail across the boat (z -2..2) from y = 6 down to y = 1, bulging forward of x = 5:
+    // 1.2 m in the middle, less towards its sides (so from the side it is a wide band).
+    const bx = (y: number, z: number) => 5 - 1.2 * (1 - (z * z) / 8) * Math.sin((Math.PI * (6 - y)) / 5);
     let tris = 0;
     for (let y = 6; y > 1.01; y -= 0.25) {
-      const o = pos.length / 3;
-      pos.push(bx(y), y, -2, bx(y), y, 2, bx(y - 0.25), y - 0.25, -2, bx(y - 0.25), y - 0.25, 2);
-      idx.push(o, o + 1, o + 2, o + 1, o + 3, o + 2);
-      tris += 2;
+      for (let z = -2; z < 1.99; z += 0.5) {
+        const o = pos.length / 3;
+        const y1 = y - 0.25;
+        const z1 = z + 0.5;
+        pos.push(bx(y, z), y, z, bx(y, z1), y, z1, bx(y1, z), y1, z, bx(y1, z1), y1, z1);
+        idx.push(o, o + 1, o + 2, o + 1, o + 3, o + 2);
+        tris += 2;
+      }
     }
     const prim = doc.createPrimitive();
     prim.setAttribute('POSITION', doc.createAccessor().setType('VEC3').setArray(new Float32Array(pos)).setBuffer(buf));
@@ -147,9 +152,9 @@ describe('workshop builder (model mode)', () => {
       rudder: [],
     });
     const sailTris = async (p: Project) => (await buildBoat(p, cloneDocument(doc), { simplify: false })).report.triangles.Vela_sq ?? 0;
-    // Yard and foot only: the belly stays behind with the hull.
+    // Yard and foot only (older projects): most of the belly stays behind with the hull.
     expect(await sailTris(project([[5, 6], [5, 1]]))).toBeLessThan(tris / 2);
-    // With the belly clicked, all of it.
-    expect(await sailTris(project([[5, 6], [3.8, 3.5], [5, 1]]))).toBe(tris);
+    // Its contour clicked round it: all of it.
+    expect(await sailTris(project([[5, 6.1], [4.4, 5.6], [3.7, 4.2], [3.7, 2.8], [4.4, 1.4], [5, 0.9], [5.15, 3.5]]))).toBe(tris);
   });
 });

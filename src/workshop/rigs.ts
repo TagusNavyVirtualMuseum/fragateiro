@@ -17,6 +17,8 @@ export interface RigInfo {
   spars: [string, string][];
   /** The sail turns about its mast, about the stay (a jib), or swings on its yard (square). */
   turns: 'mast' | 'stay' | 'yard';
+  /** Clicked as a contour (any number of points, at least 3) instead of named points. */
+  contour?: boolean;
 }
 
 export const RIGS: Record<RigType, RigInfo> = {
@@ -66,10 +68,17 @@ export const RIGS: Record<RigType, RigInfo> = {
   square: {
     id: 'square',
     name: 'Square sail',
-    hint: 'Set across the boat on a yard (Rabelo). Seen from the side it is a curve: click its top at the yard, the furthest point of its belly, and its foot; then give the yard length.',
-    points: ['yard (top, at the mast)', 'belly (furthest point of the curve)', 'foot (bottom of the sail)'],
+    hint: 'Set across the boat on a yard (Rabelo). Seen from the side it is round and wide: click all the way round its outline (yard at the top, foot at the bottom), Enter when done; then give the yard length.',
+    points: ['round the whole sail as seen from the side'],
     spars: [],
     turns: 'yard',
+    contour: true,
   },
 };
+
+/** All of a sail's points are clicked (a contour: at least three). */
+export function sailComplete(s: { rig: RigType; points: unknown[] }): boolean {
+  const rig = RIGS[s.rig];
+  return rig.contour ? s.points.length >= 3 : s.points.length === rig.points.length;
+}
 export const RIG_TYPES = Object.keys(RIGS) as RigType[];

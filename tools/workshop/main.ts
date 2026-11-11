@@ -26,8 +26,8 @@ import '@babylonjs/loaders/glTF';
 import { WebIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { buildBoat, specSource, visualSource, type BuildResult, type Project, type SailInput } from '../../src/workshop/build';
-import { RIGS, RIG_TYPES, type RigType } from '../../src/workshop/rigs';
-import { bellyCurve, type P2 } from '../../src/workshop/geometry';
+import { RIGS, RIG_TYPES, sailComplete, type RigType } from '../../src/workshop/rigs';
+import type { P2 } from '../../src/workshop/geometry';
 import { SailboatSim, SteadyWind, groupsInMode, polar, type BoatSpec } from '../../src/physics';
 import { BoatView } from '../../src/engine/boatView';
 import type { BoatVisual } from '../../src/engine/boatVisuals';
@@ -382,11 +382,7 @@ function redraw() {
   P.sails.forEach((s, i) => {
     const c = SAIL_COLOURS[i % SAIL_COLOURS.length];
     for (const p of s.points) mark(p, c);
-    if (s.points.length === RIGS[s.rig].points.length) {
-      // A square sail: its curve, and the straight line closing the area taken as sail.
-      if (s.rig === 'square') line(bellyCurve(s.points[0], s.points[1], s.points[2]), c, true);
-      else line(s.points, c, true);
-    }
+    if (sailComplete(s)) line(s.points, c, true);
     const rig = RIGS[s.rig];
     for (const [a, b] of rig.spars) {
       const ia = rig.points.indexOf(a);
@@ -488,7 +484,7 @@ function render() {
     <h2>4 · Sails</h2>
     ${P.sails
       .map((s, i) => {
-        const done = s.points.length === RIGS[s.rig].points.length;
+        const done = sailComplete(s);
         return `<div class="item"><div class="head"><span class="swatch" style="background:${SAIL_COLOURS[i % SAIL_COLOURS.length]}"></span><strong>${esc(s.id)} · ${RIGS[s.rig].name}</strong>${okMark(done)}</div>
           <label><span>Id</span><input type="text" data-sail-id="${i}" value="${esc(s.id)}" /></label>
           <label><span>Rig</span><select data-sail-rig="${i}">${RIG_TYPES.map((r) => `<option value="${r}" ${r === s.rig ? 'selected' : ''}>${RIGS[r].name}</option>`).join('')}</select></label>
@@ -616,7 +612,8 @@ function bind() {
   on('add-mast', 'click', () => mastCapture(null));
   panel.querySelectorAll<HTMLElement>('[data-mast-redo]').forEach((b) => (b.onclick = () => mastCapture(Number(b.dataset.mastRedo))));
   panel.querySelectorAll<HTMLElement>('[data-mast-del]').forEach((b) => (b.onclick = () => (P.masts.splice(Number(b.dataset.mastDel), 1), changed())));
-  const sailCapture = (s: SailInput) => startCapture({ labels: RIGS[s.rig].points, count: RIGS[s.rig].points.length, done: (pts) => (s.points = pts) });
+  const sailCapture = (s: SailInput) =>
+    startCapture(RIGS[s.rig].contour ? { labels: RIGS[s.rig].points, min: 3, done: (pts) => (s.points = pts) } : { labels: RIGS[s.rig].points, count: RIGS[s.rig].points.length, done: (pts) => (s.points = pts) });
   on('add-sail', 'click', () => {
     const rig = (document.getElementById('new-rig') as HTMLSelectElement).value as RigType;
     const used = new Set(P.sails.map((s) => s.id));
@@ -700,7 +697,7 @@ function missing(): string | null {
   if (!has(P.bow) || !has(P.stern)) return 'Click the bow and the stern.';
   if (P.source === 'photo' && (P.sheer.length < 2 || P.keel.length < 2)) return 'Click the sheer and keel lines.';
   if (!P.sails.length) return 'Add at least one sail.';
-  for (const s of P.sails) if (s.points.length !== RIGS[s.rig].points.length) return `Click all the points of the sail "${s.id}".`;
+  for (const s of P.sails) if (!sailComplete(s)) return `Click all the points of the sail "${s.id}".`;
   if (P.sails.some((s) => s.rig !== 'jib') && !P.masts.length) return 'Add the mast.';
   if (P.rudder.length < 3) return 'Click the rudder outline.';
   return null;

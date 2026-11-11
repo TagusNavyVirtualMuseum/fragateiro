@@ -7,7 +7,7 @@ import { prune, simplifyPrimitive, weldPrimitive } from '@gltf-transform/functio
 import { MeshoptSimplifier } from 'meshoptimizer';
 import type { BoatSpec, SailSpec } from '../physics/types';
 import { RIGS, type RigType } from './rigs';
-import { bellyCurve, clipBelow, distToSegment, floatHull, hullMesh, nearPolygon, pointInPolygon, polygonAreaCentroid, sailMesh, sparMesh, xAt, type MeshData, type P2, type P3 } from './geometry';
+import { clipBelow, distToSegment, floatHull, hullMesh, nearPolygon, pointInPolygon, polygonAreaCentroid, sailMesh, sparMesh, xAt, type MeshData, type P2, type P3 } from './geometry';
 
 export interface SailInput {
   id: string;
@@ -99,17 +99,24 @@ function mastOf(p: Project, s: SailInput): number {
   return best;
 }
 
-/** A square sail's yard and foot (older projects have no belly point). */
-const ends = (s: SailInput): [P2, P2] => [s.points[0], s.points[s.points.length - 1]];
+/**
+ * A square sail's yard and foot: the top and bottom of its contour (older projects: the two
+ * points clicked).
+ */
+function ends(s: SailInput): [P2, P2] {
+  if (s.points.length < 3) return [s.points[0], s.points[s.points.length - 1]];
+  const byY = [...s.points].sort((a, b) => b[1] - a[1]);
+  return [byY[0], byY[byY.length - 1]];
+}
 
 /**
- * The sail's outline on the side view. A square sail: the area between the straight line from
- * yard to foot and the curve through its belly (or a thin strip, without a belly point).
+ * The sail's outline on the side view. A square sail: the contour clicked round it (older
+ * projects: a thin strip from yard to foot).
  */
 function outline(s: SailInput, width: number): P2[] {
   if (s.rig === 'square') {
+    if (s.points.length >= 3) return s.points;
     const [a, b] = ends(s);
-    if (s.points.length >= 3) return bellyCurve(a, s.points[1], b);
     return [
       [a[0] - width, a[1]],
       [a[0] + width, a[1]],
