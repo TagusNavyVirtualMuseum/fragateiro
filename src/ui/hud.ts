@@ -268,6 +268,14 @@ export class SailingHud {
   /** Where the chart's legend, its credit and the "Sail to" list go (in the settings panel). */
   readonly settingsSlot = el('div', 'settings-slot');
 
+  /** Show a wind direction set by a mission on the wind slider. */
+  setWindFrom(deg: number): void {
+    const dir = this.opts.querySelector<HTMLInputElement>('[name=dir]');
+    const out = this.opts.querySelector<HTMLOutputElement>('[name=dirOut]');
+    if (dir) dir.value = String(Math.round(deg / 5) * 5);
+    if (out) out.textContent = `${Math.round(deg)}°`;
+  }
+
   /** Open or close the settings panel (J). */
   toggleSettings(open = !this.opts.classList.contains('open')): void {
     this.opts.classList.toggle('open', open);

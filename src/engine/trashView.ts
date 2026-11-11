@@ -28,6 +28,7 @@ export class TrashView {
       crate: mat('crate', '#d9802b', 0.3),
       barrel: mat('barrel', '#2f7d4a', 0.25),
       net: mat('net', '#4fa6a0', 0.3),
+      seaweed: mat('seaweed', '#3b4a1f', 0.1),
       scum: mat('scum', '#e8e2c8', 0.6),
     };
     this.mats.scum.alpha = 0.55;
@@ -53,6 +54,18 @@ export class TrashView {
       case 'bottle': {
         piece = MeshBuilder.CreateCylinder('trash-bottle', { height: 0.9, diameter: 0.28, tessellation: 8 }, s);
         piece.rotation.z = Math.PI / 2; // lying on the water
+        break;
+      }
+      case 'seaweed': {
+        // A floating mat of seaweed (moliço): a few flat, irregular clumps.
+        const clumps: Mesh[] = [];
+        for (let k = 0; k < 5; k++) {
+          const c = MeshBuilder.CreateDisc('seaweed', { radius: 0.9 + 0.5 * Math.sin(k * 2.1 + t.phase), tessellation: 7 }, s);
+          c.rotation.x = Math.PI / 2;
+          c.position.set(Math.cos(k * 1.3 + t.phase) * 1.4, 0.02 * k, Math.sin(k * 1.9 + t.phase) * 1.4);
+          clumps.push(c);
+        }
+        piece = Mesh.MergeMeshes(clumps, true)!;
         break;
       }
       case 'bag':

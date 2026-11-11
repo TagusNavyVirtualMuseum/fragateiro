@@ -5,7 +5,7 @@
 // - Collisions with other boats: they push the boats apart and cost time.
 import type { LandMask } from './landMask';
 
-export type TrashKind = 'bottle' | 'bag' | 'crate' | 'barrel' | 'net';
+export type TrashKind = 'bottle' | 'bag' | 'crate' | 'barrel' | 'net' | 'seaweed';
 export const TRASH_KINDS: TrashKind[] = ['bottle', 'bag', 'crate', 'barrel', 'net'];
 
 export interface Trash {
@@ -31,7 +31,7 @@ export class TrashField {
    * Scatter `count` pieces in reachable water between `minFromStart` and `radius` from
    * `centre`, at least `spacing` apart, none right by the start.
    */
-  constructor(mask: LandMask, centre: { x: number; y: number }, count = TRASH_COUNT, rand = Math.random, start = centre, radius = 1600, spacing = 140, minFromStart = 180) {
+  constructor(mask: LandMask, centre: { x: number; y: number }, count = TRASH_COUNT, rand = Math.random, start = centre, radius = 1600, spacing = 140, minFromStart = 180, kinds: TrashKind[] = TRASH_KINDS) {
     for (let tries = 0; this.items.length < count && tries < count * 400; tries++) {
       const a = rand() * Math.PI * 2;
       const r = Math.sqrt(rand()) * radius;
@@ -42,7 +42,7 @@ export class TrashField {
       if (![0, 1, 2, 3].every((k) => mask.isReachable(x + 25 * Math.sin((k * Math.PI) / 2), y + 25 * Math.cos((k * Math.PI) / 2)))) continue;
       if (Math.hypot(x - start.x, y - start.y) < minFromStart) continue;
       if (this.items.some((t) => Math.hypot(t.x - x, t.y - y) < spacing)) continue;
-      this.items.push({ x, y, kind: TRASH_KINDS[Math.floor(rand() * TRASH_KINDS.length)], pickedAt: null, phase: rand() * Math.PI * 2 });
+      this.items.push({ x, y, kind: kinds[Math.floor(rand() * kinds.length)], pickedAt: null, phase: rand() * Math.PI * 2 });
     }
   }
 

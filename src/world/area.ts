@@ -2,7 +2,7 @@
 // The maps themselves are built by scripts/fetch-map.mjs (areas in scripts/map-areas.mjs).
 import { DESTINATION_NAMES, EXTRA_PLACES } from './destinations';
 
-export type AreaId = 'tejo' | 'arcachon' | 'aveiro' | 'pasaia' | 'azores' | 'madeira';
+export type AreaId = 'tejo' | 'medio' | 'arcachon' | 'aveiro' | 'pasaia' | 'azores' | 'madeira';
 
 export interface AreaInfo {
   id: AreaId;
@@ -12,6 +12,8 @@ export interface AreaInfo {
   boat: string;
   /** The Tagus wildlife (dolphins up to Lisbon, orcas offshore). Landmarks: mapView.ts. */
   tagusExtras: boolean;
+  /** Metres between land vertices near the camera (default 50; a narrow river needs 10). */
+  landDetail?: number;
   /** Ports that are not named places on OpenStreetMap, by latitude and longitude. */
   extraPlaces: { name: string; kind: string; lat: number; lon: number }[];
   /**
@@ -29,6 +31,15 @@ export function toMapXY(origin: { lat: number; lon: number }, p: { lat: number; 
 
 export const AREAS: Record<AreaId, AreaInfo> = {
   tejo: { id: 'tejo', ports: DESTINATION_NAMES, boat: 'falua', tagusExtras: true, extraPlaces: EXTRA_PLACES },
+  medio: {
+    id: 'medio',
+    landDetail: 10,
+    ports: ['Vila Nova da Barquinha', 'Tancos', 'Castelo de Almourol', 'Praia do Ribatejo', 'Constância', 'Tramagal', 'Abrantes'],
+    boat: 'canoa',
+    tagusExtras: false,
+    extraPlaces: [{ name: 'Castelo de Almourol', kind: 'mark', lat: 39.4613, lon: -8.3845 }],
+    start: { lat: 39.4598, lon: -8.392 }, // in the river off Tancos, the castle ahead
+  },
   arcachon: {
     id: 'arcachon',
     ports: ['Arcachon', 'Le Moulleau', 'Pyla-sur-Mer', 'La Teste-de-Buch', 'Gujan-Mestras', 'Le Teich', 'Port de Biganos', 'Audenge', 'Lanton', 'Andernos-les-Bains', 'Arès', 'Claouey', 'Le Canon', "L'Herbe", 'Le Cap Ferret', 'Île aux Oiseaux'],
@@ -111,7 +122,7 @@ export function getArea(): AreaInfo {
 }
 
 /** Open another area: remembered, and the page reloads with its map. */
-export function setArea(id: AreaId): void {
+export function setArea(id: AreaId, extra: Record<string, string> = {}): void {
   try {
     localStorage.setItem(KEY, id);
   } catch {
@@ -119,5 +130,6 @@ export function setArea(id: AreaId): void {
   }
   const url = new URL(location.href);
   url.searchParams.set('area', id);
+  for (const [k, v] of Object.entries(extra)) url.searchParams.set(k, v);
   location.href = url.toString();
 }

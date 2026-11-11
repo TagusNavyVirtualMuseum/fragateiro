@@ -35,6 +35,10 @@ import azoresJson from '../assets/map/azores.json';
 import madeiraMask from '../assets/map/madeira-mask.png?url';
 import madeiraHeight from '../assets/map/madeira-height.png?url';
 import madeiraJson from '../assets/map/madeira.json';
+import medioMask from '../assets/map/medio-mask.png?url';
+import medioHeight from '../assets/map/medio-height.png?url';
+import medioJson from '../assets/map/medio.json';
+import { createMedioLandmarks } from './landmarksMedio';
 import { getArea, type AreaId } from '../world/area';
 import { LandMask, type MapMeta } from '../world/landMask';
 import { Terrain, type HeightsMeta } from '../world/terrain';
@@ -61,6 +65,7 @@ const FILES: Record<AreaId, { meta: unknown; mask: string; height: string }> = {
   pasaia: { meta: pasaiaJson, mask: pasaiaMask, height: pasaiaHeight },
   azores: { meta: azoresJson, mask: azoresMask, height: azoresHeight },
   madeira: { meta: madeiraJson, mask: madeiraMask, height: madeiraHeight },
+  medio: { meta: medioJson, mask: medioMask, height: medioHeight },
 };
 const AREA = getArea();
 const maskUrl = FILES[AREA.id].mask;
@@ -220,8 +225,10 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
   mat.setFloat('fogDensity', fogDensity);
   mat.backFaceCulling = false;
 
-  const TILE = 4000; // m
-  const NEAR = 6000; // m: detailed tiles within this distance of the camera
+  // Narrow rivers need finer land near the camera, or the banks' triangles cover the water.
+  const DETAIL = AREA.landDetail ?? 50; // m between vertices in the detailed tiles
+  const TILE = DETAIL < 50 ? 1000 : 4000; // m
+  const NEAR = DETAIL < 50 ? 2500 : 6000; // m: detailed tiles within this distance of the camera
   const makeTile = (cx: number, cz: number, subdivisions: number): Mesh => {
     const t = MeshBuilder.CreateGround('land', { width: TILE, height: TILE, subdivisions, updatable: true }, scene);
     t.position.set(cx, 0, cz);
@@ -242,7 +249,8 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
     for (let x = nw.x; x < nw.x + width; x += TILE) {
       // Only tiles with some land in them.
       let land = false;
-      for (let a = 0; a <= TILE && !land; a += 100) for (let b = 0; b <= TILE && !land; b += 100) land = !mask.isWater(x + a, z + b);
+      const step = TILE / 40;
+      for (let a = 0; a <= TILE && !land; a += step) for (let b = 0; b <= TILE && !land; b += step) land = !mask.isWater(x + a, z + b);
       if (!land) continue;
       tiles.push({ cx: x + TILE / 2, cz: z + TILE / 2, low: makeTile(x + TILE / 2, z + TILE / 2, 16) });
     }
@@ -251,7 +259,7 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
     const p = camera.globalPosition;
     for (const t of tiles) {
       const d = Math.max(0, Math.hypot(p.x - t.cx, p.z - t.cz) - TILE * 0.7);
-      if (d < NEAR && !t.high) t.high = makeTile(t.cx, t.cz, 80);
+      if (d < NEAR && !t.high) t.high = makeTile(t.cx, t.cz, Math.round(TILE / DETAIL));
       else if (d > NEAR + 1500 && t.high) {
         t.high.dispose();
         t.high = undefined;
@@ -274,7 +282,7 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
   // --- Landmarks: the Tagus bridges, towers and lighthouses; Arcachon's lighthouse, piers
   // and huts on stilts.
   const landmarks =
-    AREA.id === 'tejo' ? createLandmarks(scene, mask, terrain, mask.meta.origin, MAP_META.bridges) : AREA.id === 'arcachon' ? createArcachonLandmarks(scene, mask, terrain, mask.meta.origin) : [];
+    AREA.id === 'tejo' ? createLandmarks(scene, mask, terrain, mask.meta.origin, MAP_META.bridges) : AREA.id === 'arcachon' ? createArcachonLandmarks(scene, mask, terrain, mask.meta.origin) : AREA.id === 'medio' ? createMedioLandmarks(scene, mask, terrain, mask.meta.origin) : [];
   for (const l of landmarks) {
     const label = makeLabel(scene, l.name, false);
     label.position.set(l.x, l.height, l.y);

@@ -13,12 +13,14 @@ export const LEVELS: { id: Level; name: string; description: string }[] = [
   { id: 'hard', name: t('level.hard'), description: t('level.hard.desc') },
 ];
 
-export type MissionKind = 'regatta' | 'transport' | 'cleanup' | 'supply' | 'whaling' | 'fishing' | 'free';
+export type MissionKind = 'regatta' | 'transport' | 'cleanup' | 'supply' | 'whaling' | 'fishing' | 'free' | 'run' | 'seaweed';
 
 export type Mission =
   | { id: string; kind: 'transport'; title: string; boat: string; from: string; to: string; busy?: boolean }
   | { id: string; kind: 'cleanup'; title: string; boat: string; at: string; count: number }
-  | { id: string; kind: 'whaling'; title: string; boat: string; from: string }
+  | { id: string; kind: 'whaling'; title: string; boat: string; from: string; watch?: boolean }
+  | { id: string; kind: 'run'; title: string; boat: string; from: string; dir: 'downwind' | 'upwind'; distance: number }
+  | { id: string; kind: 'seaweed'; title: string; boat: string; at: string; count: number }
   | { id: string; kind: 'supply'; title: string; boat: string; from: string; meet: { lat: number; lon: number }; meetBoat: string }
   | { id: string; kind: 'regatta'; title: string; boat: string; at: string; buoys: 2 | 3 }
   | { id: string; kind: 'fishing'; title: string; boat: string; at: string; targetKg: number }
@@ -164,10 +166,20 @@ export const AREA_MISSIONS: Record<AreaId, { courses: RegattaCourse[]; routes: R
     ],
     grounds: [],
   },
+  medio: {
+    courses: [],
+    routes: [
+      { id: 'barquinha-almourol', from: 'Vila Nova da Barquinha', to: 'Castelo de Almourol', boat: 'canoa', description: t('route.barquinha-almourol') },
+      { id: 'tancos-constancia', from: 'Tancos', to: 'Constância', boat: 'canoa', description: t('route.tancos-constancia') },
+      { id: 'constancia-abrantes', from: 'Constância', to: 'Abrantes', boat: 'catraio', description: t('route.constancia-abrantes') },
+    ],
+    grounds: [],
+  },
 };
 
 /** Clean-ups: rubbish to pick up off a port, in every area. */
 export const CLEANUPS: Record<AreaId, CleanupInfo[]> = {
+  medio: [{ id: 'clean-constancia', name: t('cleanup.constancia'), at: 'Constância' }],
   tejo: [
     { id: 'clean-lisboa', name: t('cleanup.lisboa'), at: 'Lisboa' },
     { id: 'clean-seixal', name: t('cleanup.seixal'), at: 'Seixal' },
@@ -182,6 +194,7 @@ export const CLEANUPS: Record<AreaId, CleanupInfo[]> = {
 
 /** Supply runs: out to a fishing boat at anchor and back. */
 export const SUPPLIES: Record<AreaId, SupplyInfo[]> = {
+  medio: [],
   tejo: [
     {
       id: 'bugio-muleta',
@@ -202,6 +215,7 @@ export const SUPPLIES: Record<AreaId, SupplyInfo[]> = {
 
 /** Whaling: the ports a whale hunt can start from (the Azores only). */
 export const WHALING: Record<AreaId, string[]> = {
+  medio: [],
   tejo: [],
   arcachon: [],
   aveiro: [],
@@ -329,6 +343,7 @@ export class MissionRun {
   get goalName(): string {
     const m = this.mission;
     if (m.kind === 'transport') return placeName(m.to);
+    if (m.kind === 'run') return t('goal.mark');
     if (this.course) return this.next < this.course.buoys.length ? t('goal.buoy', { n: this.next + 1, total: this.course.buoys.length }) : t('goal.finish');
     return '';
   }
@@ -358,3 +373,43 @@ export function bestTimeKey(missionId: string, level: Level): string {
   const ed = getEdition().id === 'museum' ? '.museum' : '';
   return `fragateiro.best.${missionId}.${level}${ed}`;
 }
+
+/** The museum's mini-games: one boat and one task each, chosen straight from the menu. */
+export interface MiniGame {
+  id: string;
+  area: AreaId;
+  boat: string;
+  /** The mission (built when chosen, so titles are in the current language). */
+  mission: (boats: { id: string; name: string }[]) => Mission;
+}
+
+export const MINIGAMES: MiniGame[] = [
+  {
+    id: 'downwind',
+    area: 'tejo',
+    boat: 'falua',
+    mission: () => ({ id: 'mini-downwind', kind: 'run', title: t('mini.downwind'), boat: 'falua', from: 'Lisboa', dir: 'downwind', distance: getEdition().runDistance }),
+  },
+  {
+    id: 'upwind',
+    area: 'tejo',
+    boat: 'falua',
+    mission: () => ({ id: 'mini-upwind', kind: 'run', title: t('mini.upwind'), boat: 'falua', from: 'Lisboa', dir: 'upwind', distance: getEdition().runDistance }),
+  },
+  { id: 'passengers', area: 'tejo', boat: 'catraio', mission: (b) => ({ ...makeMission('transport', 'lisboa-almada', 'catraio', b), title: t('mini.passengers') }) },
+  {
+    id: 'whales',
+    area: 'azores',
+    boat: 'baleeiro',
+    mission: () => ({ id: 'mini-whales', kind: 'whaling', title: t('mini.whales'), boat: 'baleeiro', from: 'Horta', watch: true }),
+  },
+  {
+    id: 'seaweed',
+    area: 'aveiro',
+    boat: 'moliceiro',
+    mission: () => ({ id: 'mini-seaweed', kind: 'seaweed', title: t('mini.seaweed'), boat: 'moliceiro', at: 'Torreira', count: getEdition().trashCount }),
+  },
+  { id: 'busy', area: 'tejo', boat: 'fragata', mission: (b) => ({ ...makeMission('transport', 'almada-lisboa-busy', 'fragata', b), title: t('mini.busy') }) },
+  { id: 'fishing', area: 'tejo', boat: 'muleta', mission: (b) => ({ ...makeMission('fishing', 'seixal', 'muleta', b), title: t('mini.fishing') }) },
+  { id: 'supplies', area: 'tejo', boat: 'canoa', mission: (b) => ({ ...makeMission('supply', 'bugio-muleta', 'canoa', b), title: t('mini.supplies') }) },
+];

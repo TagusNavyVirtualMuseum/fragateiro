@@ -74,3 +74,18 @@ describe('missions', () => {
     expect(ids.size).toBe(perBoat * BOATS.length + FISHING_GROUNDS.length);
   });
 });
+
+describe('museum mini-games', () => {
+  it('each starts a mission with its boat, from a port of its area', async () => {
+    const { MINIGAMES } = await import('../src/world/missions');
+    const { AREAS } = await import('../src/world/area');
+    expect(MINIGAMES.map((g) => g.id)).toEqual(['downwind', 'upwind', 'passengers', 'whales', 'seaweed', 'busy', 'fishing', 'supplies']);
+    for (const g of MINIGAMES) {
+      const m = g.mission(BOATS);
+      expect(m.boat).toBe(g.boat);
+      expect(BOATS.some((b) => b.id === g.boat)).toBe(true);
+      const place = 'from' in m ? m.from : 'at' in m ? m.at : '';
+      expect(AREAS[g.area].ports).toContain(place);
+    }
+  });
+});

@@ -75,6 +75,14 @@ apart. The map stays at real scale: halving it would make the boats twice too bi
 rivers (narrow channels such as Pasaia's would become unsailable) and the hills and landmarks
 look wrong, so the challenges are shortened instead.
 
+In the museum edition the menu is eight mini-games, each with its boat (an area elsewhere
+opens the game there and starts it): downwind and upwind with the Falua (a mark 800 m dead
+down- or upwind, the wind set along the open river), passengers with the Catraio (Lisbon to
+Almada), whale watching with the Baleeiro (Azores), seaweed with the Moliceiro (Ria de
+Aveiro: gather the floating moliço), cargo with the Fragata through the busy crossing,
+fishing with the Muleta, and supplies with the Canoa. They are `MINIGAMES` in
+`src/world/missions.ts`.
+
 ### Languages
 
 The site and the game are in Portuguese, French and English. The switch is at the top of the
@@ -170,9 +178,11 @@ preview. Open `/tools/workshop/` (see `docs/MODELS.md`).
 
 ## The maps
 
-There are six sailing areas, each its own map, chosen in the mission menu (or with
-`?area=tejo|arcachon|aveiro|azores|madeira`; the choice is remembered; the Pasaia map is hidden from the menu for now but opens with `?area=pasaia`): the **lower Tagus** from Vila
-Franca de Xira to Cascais and Cabo Espichel, the **Bassin d'Arcachon** (home of the pinasse,
+There are seven sailing areas, each its own map, chosen in the mission menu (or with
+`?area=tejo|medio|arcachon|aveiro|azores|madeira`; the choice is remembered; the Pasaia map is hidden from the menu for now but opens with `?area=pasaia`): the **lower Tagus** from Vila
+Franca de Xira to Cascais and Cabo Espichel, the **middle Tagus** (Vila Nova da Barquinha,
+Tancos, the castle of Almourol on its island, Constância and Abrantes: a river 150-300 m wide,
+its map at 10 m), the **Bassin d'Arcachon** (home of the pinasse,
 with the Cap Ferret lighthouse, the Thiers and Eyrac piers and the huts on stilts), the **Ria
 de Aveiro**, the central **Azores** (Horta, Madalena, São Roque do Pico, Velas), the east of
 **Madeira** (Santa Cruz, Machico, Porto da Cruz, Ponta de São Lourenço), and the Basque coast

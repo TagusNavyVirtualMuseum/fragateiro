@@ -5,6 +5,16 @@ import { t } from '../i18n';
 import { getEdition } from '../world/edition';
 import { FISHING_TARGET_KG, LEVELS, placeName, MISSION_KINDS, areaMissions, makeMission, type Level, type Mission, type MissionKind } from '../world/missions';
 import { MENU_AREAS, getArea, setArea } from '../world/area';
+import { MINIGAMES } from '../world/missions';
+import faluaPic from '../assets/boats/falua.jpg?url';
+import catraioPic from '../assets/boats/catraio.jpg?url';
+import fragataPic from '../assets/boats/fragata.jpg?url';
+import muletaPic from '../assets/boats/muleta.jpg?url';
+import canoaPic from '../assets/boats/canoa.jpg?url';
+import baleeiroPic from '../assets/boats/baleeiro.jpg?url';
+import moliceiroPic from '../assets/boats/moliceiro.jpg?url';
+
+const BOAT_PICTURES: Record<string, string> = { falua: faluaPic, catraio: catraioPic, fragata: fragataPic, muleta: muletaPic, canoa: canoaPic, baleeiro: baleeiroPic, moliceiro: moliceiroPic };
 
 const AREA = getArea();
 const { courses: COURSES, routes: ROUTES, grounds: GROUNDS, cleanups: CLEANUPS, supplies: SUPPLIES, whaling: WHALING } = areaMissions();
@@ -31,6 +41,8 @@ export class MissionMenu {
     supply: { option: SUPPLIES[0]?.id ?? '', boat: SUPPLIES[0]?.boat ?? AREA.boat },
     whaling: { option: WHALING[0] ?? '', boat: 'baleeiro' },
     free: { option: AREA.ports[0], boat: AREA.boat },
+    run: { option: '', boat: 'falua' },
+    seaweed: { option: '', boat: 'moliceiro' },
   };
 
   constructor(
@@ -67,17 +79,42 @@ export class MissionMenu {
     this.ports = names;
   }
 
-  /** Step 1: the area, the level and the kind of mission. */
+  /** Step 1: the area, the level and the kind of mission (the museum: its mini-games). */
   show(): void {
+    if (getEdition().id === 'museum') {
+      this.showMiniGames();
+      return;
+    }
     const panel = this.panel(t('menu.whatToDo'));
     panel.append(this.areaPicker(), this.levelPicker());
     const list = el('div', 'mission-list kinds');
-    const offered = { regatta: COURSES.length, transport: this.routes.length, cleanup: CLEANUPS.length, supply: SUPPLIES.length, whaling: WHALING.length, fishing: GROUNDS.length, free: 1 };
+    const offered: Record<MissionKind, number> = { run: 0, seaweed: 0, regatta: COURSES.length, transport: this.routes.length, cleanup: CLEANUPS.length, supply: SUPPLIES.length, whaling: WHALING.length, fishing: GROUNDS.length, free: 1 };
     for (const k of MISSION_KINDS) {
       if (!offered[k.id]) continue;
       const card = el('button', 'mission-card');
       card.append(el('strong', '', k.title), el('span', 'desc', k.description));
       card.onclick = () => this.showOptions(k.id);
+      list.append(card);
+    }
+    panel.append(list);
+  }
+
+  /** The museum's menu: one card per mini-game, with its boat's picture. */
+  private showMiniGames(): void {
+    const panel = this.panel(t('menu.whatToDo'));
+    panel.append(this.levelPicker());
+    const list = el('div', 'mission-list minigames');
+    for (const g of MINIGAMES) {
+      const card = el('button', 'mission-card minigame');
+      const img = el('img');
+      img.src = BOAT_PICTURES[g.boat] ?? '';
+      img.alt = '';
+      card.append(img, el('strong', '', t(`mini.${g.id}`)), el('span', 'desc', t(`mini.${g.id}.desc`)));
+      card.onclick = () => {
+        // Each area is its own map: another area opens the page there, and the game starts it.
+        if (g.area !== AREA.id) setArea(g.area, { play: g.id });
+        else this.onStart(g.mission(this.boats), this.level);
+      };
       list.append(card);
     }
     panel.append(list);

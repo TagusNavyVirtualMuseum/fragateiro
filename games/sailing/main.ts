@@ -24,13 +24,13 @@ import { Wildlife } from '../../src/engine/wildlife';
 import { Traffic } from '../../src/engine/traffic';
 import { CourseView } from '../../src/engine/courseView';
 import { MissionMenu } from '../../src/ui/missionMenu';
-import { LEVELS, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
+import { LEVELS, MINIGAMES, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
 import { FishingGround } from '../../src/world/fishing';
 import { ShoalView } from '../../src/engine/shoalView';
 import { SailingHud, loadTimeOfDay } from '../../src/ui/hud';
 import { getLang, t } from '../../src/i18n';
 import { Minimap } from '../../src/ui/minimap';
-import { findDestinations, sailableHeading, type Destination } from '../../src/world/destinations';
+import { findDestinations, freeRun, sailableHeading, type Destination } from '../../src/world/destinations';
 import { hullAfloat, type LandMask } from '../../src/world/landMask';
 import type { Terrain } from '../../src/world/terrain';
 
@@ -413,6 +413,48 @@ async function startMission(m: Mission, l: Level): Promise<void> {
       run = new MissionRun(m, sim.state.time, null, null);
       hud.toast(t('whale.spotted'));
     }
+  } else if (m.kind === 'run') {
+    // Downwind or upwind to a mark: the wind is set along the longest open stretch of water
+    // from the start, so the run is clear of the shore.
+    const from = destinations.find((d) => d.name === m.from);
+    if (from) {
+      teleport(from);
+      let s0 = { x: from.x + Math.sin(from.heading) * 300, y: from.y + Math.cos(from.heading) * 300 };
+      if (!mask.isReachable(s0.x, s0.y)) s0 = { x: from.x, y: from.y };
+      let best = 0;
+      let dir = 0;
+      for (let k = 0; k < 72; k++) {
+        const h = (k / 72) * Math.PI * 2;
+        const run = freeRun(mask, s0.x, s0.y, h, m.distance + 400);
+        if (run > best) {
+          best = run;
+          dir = h;
+        }
+      }
+      const d = Math.min(m.distance, Math.max(200, best - 250));
+      const mark = { x: s0.x + Math.sin(dir) * d, y: s0.y + Math.cos(dir) * d };
+      // Downwind: the wind blows towards the mark; upwind: from it.
+      const windFrom = m.dir === 'downwind' ? dir + Math.PI : dir;
+      wind.fromDeg = ((((windFrom * 180) / Math.PI) % 360) + 360) % 360;
+      hud.setWindFrom(wind.fromDeg);
+      // Start pointing across the wind, ready to bear away or to beat.
+      const heading = m.dir === 'downwind' ? dir : dir + Math.PI / 2.4;
+      sim = new SailboatSim(spec, wind, { x: s0.x, y: s0.y, heading, u: 1, time: sim.state.time });
+      sim.controls.mode = spec.modes[0].id;
+      aground = false;
+      camera.target.set(s0.x, camera.target.y, s0.y);
+      run = new MissionRun(m, sim.state.time, null, mark);
+    }
+  } else if (m.kind === 'seaweed') {
+    const at = destinations.find((d) => d.name === m.at);
+    if (at) {
+      teleport(at);
+      let centre = { x: at.x + Math.sin(at.heading) * 600, y: at.y + Math.cos(at.heading) * 600 };
+      if (!mask.isReachable(centre.x, centre.y)) centre = { x: at.x, y: at.y };
+      trash = new TrashField(mask, centre, m.count, Math.random, { x: sim.state.x, y: sim.state.y }, EDITION.trashRadius * 0.6, 100, 150, ['seaweed']);
+      trashView.setField(trash);
+      run = new MissionRun(m, sim.state.time, null, null);
+    }
   } else if (m.kind === 'cleanup') {
     const at = destinations.find((d) => d.name === m.at);
     if (at) {
@@ -602,9 +644,14 @@ async function main(): Promise<void> {
     const name = t(species === 'orca' ? 'wild.orcas' : 'wild.dolphins');
     hud.toast(side === 'ahead' || side === 'astern' ? t(`wild.${side}`, { name }) : t('wild.side', { name, side: t(`nav.${side}`) }));
   };
-  // Start with the mission menu.
+  // Start with the mission menu, or straight into a mini-game chosen in another area's menu.
   paused = true;
-  menu.show();
+  const play = new URLSearchParams(location.search).get('play');
+  const game = MINIGAMES.find((g) => g.id === play && g.area === AREA.id);
+  if (game) {
+    history.replaceState(null, '', location.pathname + location.search.replace(/[?&]play=[^&]*/, '').replace(/^&/, '?'));
+    void startMission(game.mission(BOATS), level);
+  } else menu.show();
   // Handy in the browser console and for automated checks.
   Object.assign(window, { game: { get wildlife() { return wildlife; }, netSweep, get fishing() { return fishing; }, get trash() { return trash; }, get hunt() { return hunt; }, get supply() { return supply; }, get anchored() { return anchored; }, get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
 
@@ -631,12 +678,12 @@ async function main(): Promise<void> {
         if (ev === 'fright') hud.toast(t('whale.fright'));
         if (ev === 'struck') {
           run.finishedAt = sim.state.time;
-          hud.toast(t('whale.struck'));
+          hud.toast(t(mission.kind === 'whaling' && mission.watch ? 'whale.watched' : 'whale.struck'));
           finishMission();
         }
       } else if (trash && run && !missionDone) {
         const got = trash.update(sim.state.x, sim.state.y, sim.state.time);
-        if (got.length) hud.toast(t('trash.got', { n: trash.picked, total: trash.items.length }), 3);
+        if (got.length) hud.toast(t(mission.kind === 'seaweed' ? 'seaweed.got' : 'trash.got', { n: trash.picked, total: trash.items.length }), 3);
         if (trash.left === 0) {
           run.finishedAt = sim.state.time;
           finishMission();
@@ -713,8 +760,8 @@ async function main(): Promise<void> {
       const to = toward(piece ?? s);
       mapView.setTarget(level === 'hard' ? null : piece);
       nav = {
-        title: t('trash.title', { n: trash.picked, total: trash.items.length }),
-        name: t('trash.nearest'),
+        title: t(mission.kind === 'seaweed' ? 'seaweed.title' : 'trash.title', { n: trash.picked, total: trash.items.length }),
+        name: t(mission.kind === 'seaweed' ? 'seaweed.nearest' : 'trash.nearest'),
         ...to,
         elapsed: run.elapsed(s.time),
         arrived: missionDone,
