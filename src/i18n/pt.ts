@@ -401,6 +401,8 @@ export const PT: Record<string, string> = {
   'seaweed.title': 'Moliço {n} de {total}',
   'seaweed.nearest': 'moliço mais próximo',
   'seaweed.got': 'Moliço a bordo: {n} de {total}',
+  'mini.free': 'Navegação livre',
+  'mini.free.desc': 'Qualquer barco, em qualquer zona, a partir de qualquer porto, sem relógio.',
   'menu.level': 'Nível',
   'menu.course': 'Percurso',
   'menu.boat': 'Barco',

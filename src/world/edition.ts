@@ -1,6 +1,6 @@
 // One game, two settings: the museum edition (a visit of a few minutes: short challenges, the
 // clock faster) and the home edition (the full challenges). Chosen with ?edition=museum or
-// ?edition=home (remembered); home by default. Plain TypeScript, so the rules can be tested.
+// ?edition=home (remembered); museum by default. Plain TypeScript, so the rules can be tested.
 
 export type EditionId = 'museum' | 'home';
 
@@ -33,7 +33,7 @@ export const EDITIONS: Record<EditionId, Edition> = {
 const KEY = 'fragateiro.edition';
 
 function detect(): EditionId {
-  if (typeof location === 'undefined') return 'home';
+  if (typeof location === 'undefined') return 'museum';
   const fromUrl = new URLSearchParams(location.search).get('edition');
   if (fromUrl === 'museum' || fromUrl === 'home') {
     try {
@@ -49,7 +49,7 @@ function detect(): EditionId {
   } catch {
     // storage blocked
   }
-  return 'home';
+  return 'museum';
 }
 
 const current = EDITIONS[detect()];

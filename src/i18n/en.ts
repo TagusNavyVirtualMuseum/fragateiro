@@ -401,6 +401,8 @@ export const EN: Record<string, string> = {
   'seaweed.title': 'Seaweed {n} of {total}',
   'seaweed.nearest': 'nearest seaweed',
   'seaweed.got': 'Seaweed aboard: {n} of {total}',
+  'mini.free': 'Free sailing',
+  'mini.free.desc': 'Any boat, in any area, from any port, no clock.',
   'menu.level': 'Level',
   'menu.course': 'Course',
   'menu.boat': 'Boat',

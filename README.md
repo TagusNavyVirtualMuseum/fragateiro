@@ -66,8 +66,8 @@ Missions are defined in `src/world/missions.ts`; the trimming in `src/physics/au
 
 ### Museum and home editions
 
-One game with two settings, chosen with `?edition=museum` or `?edition=home` (remembered; home
-by default), in `src/world/edition.ts`. The museum edition is for a visit of a few minutes:
+One game with two settings, chosen with `?edition=museum` or `?edition=home` (remembered;
+museum by default), in `src/world/edition.ts`. The museum edition is for a visit of a few minutes:
 regatta legs of 350 m instead of 600 m, 6 pieces of rubbish within 800 m instead of 12 within
 1.6 km, supply runs starting 900 m from the boat at anchor with a 12 s transfer instead of 25 s,
 only transport routes under 4 km, and the clock at ×5 instead of ×3. Museum best times are kept
@@ -80,7 +80,8 @@ opens the game there and starts it): downwind and upwind with the Falua (a mark 
 down- or upwind, the wind set along the open river), passengers with the Catraio (Lisbon to
 Almada), whale watching with the Baleeiro (Azores), seaweed with the Moliceiro (Ria de
 Aveiro: gather the floating moliço), cargo with the Fragata through the busy crossing,
-fishing with the Muleta, and supplies with the Canoa. They are `MINIGAMES` in
+fishing with the Muleta, and supplies with the Canoa; last, free sailing, where the area, the boat and the port are
+chosen. They are `MINIGAMES` in
 `src/world/missions.ts`.
 
 ### Languages

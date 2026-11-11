@@ -648,7 +648,10 @@ async function main(): Promise<void> {
   paused = true;
   const play = new URLSearchParams(location.search).get('play');
   const game = MINIGAMES.find((g) => g.id === play && g.area === AREA.id);
-  if (game) {
+  if (play === 'free') {
+    history.replaceState(null, '', location.pathname + location.search.replace(/[?&]play=[^&]*/, '').replace(/^&/, '?'));
+    menu.showFree();
+  } else if (game) {
     history.replaceState(null, '', location.pathname + location.search.replace(/[?&]play=[^&]*/, '').replace(/^&/, '?'));
     void startMission(game.mission(BOATS), level);
   } else menu.show();

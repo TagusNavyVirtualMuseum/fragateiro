@@ -117,7 +117,20 @@ export class MissionMenu {
       };
       list.append(card);
     }
+    // Last: free sailing, with any boat, in any area, from any port.
+    const free = el('button', 'mission-card minigame free');
+    const img = el('img');
+    img.src = BOAT_PICTURES.falua;
+    img.alt = '';
+    free.append(img, el('strong', '', t('mini.free')), el('span', 'desc', t('mini.free.desc')));
+    free.onclick = () => this.showFree();
+    list.append(free);
     panel.append(list);
+  }
+
+  /** The free-sailing screen: area, boat and port. */
+  showFree(): void {
+    this.showOptions('free');
   }
 
   /** Step 2: where, and with which boat. */
@@ -208,6 +221,9 @@ export class MissionMenu {
         ),
       );
     } else {
+      // Free sailing: the area (another one reopens the game there, on this screen), the boat,
+      // and the port to start from.
+      body.append(this.areaPicker({ play: 'free' }));
       boatButtons();
       body.append(el('h2', '', t('menu.startFrom')));
       const select = el('select', 'port-select');
@@ -260,13 +276,13 @@ export class MissionMenu {
   }
 
   /** Each area is its own map: choosing another reloads the game there. */
-  private areaPicker(): HTMLElement {
+  private areaPicker(extra: Record<string, string> = {}): HTMLElement {
     const box = el('div');
     const row = el('div', 'buttons levels');
     for (const id of MENU_AREAS) {
       const b = el('button', id === AREA.id ? 'active' : '', t(`area.${id}`));
       b.onclick = () => {
-        if (id !== AREA.id) setArea(id);
+        if (id !== AREA.id) setArea(id, extra);
       };
       row.append(b);
     }
