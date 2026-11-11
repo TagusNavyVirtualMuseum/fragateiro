@@ -7,7 +7,7 @@ import { prune, simplifyPrimitive, weldPrimitive } from '@gltf-transform/functio
 import { MeshoptSimplifier } from 'meshoptimizer';
 import type { BoatSpec, SailSpec } from '../physics/types';
 import { RIGS, type RigType } from './rigs';
-import { clipBelow, distToSegment, floatHull, hullMesh, nearPolygon, pointInPolygon, polygonAreaCentroid, sailMesh, sparMesh, xAt, type MeshData, type P2, type P3 } from './geometry';
+import { bellyCurve, clipBelow, distToSegment, floatHull, hullMesh, nearPolygon, pointInPolygon, polygonAreaCentroid, sailMesh, sparMesh, xAt, type MeshData, type P2, type P3 } from './geometry';
 
 export interface SailInput {
   id: string;
@@ -99,10 +99,17 @@ function mastOf(p: Project, s: SailInput): number {
   return best;
 }
 
-/** The sail's outline on the side view (a square sail: a thin strip). */
+/** A square sail's yard and foot (older projects have no belly point). */
+const ends = (s: SailInput): [P2, P2] => [s.points[0], s.points[s.points.length - 1]];
+
+/**
+ * The sail's outline on the side view. A square sail: the area between the straight line from
+ * yard to foot and the curve through its belly (or a thin strip, without a belly point).
+ */
 function outline(s: SailInput, width: number): P2[] {
   if (s.rig === 'square') {
-    const [a, b] = s.points;
+    const [a, b] = ends(s);
+    if (s.points.length >= 3) return bellyCurve(a, s.points[1], b);
     return [
       [a[0] - width, a[1]],
       [a[0] + width, a[1]],
@@ -345,7 +352,7 @@ export async function buildBoat(project: Project, source: Document | null, opts:
     const name = `Vela_${sl.id}`;
     const r = 0.007 * L;
     if (sl.rig === 'square') {
-      const [top, foot] = sl.points.map((q) => M(q));
+      const [top, foot] = ends(sl).map((q) => M(q));
       const half = (sl.yardLength ?? B * 2) / 2;
       const corners: P3[] = [
         [top[0], top[1], half],
@@ -403,7 +410,7 @@ export async function buildBoat(project: Project, source: Document | null, opts:
   };
   const area = (sl: SailInput) => {
     if (sl.rig === 'square') {
-      const [a, b] = sl.points.map((q) => M(q));
+      const [a, b] = ends(sl).map((q) => M(q));
       return { area: Math.abs(a[1] - b[1]) * (sl.yardLength ?? B * 2), cx: (a[0] + b[0]) / 2, cy: (a[1] + b[1]) / 2 };
     }
     return polygonAreaCentroid(sl.points.map((q) => M(q).slice(0, 2) as P2));

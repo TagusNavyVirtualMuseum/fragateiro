@@ -77,7 +77,9 @@ beam and weight, then click on the side view:
 - each mast (foot and top);
 - each sail, by rig type: lateen (tack, peak, clew), lugsail and gaff (throat, peak, clew,
   tack), sprit (the same, the sprit from tack to peak), jib (tack, head, clew) or square sail
-  (yard and foot, plus the yard length). For a model, keep its own sail or have a new one
+  (yard, the furthest point of its belly, and foot, plus the yard length: everything between
+  the straight yard-to-foot line and the curve through the belly goes with the sail, so a
+  round square sail is taken whole). For a model, keep its own sail or have a new one
   built from the points (useful when Meshy gets a sail's shape wrong);
 - the rudder blade's outline and the tiller (a steering oar is drawn the same way);
 - for a model, the ropes: remove them, leave them with the hull (stays, shrouds), or move

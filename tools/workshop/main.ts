@@ -27,7 +27,7 @@ import { WebIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { buildBoat, specSource, visualSource, type BuildResult, type Project, type SailInput } from '../../src/workshop/build';
 import { RIGS, RIG_TYPES, type RigType } from '../../src/workshop/rigs';
-import type { P2 } from '../../src/workshop/geometry';
+import { bellyCurve, type P2 } from '../../src/workshop/geometry';
 import { SailboatSim, SteadyWind, groupsInMode, polar, type BoatSpec } from '../../src/physics';
 import { BoatView } from '../../src/engine/boatView';
 import type { BoatVisual } from '../../src/engine/boatVisuals';
@@ -382,7 +382,11 @@ function redraw() {
   P.sails.forEach((s, i) => {
     const c = SAIL_COLOURS[i % SAIL_COLOURS.length];
     for (const p of s.points) mark(p, c);
-    if (s.points.length === RIGS[s.rig].points.length) line(s.points, c, s.rig !== 'square');
+    if (s.points.length === RIGS[s.rig].points.length) {
+      // A square sail: its curve, and the straight line closing the area taken as sail.
+      if (s.rig === 'square') line(bellyCurve(s.points[0], s.points[1], s.points[2]), c, true);
+      else line(s.points, c, true);
+    }
     const rig = RIGS[s.rig];
     for (const [a, b] of rig.spars) {
       const ia = rig.points.indexOf(a);

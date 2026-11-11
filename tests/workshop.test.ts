@@ -120,4 +120,36 @@ describe('workshop builder (model mode)', () => {
     expect(fixed).toBeLessThan(wrong);
     expect(fixed).toBeGreaterThan(0);
   });
+
+  it('a square sail takes its whole belly, round as it is from the side', async () => {
+    const { cloneDocument } = await import('@gltf-transform/functions');
+    const doc = await model(); // the hull
+    const buf = doc.getRoot().listBuffers()[0];
+    const pos: number[] = [];
+    const idx: number[] = [];
+    // A sail across the boat (z -2..2) from y = 6 down to y = 1, bulging 1.2 m forward of x = 5.
+    const bx = (y: number) => 5 - 1.2 * Math.sin((Math.PI * (6 - y)) / 5);
+    let tris = 0;
+    for (let y = 6; y > 1.01; y -= 0.25) {
+      const o = pos.length / 3;
+      pos.push(bx(y), y, -2, bx(y), y, 2, bx(y - 0.25), y - 0.25, -2, bx(y - 0.25), y - 0.25, 2);
+      idx.push(o, o + 1, o + 2, o + 1, o + 3, o + 2);
+      tris += 2;
+    }
+    const prim = doc.createPrimitive();
+    prim.setAttribute('POSITION', doc.createAccessor().setType('VEC3').setArray(new Float32Array(pos)).setBuffer(buf));
+    prim.setIndices(doc.createAccessor().setType('SCALAR').setArray(new Uint32Array(idx)).setBuffer(buf));
+    doc.getRoot().listScenes()[0].addChild(doc.createNode('sail').setMesh(doc.createMesh('sail').addPrimitive(prim)));
+    const project = (points: [number, number][]): Project => ({
+      ...base,
+      masts: [{ foot: [5, 0], top: [5, 7] }],
+      sails: [{ id: 'sq', rig: 'square', points, keep: true, yardLength: 4 }],
+      rudder: [],
+    });
+    const sailTris = async (p: Project) => (await buildBoat(p, cloneDocument(doc), { simplify: false })).report.triangles.Vela_sq ?? 0;
+    // Yard and foot only: the belly stays behind with the hull.
+    expect(await sailTris(project([[5, 6], [5, 1]]))).toBeLessThan(tris / 2);
+    // With the belly clicked, all of it.
+    expect(await sailTris(project([[5, 6], [3.8, 3.5], [5, 1]]))).toBe(tris);
+  });
 });

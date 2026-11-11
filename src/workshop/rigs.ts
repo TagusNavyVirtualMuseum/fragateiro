@@ -66,8 +66,8 @@ export const RIGS: Record<RigType, RigInfo> = {
   square: {
     id: 'square',
     name: 'Square sail',
-    hint: 'Set across the boat on a yard (Rabelo). Seen from the side it is a vertical line: click its top and its foot, and give the yard length.',
-    points: ['yard (top, at the mast)', 'foot (bottom of the sail)'],
+    hint: 'Set across the boat on a yard (Rabelo). Seen from the side it is a curve: click its top at the yard, the furthest point of its belly, and its foot; then give the yard length.',
+    points: ['yard (top, at the mast)', 'belly (furthest point of the curve)', 'foot (bottom of the sail)'],
     spars: [],
     turns: 'yard',
   },
