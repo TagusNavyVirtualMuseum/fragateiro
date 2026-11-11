@@ -4,6 +4,7 @@ import type { LandMask } from './landMask';
 import { t, tMaybe } from '../i18n';
 import { getEdition } from './edition';
 import { getArea, type AreaId } from './area';
+import { DRILL_IDS, type DrillId } from './drills';
 
 export type Level = 'easy' | 'medium' | 'hard';
 
@@ -13,7 +14,7 @@ export const LEVELS: { id: Level; name: string; description: string }[] = [
   { id: 'hard', name: t('level.hard'), description: t('level.hard.desc') },
 ];
 
-export type MissionKind = 'regatta' | 'transport' | 'cleanup' | 'supply' | 'whaling' | 'fishing' | 'free' | 'run' | 'seaweed';
+export type MissionKind = 'regatta' | 'transport' | 'cleanup' | 'supply' | 'whaling' | 'fishing' | 'free' | 'run' | 'seaweed' | 'drill';
 
 export type Mission =
   | { id: string; kind: 'transport'; title: string; boat: string; from: string; to: string; busy?: boolean }
@@ -24,7 +25,8 @@ export type Mission =
   | { id: string; kind: 'supply'; title: string; boat: string; from: string; meet: { lat: number; lon: number }; meetBoat: string }
   | { id: string; kind: 'regatta'; title: string; boat: string; at: string; buoys: 2 | 3 }
   | { id: string; kind: 'fishing'; title: string; boat: string; at: string; targetKg: number }
-  | { id: string; kind: 'free'; title: string; boat: string; from: string };
+  | { id: string; kind: 'free'; title: string; boat: string; from: string }
+  | { id: string; kind: 'drill'; title: string; boat: string; from: string; drill: DrillId };
 
 /** The kinds of mission, as the menu shows them first. */
 export const MISSION_KINDS: { id: MissionKind; title: string; description: string }[] = [
@@ -413,3 +415,11 @@ export const MINIGAMES: MiniGame[] = [
   { id: 'fishing', area: 'tejo', boat: 'muleta', mission: (b) => ({ ...makeMission('fishing', 'seixal', 'muleta', b), title: t('mini.fishing') }) },
   { id: 'supplies', area: 'tejo', boat: 'canoa', mission: (b) => ({ ...makeMission('supply', 'bugio-muleta', 'canoa', b), title: t('mini.supplies') }) },
 ];
+
+/** The drills: short exercises in the basics, before the mini-games (open water off Lisbon). */
+export const DRILLS: MiniGame[] = DRILL_IDS.map((id) => ({
+  id: `drill-${id}`,
+  area: 'tejo' as AreaId,
+  boat: 'falua',
+  mission: () => ({ id: `drill-${id}`, kind: 'drill' as const, title: t(`drill.${id}`), boat: 'falua', from: 'Lisboa', drill: id }),
+}));

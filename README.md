@@ -75,7 +75,11 @@ apart. The map stays at real scale: halving it would make the boats twice too bi
 rivers (narrow channels such as Pasaia's would become unsailable) and the hills and landmarks
 look wrong, so the challenges are shortened instead.
 
-In the museum edition the menu is eight mini-games, each with its boat (an area elsewhere
+In the museum edition the menu starts with five drills to learn the basics, all with the Falua
+in open water off Lisbon, in real time (`src/world/drills.ts`, `DRILLS` in `missions.ts`):
+hold a beam reach for 30 s; two controlled gybes (the sheet hauled in as the stern crosses
+the wind; heeling past 30° is a capsize); two tacks; four tacks within 2:00 up a zigzag of
+buoys; and stopping within one boat length of an anchor spot. Then come eight mini-games, each with its boat (an area elsewhere
 opens the game there and starts it): downwind and upwind with the Falua (a mark 800 m dead
 down- or upwind, the wind set along the open river), passengers with the Catraio (Lisbon to
 Almada), whale watching with the Baleeiro (Azores), seaweed with the Moliceiro (Ria de

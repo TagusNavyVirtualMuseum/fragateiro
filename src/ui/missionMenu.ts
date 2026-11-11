@@ -5,7 +5,7 @@ import { t } from '../i18n';
 import { getEdition } from '../world/edition';
 import { FISHING_TARGET_KG, LEVELS, placeName, MISSION_KINDS, areaMissions, makeMission, type Level, type Mission, type MissionKind } from '../world/missions';
 import { MENU_AREAS, getArea, setArea } from '../world/area';
-import { MINIGAMES } from '../world/missions';
+import { DRILLS, MINIGAMES, type MiniGame } from '../world/missions';
 import faluaPic from '../assets/boats/falua.jpg?url';
 import catraioPic from '../assets/boats/catraio.jpg?url';
 import fragataPic from '../assets/boats/fragata.jpg?url';
@@ -43,6 +43,7 @@ export class MissionMenu {
     free: { option: AREA.ports[0], boat: AREA.boat },
     run: { option: '', boat: 'falua' },
     seaweed: { option: '', boat: 'moliceiro' },
+    drill: { option: '', boat: 'falua' },
   };
 
   constructor(
@@ -88,7 +89,7 @@ export class MissionMenu {
     const panel = this.panel(t('menu.whatToDo'));
     panel.append(this.areaPicker(), this.levelPicker());
     const list = el('div', 'mission-list kinds');
-    const offered: Record<MissionKind, number> = { run: 0, seaweed: 0, regatta: COURSES.length, transport: this.routes.length, cleanup: CLEANUPS.length, supply: SUPPLIES.length, whaling: WHALING.length, fishing: GROUNDS.length, free: 1 };
+    const offered: Record<MissionKind, number> = { run: 0, seaweed: 0, regatta: COURSES.length, transport: this.routes.length, cleanup: CLEANUPS.length, supply: SUPPLIES.length, whaling: WHALING.length, fishing: GROUNDS.length, free: 1, drill: 0 };
     for (const k of MISSION_KINDS) {
       if (!offered[k.id]) continue;
       const card = el('button', 'mission-card');
@@ -103,6 +104,16 @@ export class MissionMenu {
   private showMiniGames(): void {
     const panel = this.panel(t('menu.whatToDo'));
     panel.append(this.levelPicker());
+    // First row: the drills, to learn the basics.
+    const drills = el('div', 'mission-list drills');
+    DRILLS.forEach((g, i) => {
+      const card = el('button', 'mission-card drill');
+      const id = g.id.replace('drill-', '');
+      card.append(el('span', 'drill-no', t('drill.n', { n: i + 1 })), el('strong', '', t(`drill.${id}`)), el('span', 'desc', t(`drill.${id}.desc`)));
+      card.onclick = () => this.play(g);
+      drills.append(card);
+    });
+    panel.append(el('h2', '', t('menu.drills')), drills, el('h2', '', t('menu.games')));
     const list = el('div', 'mission-list minigames');
     for (const g of MINIGAMES) {
       const card = el('button', 'mission-card minigame');
@@ -110,11 +121,7 @@ export class MissionMenu {
       img.src = BOAT_PICTURES[g.boat] ?? '';
       img.alt = '';
       card.append(img, el('strong', '', t(`mini.${g.id}`)), el('span', 'desc', t(`mini.${g.id}.desc`)));
-      card.onclick = () => {
-        // Each area is its own map: another area opens the page there, and the game starts it.
-        if (g.area !== AREA.id) setArea(g.area, { play: g.id });
-        else this.onStart(g.mission(this.boats), this.level);
-      };
+      card.onclick = () => this.play(g);
       list.append(card);
     }
     // Last: free sailing, with any boat, in any area, from any port.
@@ -126,6 +133,12 @@ export class MissionMenu {
     free.onclick = () => this.showFree();
     list.append(free);
     panel.append(list);
+  }
+
+  /** Start a drill or mini-game: each area is its own map, so another area opens the page there and the game starts it. */
+  private play(g: MiniGame): void {
+    if (g.area !== AREA.id) setArea(g.area, { play: g.id });
+    else this.onStart(g.mission(this.boats), this.level);
   }
 
   /** The free-sailing screen: area, boat and port. */
@@ -256,6 +269,21 @@ export class MissionMenu {
       el('div', 'result-time', formatTime(time)),
       el('p', 'result-best', best !== null && !record ? t('result.best', { time: formatTime(best) }) : t('result.clock')),
     );
+    const row = el('div', 'buttons');
+    const again = el('button', '', t('result.again'));
+    again.onclick = () => onAgain();
+    const menu = el('button', '', t('result.other'));
+    menu.onclick = () => this.show();
+    row.append(again, menu);
+    panel.append(row);
+  }
+
+  /** A drill that went wrong: why, and try again. */
+  showFailed(mission: Mission, level: Level, why: string, onAgain: () => void): void {
+    const levelName = LEVELS.find((l) => l.id === level)!.name;
+    const panel = this.panel(why);
+    panel.classList.add('result');
+    panel.append(el('p', 'result-title', `${mission.title} · ${levelName}`));
     const row = el('div', 'buttons');
     const again = el('button', '', t('result.again'));
     again.onclick = () => onAgain();

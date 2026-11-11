@@ -24,7 +24,8 @@ import { Wildlife } from '../../src/engine/wildlife';
 import { Traffic } from '../../src/engine/traffic';
 import { CourseView } from '../../src/engine/courseView';
 import { MissionMenu } from '../../src/ui/missionMenu';
-import { LEVELS, MINIGAMES, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
+import { Drill, HOLD_TIME, SLALOM_LIMIT, slalomBuoys } from '../../src/world/drills';
+import { DRILLS, LEVELS, MINIGAMES, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
 import { FishingGround } from '../../src/world/fishing';
 import { ShoalView } from '../../src/engine/shoalView';
 import { SailingHud, loadTimeOfDay } from '../../src/ui/hud';
@@ -90,6 +91,10 @@ let anchored: { sim: SailboatSim; view?: BoatView; x: number; y: number } | null
 let hunt: WhaleHunt | null = null;
 /** Where the whale was last seen (its blow), shown while it is under water. */
 let lastSeen: { x: number; y: number } | null = null;
+/** A drill, its buoys (the slalom; the anchor spot), and whether it set the clock to real time. */
+let drill: Drill | null = null;
+let drillMarks: { x: number; y: number }[] = [];
+let drillClock = false;
 /** A busy crossing is on (crowd, gusts and wind shifts). */
 let busy = false;
 /** Game time of the last collision (one penalty per contact). */
@@ -303,6 +308,8 @@ function placeTarget(name: string): { x: number; y: number } | null {
 
 /** Undo what the last challenge set up: rubbish, the boat at anchor, the crowd and the gusts. */
 function clearChallenge(): void {
+  drill = null;
+  drillMarks = [];
   trash = null;
   trashView.setField(null);
   hunt = null;
@@ -375,6 +382,12 @@ async function startMission(m: Mission, l: Level): Promise<void> {
   if (m.boat !== spec.id) await switchBoat(m.boat);
   requiredBoat = m.kind === 'free' ? null : m.boat;
   const levelName = LEVELS.find((x) => x.id === l)!.name;
+  // Drills run in real time; other missions go back to the edition's clock.
+  if (m.kind === 'drill' || drillClock) {
+    drillClock = m.kind === 'drill';
+    timeScale = drillClock ? 1 : EDITION.timeScale;
+    hud.setTimeScale(timeScale);
+  }
   if (m.kind === 'free') {
     const from = destinations.find((d) => d.name === m.from);
     if (from) teleport(from);
@@ -418,32 +431,36 @@ async function startMission(m: Mission, l: Level): Promise<void> {
     // from the start, so the run is clear of the shore.
     const from = destinations.find((d) => d.name === m.from);
     if (from) {
-      teleport(from);
-      let s0 = { x: from.x + Math.sin(from.heading) * 300, y: from.y + Math.cos(from.heading) * 300 };
-      if (!mask.isReachable(s0.x, s0.y)) s0 = { x: from.x, y: from.y };
-      let best = 0;
-      let dir = 0;
-      for (let k = 0; k < 72; k++) {
-        const h = (k / 72) * Math.PI * 2;
-        const run = freeRun(mask, s0.x, s0.y, h, m.distance + 400);
-        if (run > best) {
-          best = run;
-          dir = h;
-        }
-      }
-      const d = Math.min(m.distance, Math.max(200, best - 250));
+      const { s0, dir, length } = openStretch(from, m.distance);
+      const d = Math.min(m.distance, length);
       const mark = { x: s0.x + Math.sin(dir) * d, y: s0.y + Math.cos(dir) * d };
-      // Downwind: the wind blows towards the mark; upwind: from it.
-      const windFrom = m.dir === 'downwind' ? dir + Math.PI : dir;
-      wind.fromDeg = ((((windFrom * 180) / Math.PI) % 360) + 360) % 360;
-      hud.setWindFrom(wind.fromDeg);
-      // Start pointing across the wind, ready to bear away or to beat.
-      const heading = m.dir === 'downwind' ? dir : dir + Math.PI / 2.4;
-      sim = new SailboatSim(spec, wind, { x: s0.x, y: s0.y, heading, u: 1, time: sim.state.time });
-      sim.controls.mode = spec.modes[0].id;
-      aground = false;
-      camera.target.set(s0.x, camera.target.y, s0.y);
+      // Downwind: the wind blows towards the mark; upwind: from it. Start pointing across the
+      // wind, ready to bear away or to beat.
+      setOff(s0, m.dir === 'downwind' ? dir + Math.PI : dir, m.dir === 'downwind' ? dir : dir + Math.PI / 2.4, 1);
       run = new MissionRun(m, sim.state.time, null, mark);
+    }
+  } else if (m.kind === 'drill') {
+    // In open water off the port, the wind set to the drill along the longest clear stretch.
+    const from = destinations.find((d) => d.name === m.from);
+    if (from) {
+      const { s0, dir, length } = openStretch(from, 600);
+      const deg = Math.PI / 180;
+      if (m.drill === 'hold') setOff(s0, dir - 90 * deg, dir, 1.5); // wind on the beam
+      else if (m.drill === 'gybe') setOff(s0, dir + Math.PI, dir + 25 * deg, 1.5); // a broad reach, down the stretch
+      else if (m.drill === 'tack') setOff(s0, dir, dir + 50 * deg, 1.5); // close-hauled, up the stretch
+      else if (m.drill === 'slalom') {
+        drillMarks = slalomBuoys(s0, dir);
+        setOff(s0, dir, dir + 50 * deg, 1.5);
+      } else {
+        // The anchor spot ahead on a beam reach: luff up into the wind to stop on it.
+        const d = Math.min(250, length);
+        drillMarks = [{ x: s0.x + Math.sin(dir) * d, y: s0.y + Math.cos(dir) * d }];
+        setOff(s0, dir - 90 * deg, dir, 1.5);
+      }
+      if (drillMarks.length) courseView.setCourse({ start: s0, buoys: drillMarks }, false);
+      drill = new Drill(m.drill, m.drill === 'anchor' ? drillMarks[0] : null, spec.length);
+      run = new MissionRun(m, sim.state.time, null, null);
+      hud.toast(t(`drill.${m.drill}.desc`));
     }
   } else if (m.kind === 'seaweed') {
     const at = destinations.find((d) => d.name === m.at);
@@ -509,6 +526,44 @@ async function startMission(m: Mission, l: Level): Promise<void> {
   if (m.kind === 'free') run = null;
   hud.setBoat(spec, sim.controls);
   paused = false;
+}
+
+/**
+ * Open water off a port for a run or a drill: a start about 300 m out, the direction of the
+ * longest clear stretch from there, and how far it is clear (less a margin), m.
+ */
+function openStretch(from: Destination, want: number): { s0: { x: number; y: number }; dir: number; length: number } {
+  teleport(from);
+  let s0 = { x: from.x + Math.sin(from.heading) * 300, y: from.y + Math.cos(from.heading) * 300 };
+  if (!mask.isReachable(s0.x, s0.y)) s0 = { x: from.x, y: from.y };
+  let best = 0;
+  let dir = 0;
+  for (let k = 0; k < 72; k++) {
+    const h = (k / 72) * Math.PI * 2;
+    const r = freeRun(mask, s0.x, s0.y, h, want + 400);
+    if (r > best) {
+      best = r;
+      dir = h;
+    }
+  }
+  return { s0, dir, length: Math.max(200, best - 250) };
+}
+
+/** Set the wind (from, rad) and put the boat at `p` with a heading and some way on. */
+function setOff(p: { x: number; y: number }, windFrom: number, heading: number, u: number): void {
+  wind.fromDeg = ((((windFrom * 180) / Math.PI) % 360) + 360) % 360;
+  hud.setWindFrom(wind.fromDeg);
+  sim = new SailboatSim(spec, wind, { x: p.x, y: p.y, heading, u, time: sim.state.time });
+  sim.controls.mode = spec.modes[0].id;
+  aground = false;
+  camera.target.set(p.x, camera.target.y, p.y);
+}
+
+/** A drill went wrong (capsized, out of time): say why and offer another go. */
+function failDrill(why: string): void {
+  missionDone = true;
+  paused = true;
+  menu.showFailed(mission, level, why, () => void startMission(mission, level));
 }
 
 function finishMission(): void {
@@ -647,7 +702,7 @@ async function main(): Promise<void> {
   // Start with the mission menu, or straight into a mini-game chosen in another area's menu.
   paused = true;
   const play = new URLSearchParams(location.search).get('play');
-  const game = MINIGAMES.find((g) => g.id === play && g.area === AREA.id);
+  const game = [...DRILLS, ...MINIGAMES].find((g) => g.id === play && g.area === AREA.id);
   if (play === 'free') {
     history.replaceState(null, '', location.pathname + location.search.replace(/[?&]play=[^&]*/, '').replace(/^&/, '?'));
     menu.showFree();
@@ -656,7 +711,7 @@ async function main(): Promise<void> {
     void startMission(game.mission(BOATS), level);
   } else menu.show();
   // Handy in the browser console and for automated checks.
-  Object.assign(window, { game: { get wildlife() { return wildlife; }, netSweep, get fishing() { return fishing; }, get trash() { return trash; }, get hunt() { return hunt; }, get supply() { return supply; }, get anchored() { return anchored; }, get run() { return run; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
+  Object.assign(window, { game: { get wildlife() { return wildlife; }, netSweep, get fishing() { return fishing; }, get trash() { return trash; }, get hunt() { return hunt; }, get supply() { return supply; }, get anchored() { return anchored; }, get run() { return run; }, get drill() { return drill; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
 
   engine.runRenderLoop(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -669,7 +724,27 @@ async function main(): Promise<void> {
       /** Game seconds this frame actually advanced (slow frames are capped). */
       const gameDt = sim.state.time - before;
       time += dt;
-      if (fishing && run && !missionDone) {
+      if (drill && run && !missionDone) {
+        const st = sim.state;
+        const ev = drill.update({
+          twaDeg: sim.report.trueWindAngleDeg,
+          heel: st.heel,
+          sheet: Math.max(0, ...groupsInMode(spec, sim.controls.mode).map((g) => sim.controls.sheets[g] ?? 0)),
+          autoTrim: level === 'easy',
+          speed: Math.hypot(st.u, st.v),
+          x: st.x,
+          y: st.y,
+          elapsed: st.time - run.startedAt,
+          dt: gameDt,
+        });
+        if (ev === 'tack' || ev === 'gybe') hud.toast(t(`drill.${ev}.ok`, { n: drill.turns }), 3);
+        else if (ev === 'wildGybe') hud.toast(t('drill.wildGybe'));
+        else if (ev === 'wrongTurn') hud.toast(t(drill.id === 'gybe' ? 'drill.wrong.gybe' : 'drill.wrong.tack'));
+        if (drill.status === 'done') {
+          run.finishedAt = st.time;
+          finishMission();
+        } else if (drill.status === 'failed') failDrill(t(`drill.fail.${drill.failure}`));
+      } else if (fishing && run && !missionDone) {
         fishing.update(netSweep(), dt * timeScale);
         if (mission.kind === 'fishing' && fishing.caught >= mission.targetKg) {
           run.finishedAt = sim.state.time;
@@ -718,7 +793,7 @@ async function main(): Promise<void> {
     }
     trashView.update(time, s.time);
     whaleView.update(hunt?.whale ?? null, time, s.time);
-    courseView.update(run?.next ?? -1, time);
+    courseView.update(drill ? Math.min(drill.turns, drillMarks.length - 1) : (run?.next ?? -1), time);
     if (fishing) shoalView.update(fishing.shoals, sim.state.time, dt);
     const shoal = fishing ? fishing.nearest(s.x, s.y) : null;
     const piece = trash ? trash.nearest(s.x, s.y) : null;
@@ -726,14 +801,29 @@ async function main(): Promise<void> {
     const others = [...(traffic?.positions ?? []), ...(anchored ? [anchored] : [])];
     if (hunt) minimap.draw(s.x, s.y, s.heading, (hunt.visible ? hunt.whale : lastSeen) ?? undefined, others, hunt.visible ? [hunt.whale] : [], 'shoals');
     else if (trash) minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, trash.items.filter((x) => x.pickedAt === null), 'trash');
-    else minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, run?.course?.buoys ?? fishing?.shoals.filter((x) => x.kg >= 5), fishing ? 'shoals' : 'buoys');
+    else minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, (drillMarks.length ? drillMarks : null) ?? run?.course?.buoys ?? fishing?.shoals.filter((x) => x.kg >= 5), fishing ? 'shoals' : 'buoys');
     let nav = null;
     const toward = (g: { x: number; y: number }) => {
       const dx = g.x - s.x;
       const dy = g.y - s.y;
       return { distance: Math.hypot(dx, dy), bearing: ((Math.atan2(dx, dy) * 180) / Math.PI + 360) % 360 };
     };
-    if (fishing && run && mission.kind === 'fishing') {
+    if (drill && run) {
+      const elapsed = run.elapsed(s.time);
+      const mark = drill.id === 'anchor' ? drillMarks[0] : drill.id === 'slalom' ? drillMarks[Math.min(drill.turns, drillMarks.length - 1)] : null;
+      mapView.setTarget(mark);
+      const title =
+        drill.id === 'hold'
+          ? t('drill.hold.title', { s: Math.floor(drill.held), total: HOLD_TIME })
+          : drill.id === 'slalom'
+            ? t('drill.slalom.title', { n: drill.turns, total: drill.turnsNeeded, left: Math.max(0, Math.ceil(SLALOM_LIMIT - (s.time - run.startedAt))) })
+            : drill.id === 'anchor'
+              ? t('drill.anchor.title', { m: Math.round(spec.length) })
+              : t(`drill.${drill.id}.title`, { n: drill.turns, total: drill.turnsNeeded });
+      nav = mark
+        ? { title, name: drill.id === 'anchor' ? t('drill.anchor.name') : t('drill.slalom.buoy', { n: Math.min(drill.turns, drillMarks.length - 1) + 1 }), ...toward(mark), elapsed, arrived: missionDone }
+        : { title, name: t(`drill.${drill.id}.hint`), distance: 0, bearing: 0, elapsed, arrived: missionDone, noTarget: true };
+    } else if (fishing && run && mission.kind === 'fishing') {
       const dx = (shoal?.x ?? s.x) - s.x;
       const dy = (shoal?.y ?? s.y) - s.y;
       // The arrow marks the nearest shoal, except on the hard level.

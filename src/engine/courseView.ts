@@ -26,7 +26,7 @@ export class CourseView {
   }
 
   /** Show a course (or none). */
-  setCourse(course: Course | null): void {
+  setCourse(course: Course | null, line = true): void {
     for (const m of this.marks) m.dispose();
     this.marks = [];
     if (!course) return;
@@ -44,6 +44,7 @@ export class CourseView {
       root.metadata = { ring };
       this.marks.push(root);
     });
+    if (!line) return; // drills: buoys only
     // Start/finish line: two white posts across the wind, 120 m apart.
     const b0 = course.buoys[0];
     const ux = b0.x - course.start.x;

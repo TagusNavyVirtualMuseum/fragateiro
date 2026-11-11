@@ -34,6 +34,8 @@ export interface Navigation {
   arrived: boolean;
   /** Heading line instead of "To <name>" (fishing shows the catch). */
   title?: string;
+  /** Nothing to sail to (a drill): the title, a hint in `name`, and the clock. */
+  noTarget?: boolean;
 }
 
 
@@ -223,6 +225,7 @@ export class SailingHud {
     });
     this.camOutputs = { distOut, heightOut };
     const timeScale = opts.querySelector<HTMLSelectElement>('[name=timeScale]')!;
+    this.timeScaleSelect = timeScale;
     timeScale.value = String(this.timeScale);
     timeScale.addEventListener('change', () => {
       cb.onTimeScale(Number(timeScale.value));
@@ -299,6 +302,14 @@ export class SailingHud {
     this.toastTimer = window.setTimeout(() => (this.toastBox.hidden = true), seconds * 1000);
   }
 
+  private timeScaleSelect!: HTMLSelectElement;
+
+  /** Set the game speed shown (the game sets it itself, e.g. real time for the drills). */
+  setTimeScale(k: number): void {
+    this.timeScale = k;
+    this.timeScaleSelect.value = String(k);
+  }
+
   setSound(on: boolean): void {
     this.soundBox.checked = on;
   }
@@ -361,8 +372,14 @@ export class SailingHud {
 
   private updateNav(state: BoatState, nav: Navigation | null): void {
     this.nav.hidden = !nav;
-    this.compassTarget.setAttribute('visibility', nav ? 'visible' : 'hidden');
+    this.compassTarget.setAttribute('visibility', nav && !nav.noTarget ? 'visible' : 'hidden');
     if (!nav) return;
+    if (nav.noTarget) {
+      const secs = Math.floor(nav.elapsed);
+      const time = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
+      this.nav.innerHTML = `<strong>${nav.title ?? ''}</strong><span>${nav.name}</span><span>${t('nav.time', { time })}</span>`;
+      return;
+    }
     const heading = (rad2deg(state.heading) + 360) % 360;
     let rel = ((nav.bearing - heading + 540) % 360) - 180;
     const side = Math.abs(rel) < 3 ? t('nav.deadAhead') : t('nav.toSide', { deg: Math.abs(rel).toFixed(0), side: t(rel > 0 ? 'nav.starboard' : 'nav.port') });

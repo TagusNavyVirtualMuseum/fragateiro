@@ -281,6 +281,9 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
 
 /* Museum menu: picture cards for the mini-games. */
 .mission-list.minigames { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.mission-list.drills { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; }
+.mission-card.drill { display: flex; flex-direction: column; text-align: left; gap: 2px; }
+.mission-card.drill .drill-no { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
 .mission-card.minigame { padding: 0; overflow: hidden; display: flex; flex-direction: column; text-align: left; }
 .mission-card.minigame img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
 .mission-card.minigame strong { padding: 6px 10px 0; font-size: 16px; }
