@@ -84,8 +84,8 @@ describe('drills', () => {
     expect(Math.sign(b[0].x)).toBe(-Math.sign(b[1].x));
   });
 
-  it('a falua tacking every 22 s makes the four tacks inside the slalom limit', () => {
-    const spec = BOATS.find((b) => b.id === 'falua')!;
+  it('a baleeiro tacking every 22 s makes the four tacks inside the slalom limit', () => {
+    const spec = BOATS.find((b) => b.id === 'baleeiro')!;
     const sim = new SailboatSim(spec, new GustyWind(0, 12 * 0.514444, 0, 0), { heading: (50 * Math.PI) / 180, u: 1.5 });
     sim.controls.balanced = true;
     const d = new Drill('slalom');

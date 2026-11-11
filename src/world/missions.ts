@@ -420,6 +420,6 @@ export const MINIGAMES: MiniGame[] = [
 export const DRILLS: MiniGame[] = DRILL_IDS.map((id) => ({
   id: `drill-${id}`,
   area: 'tejo' as AreaId,
-  boat: 'falua',
-  mission: () => ({ id: `drill-${id}`, kind: 'drill' as const, title: t(`drill.${id}`), boat: 'falua', from: 'Lisboa', drill: id }),
+  boat: 'baleeiro',
+  mission: () => ({ id: `drill-${id}`, kind: 'drill' as const, title: t(`drill.${id}`), boat: 'baleeiro', from: 'Lisboa', drill: id }),
 }));

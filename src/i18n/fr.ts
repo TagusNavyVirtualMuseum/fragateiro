@@ -86,7 +86,6 @@ export const FR: Record<string, string> = {
   'credit.model': 'modèle 3D',
   'credit.trawling': 'contrôle du chalutage',
   'credit.ai': 'Modèle 3D actuel créé par IA (Meshy) à partir de photos.',
-  'credit.miraro': 'Modèle 3D actuel du projet MiraroTejo ; encore en cours d’amélioration.',
   'land.partners': 'Développé par',
   'land.ack': 'Remerciements',
   'land.ackText': 'Nous remercions le Museu de Marinha (musée de la Marine portugaise) pour son soutien et l’accès à ses collections.',

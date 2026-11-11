@@ -43,7 +43,7 @@ export class MissionMenu {
     free: { option: AREA.ports[0], boat: AREA.boat },
     run: { option: '', boat: 'falua' },
     seaweed: { option: '', boat: 'moliceiro' },
-    drill: { option: '', boat: 'falua' },
+    drill: { option: '', boat: 'baleeiro' },
   };
 
   constructor(
