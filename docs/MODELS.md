@@ -67,6 +67,34 @@ ends up with 6-8k triangles (the Fragata 26k) and 140-480 KB; all four together 
 its wiring. (`scripts/url-stub.mjs` lets Node import `boatVisuals.ts`, whose `?url` imports
 only work in Vite.)
 
+## The boat workshop (in the browser)
+
+`tools/workshop/` (on the site: `/tools/workshop/`) builds a boat for the game without
+scripts. Load a GLB from Meshy (or another model) **or** a side photo, give the name, length,
+beam and weight, then click on the side view:
+
+- the bow and the stern (their distance is the length);
+- each mast (foot and top);
+- each sail, by rig type: lateen (tack, peak, clew), lugsail and gaff (throat, peak, clew,
+  tack), sprit (the same, the sprit from tack to peak), jib (tack, head, clew) or square sail
+  (yard and foot, plus the yard length). For a model, keep its own sail or have a new one
+  built from the points (useful when Meshy gets a sail's shape wrong);
+- the rudder blade's outline and the tiller (a steering oar is drawn the same way);
+- for a model, the ropes: remove them, leave them with the hull (stays, shrouds), or move
+  them with a sail (halyards). The game draws the sheets itself.
+
+For a photo, also click the sheer line and the keel line: the hull is lofted from them
+(pointed or transom stern) and painted in the colours chosen.
+
+**Build** cuts the model into the parts the game moves (or builds them, for a photo), scales
+it to metres, floats it at its weight (waterline at 0), simplifies it and shrinks the
+textures, and measures what the physics needs: sail areas and centres, the pivots, the
+waterline length, draft, lateral area and the rudder. It shows the speeds at each wind angle,
+sails the boat in a 3D preview (the game's own boat view and physics), and downloads the
+model, the physics file and the wiring for `boatVisuals.ts`. The points are kept in the
+browser; *Save project* writes them to a file to reopen later. The builder is
+`src/workshop/build.ts` (tested in `tests/workshop.test.ts`).
+
 ## Models made from photos (Meshy)
 
 Photo-to-3D services such as [Meshy](https://www.meshy.ai) give one textured mesh: hull,

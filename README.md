@@ -162,6 +162,12 @@ prints the areas and centres the physics needs. Then continue from step 2.
    version for the other boats on the river (`scripts/lite-models.ts`, see docs/MODELS.md).
 4. Run `npm run polar` and adjust until the speeds look right; add it to the tests.
 
+## Boat workshop
+
+A page to build new boats from a Meshy model or a side photo: click the bow, stern, masts,
+sail corners (by rig type), rudder and ropes, and it makes the model and the physics, with a
+preview. Open `/tools/workshop/` (see `docs/MODELS.md`).
+
 ## The maps
 
 There are six sailing areas, each its own map, chosen in the mission menu (or with

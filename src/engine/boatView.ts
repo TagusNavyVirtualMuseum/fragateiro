@@ -294,7 +294,8 @@ export class BoatView {
   }
 
   static async load(scene: Scene, spec: BoatSpec, visual: BoatVisual): Promise<BoatView> {
-    const container = await LoadAssetContainerAsync(visual.url, scene);
+    // All our models are binary glTF (the url can be a blob: from the boat workshop).
+    const container = await LoadAssetContainerAsync(visual.url, scene, { pluginExtension: '.glb' });
     container.addAllToScene();
     for (const m of container.meshes) m.isPickable = false;
     return new BoatView(spec, visual, container, scene);

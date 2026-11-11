@@ -13,5 +13,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src", "games", "scripts", "tests", "vite.config.ts"]
+  "include": ["src", "games", "tools", "scripts", "tests", "vite.config.ts"]
 }

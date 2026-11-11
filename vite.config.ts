@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         home: resolve(__dirname, 'index.html'),
         sailing: resolve(__dirname, 'games/sailing/index.html'),
+        workshop: resolve(__dirname, 'tools/workshop/index.html'),
       },
     },
   },
