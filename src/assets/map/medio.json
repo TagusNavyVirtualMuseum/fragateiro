@@ -1,0 +1,231 @@
+{
+  "source": "OpenStreetMap contributors (ODbL), via the Overpass API",
+  "built": "2026-11-11",
+  "bbox": {
+    "south": 39.42,
+    "west": -8.46,
+    "north": 39.5,
+    "east": -8.17
+  },
+  "origin": {
+    "lat": 39.4595,
+    "lon": -8.385
+  },
+  "cellSize": 10,
+  "width": 2493,
+  "height": 885,
+  "northWest": {
+    "x": -6446.05,
+    "y": 4478.25
+  },
+  "places": [
+    {
+      "name": "Abrançalha de Baixo",
+      "kind": "hamlet",
+      "x": 13367,
+      "y": 1549
+    },
+    {
+      "name": "Abrançalha de Cima",
+      "kind": "hamlet",
+      "x": 14332,
+      "y": 3416
+    },
+    {
+      "name": "Abrantes",
+      "kind": "city",
+      "x": 16113,
+      "y": 390
+    },
+    {
+      "name": "Aldeia de Santa Margarida",
+      "kind": "village",
+      "x": 6489,
+      "y": -1544
+    },
+    {
+      "name": "Aldeinha",
+      "kind": "hamlet",
+      "x": 13157,
+      "y": 3262
+    },
+    {
+      "name": "Almourol",
+      "kind": "islet",
+      "x": 43,
+      "y": 274
+    },
+    {
+      "name": "Amoreira",
+      "kind": "hamlet",
+      "x": 10078,
+      "y": 3095
+    },
+    {
+      "name": "Arrifana",
+      "kind": "hamlet",
+      "x": 16734,
+      "y": -2866
+    },
+    {
+      "name": "Arripiado",
+      "kind": "hamlet",
+      "x": -1116,
+      "y": -455
+    },
+    {
+      "name": "Atalaia",
+      "kind": "village",
+      "x": -5765,
+      "y": 2314
+    },
+    {
+      "name": "Cardal",
+      "kind": "hamlet",
+      "x": 5661,
+      "y": 634
+    },
+    {
+      "name": "Casais de Revelhos",
+      "kind": "hamlet",
+      "x": 17747,
+      "y": 4141
+    },
+    {
+      "name": "Coalhos",
+      "kind": "hamlet",
+      "x": 18395,
+      "y": -681
+    },
+    {
+      "name": "Constância",
+      "kind": "town",
+      "x": 4023,
+      "y": 1721
+    },
+    {
+      "name": "Constância Sul",
+      "kind": "hamlet",
+      "x": 5014,
+      "y": 1202
+    },
+    {
+      "name": "Crucifixo",
+      "kind": "hamlet",
+      "x": 10028,
+      "y": -2152
+    },
+    {
+      "name": "Enxertal",
+      "kind": "hamlet",
+      "x": 5375,
+      "y": 61
+    },
+    {
+      "name": "Limeiras",
+      "kind": "hamlet",
+      "x": 3045,
+      "y": 4105
+    },
+    {
+      "name": "Madeiras",
+      "kind": "hamlet",
+      "x": 2284,
+      "y": 2448
+    },
+    {
+      "name": "Malpique",
+      "kind": "hamlet",
+      "x": 7275,
+      "y": -2345
+    },
+    {
+      "name": "Moita do Norte",
+      "kind": "village",
+      "x": -4080,
+      "y": 1529
+    },
+    {
+      "name": "Montalvo",
+      "kind": "village",
+      "x": 7302,
+      "y": 2805
+    },
+    {
+      "name": "Portela",
+      "kind": "hamlet",
+      "x": 5321,
+      "y": -361
+    },
+    {
+      "name": "Praia do Ribatejo",
+      "kind": "village",
+      "x": 2403,
+      "y": 947
+    },
+    {
+      "name": "Quinta da Cardiga",
+      "kind": "hamlet",
+      "x": -5621,
+      "y": -1627
+    },
+    {
+      "name": "Rio de Moinhos",
+      "kind": "village",
+      "x": 12174,
+      "y": 1785
+    },
+    {
+      "name": "Rossio ao Sul do Tejo",
+      "kind": "village",
+      "x": 16784,
+      "y": -1436
+    },
+    {
+      "name": "São Caetano",
+      "kind": "hamlet",
+      "x": -5856,
+      "y": -2087
+    },
+    {
+      "name": "São Macário",
+      "kind": "hamlet",
+      "x": 17210,
+      "y": -3830
+    },
+    {
+      "name": "São Miguel do Rio Torto",
+      "kind": "village",
+      "x": 15091,
+      "y": -3748
+    },
+    {
+      "name": "Tancos",
+      "kind": "village",
+      "x": -1163,
+      "y": 125
+    },
+    {
+      "name": "Tramagal",
+      "kind": "town",
+      "x": 11899,
+      "y": -725
+    },
+    {
+      "name": "Vila Nova da Barquinha",
+      "kind": "town",
+      "x": -3947,
+      "y": -141
+    }
+  ],
+  "seamarks": [],
+  "bridges": {},
+  "heights": {
+    "source": "Copernicus GLO-30 DEM (© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA)",
+    "cellSize": 40,
+    "width": 624,
+    "height": 222,
+    "scale": 0.1,
+    "offset": -100
+  }
+}
