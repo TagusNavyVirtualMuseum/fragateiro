@@ -1830,5 +1830,64 @@
     "height": 1051,
     "scale": 0.1,
     "offset": -100
-  }
+  },
+  "lighthouses": [
+    {
+      "name": "",
+      "x": -3407,
+      "y": -1400,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": -2782,
+      "y": -1416,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": -2589,
+      "y": -1479,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": -1313,
+      "y": -777,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": -776,
+      "y": -304,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": -483,
+      "y": -1268,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol de Aveiro",
+      "x": -1933,
+      "y": -1346,
+      "height": 62,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol do Forte da Barra",
+      "x": -665,
+      "y": -1103,
+      "colours": [],
+      "pattern": ""
+    }
+  ]
 }

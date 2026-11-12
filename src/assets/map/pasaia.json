@@ -1262,5 +1262,120 @@
     "height": 360,
     "scale": 0.1,
     "offset": -100
-  }
+  },
+  "lighthouses": [
+    {
+      "name": "",
+      "x": 20425,
+      "y": 5795,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Cabo Higuer",
+      "x": 11180,
+      "y": 5190,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Feu de Sainte Barbe",
+      "x": 21500,
+      "y": 6015,
+      "height": 7,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Feux de Sainte-Barbe (1870)",
+      "x": 21835,
+      "y": 5951,
+      "height": 15,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Gurutzeko punta",
+      "x": 301,
+      "y": -1383,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Higer itsasargia",
+      "x": 11172,
+      "y": 5193,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Igeldoko itsasargia",
+      "x": -6500,
+      "y": -2475,
+      "colours": [
+        "white"
+      ],
+      "pattern": ""
+    },
+    {
+      "name": "La Plata",
+      "x": -315,
+      "y": -1140,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "La Platako itsasargia",
+      "x": -316,
+      "y": -1145,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Phare de Ciboure",
+      "x": 21337,
+      "y": 4356,
+      "height": 30,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Phare de Saint-Jean-de-Luz",
+      "x": 21137,
+      "y": 4712,
+      "height": 20,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Phare de Socoa",
+      "x": 19709,
+      "y": 5537,
+      "height": 12,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Santa Klarako itsasargia",
+      "x": -5527,
+      "y": -2557,
+      "height": 10,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Senoko zuloa",
+      "x": 255,
+      "y": -1480,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Tour Chappe",
+      "x": 20630,
+      "y": 4278,
+      "colours": [],
+      "pattern": ""
+    }
+  ]
 }

@@ -470,5 +470,134 @@
     "height": 553,
     "scale": 0.1,
     "offset": -100
-  }
+  },
+  "lighthouses": [
+    {
+      "name": "",
+      "x": -15633,
+      "y": -6997,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": -15631,
+      "y": -6966,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": -2002,
+      "y": 1407,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": 423,
+      "y": 3083,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": 519,
+      "y": 3292,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": 2792,
+      "y": 4007,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Berth No 8 Turismo E Dolphin",
+      "x": -15494,
+      "y": -6575,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Berth No 8 Turismo W Dolphin",
+      "x": -15796,
+      "y": -6656,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Cabos Lagoa",
+      "x": -8343,
+      "y": 7692,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Cais Machico",
+      "x": -1917,
+      "y": 1336,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol de São Lourenço",
+      "x": 7798,
+      "y": 2802,
+      "height": 10,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Marina de Santa Cruz",
+      "x": -4981,
+      "y": -2295,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Marina Molhe E Head",
+      "x": -15994,
+      "y": -6662,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Marina Molhe W Head",
+      "x": -16029,
+      "y": -6640,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Porto de Recreio Santa Cruz",
+      "x": -4175,
+      "y": -1927,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "SANAS",
+      "x": -2643,
+      "y": -474,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Sao Roque",
+      "x": -2252,
+      "y": 1011,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Spur Pier Head",
+      "x": -15210,
+      "y": -6544,
+      "colours": [],
+      "pattern": ""
+    }
+  ]
 }

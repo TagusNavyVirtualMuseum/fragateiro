@@ -1540,5 +1540,100 @@
     "height": 1051,
     "scale": 0.1,
     "offset": -100
-  }
+  },
+  "lighthouses": [
+    {
+      "name": "",
+      "x": -5404,
+      "y": 1956,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": 46113,
+      "y": -11878,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farao",
+      "x": 44309,
+      "y": 17719,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Ponta dos Capelinhos",
+      "x": -23174,
+      "y": 8496,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Ponta dos Rosais",
+      "x": 21638,
+      "y": 25835,
+      "height": 27,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Ribeirinha",
+      "x": -3729,
+      "y": 8364,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol de São Mateus",
+      "x": 9720,
+      "y": -10745,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol do Vale Formoso",
+      "x": -21870,
+      "y": 6759,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol Ponta da Ilha",
+      "x": 46120,
+      "y": -11885,
+      "height": 19,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farolim dos Cedros",
+      "x": -14066,
+      "y": 13061,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farolim dos Cedros",
+      "x": -14066,
+      "y": 13061,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Horta",
+      "x": -5338,
+      "y": 1538,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Madalena",
+      "x": 2350,
+      "y": 1793,
+      "colours": [],
+      "pattern": ""
+    }
+  ]
 }

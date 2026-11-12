@@ -2942,5 +2942,18 @@
     "height": 747,
     "scale": 0.1,
     "offset": -100
-  }
+  },
+  "lighthouses": [
+    {
+      "name": "Phare du Cap-Ferret",
+      "x": -4656,
+      "y": -2879,
+      "height": 52,
+      "colours": [
+        "red",
+        "white"
+      ],
+      "pattern": "horizontal"
+    }
+  ]
 }

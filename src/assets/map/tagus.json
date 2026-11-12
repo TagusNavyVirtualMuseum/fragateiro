@@ -7052,5 +7052,145 @@
     "height": 1687,
     "scale": 0.1,
     "offset": -100
-  }
+  },
+  "lighthouses": [
+    {
+      "name": "",
+      "x": -28106,
+      "y": 30769,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": 11622,
+      "y": 7952,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Azeda",
+      "x": 19253,
+      "y": -16182,
+      "height": 31,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Gibalta Barra do Sul Range",
+      "x": -14448,
+      "y": 1560,
+      "height": 21,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Guia",
+      "x": -30102,
+      "y": 1173,
+      "height": 28,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Guia",
+      "x": -30102,
+      "y": 1172,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Mama",
+      "x": -11052,
+      "y": 4705,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol de Belém",
+      "x": -9470,
+      "y": 890,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol de Cacilhas",
+      "x": -4029,
+      "y": 340,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol de Santa Marta",
+      "x": -27891,
+      "y": 596,
+      "height": 20,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol de São Julião",
+      "x": -19574,
+      "y": -1165,
+      "height": 24,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol do Bugio",
+      "x": -17283,
+      "y": -2712,
+      "height": 14,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol do Cabo da Roca",
+      "x": -34524,
+      "y": 10713,
+      "height": 22,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol do Cabo Espichel",
+      "x": -10106,
+      "y": -29791,
+      "height": 32,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol do Cabo Raso",
+      "x": -33521,
+      "y": 2706,
+      "height": 13,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol do Esteiro",
+      "x": -13890,
+      "y": 2078,
+      "height": 15,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol do Forte Cavalo",
+      "x": -1428,
+      "y": -27692,
+      "height": 7,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol do Outão",
+      "x": 14399,
+      "y": -21729,
+      "height": 11,
+      "colours": [],
+      "pattern": ""
+    }
+  ]
 }
