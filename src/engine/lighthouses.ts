@@ -35,6 +35,13 @@ const HEX: Record<string, string> = {
 
 /** A lighthouse closer than this to a hand-made landmark is that landmark, m. */
 const SAME_PLACE = 300;
+/** Two lighthouses this close are the same one, entered twice, m. */
+const DUPLICATE = 120;
+/**
+ * A real lighthouse (a tower with a name such as "Farol de…"), not a harbour light on a pier
+ * head or a breakwater, which OpenStreetMap often tags the same way.
+ */
+const MAJOR = /\bfarol\b(?!im)|phare|itsasargia|lighthouse|\bcabo\b|\bponta\b/i;
 
 export function createLighthouses(scene: Scene, mask: LandMask, terrain: Terrain | undefined, list: LighthouseInfo[], taken: { x: number; y: number }[]): LandmarkLabel[] {
   const ground = (x: number, y: number) => (mask.isWater(x, y) ? 0 : Math.max(0, terrain?.heightAt(x, y) ?? 0));
@@ -47,11 +54,16 @@ export function createLighthouses(scene: Scene, mask: LandMask, terrain: Terrain
   };
   const glass: Mesh[] = [];
   const domes: Mesh[] = [];
+  const drawn: LighthouseInfo[] = [];
   for (const l of list) {
     if (taken.some((t) => Math.hypot(t.x - l.x, t.y - l.y) < SAME_PLACE)) continue;
+    if (drawn.some((t) => Math.hypot(t.x - l.x, t.y - l.y) < DUPLICATE)) continue;
+    drawn.push(l);
+    const major = (l.height ?? 0) >= 12 || MAJOR.test(l.name);
     const g = ground(l.x, l.y);
-    const h = l.height ?? 14;
-    const d = Math.min(7, Math.max(2.2, h * 0.2));
+    // Harbour lights: a small post-like tower, unlabelled.
+    const h = l.height ?? (major ? 14 : 6);
+    const d = major ? Math.min(7, Math.max(2.2, h * 0.2)) : Math.max(1.2, h * 0.2);
     const colours = l.colours.length ? l.colours : ['white'];
     // Two colours or more in horizontal bands; otherwise the first colour all the way up.
     const bands = colours.length > 1 && l.pattern !== 'vertical' ? Math.max(3, Math.round(h / 4)) : 1;
@@ -75,12 +87,12 @@ export function createLighthouses(scene: Scene, mask: LandMask, terrain: Terrain
     cap.position.set(l.x, top + 0.4 + lw * 0.9 + lw * 0.25, l.y);
     domes.push(cap);
     // The keepers' house beside a tall tower.
-    if (h >= 12) {
+    if (major && h >= 12) {
       const house = MeshBuilder.CreateBox('lighthouse-house', { width: 10, height: 4.5, depth: 7 }, scene);
       house.position.set(l.x + d / 2 + 5, g + 2.25, l.y);
       add('white', house);
     }
-    if (l.name) labels.push({ name: l.name, x: l.x, y: l.y, height: top + 25 });
+    if (major && l.name) labels.push({ name: l.name, x: l.x, y: l.y, height: top + 25 });
   }
   for (const [colour, list] of pieces) merged(`lighthouses-${colour}`, list, material(scene, `lighthouse-${colour}`, HEX[colour], 0.6));
   if (glass.length) {

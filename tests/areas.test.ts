@@ -14,6 +14,10 @@ describe('sailing areas', () => {
     it(`${id}: every port is a place on its map`, () => {
       expect(area.ports.filter((p) => !names.has(p))).toEqual([]);
     });
+    it(`${id}: its lighthouses are on the map (scripts/fetch-lighthouses.mjs)`, () => {
+      expect(Array.isArray(meta.lighthouses)).toBe(true);
+      if (id !== 'medio') expect(meta.lighthouses.length).toBeGreaterThan(0);
+    });
     it(`${id}: missions start and end at its ports, with a boat the game has`, () => {
       const m = AREA_MISSIONS[id];
       const marks = area.extraPlaces.filter((p) => p.kind === 'mark').map((p) => p.name);
@@ -30,6 +34,11 @@ describe('sailing areas', () => {
       expect(BOATS.some((b) => b.id === area.boat)).toBe(true);
     });
   }
+  it('the Oeste has the lighthouses of the Berlenga, Cabo Carvoeiro and Nazaré', () => {
+    const meta = JSON.parse(readFileSync(new URL('../src/assets/map/oeste.json', import.meta.url), 'utf8'));
+    const names = meta.lighthouses.map((l: { name: string }) => l.name);
+    for (const n of ['Farol da Berlenga', 'Cabo Carvoeiro', 'Farol da Nazaré']) expect(names).toContain(n);
+  });
   it('mission ids are unique across areas', () => {
     const ids = AREA_IDS.flatMap((id) => [...AREA_MISSIONS[id].courses.map((c) => c.id), ...AREA_MISSIONS[id].routes.map((r) => r.id)]);
     expect(new Set(ids).size).toBe(ids.length);
