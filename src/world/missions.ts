@@ -169,6 +169,17 @@ export const AREA_MISSIONS: Record<AreaId, { courses: RegattaCourse[]; routes: R
     ],
     grounds: [],
   },
+  oeste: {
+    courses: [
+      { id: 'peniche', name: t('course.peniche'), at: 'Porto de Peniche', buoys: 3 },
+      { id: 'nazare', name: t('course.nazare'), at: 'Porto da Nazaré', buoys: 2 },
+    ],
+    routes: [
+      { id: 'peniche-berlenga', from: 'Porto de Peniche', to: 'Berlenga', boat: 'baleeiro', description: t('route.peniche-berlenga') },
+      { id: 'nazare-smartinho', from: 'Porto da Nazaré', to: 'São Martinho do Porto', boat: 'baleeiro', description: t('route.nazare-smartinho') },
+    ],
+    grounds: [],
+  },
   medio: {
     courses: [],
     routes: [
@@ -182,6 +193,7 @@ export const AREA_MISSIONS: Record<AreaId, { courses: RegattaCourse[]; routes: R
 
 /** Clean-ups: rubbish to pick up off a port, in every area. */
 export const CLEANUPS: Record<AreaId, CleanupInfo[]> = {
+  oeste: [{ id: 'clean-peniche', name: t('cleanup.peniche'), at: 'Porto de Peniche' }],
   medio: [{ id: 'clean-constancia', name: t('cleanup.constancia'), at: 'Constância' }],
   tejo: [
     { id: 'clean-lisboa', name: t('cleanup.lisboa'), at: 'Lisboa' },
@@ -214,6 +226,7 @@ export const SUPPLIES: Record<AreaId, SupplyInfo[]> = {
   pasaia: [],
   azores: [],
   madeira: [],
+  oeste: [],
 };
 
 /** Whaling: the ports a whale hunt can start from (the Azores only). */
@@ -225,6 +238,7 @@ export const WHALING: Record<AreaId, string[]> = {
   pasaia: [],
   azores: ['Horta', 'Madalena', 'São Roque do Pico', 'Velas'],
   madeira: [],
+  oeste: [],
 };
 
 /** The missions of the area open now. */

@@ -2,7 +2,7 @@
 // The maps themselves are built by scripts/fetch-map.mjs (areas in scripts/map-areas.mjs).
 import { DESTINATION_NAMES, EXTRA_PLACES } from './destinations';
 
-export type AreaId = 'tejo' | 'medio' | 'arcachon' | 'aveiro' | 'pasaia' | 'azores' | 'madeira';
+export type AreaId = 'tejo' | 'medio' | 'arcachon' | 'aveiro' | 'pasaia' | 'azores' | 'madeira' | 'oeste';
 
 export interface AreaInfo {
   id: AreaId;
@@ -31,6 +31,18 @@ export function toMapXY(origin: { lat: number; lon: number }, p: { lat: number; 
 
 export const AREAS: Record<AreaId, AreaInfo> = {
   tejo: { id: 'tejo', ports: DESTINATION_NAMES, boat: 'falua', tagusExtras: true, extraPlaces: EXTRA_PLACES },
+  oeste: {
+    id: 'oeste',
+    ports: ['São Martinho do Porto', 'Porto da Nazaré', 'Porto de Peniche', 'Berlenga'],
+    boat: 'baleeiro',
+    tagusExtras: false,
+    // The harbours (the towns' OpenStreetMap places sit inland or on the open beach).
+    extraPlaces: [
+      { name: 'Porto da Nazaré', kind: 'town', lat: 39.5868, lon: -9.0745 },
+      { name: 'Porto de Peniche', kind: 'town', lat: 39.3535, lon: -9.3765 },
+      { name: 'Berlenga', kind: 'village', lat: 39.4158, lon: -9.5065 }, // the landing at the Carreiro do Mosteiro
+    ],
+  },
   medio: {
     id: 'medio',
     landDetail: 10,

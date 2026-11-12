@@ -35,6 +35,9 @@ import azoresJson from '../assets/map/azores.json';
 import madeiraMask from '../assets/map/madeira-mask.png?url';
 import madeiraHeight from '../assets/map/madeira-height.png?url';
 import madeiraJson from '../assets/map/madeira.json';
+import oesteMask from '../assets/map/oeste-mask.png?url';
+import oesteHeight from '../assets/map/oeste-height.png?url';
+import oesteJson from '../assets/map/oeste.json';
 import medioMask from '../assets/map/medio-mask.png?url';
 import medioHeight from '../assets/map/medio-height.png?url';
 import medioJson from '../assets/map/medio.json';
@@ -44,6 +47,7 @@ import { LandMask, type MapMeta } from '../world/landMask';
 import { Terrain, type HeightsMeta } from '../world/terrain';
 import { createLandmarks, type BridgeLine } from './landmarks';
 import { createArcachonLandmarks } from './landmarksArcachon';
+import { createLighthouses, type LighthouseInfo } from './lighthouses';
 import { createBuoy, seaMarkStyle } from './buoys';
 import { addExtraPlaces } from '../world/destinations';
 import { waveHeight } from './waves';
@@ -57,7 +61,7 @@ export interface SeaMark {
   y: number;
 }
 
-export type TagusMeta = MapMeta & { seamarks?: SeaMark[]; source: string; heights?: HeightsMeta & { source: string }; bridges?: Record<string, BridgeLine> };
+export type TagusMeta = MapMeta & { seamarks?: SeaMark[]; source: string; heights?: HeightsMeta & { source: string }; bridges?: Record<string, BridgeLine>; lighthouses?: LighthouseInfo[] };
 const FILES: Record<AreaId, { meta: unknown; mask: string; height: string }> = {
   tejo: { meta: tagusJson, mask: tagusMask, height: tagusHeight },
   arcachon: { meta: arcachonJson, mask: arcachonMask, height: arcachonHeight },
@@ -65,6 +69,7 @@ const FILES: Record<AreaId, { meta: unknown; mask: string; height: string }> = {
   pasaia: { meta: pasaiaJson, mask: pasaiaMask, height: pasaiaHeight },
   azores: { meta: azoresJson, mask: azoresMask, height: azoresHeight },
   madeira: { meta: madeiraJson, mask: madeiraMask, height: madeiraHeight },
+  oeste: { meta: oesteJson, mask: oesteMask, height: oesteHeight },
   medio: { meta: medioJson, mask: medioMask, height: medioHeight },
 };
 const AREA = getArea();
@@ -283,7 +288,9 @@ export function createMapView(scene: Scene, mask: LandMask, skyColor: Color3, su
   // and huts on stilts.
   const landmarks =
     AREA.id === 'tejo' ? createLandmarks(scene, mask, terrain, mask.meta.origin, MAP_META.bridges) : AREA.id === 'arcachon' ? createArcachonLandmarks(scene, mask, terrain, mask.meta.origin) : AREA.id === 'medio' ? createMedioLandmarks(scene, mask, terrain, mask.meta.origin) : [];
-  for (const l of landmarks) {
+  // Every other lighthouse of the area (OpenStreetMap), as a plain tower in its colours.
+  const lighthouses = createLighthouses(scene, mask, terrain, MAP_META.lighthouses ?? [], landmarks);
+  for (const l of [...landmarks, ...lighthouses]) {
     const label = makeLabel(scene, l.name, false);
     label.position.set(l.x, l.height, l.y);
     labels.push(label);

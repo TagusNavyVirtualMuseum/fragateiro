@@ -617,5 +617,43 @@ export function createLandmarks(
     labels.push({ name: 'Torre Vasco da Gama', x, y, height: g + 175 });
   }
 
+  // --- A windmill on the hills west of Lisbon: a round whitewashed tower with a conical wooden
+  // cap and four sails, triangles of canvas on their spars, turned towards the river.
+  {
+    const [x, y] = toXY(38.7130113, -9.2046587);
+    const g = ground(x, y);
+    const tower = MeshBuilder.CreateCylinder('windmill', { height: 8, diameterBottom: 6.2, diameterTop: 5.2, tessellation: 20 }, scene);
+    tower.position.set(x, g + 4, y);
+    merged('windmill-tower', [tower], white);
+    const cap = MeshBuilder.CreateCylinder('windmill-cap', { height: 3, diameterBottom: 5.6, diameterTop: 0.3, tessellation: 20 }, scene);
+    cap.position.set(x, g + 9.5, y);
+    merged('windmill-cap', [cap], material(scene, 'windmill-cap', '#6b4a2e'));
+    // The sails face south, over the river: spars in an X in the east–up plane.
+    const hub = { x, h: g + 8.3, y: y - 3.6 };
+    const spars: Mesh[] = [];
+    const cloth: Mesh[] = [];
+    for (let k = 0; k < 4; k++) {
+      const a = Math.PI / 4 + (k * Math.PI) / 2;
+      const [c, sn] = [Math.cos(a), Math.sin(a)];
+      const spar = MeshBuilder.CreateBox('windmill-spar', { width: 9, height: 0.25, depth: 0.25 }, scene);
+      spar.rotation.z = a;
+      spar.position.set(hub.x + c * 4.5, hub.h + sn * 4.5, hub.y);
+      spars.push(spar);
+      // The canvas: a long triangle along the spar, wide at its tip.
+      const sail = MeshBuilder.CreateBox('windmill-sail', { width: 7, height: 2.2, depth: 0.08 }, scene);
+      sail.rotation.z = a;
+      const off = 1.1; // beside the spar
+      sail.position.set(hub.x + c * 5 - sn * off, hub.h + sn * 5 + c * off, hub.y - 0.15);
+      cloth.push(sail);
+    }
+    const axle = MeshBuilder.CreateCylinder('windmill-axle', { height: 1.6, diameter: 0.5, tessellation: 8 }, scene);
+    axle.rotation.x = Math.PI / 2;
+    axle.position.set(hub.x, hub.h, hub.y + 0.8);
+    spars.push(axle);
+    merged('windmill-spars', spars, material(scene, 'windmill-wood', '#4a3424'));
+    merged('windmill-sails', cloth, material(scene, 'windmill-canvas', '#e9dfc8'));
+    labels.push({ name: 'Moinho', x, y, height: g + 30 });
+  }
+
   return labels;
 }

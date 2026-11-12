@@ -10,7 +10,7 @@ built to be easy to maintain and to grow into several small games.
   Espichel to Sesimbra and Setúbal, with the real channel buoys and landmarks: the 25 de Abril
   and Vasco da Gama bridges, the Vila Franca bridge, Torre de Belém, the Padrão dos
   Descobrimentos, Cristo Rei, the Torre Vasco da Gama, the Castelo de São Jorge and the
-  lighthouses of Cabo Espichel, Bugio, Santa Marta, Gibalta and Alfeite. Buoys are IALA pillar
+  lighthouses of Cabo Espichel, Bugio, Santa Marta, Gibalta and Alfeite, and a windmill on the hills of Lisbon. Buoys are IALA pillar
   buoys (red can / green cone topmarks; yellow X for the regatta marks). Switch boats at any
   time; the Muleta has two modes: *regular sailing* (main and front sails) and *lateral
   fishing* (all sails set, net out, drifting sideways). Sail onto land and you run aground.
@@ -184,17 +184,20 @@ preview. Open `/tools/workshop/` (see `docs/MODELS.md`).
 
 ## The maps
 
-There are seven sailing areas, each its own map, chosen in the mission menu (or with
-`?area=tejo|medio|arcachon|aveiro|azores|madeira`; the choice is remembered; the Pasaia map is hidden from the menu for now but opens with `?area=pasaia`): the **lower Tagus** from Vila
+There are eight sailing areas, each its own map, chosen in the mission menu (or with
+`?area=tejo|medio|arcachon|aveiro|azores|madeira|oeste`; the choice is remembered; the Pasaia map is hidden from the menu for now but opens with `?area=pasaia`): the **lower Tagus** from Vila
 Franca de Xira to Cascais and Cabo Espichel, the **middle Tagus** (Vila Nova da Barquinha,
 Tancos, the castle of Almourol on its island, Constância and Abrantes: a river 150-300 m wide,
 its map at 10 m), the **Bassin d'Arcachon** (home of the pinasse,
 with the Cap Ferret lighthouse, the Thiers and Eyrac piers and the huts on stilts), the **Ria
 de Aveiro**, the central **Azores** (Horta, Madalena, São Roque do Pico, Velas), the east of
-**Madeira** (Santa Cruz, Machico, Porto da Cruz, Ponta de São Lourenço), and the Basque coast
+**Madeira** (Santa Cruz, Machico, Porto da Cruz, Ponta de São Lourenço), the **Oeste** coast
+(the bay of São Martinho do Porto, Nazaré, Peniche and the Berlengas, its map at 15 m), and the Basque coast
 at **Pasaia** (Pasajes), from San Sebastián to Saint-Jean-de-Luz. Each has its ports, regattas and transport routes (`src/world/area.ts`,
 `src/world/missions.ts`); the Tagus also has its landmarks, the Muleta's fishing grounds, and
-dolphins and orcas.
+dolphins and orcas. Every area shows all its lighthouses: those of OpenStreetMap
+(`scripts/fetch-lighthouses.mjs`, run by the map workflow) as towers of their height and
+colours (`src/engine/lighthouses.ts`), except the ones with a model of their own.
 
 `src/assets/map/` holds, for each area, a land/water mask (20 m cells) plus town names and sea
 marks, built from OpenStreetMap by `scripts/fetch-map.mjs`; the buoys are the same data that
