@@ -1,0 +1,1802 @@
+{
+  "source": "OpenStreetMap contributors (ODbL), via the Overpass API",
+  "built": "2026-11-12",
+  "bbox": {
+    "south": 39.33,
+    "west": -9.57,
+    "north": 39.64,
+    "east": -9.03
+  },
+  "origin": {
+    "lat": 39.46,
+    "lon": -9.3
+  },
+  "cellSize": 15,
+  "width": 3095,
+  "height": 2286,
+  "northWest": {
+    "x": -23205.6,
+    "y": 19903.32
+  },
+  "places": [
+    {
+      "name": "A-da-Gorda",
+      "kind": "hamlet",
+      "x": 11209,
+      "y": -12710
+    },
+    {
+      "name": "A-dos-Negros",
+      "kind": "village",
+      "x": 16274,
+      "y": -12168
+    },
+    {
+      "name": "Abrunheira",
+      "kind": "hamlet",
+      "x": 23062,
+      "y": -2260
+    },
+    {
+      "name": "Aldeia dos Pescadores",
+      "kind": "hamlet",
+      "x": 6039,
+      "y": -4171
+    },
+    {
+      "name": "Alfeizerão",
+      "kind": "town",
+      "x": 16878,
+      "y": 4457
+    },
+    {
+      "name": "Alto",
+      "kind": "hamlet",
+      "x": 8573,
+      "y": -4581
+    },
+    {
+      "name": "Alto do Nobre",
+      "kind": "hamlet",
+      "x": 11208,
+      "y": -3663
+    },
+    {
+      "name": "Alvorninha",
+      "kind": "village",
+      "x": 22662,
+      "y": -8516
+    },
+    {
+      "name": "Amoreira",
+      "kind": "village",
+      "x": 8264,
+      "y": -12792
+    },
+    {
+      "name": "Antas",
+      "kind": "hamlet",
+      "x": 22055,
+      "y": -3951
+    },
+    {
+      "name": "Antas de Baixo",
+      "kind": "hamlet",
+      "x": 21774,
+      "y": -4395
+    },
+    {
+      "name": "Areirinha",
+      "kind": "hamlet",
+      "x": 17570,
+      "y": -14224
+    },
+    {
+      "name": "Arelho",
+      "kind": "hamlet",
+      "x": 9541,
+      "y": -8528
+    },
+    {
+      "name": "Arieira",
+      "kind": "hamlet",
+      "x": 20359,
+      "y": 9709
+    },
+    {
+      "name": "Atouguia da Baleia",
+      "kind": "village",
+      "x": -2211,
+      "y": -13653
+    },
+    {
+      "name": "Bairro Nossa Senhora da Luz",
+      "kind": "hamlet",
+      "x": 12284,
+      "y": -8130
+    },
+    {
+      "name": "Baleal",
+      "kind": "hamlet",
+      "x": -3500,
+      "y": -9380
+    },
+    {
+      "name": "Barrantes",
+      "kind": "hamlet",
+      "x": 16261,
+      "y": -1346
+    },
+    {
+      "name": "Barrocas",
+      "kind": "hamlet",
+      "x": 22525,
+      "y": -3577
+    },
+    {
+      "name": "Berlenga Grande",
+      "kind": "island",
+      "x": -18172,
+      "y": -4830
+    },
+    {
+      "name": "Bica",
+      "kind": "hamlet",
+      "x": 20905,
+      "y": 7542
+    },
+    {
+      "name": "Bico da Raposa",
+      "kind": "islet",
+      "x": 11021,
+      "y": 4478
+    },
+    {
+      "name": "Boavista",
+      "kind": "hamlet",
+      "x": 9835,
+      "y": 2201
+    },
+    {
+      "name": "Boavista",
+      "kind": "hamlet",
+      "x": 21882,
+      "y": 7139
+    },
+    {
+      "name": "Boisias",
+      "kind": "hamlet",
+      "x": 20922,
+      "y": -5376
+    },
+    {
+      "name": "Bom Sucesso",
+      "kind": "hamlet",
+      "x": 5629,
+      "y": -4016
+    },
+    {
+      "name": "Brejoeira",
+      "kind": "hamlet",
+      "x": 17172,
+      "y": -3362
+    },
+    {
+      "name": "Cabeça Alta",
+      "kind": "hamlet",
+      "x": 21377,
+      "y": -2499
+    },
+    {
+      "name": "Cabeço da Cruz",
+      "kind": "hamlet",
+      "x": 14499,
+      "y": 459
+    },
+    {
+      "name": "Cabeço da Vela",
+      "kind": "hamlet",
+      "x": 9406,
+      "y": -697
+    },
+    {
+      "name": "Cabo Carvoeiro",
+      "kind": "cape",
+      "x": -9355,
+      "y": -11136
+    },
+    {
+      "name": "Cabreiros",
+      "kind": "hamlet",
+      "x": 18683,
+      "y": -650
+    },
+    {
+      "name": "Cadarroeira",
+      "kind": "hamlet",
+      "x": 18754,
+      "y": 3654
+    },
+    {
+      "name": "Caldas da Rainha",
+      "kind": "city",
+      "x": 14216,
+      "y": -5840
+    },
+    {
+      "name": "Campo",
+      "kind": "hamlet",
+      "x": 12635,
+      "y": -2583
+    },
+    {
+      "name": "Carrascas",
+      "kind": "hamlet",
+      "x": 20899,
+      "y": 6282
+    },
+    {
+      "name": "Carrasqueiros",
+      "kind": "hamlet",
+      "x": 20724,
+      "y": 2929
+    },
+    {
+      "name": "Carregal",
+      "kind": "hamlet",
+      "x": 10168,
+      "y": -8632
+    },
+    {
+      "name": "Carvalhal Benfeito",
+      "kind": "village",
+      "x": 21853,
+      "y": -1789
+    },
+    {
+      "name": "Casais Antunes",
+      "kind": "hamlet",
+      "x": 9314,
+      "y": -422
+    },
+    {
+      "name": "Casais Brancos",
+      "kind": "hamlet",
+      "x": 14075,
+      "y": -11769
+    },
+    {
+      "name": "Casais Brancos",
+      "kind": "hamlet",
+      "x": 119,
+      "y": -13417
+    },
+    {
+      "name": "Casais Carvalho de São João",
+      "kind": "hamlet",
+      "x": 18923,
+      "y": -14255
+    },
+    {
+      "name": "Casais Carvalhos",
+      "kind": "hamlet",
+      "x": 21256,
+      "y": -1027
+    },
+    {
+      "name": "Casais da Areia",
+      "kind": "hamlet",
+      "x": 17181,
+      "y": -11290
+    },
+    {
+      "name": "Casais da Boavista",
+      "kind": "hamlet",
+      "x": 18660,
+      "y": -11358
+    },
+    {
+      "name": "Casais da Capeleira",
+      "kind": "hamlet",
+      "x": 13093,
+      "y": -12870
+    },
+    {
+      "name": "Casais da Carrasqueira",
+      "kind": "hamlet",
+      "x": 21266,
+      "y": -11063
+    },
+    {
+      "name": "Casais da Cidade",
+      "kind": "hamlet",
+      "x": 9313,
+      "y": 881
+    },
+    {
+      "name": "Casais da Espinheira",
+      "kind": "hamlet",
+      "x": 10845,
+      "y": -1253
+    },
+    {
+      "name": "Casais da Fonte",
+      "kind": "hamlet",
+      "x": 10056,
+      "y": -4131
+    },
+    {
+      "name": "Casais da Igreja",
+      "kind": "hamlet",
+      "x": 22140,
+      "y": -10964
+    },
+    {
+      "name": "Casais da Lagoa Parceira",
+      "kind": "hamlet",
+      "x": 16301,
+      "y": -7437
+    },
+    {
+      "name": "Casais da Mata Velha",
+      "kind": "hamlet",
+      "x": 21261,
+      "y": -13676
+    },
+    {
+      "name": "Casais da Navalha",
+      "kind": "hamlet",
+      "x": 13368,
+      "y": -13373
+    },
+    {
+      "name": "Casais da Ponte",
+      "kind": "hamlet",
+      "x": 16985,
+      "y": -3987
+    },
+    {
+      "name": "Casais das Maias",
+      "kind": "hamlet",
+      "x": 21414,
+      "y": -10633
+    },
+    {
+      "name": "Casais das Salgueiras",
+      "kind": "hamlet",
+      "x": 9063,
+      "y": -4766
+    },
+    {
+      "name": "Casais de Baixo",
+      "kind": "hamlet",
+      "x": 19332,
+      "y": 10270
+    },
+    {
+      "name": "Casais de Mestre Mendo",
+      "kind": "hamlet",
+      "x": 869,
+      "y": -12145
+    },
+    {
+      "name": "Casais de Salir",
+      "kind": "hamlet",
+      "x": 12343,
+      "y": 3405
+    },
+    {
+      "name": "Casais de Vale de Souto",
+      "kind": "hamlet",
+      "x": 18282,
+      "y": -4051
+    },
+    {
+      "name": "Casais do Alvito",
+      "kind": "hamlet",
+      "x": 15395,
+      "y": -10876
+    },
+    {
+      "name": "Casais do Baleal",
+      "kind": "hamlet",
+      "x": -2653,
+      "y": -9766
+    },
+    {
+      "name": "Casais do Fraldeu",
+      "kind": "hamlet",
+      "x": 14034,
+      "y": -13515
+    },
+    {
+      "name": "Casais do Moinho da Praia",
+      "kind": "hamlet",
+      "x": 2387,
+      "y": -7185
+    },
+    {
+      "name": "Casais do Norte",
+      "kind": "hamlet",
+      "x": 17219,
+      "y": 4941
+    },
+    {
+      "name": "Casais do Pinhal Velho",
+      "kind": "hamlet",
+      "x": 6111,
+      "y": -5254
+    },
+    {
+      "name": "Casais do Rio",
+      "kind": "hamlet",
+      "x": 6772,
+      "y": -10217
+    },
+    {
+      "name": "Casais do Rio do Peixe",
+      "kind": "hamlet",
+      "x": 13227,
+      "y": -2832
+    },
+    {
+      "name": "Casais do Vale de Égua",
+      "kind": "hamlet",
+      "x": 9070,
+      "y": -3515
+    },
+    {
+      "name": "Casais do Vau",
+      "kind": "hamlet",
+      "x": 13670,
+      "y": -2904
+    },
+    {
+      "name": "Casais dos Morgados",
+      "kind": "hamlet",
+      "x": 14587,
+      "y": 1216
+    },
+    {
+      "name": "Casal Celão",
+      "kind": "hamlet",
+      "x": 9238,
+      "y": -177
+    },
+    {
+      "name": "Casal da Achada",
+      "kind": "hamlet",
+      "x": 22198,
+      "y": -8901
+    },
+    {
+      "name": "Casal da Areia",
+      "kind": "hamlet",
+      "x": 17753,
+      "y": -5079
+    },
+    {
+      "name": "Casal da Arruda",
+      "kind": "hamlet",
+      "x": 5916,
+      "y": -13134
+    },
+    {
+      "name": "Casal da Avarela",
+      "kind": "hamlet",
+      "x": 12167,
+      "y": -8914
+    },
+    {
+      "name": "Casal da Avé Maria",
+      "kind": "hamlet",
+      "x": 9083,
+      "y": -4419
+    },
+    {
+      "name": "Casal da Bela Vista",
+      "kind": "hamlet",
+      "x": 11857,
+      "y": 3433
+    },
+    {
+      "name": "Casal da Cabana",
+      "kind": "hamlet",
+      "x": 18738,
+      "y": -1315
+    },
+    {
+      "name": "Casal da Granja",
+      "kind": "hamlet",
+      "x": 22428,
+      "y": -7556
+    },
+    {
+      "name": "Casal da Macalhona",
+      "kind": "hamlet",
+      "x": 20167,
+      "y": 4452
+    },
+    {
+      "name": "Casal da Maceda",
+      "kind": "hamlet",
+      "x": 21707,
+      "y": 9087
+    },
+    {
+      "name": "Casal da Malhada",
+      "kind": "hamlet",
+      "x": 18828,
+      "y": -209
+    },
+    {
+      "name": "Casal da Ponte",
+      "kind": "hamlet",
+      "x": 16914,
+      "y": 3539
+    },
+    {
+      "name": "Casal da Toiça",
+      "kind": "hamlet",
+      "x": 13636,
+      "y": -8300
+    },
+    {
+      "name": "Casal da Vala",
+      "kind": "hamlet",
+      "x": -4549,
+      "y": -12752
+    },
+    {
+      "name": "Casal da Venda",
+      "kind": "hamlet",
+      "x": 18304,
+      "y": 438
+    },
+    {
+      "name": "Casal das Figueiras",
+      "kind": "hamlet",
+      "x": 20421,
+      "y": 3398
+    },
+    {
+      "name": "Casal das Freiras",
+      "kind": "hamlet",
+      "x": 23147,
+      "y": -1185
+    },
+    {
+      "name": "Casal das Ladeiras",
+      "kind": "hamlet",
+      "x": 5396,
+      "y": -13411
+    },
+    {
+      "name": "Casal das Pimentas",
+      "kind": "hamlet",
+      "x": 19167,
+      "y": -14247
+    },
+    {
+      "name": "Casal de Malpique",
+      "kind": "hamlet",
+      "x": 17278,
+      "y": -5756
+    },
+    {
+      "name": "Casal de Matos",
+      "kind": "hamlet",
+      "x": 18711,
+      "y": -4198
+    },
+    {
+      "name": "Casal do Aguiar",
+      "kind": "hamlet",
+      "x": 17671,
+      "y": 2177
+    },
+    {
+      "name": "Casal do Amaro",
+      "kind": "hamlet",
+      "x": 18905,
+      "y": 2980
+    },
+    {
+      "name": "Casal do Brejo",
+      "kind": "hamlet",
+      "x": 13269,
+      "y": -4628
+    },
+    {
+      "name": "Casal do Cozinheiro",
+      "kind": "hamlet",
+      "x": 19337,
+      "y": -1800
+    },
+    {
+      "name": "Casal do Frade",
+      "kind": "hamlet",
+      "x": 19021,
+      "y": -7090
+    },
+    {
+      "name": "Casal do Marco",
+      "kind": "hamlet",
+      "x": 18983,
+      "y": -13640
+    },
+    {
+      "name": "Casal do Moscão",
+      "kind": "hamlet",
+      "x": 22628,
+      "y": -6861
+    },
+    {
+      "name": "Casal do Oliveira",
+      "kind": "hamlet",
+      "x": 17919,
+      "y": -822
+    },
+    {
+      "name": "Casal do Pardo",
+      "kind": "hamlet",
+      "x": 19160,
+      "y": 4522
+    },
+    {
+      "name": "Casal do Ramos",
+      "kind": "hamlet",
+      "x": 23066,
+      "y": 5046
+    },
+    {
+      "name": "Casal do Rio",
+      "kind": "hamlet",
+      "x": 22059,
+      "y": -4
+    },
+    {
+      "name": "Casal do Souto",
+      "kind": "hamlet",
+      "x": 23128,
+      "y": -8774
+    },
+    {
+      "name": "Casal do Zambujeiro",
+      "kind": "hamlet",
+      "x": 13618,
+      "y": -9799
+    },
+    {
+      "name": "Casal dos Carvalhos",
+      "kind": "hamlet",
+      "x": 20580,
+      "y": -6034
+    },
+    {
+      "name": "Casal dos Chãos",
+      "kind": "hamlet",
+      "x": 10533,
+      "y": -4534
+    },
+    {
+      "name": "Casal Fonte Figueira",
+      "kind": "hamlet",
+      "x": 17938,
+      "y": 3851
+    },
+    {
+      "name": "Casal Jorge Dias",
+      "kind": "hamlet",
+      "x": 20569,
+      "y": 5606
+    },
+    {
+      "name": "Casal Luis Pivete",
+      "kind": "hamlet",
+      "x": 14299,
+      "y": -13027
+    },
+    {
+      "name": "Casal Moinho",
+      "kind": "hamlet",
+      "x": -4492,
+      "y": -13652
+    },
+    {
+      "name": "Casal Morgados",
+      "kind": "hamlet",
+      "x": 22582,
+      "y": -7279
+    },
+    {
+      "name": "Casal Mota",
+      "kind": "hamlet",
+      "x": 19568,
+      "y": 11960
+    },
+    {
+      "name": "Casal Novo",
+      "kind": "hamlet",
+      "x": 20662,
+      "y": -3
+    },
+    {
+      "name": "Casal Novo",
+      "kind": "hamlet",
+      "x": 18205,
+      "y": -3302
+    },
+    {
+      "name": "Casal Novo",
+      "kind": "hamlet",
+      "x": 9999,
+      "y": -4603
+    },
+    {
+      "name": "Casal Pinheiro",
+      "kind": "hamlet",
+      "x": 21569,
+      "y": -1232
+    },
+    {
+      "name": "Casal Velho",
+      "kind": "hamlet",
+      "x": 19488,
+      "y": 2965
+    },
+    {
+      "name": "Casal Velho",
+      "kind": "hamlet",
+      "x": 21355,
+      "y": -6858
+    },
+    {
+      "name": "Casalinho",
+      "kind": "hamlet",
+      "x": 21023,
+      "y": -7993
+    },
+    {
+      "name": "Casinhas",
+      "kind": "hamlet",
+      "x": 8592,
+      "y": -5073
+    },
+    {
+      "name": "Cela",
+      "kind": "town",
+      "x": 22732,
+      "y": 8832
+    },
+    {
+      "name": "Cela Velha",
+      "kind": "hamlet",
+      "x": 21014,
+      "y": 10212
+    },
+    {
+      "name": "Cerro da Velha",
+      "kind": "islet",
+      "x": -16996,
+      "y": -4501
+    },
+    {
+      "name": "Chão da Parada",
+      "kind": "hamlet",
+      "x": 14103,
+      "y": 644
+    },
+    {
+      "name": "Chãos",
+      "kind": "hamlet",
+      "x": 23047,
+      "y": -7672
+    },
+    {
+      "name": "Cidade",
+      "kind": "hamlet",
+      "x": 9228,
+      "y": 196
+    },
+    {
+      "name": "Coimbrã",
+      "kind": "hamlet",
+      "x": -1274,
+      "y": -13601
+    },
+    {
+      "name": "Cortém",
+      "kind": "hamlet",
+      "x": 19592,
+      "y": -8579
+    },
+    {
+      "name": "Coto",
+      "kind": "village",
+      "x": 15793,
+      "y": -3904
+    },
+    {
+      "name": "Covões",
+      "kind": "hamlet",
+      "x": 10354,
+      "y": -4970
+    },
+    {
+      "name": "Crastos",
+      "kind": "hamlet",
+      "x": 22955,
+      "y": -11074
+    },
+    {
+      "name": "Crocha",
+      "kind": "hamlet",
+      "x": 15587,
+      "y": -5771
+    },
+    {
+      "name": "Cruzes",
+      "kind": "hamlet",
+      "x": 19960,
+      "y": -1928
+    },
+    {
+      "name": "Cumeira",
+      "kind": "hamlet",
+      "x": 22531,
+      "y": 724
+    },
+    {
+      "name": "Cumeira do Casal das Freiras",
+      "kind": "hamlet",
+      "x": 22648,
+      "y": -444
+    },
+    {
+      "name": "Eiras",
+      "kind": "hamlet",
+      "x": 21891,
+      "y": -316
+    },
+    {
+      "name": "Espinheira",
+      "kind": "hamlet",
+      "x": 10557,
+      "y": -960
+    },
+    {
+      "name": "Estalão",
+      "kind": "islet",
+      "x": -19947,
+      "y": -3875
+    },
+    {
+      "name": "Estela",
+      "kind": "islet",
+      "x": -19956,
+      "y": -4030
+    },
+    {
+      "name": "Facho",
+      "kind": "hamlet",
+      "x": 21502,
+      "y": 6931
+    },
+    {
+      "name": "Famalicão",
+      "kind": "village",
+      "x": 18651,
+      "y": 8494
+    },
+    {
+      "name": "Fanadia",
+      "kind": "hamlet",
+      "x": 19312,
+      "y": -10388
+    },
+    {
+      "name": "Farilhão da Cova",
+      "kind": "islet",
+      "x": -21049,
+      "y": 1554
+    },
+    {
+      "name": "Farilhão do Nordeste",
+      "kind": "islet",
+      "x": -20714,
+      "y": 2104
+    },
+    {
+      "name": "Farilhão dos Olhos",
+      "kind": "islet",
+      "x": -21430,
+      "y": 1540
+    },
+    {
+      "name": "Farilhão Grande",
+      "kind": "islet",
+      "x": -21137,
+      "y": 1961
+    },
+    {
+      "name": "Ferrel",
+      "kind": "town",
+      "x": -1384,
+      "y": -10576
+    },
+    {
+      "name": "Fetais",
+      "kind": "hamlet",
+      "x": 480,
+      "y": -13072
+    },
+    {
+      "name": "Feteira",
+      "kind": "hamlet",
+      "x": 21973,
+      "y": 6077
+    },
+    {
+      "name": "Formigal",
+      "kind": "hamlet",
+      "x": 17748,
+      "y": -5663
+    },
+    {
+      "name": "Foz do Arelho",
+      "kind": "town",
+      "x": 7100,
+      "y": -2990
+    },
+    {
+      "name": "Gaeiras",
+      "kind": "town",
+      "x": 14692,
+      "y": -9554
+    },
+    {
+      "name": "Gaio",
+      "kind": "hamlet",
+      "x": 21635,
+      "y": 3145
+    },
+    {
+      "name": "Gracieira",
+      "kind": "hamlet",
+      "x": 15365,
+      "y": -13930
+    },
+    {
+      "name": "Granja",
+      "kind": "hamlet",
+      "x": 10569,
+      "y": -790
+    },
+    {
+      "name": "Guisado",
+      "kind": "hamlet",
+      "x": 16859,
+      "y": -1985
+    },
+    {
+      "name": "Hortas",
+      "kind": "hamlet",
+      "x": 20058,
+      "y": 563
+    },
+    {
+      "name": "Ilha das Pombas",
+      "kind": "islet",
+      "x": -3560,
+      "y": -8671
+    },
+    {
+      "name": "Ilhéu da Inês",
+      "kind": "islet",
+      "x": -17779,
+      "y": -5147
+    },
+    {
+      "name": "Ilhéu da Lagoa",
+      "kind": "islet",
+      "x": -18376,
+      "y": -4638
+    },
+    {
+      "name": "Ilhéu da Papoa",
+      "kind": "islet",
+      "x": -6723,
+      "y": -9425
+    },
+    {
+      "name": "Ilhéu da Pedra Negra",
+      "kind": "islet",
+      "x": -17767,
+      "y": -4310
+    },
+    {
+      "name": "Ilhéu da Ponta",
+      "kind": "islet",
+      "x": -17365,
+      "y": -4639
+    },
+    {
+      "name": "Ilhéu da Quebrada",
+      "kind": "islet",
+      "x": -18440,
+      "y": -4807
+    },
+    {
+      "name": "Ilhéu de Fora",
+      "kind": "islet",
+      "x": -3535,
+      "y": -8272
+    },
+    {
+      "name": "Ilhéu do Meio",
+      "kind": "islet",
+      "x": -17452,
+      "y": -4575
+    },
+    {
+      "name": "Ilhéu dos Soldados",
+      "kind": "islet",
+      "x": -18592,
+      "y": -5021
+    },
+    {
+      "name": "Ilhéu Maldito",
+      "kind": "islet",
+      "x": -17589,
+      "y": -4529
+    },
+    {
+      "name": "Imaginário",
+      "kind": "hamlet",
+      "x": 16954,
+      "y": -6423
+    },
+    {
+      "name": "Infantes",
+      "kind": "hamlet",
+      "x": 18655,
+      "y": -5193
+    },
+    {
+      "name": "Junqueira",
+      "kind": "hamlet",
+      "x": 21195,
+      "y": 4672
+    },
+    {
+      "name": "Lagoa Parceira",
+      "kind": "hamlet",
+      "x": 15923,
+      "y": -7133
+    },
+    {
+      "name": "Laranjeira",
+      "kind": "hamlet",
+      "x": 21871,
+      "y": -5609
+    },
+    {
+      "name": "Macarca",
+      "kind": "hamlet",
+      "x": 17862,
+      "y": 6327
+    },
+    {
+      "name": "Malasia",
+      "kind": "hamlet",
+      "x": 19416,
+      "y": -6350
+    },
+    {
+      "name": "Malinha",
+      "kind": "hamlet",
+      "x": 20927,
+      "y": -2812
+    },
+    {
+      "name": "Manuel Jorge",
+      "kind": "islet",
+      "x": -20077,
+      "y": -4019
+    },
+    {
+      "name": "Matinha",
+      "kind": "hamlet",
+      "x": 20311,
+      "y": -2457
+    },
+    {
+      "name": "Matoeira",
+      "kind": "hamlet",
+      "x": 18504,
+      "y": -7291
+    },
+    {
+      "name": "Meda do Norte",
+      "kind": "islet",
+      "x": -19393,
+      "y": -3999
+    },
+    {
+      "name": "Meda do Sul",
+      "kind": "islet",
+      "x": -19418,
+      "y": -4135
+    },
+    {
+      "name": "Mestras",
+      "kind": "hamlet",
+      "x": 20330,
+      "y": 315
+    },
+    {
+      "name": "Moita",
+      "kind": "hamlet",
+      "x": 20705,
+      "y": -6796
+    },
+    {
+      "name": "Mosqueiros",
+      "kind": "hamlet",
+      "x": 18493,
+      "y": 1405
+    },
+    {
+      "name": "Mosteiros",
+      "kind": "hamlet",
+      "x": 20110,
+      "y": -8745
+    },
+    {
+      "name": "Mouraria",
+      "kind": "hamlet",
+      "x": 14959,
+      "y": 479
+    },
+    {
+      "name": "Mouraria",
+      "kind": "hamlet",
+      "x": 23081,
+      "y": 786
+    },
+    {
+      "name": "Nadadouro",
+      "kind": "village",
+      "x": 9517,
+      "y": -4429
+    },
+    {
+      "name": "Nazaré",
+      "kind": "town",
+      "x": 19754,
+      "y": 15802
+    },
+    {
+      "name": "Óbidos",
+      "kind": "town",
+      "x": 12277,
+      "y": -10842
+    },
+    {
+      "name": "Oliveirinhas",
+      "kind": "hamlet",
+      "x": 22561,
+      "y": -1373
+    },
+    {
+      "name": "Osseira",
+      "kind": "hamlet",
+      "x": 21990,
+      "y": -845
+    },
+    {
+      "name": "Outeiro da Venda",
+      "kind": "hamlet",
+      "x": 18854,
+      "y": 602
+    },
+    {
+      "name": "Paraíso",
+      "kind": "hamlet",
+      "x": 22801,
+      "y": -6181
+    },
+    {
+      "name": "Pederneira",
+      "kind": "hamlet",
+      "x": 20318,
+      "y": 15126
+    },
+    {
+      "name": "Pedra da Escada",
+      "kind": "islet",
+      "x": 6832,
+      "y": -1496
+    },
+    {
+      "name": "Pedra da Sombra",
+      "kind": "islet",
+      "x": 6835,
+      "y": -1439
+    },
+    {
+      "name": "Peniche",
+      "kind": "city",
+      "x": -6763,
+      "y": -11403
+    },
+    {
+      "name": "Peso",
+      "kind": "hamlet",
+      "x": 19764,
+      "y": 1281
+    },
+    {
+      "name": "Pinhal",
+      "kind": "hamlet",
+      "x": 11813,
+      "y": -11553
+    },
+    {
+      "name": "Poça",
+      "kind": "hamlet",
+      "x": 6294,
+      "y": -5200
+    },
+    {
+      "name": "Poça Pequena",
+      "kind": "hamlet",
+      "x": 6468,
+      "y": -5090
+    },
+    {
+      "name": "Ponta da França",
+      "kind": "cape",
+      "x": -18596,
+      "y": -5560
+    },
+    {
+      "name": "Ponta de Santo António",
+      "kind": "cape",
+      "x": 13439,
+      "y": 5577
+    },
+    {
+      "name": "Ponta do Penedo",
+      "kind": "cape",
+      "x": -18176,
+      "y": -4500
+    },
+    {
+      "name": "Porto de Lobos",
+      "kind": "hamlet",
+      "x": -3371,
+      "y": -12712
+    },
+    {
+      "name": "Promontório da Nazaré",
+      "kind": "cape",
+      "x": 18414,
+      "y": 15964
+    },
+    {
+      "name": "Quinta da Boavista",
+      "kind": "hamlet",
+      "x": 8536,
+      "y": -5694
+    },
+    {
+      "name": "Quinta do Bravo",
+      "kind": "hamlet",
+      "x": 21234,
+      "y": -4230
+    },
+    {
+      "name": "Quinta do Carvalhedo",
+      "kind": "hamlet",
+      "x": 17939,
+      "y": -11525
+    },
+    {
+      "name": "Quinta Nova",
+      "kind": "hamlet",
+      "x": 19775,
+      "y": 11134
+    },
+    {
+      "name": "Rabo de Asno",
+      "kind": "islet",
+      "x": -21189,
+      "y": 1374
+    },
+    {
+      "name": "Ramalhiça",
+      "kind": "hamlet",
+      "x": 19455,
+      "y": 3927
+    },
+    {
+      "name": "Raposos",
+      "kind": "hamlet",
+      "x": 20171,
+      "y": 7220
+    },
+    {
+      "name": "Rebelos",
+      "kind": "hamlet",
+      "x": 22261,
+      "y": 5123
+    },
+    {
+      "name": "Rebolo",
+      "kind": "hamlet",
+      "x": 18425,
+      "y": 7225
+    },
+    {
+      "name": "Rego Travesso",
+      "kind": "hamlet",
+      "x": 8089,
+      "y": -14011
+    },
+    {
+      "name": "Reguengo da Parada",
+      "kind": "hamlet",
+      "x": 13588,
+      "y": -343
+    },
+    {
+      "name": "Ribeira de Castros",
+      "kind": "hamlet",
+      "x": 23070,
+      "y": -10830
+    },
+    {
+      "name": "Ribeira do Marete",
+      "kind": "hamlet",
+      "x": 20440,
+      "y": 2552
+    },
+    {
+      "name": "Ribeira dos Ameais",
+      "kind": "hamlet",
+      "x": 22044,
+      "y": -6339
+    },
+    {
+      "name": "Rossio",
+      "kind": "hamlet",
+      "x": 23051,
+      "y": 9143
+    },
+    {
+      "name": "Salgado",
+      "kind": "hamlet",
+      "x": 16472,
+      "y": 9504
+    },
+    {
+      "name": "Salgueirinha",
+      "kind": "hamlet",
+      "x": 12969,
+      "y": -7420
+    },
+    {
+      "name": "Salir de Matos",
+      "kind": "town",
+      "x": 17575,
+      "y": -3034
+    },
+    {
+      "name": "Salir do Porto",
+      "kind": "town",
+      "x": 12599,
+      "y": 4007
+    },
+    {
+      "name": "Sancheira Grande",
+      "kind": "hamlet",
+      "x": 18636,
+      "y": -12683
+    },
+    {
+      "name": "Sancheira Pequena",
+      "kind": "hamlet",
+      "x": 19155,
+      "y": -12567
+    },
+    {
+      "name": "Santa Maria Madalena",
+      "kind": "hamlet",
+      "x": 17112,
+      "y": -12886
+    },
+    {
+      "name": "Santa Rufina",
+      "kind": "hamlet",
+      "x": 9928,
+      "y": -8156
+    },
+    {
+      "name": "Santana",
+      "kind": "hamlet",
+      "x": 20497,
+      "y": -547
+    },
+    {
+      "name": "Santo Onofre",
+      "kind": "village",
+      "x": 12265,
+      "y": -5314
+    },
+    {
+      "name": "São Domingos",
+      "kind": "hamlet",
+      "x": 16128,
+      "y": -240
+    },
+    {
+      "name": "São Gregório",
+      "kind": "village",
+      "x": 20876,
+      "y": -11683
+    },
+    {
+      "name": "São Martinho do Porto",
+      "kind": "town",
+      "x": 14302,
+      "y": 5919
+    },
+    {
+      "name": "Sapateira",
+      "kind": "hamlet",
+      "x": 17067,
+      "y": 5663
+    },
+    {
+      "name": "Sapeiros",
+      "kind": "hamlet",
+      "x": 20156,
+      "y": 3189
+    },
+    {
+      "name": "Serra d'El-Rei",
+      "kind": "town",
+      "x": 2598,
+      "y": -14095
+    },
+    {
+      "name": "Serra da Pescaria",
+      "kind": "hamlet",
+      "x": 17670,
+      "y": 9947
+    },
+    {
+      "name": "Serra do Bouro",
+      "kind": "village",
+      "x": 10261,
+      "y": -637
+    },
+    {
+      "name": "Serra dos Mangues",
+      "kind": "hamlet",
+      "x": 15524,
+      "y": 7569
+    },
+    {
+      "name": "Serralheira",
+      "kind": "hamlet",
+      "x": 15632,
+      "y": -4707
+    },
+    {
+      "name": "Sobral da Lagoa",
+      "kind": "village",
+      "x": 9870,
+      "y": -11918
+    },
+    {
+      "name": "Teixeira",
+      "kind": "hamlet",
+      "x": 16320,
+      "y": -1683
+    },
+    {
+      "name": "Tornada",
+      "kind": "village",
+      "x": 14732,
+      "y": -1356
+    },
+    {
+      "name": "Torre",
+      "kind": "hamlet",
+      "x": 17476,
+      "y": -5441
+    },
+    {
+      "name": "Trabalhia",
+      "kind": "hamlet",
+      "x": 19433,
+      "y": -7748
+    },
+    {
+      "name": "Trabalhias",
+      "kind": "hamlet",
+      "x": 19312,
+      "y": -3267
+    },
+    {
+      "name": "Trás do Outeiro",
+      "kind": "hamlet",
+      "x": 11143,
+      "y": -8337
+    },
+    {
+      "name": "Usseira",
+      "kind": "village",
+      "x": 12209,
+      "y": -14123
+    },
+    {
+      "name": "Valado de Santa Quitéria",
+      "kind": "hamlet",
+      "x": 17312,
+      "y": 464
+    },
+    {
+      "name": "Vale da Quinta",
+      "kind": "hamlet",
+      "x": 18906,
+      "y": -1907
+    },
+    {
+      "name": "Vale da Vaca",
+      "kind": "hamlet",
+      "x": 21062,
+      "y": -27
+    },
+    {
+      "name": "Vale das Hastes",
+      "kind": "hamlet",
+      "x": 18033,
+      "y": 2080
+    },
+    {
+      "name": "Vale do Coto",
+      "kind": "hamlet",
+      "x": 15552,
+      "y": -3247
+    },
+    {
+      "name": "Vale do Paraíso",
+      "kind": "hamlet",
+      "x": 16604,
+      "y": 5748
+    },
+    {
+      "name": "Vale Maceira",
+      "kind": "hamlet",
+      "x": 17084,
+      "y": 2686
+    },
+    {
+      "name": "Vale Serrão",
+      "kind": "hamlet",
+      "x": 21830,
+      "y": -5217
+    },
+    {
+      "name": "Vau",
+      "kind": "village",
+      "x": 7103,
+      "y": -10416
+    },
+    {
+      "name": "Venda Nova",
+      "kind": "hamlet",
+      "x": 15960,
+      "y": 8428
+    },
+    {
+      "name": "Vidais",
+      "kind": "village",
+      "x": 21543,
+      "y": -10130
+    },
+    {
+      "name": "Vigia",
+      "kind": "hamlet",
+      "x": 21010,
+      "y": 1462
+    },
+    {
+      "name": "Vila Nova",
+      "kind": "hamlet",
+      "x": 21111,
+      "y": -8356
+    },
+    {
+      "name": "Zambujal",
+      "kind": "hamlet",
+      "x": 21110,
+      "y": -5748
+    },
+    {
+      "name": "Zambujeiro",
+      "kind": "hamlet",
+      "x": 9914,
+      "y": -1514
+    }
+  ],
+  "seamarks": [
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "white",
+      "name": "Berlenga",
+      "x": -17985,
+      "y": -4942
+    },
+    {
+      "type": "light_major",
+      "category": "",
+      "colour": "red",
+      "name": "Cabo Carvoeiro",
+      "x": -9270,
+      "y": -10994
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "green",
+      "name": "Farolim Molhe E",
+      "x": -6374,
+      "y": -12195
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Farolim Molhe W",
+      "x": -6489,
+      "y": -12383
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": -6264,
+      "y": -10720
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Peniche de Cima",
+      "x": -6233,
+      "y": -10679
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "white",
+      "name": "Farilhões",
+      "x": -21065,
+      "y": 2091
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "Ponta de Santo Antonio",
+      "x": 13439,
+      "y": 5577
+    },
+    {
+      "type": "light_minor",
+      "category": "",
+      "colour": "red",
+      "name": "",
+      "x": 13811,
+      "y": 4686
+    }
+  ],
+  "bridges": {},
+  "heights": {
+    "source": "Copernicus GLO-30 DEM (© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA)",
+    "cellSize": 40,
+    "width": 1161,
+    "height": 858,
+    "scale": 0.1,
+    "offset": -100
+  },
+  "lighthouses": [
+    {
+      "name": "",
+      "x": 13811,
+      "y": 4686,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": 19100,
+      "y": 14354,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "",
+      "x": 19208,
+      "y": 14460,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Cabo Carvoeiro",
+      "x": -9270,
+      "y": -10994,
+      "height": 27,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farilhões",
+      "x": -21065,
+      "y": 2091,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Berlenga",
+      "x": -17985,
+      "y": -4942,
+      "height": 29,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol da Nazaré",
+      "x": 18449,
+      "y": 15970,
+      "height": 8,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farol de São Martinho",
+      "x": 13884,
+      "y": 4581,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farolim de São Martinho do Porto",
+      "x": 13486,
+      "y": 5601,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farolim Molhe E",
+      "x": -6374,
+      "y": -12195,
+      "colours": [],
+      "pattern": ""
+    },
+    {
+      "name": "Farolim Molhe W",
+      "x": -6489,
+      "y": -12383,
+      "colours": [],
+      "pattern": ""
+    }
+  ]
+}
