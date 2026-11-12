@@ -99,6 +99,22 @@ export const AREAS = {
     },
   },
 
+  // The Oeste coast: the shell-shaped bay of São Martinho do Porto, Nazaré under its cliff,
+  // the peninsula of Peniche and, 10 km out to sea, the Berlengas (Berlenga Grande, the
+  // Estelas and the Farilhões). Cells of 15 m keep the narrow mouth of São Martinho's bay open.
+  oeste: {
+    file: 'oeste',
+    cell: 15,
+    bbox: { south: 39.33, west: -9.57, north: 39.64, east: -9.03 },
+    /** At sea between Peniche and Nazaré. */
+    origin: { lat: 39.46, lon: -9.3 },
+    checks: {
+      land: { Peniche: [39.3558, -9.3811], Nazaré: [39.6021, -9.0702], 'São Martinho do Porto': [39.5126, -9.1355], 'Berlenga Grande': [39.4135, -9.5085] },
+      water: { origin: [39.46, -9.3], 'between Peniche and the Berlengas': [39.39, -9.45], 'off Nazaré': [39.6, -9.11] },
+      report: { 'São Martinho bay': [39.507, -9.142], 'Peniche harbour': [39.352, -9.374], 'Nazaré harbour': [39.5862, -9.0755], 'off the Berlenga landing': [39.4155, -9.503] },
+    },
+  },
+
   // The middle Tagus: Vila Nova da Barquinha, Tancos, the castle of Almourol on its island,
   // Constância where the Zêzere joins, and Abrantes. No coast here: the water is the river's
   // own outlines (natural=water), drawn at 10 m for a river 150-300 m wide.

@@ -7,9 +7,13 @@ on:
   workflow_dispatch:
     inputs:
       area:
-        description: 'Area (tejo, arcachon, aveiro), or several separated by spaces'
+        description: 'Area (tejo, medio, arcachon, aveiro, pasaia, azores, madeira, oeste), or several separated by spaces'
         required: true
         default: 'tejo'
+      lighthouses_only:
+        description: 'Only add the lighthouses (keep the coastline and heights as they are)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -26,10 +30,14 @@ jobs:
       - name: Build the maps
         env:
           AREAS: ${{ inputs.area }}
+          ONLY_LIGHTHOUSES: ${{ inputs.lighthouses_only }}
         run: |
           for a in $AREAS; do
-            node scripts/fetch-map.mjs --area "$a"
-            node scripts/fetch-heights.mjs --area "$a"
+            if [ "$ONLY_LIGHTHOUSES" != "true" ]; then
+              node scripts/fetch-map.mjs --area "$a"
+              node scripts/fetch-heights.mjs --area "$a"
+            fi
+            node scripts/fetch-lighthouses.mjs --area "$a"
           done
       - name: Commit the maps
         env:
