@@ -708,15 +708,22 @@ async function main(): Promise<void> {
   }
   // Start with the mission menu, or straight into a mini-game chosen in another area's menu.
   paused = true;
-  const play = new URLSearchParams(location.search).get('play');
-  const game = [...DRILLS, ...MINIGAMES].find((g) => g.id === play && g.area === AREA.id);
-  if (play === 'free') {
-    history.replaceState(null, '', location.pathname + location.search.replace(/[?&]play=[^&]*/, '').replace(/^&/, '?'));
-    menu.showFree();
-  } else if (game) {
-    history.replaceState(null, '', location.pathname + location.search.replace(/[?&]play=[^&]*/, '').replace(/^&/, '?'));
-    void startMission(game.mission(BOATS), level);
-  } else menu.show();
+  const params = new URLSearchParams(location.search);
+  const play = params.get('play');
+  const game = [...DRILLS, ...MINIGAMES].find((g) => g.id === play);
+  // The boat and the place picked in the menu (else, opened by its address: one at random here).
+  const here = game ? game.places.map((p, i) => (p.area === AREA.id ? i : -1)).filter((i) => i >= 0) : [];
+  const asked = Number(params.get('place'));
+  const place = game && game.places[asked]?.area === AREA.id ? asked : here[Math.floor(Math.random() * here.length)];
+  const boatAsked = params.get('boat');
+  const boat = game && boatAsked && game.boats.includes(boatAsked) ? boatAsked : game?.boats[Math.floor(Math.random() * game.boats.length)];
+  if (play) {
+    for (const k of ['play', 'boat', 'place']) params.delete(k);
+    history.replaceState(null, '', location.pathname + (params.size ? `?${params}` : ''));
+  }
+  if (play === 'free') menu.showFree();
+  else if (game && place !== undefined) void startMission(game.mission(BOATS, boat, place), level);
+  else menu.show();
   // Handy in the browser console and for automated checks.
   Object.assign(window, { game: { get wildlife() { return wildlife; }, netSweep, get fishing() { return fishing; }, get trash() { return trash; }, get hunt() { return hunt; }, get supply() { return supply; }, get anchored() { return anchored; }, get run() { return run; }, get drill() { return drill; }, get sim() { return sim; }, camera, scene, cameraRig, mask, destinations, teleport, views, switchBoat, get traffic() { return traffic; } } });
 

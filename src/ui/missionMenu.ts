@@ -13,8 +13,10 @@ import muletaPic from '../assets/boats/muleta.jpg?url';
 import canoaPic from '../assets/boats/canoa.jpg?url';
 import baleeiroPic from '../assets/boats/baleeiro.jpg?url';
 import moliceiroPic from '../assets/boats/moliceiro.jpg?url';
+import pinassePic from '../assets/boats/pinasse.jpg?url';
+import bacPic from '../assets/boats/bac.jpg?url';
 
-const BOAT_PICTURES: Record<string, string> = { falua: faluaPic, catraio: catraioPic, fragata: fragataPic, muleta: muletaPic, canoa: canoaPic, baleeiro: baleeiroPic, moliceiro: moliceiroPic };
+const BOAT_PICTURES: Record<string, string> = { falua: faluaPic, catraio: catraioPic, fragata: fragataPic, muleta: muletaPic, canoa: canoaPic, baleeiro: baleeiroPic, moliceiro: moliceiroPic, pinasse: pinassePic, bac: bacPic };
 
 const AREA = getArea();
 const { courses: COURSES, routes: ROUTES, grounds: GROUNDS, cleanups: CLEANUPS, supplies: SUPPLIES, whaling: WHALING } = areaMissions();
@@ -118,7 +120,7 @@ export class MissionMenu {
     for (const g of MINIGAMES) {
       const card = el('button', 'mission-card minigame');
       const img = el('img');
-      img.src = BOAT_PICTURES[g.boat] ?? '';
+      img.src = BOAT_PICTURES[g.boats[0]] ?? '';
       img.alt = '';
       card.append(img, el('strong', '', t(`mini.${g.id}`)), el('span', 'desc', t(`mini.${g.id}.desc`)));
       card.onclick = () => this.play(g);
@@ -135,10 +137,15 @@ export class MissionMenu {
     panel.append(list);
   }
 
-  /** Start a drill or mini-game: each area is its own map, so another area opens the page there and the game starts it. */
+  /**
+   * Start a drill or mini-game with one of its boats, in one of its places, picked at random.
+   * Each area is its own map: another area opens the page there, and the game starts it.
+   */
   private play(g: MiniGame): void {
-    if (g.area !== AREA.id) setArea(g.area, { play: g.id });
-    else this.onStart(g.mission(this.boats), this.level);
+    const boat = g.boats[Math.floor(Math.random() * g.boats.length)];
+    const place = Math.floor(Math.random() * g.places.length);
+    if (g.places[place].area !== AREA.id) setArea(g.places[place].area, { play: g.id, boat, place: String(place) });
+    else this.onStart(g.mission(this.boats, boat, place), this.level);
   }
 
   /** The free-sailing screen: area, boat and port. */

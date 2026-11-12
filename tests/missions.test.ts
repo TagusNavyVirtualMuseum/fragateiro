@@ -77,15 +77,19 @@ describe('missions', () => {
 });
 
 describe('museum mini-games', () => {
-  it('each starts a mission with its boat, from a port of its area', async () => {
-    const { MINIGAMES } = await import('../src/world/missions');
+  it('each starts a mission with each of its boats, from each of its places', async () => {
+    const { MINIGAMES, DRILLS } = await import('../src/world/missions');
     const { AREAS } = await import('../src/world/area');
-    for (const g of MINIGAMES) {
-      const m = g.mission(BOATS);
-      expect(m.boat).toBe(g.boat);
-      expect(BOATS.some((b) => b.id === g.boat)).toBe(true);
-      const place = 'from' in m ? m.from : 'at' in m ? m.at : '';
-      expect(AREAS[g.area].ports).toContain(place);
+    for (const g of [...DRILLS, ...MINIGAMES]) {
+      for (const boat of g.boats) {
+        g.places.forEach((p, i) => {
+          const m = g.mission(BOATS, boat, i);
+          expect(m.boat).toBe(boat);
+          expect(BOATS.some((b) => b.id === boat)).toBe(true);
+          const place = 'from' in m ? m.from : 'at' in m ? m.at : '';
+          expect(AREAS[p.area].ports).toContain(place);
+        });
+      }
     }
   });
 });
@@ -101,14 +105,17 @@ describe('content/minigames.json', () => {
     const { checkGames } = await import('../src/world/missions');
     const bad = {
       drills: [{ id: 'hold', drill: 'hover', area: 'tejo', boat: 'baleeiro', from: 'Lisbon' }],
-      minigames: [{ id: 'nothing', type: 'transport', area: 'mars', boat: 'yacht', from: 'Lisboa' }],
+      minigames: [
+        { id: 'nothing', type: 'transport', boats: ['yacht'], places: [{ area: 'mars', from: 'Lisboa' }] },
+        { id: 'ferry', type: 'transport', boats: ['falua', 'catraio'], places: [{ area: 'tejo', from: 'Lisboa', to: 'Almada' }, { area: 'tejo', from: 'Seixal' }] },
+      ],
     };
     const out = checkGames(bad as never, BOATS.map((b) => b.id), (k) => k.startsWith('drill.'));
     expect(out.join('\n')).toMatch(/unknown kind "hover"/);
     expect(out.join('\n')).toMatch(/"Lisbon" is not a port of tejo/);
     expect(out.join('\n')).toMatch(/unknown area "mars"/);
     expect(out.join('\n')).toMatch(/unknown boat "yacht"/);
-    expect(out.join('\n')).toMatch(/needs "to"/);
+    expect(out.join('\n')).toMatch(/a place in tejo needs "to"/);
     expect(out.join('\n')).toMatch(/no text "mini.nothing"/);
   });
   it('drills take their numbers from the file', async () => {

@@ -33,11 +33,19 @@ of the file. Each entry:
 |---|---|
 | `id` | its name; the title and description are the texts `drill.<id>` / `mini.<id>` (and `.desc`) |
 | `show` | `false` hides it from the menu |
-| `area` | `tejo`, `medio`, `arcachon`, `aveiro`, `azores`, `madeira` |
-| `boat` | `falua`, `muleta`, `fragata`, `catraio`, `canoa`, `pinasse`, `moliceiro`, `baleeiro`, `bac` |
-| `from` / `at` | a port of that area, written as in the menu's port list |
+| `boats` | the boats it can be played with: `falua`, `muleta`, `fragata`, `catraio`, `canoa`, `pinasse`, `moliceiro`, `baleeiro`, `bac` (the first one's picture is on the card) |
+| `places` | where it can be played: each place is an `area` (`tejo`, `medio`, `arcachon`, `aveiro`, `azores`, `madeira`) and its port(s), `from` / `at` (and `to`, `meet`), written as in the menu's port list |
 
-Drills (`drill` is the kind: `hold`, `gybe`, `tack`, `slalom`, `anchor`):
+When there is more than one boat or place, the game picks one of each at random every time
+the card is chosen. For example, passengers with the Catraio or the Falua, on the Tagus or on
+the middle Tagus:
+
+```json
+{"id": "passengers", "type": "transport", "show": true, "boats": ["catraio", "falua"],
+ "places": [{"area": "tejo", "from": "Lisboa", "to": "Almada"}, {"area": "medio", "from": "Constância", "to": "Abrantes"}]}
+```
+
+Drills (`drill` is the kind: `hold`, `gybe`, `tack`, `slalom`, `anchor`; each place has `from`):
 
 - `hold`: `seconds` on a beam reach;
 - `gybe`, `tack`: `turns` to make;
@@ -52,12 +60,13 @@ stopped (`stopSpeedKnots`).
 Mini-games (`type`):
 
 - `run`: from a port to a mark `distance` m away, `direction` `downwind` or `upwind`;
-- `transport`: `from` a port `to` another; `busy: true` adds many boats, gusts and wind shifts;
+- `transport`: `from` a port `to` another (both in each place); `busy: true` adds many boats,
+  gusts and wind shifts;
 - `whales`: whale watching, `from` a port;
 - `seaweed`: gather `count` floating mats of seaweed off the port `at`;
 - `fishing`: catch `kg` of fish off the port `at` (with the muleta's net);
-- `supply`: `from` a port out to a boat (`meetBoat`) at anchor at `meet` (latitude, longitude)
-  and back.
+- `supply`: `from` a port out to a boat (`meetBoat`) at anchor at `meet` (latitude, longitude;
+  both in each place) and back.
 
 If a number changes, change the matching text too (for example "30 s" in `drill.hold.desc`).
 

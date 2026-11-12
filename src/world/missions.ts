@@ -377,24 +377,43 @@ export function bestTimeKey(missionId: string, level: Level): string {
   return `fragateiro.best.${missionId}.${level}${ed}`;
 }
 
-/** The museum's mini-games: one boat and one task each, chosen straight from the menu. */
+/** A place a drill or mini-game can be played: an area, and its ports for the task. */
+export interface GamePlace {
+  area: string;
+  /** The port it starts from (or `at`, for the tasks done off a port). */
+  from?: string;
+  at?: string;
+  /** Transport: the port to sail to. */
+  to?: string;
+  /** Supply run: where the boat lies at anchor. */
+  meet?: { lat: number; lon: number };
+}
+
+/** The museum's drills and mini-games, as the menu offers them. */
 export interface MiniGame {
   id: string;
-  area: AreaId;
-  boat: string;
+  /** The boats it can be played with (the first is the card's picture). */
+  boats: string[];
+  /** Where it can be played. */
+  places: (GamePlace & { area: AreaId })[];
   /** The mission (built when chosen, so titles are in the current language). */
-  mission: (boats: { id: string; name: string }[]) => Mission;
+  mission: (boats: { id: string; name: string }[], boat?: string, place?: number) => Mission;
 }
 
 // --- The drills and mini-games, as set in content/minigames.json (see content/README.md).
 
-export interface DrillEntry {
+/** What every entry has: a name, whether it shows, its boats and its places. */
+interface EntryBase extends GamePlace {
   id: string;
-  drill: DrillId;
   show?: boolean;
-  area: string;
-  boat: string;
-  from: string;
+  /** One boat, or a list. */
+  boat?: string;
+  boats?: string[];
+  /** Several places (else the entry's own area and ports). */
+  places?: GamePlace[];
+}
+export interface DrillEntry extends EntryBase {
+  drill: DrillId;
   /** Hold: seconds on the beam reach. Slalom: the time limit. */
   seconds?: number;
   /** Gybes or tacks to make. */
@@ -402,21 +421,13 @@ export interface DrillEntry {
   /** Anchor: how far the anchor spot is, m. */
   distance?: number;
 }
-export interface GameEntry {
-  id: string;
+export interface GameEntry extends EntryBase {
   type: 'run' | 'transport' | 'whales' | 'seaweed' | 'fishing' | 'supply';
-  show?: boolean;
-  area: string;
-  boat: string;
-  from?: string;
-  to?: string;
-  at?: string;
   direction?: 'downwind' | 'upwind';
   distance?: number;
   busy?: boolean;
   count?: number;
   kg?: number;
-  meet?: { lat: number; lon: number };
   meetBoat?: string;
 }
 export interface GamesConfig {
@@ -425,14 +436,18 @@ export interface GamesConfig {
   minigames: GameEntry[];
 }
 
-const GAME_FIELDS: Record<GameEntry['type'], (keyof GameEntry)[]> = {
-  run: ['from', 'direction', 'distance'],
-  transport: ['from', 'to'],
-  whales: ['from'],
-  seaweed: ['at', 'count'],
-  fishing: ['at', 'kg'],
-  supply: ['from', 'meet', 'meetBoat'],
+/** For each type: what each place needs, and what the entry needs. */
+const GAME_FIELDS: Record<GameEntry['type'], { place: (keyof GamePlace)[]; entry: (keyof GameEntry)[] }> = {
+  run: { place: ['from'], entry: ['direction', 'distance'] },
+  transport: { place: ['from', 'to'], entry: [] },
+  whales: { place: ['from'], entry: [] },
+  seaweed: { place: ['at'], entry: ['count'] },
+  fishing: { place: ['at'], entry: ['kg'] },
+  supply: { place: ['from', 'meet'], entry: ['meetBoat'] },
 };
+
+const boatsOf = (e: EntryBase): string[] => e.boats ?? (e.boat ? [e.boat] : []);
+const placesOf = (e: EntryBase): GamePlace[] => e.places ?? [{ area: e.area, from: e.from, at: e.at, to: e.to, meet: e.meet }];
 
 /**
  * Mistakes in the drills and mini-games file, as sentences (empty when all is well): unknown
@@ -442,29 +457,38 @@ export function checkGames(cfg: GamesConfig, boats: string[], hasText: (key: str
   const out: string[] = [];
   const areas = Object.keys(AREAS);
   const ids = new Set<string>();
-  const port = (area: string, name: string | undefined) => !!name && !!AREAS[area as AreaId] && (AREAS[area as AreaId].ports.includes(name) || AREAS[area as AreaId].extraPlaces.some((p) => p.name === name));
-  const common = (e: { id: string; area: string; boat: string }, what: string, textKey: string) => {
+  const isPort = (area: string, name: string) => !!AREAS[area as AreaId] && (AREAS[area as AreaId].ports.includes(name) || AREAS[area as AreaId].extraPlaces.some((p) => p.name === name));
+  const common = (e: EntryBase, what: string, textKey: string, need: (keyof GamePlace)[]) => {
     if (!e.id) out.push(`A ${what} has no "id".`);
     if (ids.has(`${what}:${e.id}`)) out.push(`Two ${what}s have the id "${e.id}".`);
     ids.add(`${what}:${e.id}`);
-    if (!areas.includes(e.area)) out.push(`${what} "${e.id}": unknown area "${e.area}" (one of ${areas.join(', ')}).`);
-    if (!boats.includes(e.boat)) out.push(`${what} "${e.id}": unknown boat "${e.boat}" (one of ${boats.join(', ')}).`);
+    const bs = boatsOf(e);
+    if (!bs.length) out.push(`${what} "${e.id}": no "boats".`);
+    for (const b of bs) if (!boats.includes(b)) out.push(`${what} "${e.id}": unknown boat "${b}" (one of ${boats.join(', ')}).`);
+    const ps = placesOf(e);
+    if (!ps.length) out.push(`${what} "${e.id}": no "places".`);
+    for (const p of ps) {
+      if (!areas.includes(p.area)) {
+        out.push(`${what} "${e.id}": unknown area "${p.area}" (one of ${areas.join(', ')}).`);
+        continue;
+      }
+      for (const k of need) if (p[k] === undefined) out.push(`${what} "${e.id}": a place in ${p.area} needs "${k}".`);
+      for (const k of ['from', 'at'] as const) if (p[k] !== undefined && !isPort(p.area, p[k]!)) out.push(`${what} "${e.id}": "${p[k]}" is not a port of ${p.area}.`);
+    }
     for (const k of [textKey, `${textKey}.desc`]) if (!hasText(k)) out.push(`${what} "${e.id}": no text "${k}" in content/texts/pt.txt.`);
   };
   for (const d of cfg.drills ?? []) {
-    common(d, 'drill', `drill.${d.id}`);
+    common(d, 'drill', `drill.${d.id}`, ['from']);
     if (!(DRILL_IDS as string[]).includes(d.drill)) out.push(`drill "${d.id}": unknown kind "${d.drill}" (one of ${DRILL_IDS.join(', ')}).`);
-    if (!port(d.area, d.from)) out.push(`drill "${d.id}": "${d.from}" is not a port of ${d.area}.`);
   }
   for (const g of cfg.minigames ?? []) {
-    common(g, 'mini-game', `mini.${g.id}`);
     const need = GAME_FIELDS[g.type];
     if (!need) {
       out.push(`mini-game "${g.id}": unknown type "${g.type}" (one of ${Object.keys(GAME_FIELDS).join(', ')}).`);
       continue;
     }
-    for (const k of need) if (g[k] === undefined) out.push(`mini-game "${g.id}" (${g.type}) needs "${k}".`);
-    for (const k of ['from', 'at'] as const) if (g[k] !== undefined && !port(g.area, g[k])) out.push(`mini-game "${g.id}": "${g[k]}" is not a port of ${g.area}.`);
+    common(g, 'mini-game', `mini.${g.id}`, need.place);
+    for (const k of need.entry) if (g[k] === undefined) out.push(`mini-game "${g.id}" (${g.type}) needs "${k}".`);
     if (g.direction !== undefined && g.direction !== 'downwind' && g.direction !== 'upwind') out.push(`mini-game "${g.id}": "direction" is "downwind" or "upwind".`);
     if (g.meetBoat !== undefined && !boats.includes(g.meetBoat)) out.push(`mini-game "${g.id}": unknown boat "${g.meetBoat}".`);
   }
@@ -482,44 +506,58 @@ export const DRILL_RULES: DrillRules = {
   stopSpeed: R.stopSpeedKnots !== undefined ? R.stopSpeedKnots * 0.514444 : DEFAULT_RULES.stopSpeed,
 };
 
+/**
+ * The mission's id (for best times): the entry's, plus the boat and the place when there is a
+ * choice of them.
+ */
+function missionId(prefix: string, e: EntryBase, boat: string, p: GamePlace): string {
+  const bs = boatsOf(e);
+  const ps = placesOf(e);
+  return `${prefix}-${e.id}${bs.length > 1 ? `-${boat}` : ''}${ps.length > 1 ? `-${p.area}-${p.from ?? p.at}` : ''}`;
+}
+
+/** Turn a file entry into the menu's form; `make` builds the mission for a boat and a place. */
+function toMiniGame(id: string, e: EntryBase, make: (boat: string, p: GamePlace) => Mission): MiniGame {
+  const boats = boatsOf(e);
+  const places = placesOf(e) as (GamePlace & { area: AreaId })[];
+  return { id, boats, places, mission: (_b, boat = boats[0], place = 0) => make(boats.includes(boat) ? boat : boats[0], places[place] ?? places[0]) };
+}
+
 /** The drills, in the file's order (those with "show": false left out). */
 export const DRILLS: MiniGame[] = CONFIG.drills
   .filter((d) => d.show !== false)
-  .map((d) => ({
-    id: `drill-${d.id}`,
-    area: d.area as AreaId,
-    boat: d.boat,
-    mission: () => ({
-      id: `drill-${d.id}`,
-      kind: 'drill' as const,
+  .map((d) =>
+    toMiniGame(`drill-${d.id}`, d, (boat, p) => ({
+      id: missionId('drill', d, boat, p),
+      kind: 'drill',
       title: t(`drill.${d.id}`),
-      boat: d.boat,
-      from: d.from,
+      boat,
+      from: p.from!,
       drill: d.drill,
       goals: { seconds: d.drill === 'hold' ? d.seconds : undefined, limit: d.drill === 'slalom' ? d.seconds : undefined, turns: d.turns },
       distance: d.distance,
-    }),
-  }));
+    })),
+  );
 
-function gameMission(g: GameEntry): Mission {
-  const base = { id: `mini-${g.id}`, title: t(`mini.${g.id}`), boat: g.boat };
+function gameMission(g: GameEntry, boat: string, p: GamePlace): Mission {
+  const base = { id: missionId('mini', g, boat, p), title: t(`mini.${g.id}`), boat };
   switch (g.type) {
     case 'run':
-      return { ...base, kind: 'run', from: g.from!, dir: g.direction ?? 'downwind', distance: g.distance ?? getEdition().runDistance };
+      return { ...base, kind: 'run', from: p.from!, dir: g.direction ?? 'downwind', distance: g.distance ?? getEdition().runDistance };
     case 'transport':
-      return { ...base, kind: 'transport', from: g.from!, to: g.to!, busy: g.busy };
+      return { ...base, kind: 'transport', from: p.from!, to: p.to!, busy: g.busy };
     case 'whales':
-      return { ...base, kind: 'whaling', from: g.from!, watch: true };
+      return { ...base, kind: 'whaling', from: p.from!, watch: true };
     case 'seaweed':
-      return { ...base, kind: 'seaweed', at: g.at!, count: g.count ?? getEdition().trashCount };
+      return { ...base, kind: 'seaweed', at: p.at!, count: g.count ?? getEdition().trashCount };
     case 'fishing':
-      return { ...base, kind: 'fishing', at: g.at!, targetKg: g.kg ?? FISHING_TARGET_KG };
+      return { ...base, kind: 'fishing', at: p.at!, targetKg: g.kg ?? FISHING_TARGET_KG };
     case 'supply':
-      return { ...base, kind: 'supply', from: g.from!, meet: g.meet!, meetBoat: g.meetBoat! };
+      return { ...base, kind: 'supply', from: p.from!, meet: p.meet!, meetBoat: g.meetBoat! };
   }
 }
 
 /** The mini-games, in the file's order (those with "show": false left out). */
 export const MINIGAMES: MiniGame[] = CONFIG.minigames
   .filter((g) => g.show !== false && GAME_FIELDS[g.type])
-  .map((g) => ({ id: g.id, area: g.area as AreaId, boat: g.boat, mission: () => gameMission(g) }));
+  .map((g) => toMiniGame(g.id, g, (boat, p) => gameMission(g, boat, p)));
