@@ -1,3 +1,4 @@
+import { t } from '../src/i18n';
 import { describe, expect, it } from 'vitest';
 import { LandMask, type MapMeta } from '../src/world/landMask';
 import { BOATS } from '../src/physics';
@@ -36,7 +37,7 @@ describe('missions', () => {
     expect(run.next).toBe(0);
     run.update(10, 490, 30);
     run.update(290, 260, 40);
-    expect(run.goalName).toBe('Finish line');
+    expect(run.goalName).toBe(t('goal.finish'));
     expect(run.update(20, 20, 50)).toBe(true);
     expect(run.elapsed(99)).toBe(40);
   });
@@ -79,7 +80,6 @@ describe('museum mini-games', () => {
   it('each starts a mission with its boat, from a port of its area', async () => {
     const { MINIGAMES } = await import('../src/world/missions');
     const { AREAS } = await import('../src/world/area');
-    expect(MINIGAMES.map((g) => g.id)).toEqual(['downwind', 'upwind', 'passengers', 'whales', 'seaweed', 'busy', 'fishing', 'supplies']);
     for (const g of MINIGAMES) {
       const m = g.mission(BOATS);
       expect(m.boat).toBe(g.boat);
@@ -87,5 +87,33 @@ describe('museum mini-games', () => {
       const place = 'from' in m ? m.from : 'at' in m ? m.at : '';
       expect(AREAS[g.area].ports).toContain(place);
     }
+  });
+});
+
+describe('content/minigames.json', () => {
+  it('has no mistakes (areas, boats, ports, fields, texts)', async () => {
+    const { checkGames } = await import('../src/world/missions');
+    const { tMaybe } = await import('../src/i18n');
+    const cfg = (await import('../content/minigames.json')).default;
+    expect(checkGames(cfg as never, BOATS.map((b) => b.id), (k) => tMaybe(k) !== undefined)).toEqual([]);
+  });
+  it('reports mistakes in plain words', async () => {
+    const { checkGames } = await import('../src/world/missions');
+    const bad = {
+      drills: [{ id: 'hold', drill: 'hover', area: 'tejo', boat: 'baleeiro', from: 'Lisbon' }],
+      minigames: [{ id: 'nothing', type: 'transport', area: 'mars', boat: 'yacht', from: 'Lisboa' }],
+    };
+    const out = checkGames(bad as never, BOATS.map((b) => b.id), (k) => k.startsWith('drill.'));
+    expect(out.join('\n')).toMatch(/unknown kind "hover"/);
+    expect(out.join('\n')).toMatch(/"Lisbon" is not a port of tejo/);
+    expect(out.join('\n')).toMatch(/unknown area "mars"/);
+    expect(out.join('\n')).toMatch(/unknown boat "yacht"/);
+    expect(out.join('\n')).toMatch(/needs "to"/);
+    expect(out.join('\n')).toMatch(/no text "mini.nothing"/);
+  });
+  it('drills take their numbers from the file', async () => {
+    const { DRILLS } = await import('../src/world/missions');
+    const m = DRILLS.find((d) => d.id === 'drill-slalom')!.mission(BOATS);
+    expect(m.kind === 'drill' && m.goals).toEqual({ seconds: undefined, limit: 120, turns: 4 });
   });
 });

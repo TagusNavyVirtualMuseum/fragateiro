@@ -1,11 +1,30 @@
-// Languages of the site: Portuguese, French and English. Every visible text has a key; the
-// dictionaries (pt.ts, fr.ts, en.ts) hold the words. English is the fallback.
+// Languages of the site: Portuguese (the default), French and English. Every visible text has a
+// key; the words are in plain text files, content/texts/pt.txt, fr.txt and en.txt (one
+// "key = text" per line), so they can be revised without touching the code. A text missing in
+// one language falls back to Portuguese, then English.
 //
-// The language comes from ?lang=xx in the address, else the visitor's last choice, else the
-// browser's language. Changing it reloads the page (simplest way to redraw everything).
-import { EN } from './en';
-import { FR } from './fr';
-import { PT } from './pt';
+// The language comes from ?lang=xx in the address, else the visitor's last choice, else
+// Portuguese. Changing it reloads the page (simplest way to redraw everything).
+import ptText from '../../content/texts/pt.txt?raw';
+import frText from '../../content/texts/fr.txt?raw';
+import enText from '../../content/texts/en.txt?raw';
+
+/** Read a texts file: "key = text" lines; blank lines and lines starting with # are skipped. */
+export function parseTexts(text: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) continue;
+    const eq = line.indexOf('=');
+    if (eq < 0) continue;
+    out[line.slice(0, eq).trim()] = line.slice(eq + 1).trim();
+  }
+  return out;
+}
+
+export const PT = parseTexts(ptText);
+export const FR = parseTexts(frText);
+export const EN = parseTexts(enText);
 
 export type Lang = 'pt' | 'fr' | 'en';
 
@@ -19,7 +38,7 @@ const DICTS: Record<Lang, Record<string, string>> = { en: EN, pt: PT, fr: FR };
 const KEY = 'fragateiro.lang';
 
 function detect(): Lang {
-  if (typeof window === 'undefined') return 'en';
+  if (typeof window === 'undefined') return 'pt';
   const isLang = (v: string | null | undefined): v is Lang => v === 'pt' || v === 'fr' || v === 'en';
   const fromUrl = new URLSearchParams(window.location.search).get('lang');
   if (isLang(fromUrl)) return fromUrl;
@@ -27,10 +46,9 @@ function detect(): Lang {
     const saved = localStorage.getItem(KEY);
     if (isLang(saved)) return saved;
   } catch {
-    // storage blocked: fall through to the browser's language
+    // storage blocked: Portuguese
   }
-  const nav = (navigator.language || 'en').slice(0, 2).toLowerCase();
-  return isLang(nav) ? nav : 'en';
+  return 'pt';
 }
 
 let current: Lang = detect();
@@ -54,13 +72,13 @@ export function setLang(lang: Lang): void {
 
 /** The text for a key in the current language, with {name} placeholders filled in. */
 export function t(key: string, params: Record<string, string | number> = {}, lang: Lang = current): string {
-  const text = DICTS[lang][key] ?? EN[key] ?? key;
+  const text = DICTS[lang][key] ?? PT[key] ?? EN[key] ?? key;
   return text.replace(/\{(\w+)\}/g, (_, k: string) => (k in params ? String(params[k]) : `{${k}}`));
 }
 
 /** Like t(), but returns undefined when no dictionary has the key. */
 export function tMaybe(key: string, params: Record<string, string | number> = {}): string | undefined {
-  return key in EN || key in DICTS[current] ? t(key, params) : undefined;
+  return key in PT || key in EN || key in DICTS[current] ? t(key, params) : undefined;
 }
 
 /** Fill every element with data-i18n="key" (HTML allowed in the text), and set <html lang>. */

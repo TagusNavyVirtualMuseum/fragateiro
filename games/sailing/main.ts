@@ -24,12 +24,13 @@ import { Wildlife } from '../../src/engine/wildlife';
 import { Traffic } from '../../src/engine/traffic';
 import { CourseView } from '../../src/engine/courseView';
 import { MissionMenu } from '../../src/ui/missionMenu';
-import { Drill, HOLD_TIME, SLALOM_LIMIT, slalomBuoys } from '../../src/world/drills';
-import { DRILLS, LEVELS, MINIGAMES, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
+import { Drill, slalomBuoys } from '../../src/world/drills';
+import gamesConfig from '../../content/minigames.json';
+import { DRILLS, DRILL_RULES, LEVELS, checkGames, type GamesConfig, MINIGAMES, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
 import { FishingGround } from '../../src/world/fishing';
 import { ShoalView } from '../../src/engine/shoalView';
 import { SailingHud, loadTimeOfDay } from '../../src/ui/hud';
-import { getLang, t } from '../../src/i18n';
+import { getLang, t, tMaybe } from '../../src/i18n';
 import { Minimap } from '../../src/ui/minimap';
 import { findDestinations, freeRun, sailableHeading, type Destination } from '../../src/world/destinations';
 import { hullAfloat, type LandMask } from '../../src/world/landMask';
@@ -449,16 +450,16 @@ async function startMission(m: Mission, l: Level): Promise<void> {
       else if (m.drill === 'gybe') setOff(s0, dir + Math.PI, dir + 25 * deg, 1.5); // a broad reach, down the stretch
       else if (m.drill === 'tack') setOff(s0, dir, dir + 50 * deg, 1.5); // close-hauled, up the stretch
       else if (m.drill === 'slalom') {
-        drillMarks = slalomBuoys(s0, dir);
+        drillMarks = slalomBuoys(s0, dir, m.goals?.turns ?? 4);
         setOff(s0, dir, dir + 50 * deg, 1.5);
       } else {
         // The anchor spot ahead on a beam reach: luff up into the wind to stop on it.
-        const d = Math.min(250, length);
+        const d = Math.min(m.distance ?? 250, length);
         drillMarks = [{ x: s0.x + Math.sin(dir) * d, y: s0.y + Math.cos(dir) * d }];
         setOff(s0, dir - 90 * deg, dir, 1.5);
       }
       if (drillMarks.length) courseView.setCourse({ start: s0, buoys: drillMarks }, false);
-      drill = new Drill(m.drill, m.drill === 'anchor' ? drillMarks[0] : null, spec.length);
+      drill = new Drill(m.drill, m.drill === 'anchor' ? drillMarks[0] : null, spec.length, m.goals, DRILL_RULES);
       run = new MissionRun(m, sim.state.time, null, null);
       hud.toast(t(`drill.${m.drill}.desc`));
     }
@@ -699,6 +700,12 @@ async function main(): Promise<void> {
     const name = t(species === 'orca' ? 'wild.orcas' : 'wild.dolphins');
     hud.toast(side === 'ahead' || side === 'astern' ? t(`wild.${side}`, { name }) : t('wild.side', { name, side: t(`nav.${side}`) }));
   };
+  // Mistakes in content/minigames.json: in the console, and briefly on screen.
+  const problems = checkGames(gamesConfig as GamesConfig, BOATS.map((b) => b.id), (k) => tMaybe(k) !== undefined);
+  if (problems.length) {
+    console.error('content/minigames.json:\n' + problems.join('\n'));
+    hud.toast(`content/minigames.json: ${problems[0]}${problems.length > 1 ? ` (+${problems.length - 1})` : ''}`, 20);
+  }
   // Start with the mission menu, or straight into a mini-game chosen in another area's menu.
   paused = true;
   const play = new URLSearchParams(location.search).get('play');
@@ -814,9 +821,9 @@ async function main(): Promise<void> {
       mapView.setTarget(mark);
       const title =
         drill.id === 'hold'
-          ? t('drill.hold.title', { s: Math.floor(drill.held), total: HOLD_TIME })
+          ? t('drill.hold.title', { s: Math.floor(drill.held), total: drill.holdTime })
           : drill.id === 'slalom'
-            ? t('drill.slalom.title', { n: drill.turns, total: drill.turnsNeeded, left: Math.max(0, Math.ceil(SLALOM_LIMIT - (s.time - run.startedAt))) })
+            ? t('drill.slalom.title', { n: drill.turns, total: drill.turnsNeeded, left: Math.max(0, Math.ceil(drill.limit - (s.time - run.startedAt))) })
             : drill.id === 'anchor'
               ? t('drill.anchor.title', { m: Math.round(spec.length) })
               : t(`drill.${drill.id}.title`, { n: drill.turns, total: drill.turnsNeeded });

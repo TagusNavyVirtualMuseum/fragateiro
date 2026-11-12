@@ -1,0 +1,26 @@
+{
+  "drills": [
+    { "id": "hold", "drill": "hold", "show": true, "area": "tejo", "boat": "baleeiro", "from": "Lisboa", "seconds": 30 },
+    { "id": "gybe", "drill": "gybe", "show": true, "area": "tejo", "boat": "baleeiro", "from": "Lisboa", "turns": 2 },
+    { "id": "tack", "drill": "tack", "show": true, "area": "tejo", "boat": "baleeiro", "from": "Lisboa", "turns": 2 },
+    { "id": "slalom", "drill": "slalom", "show": true, "area": "tejo", "boat": "baleeiro", "from": "Lisboa", "turns": 4, "seconds": 120 },
+    { "id": "anchor", "drill": "anchor", "show": true, "area": "tejo", "boat": "baleeiro", "from": "Lisboa", "distance": 250 }
+  ],
+  "drillRules": {
+    "beamFromDeg": 70,
+    "beamToDeg": 110,
+    "capsizeHeelDeg": 30,
+    "gybeSheetMax": 0.5,
+    "stopSpeedKnots": 0.8
+  },
+  "minigames": [
+    { "id": "downwind", "type": "run", "show": true, "area": "tejo", "boat": "falua", "from": "Lisboa", "direction": "downwind", "distance": 800 },
+    { "id": "upwind", "type": "run", "show": true, "area": "tejo", "boat": "falua", "from": "Lisboa", "direction": "upwind", "distance": 800 },
+    { "id": "passengers", "type": "transport", "show": true, "area": "tejo", "boat": "catraio", "from": "Lisboa", "to": "Almada" },
+    { "id": "whales", "type": "whales", "show": true, "area": "azores", "boat": "baleeiro", "from": "Horta" },
+    { "id": "seaweed", "type": "seaweed", "show": true, "area": "aveiro", "boat": "moliceiro", "at": "Torreira", "count": 6 },
+    { "id": "busy", "type": "transport", "show": true, "area": "tejo", "boat": "fragata", "from": "Almada", "to": "Lisboa", "busy": true },
+    { "id": "fishing", "type": "fishing", "show": true, "area": "tejo", "boat": "muleta", "at": "Seixal", "kg": 150 },
+    { "id": "supplies", "type": "supply", "show": true, "area": "tejo", "boat": "canoa", "from": "Trafaria", "meet": { "lat": 38.64, "lon": -9.3 }, "meetBoat": "muleta" }
+  ]
+}

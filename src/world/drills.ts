@@ -4,7 +4,8 @@
 //   3 Run and tack: two controlled tacks, no capsize.
 //   4 Tack through the buoys: four tacks within 2:00.
 //   5 Anchor approach: stop within one boat length of the anchor spot.
-// Plain TypeScript (no 3D), so the rules can be tested.
+// The numbers can be changed in content/minigames.json ("drills" and "drillRules"); the
+// constants here are the defaults. Plain TypeScript (no 3D), so the rules can be tested.
 
 export type DrillId = 'hold' | 'gybe' | 'tack' | 'slalom' | 'anchor';
 export const DRILL_IDS: DrillId[] = ['hold', 'gybe', 'tack', 'slalom', 'anchor'];
@@ -35,6 +36,25 @@ export const STOP_SPEED = 0.4;
  * or the stern, degrees): sitting head to wind does not count as many tacks.
  */
 const SIDE_MARGIN = 20;
+
+/** The rules all drills share (content/minigames.json, "drillRules"). */
+export interface DrillRules {
+  beamMin: number;
+  beamMax: number;
+  /** Rad. */
+  capsizeHeel: number;
+  gybeSheet: number;
+  /** M/s. */
+  stopSpeed: number;
+}
+export const DEFAULT_RULES: DrillRules = { beamMin: BEAM_MIN, beamMax: BEAM_MAX, capsizeHeel: CAPSIZE_HEEL, gybeSheet: GYBE_SHEET, stopSpeed: STOP_SPEED };
+
+/** One drill's own targets: seconds to hold (hold), turns to make, the time limit (slalom). */
+export interface DrillGoals {
+  seconds?: number;
+  turns?: number;
+  limit?: number;
+}
 
 export type DrillStatus = 'on' | 'done' | 'failed';
 
@@ -81,27 +101,40 @@ export class Drill {
     /** Drill 5: where to stop, and the boat's length (the distance allowed). */
     readonly anchor: { x: number; y: number } | null = null,
     readonly boatLength = 8,
+    readonly goals: DrillGoals = {},
+    readonly rules: DrillRules = DEFAULT_RULES,
   ) {}
 
   /** Turns the drill asks for (0 for drills without turns). */
   get turnsNeeded(): number {
-    return this.id === 'gybe' || this.id === 'tack' ? TURNS : this.id === 'slalom' ? SLALOM_TACKS : 0;
+    return this.id === 'gybe' || this.id === 'tack' ? (this.goals.turns ?? TURNS) : this.id === 'slalom' ? (this.goals.turns ?? SLALOM_TACKS) : 0;
+  }
+
+  /** Seconds to hold the beam reach (hold). */
+  get holdTime(): number {
+    return this.goals.seconds ?? HOLD_TIME;
+  }
+
+  /** The slalom's time limit, s. */
+  get limit(): number {
+    return this.goals.limit ?? SLALOM_LIMIT;
   }
 
   update(i: DrillInput): DrillEvent {
     if (this.status !== 'on') return null;
-    if (Math.abs(i.heel) > CAPSIZE_HEEL && this.id !== 'hold' && this.id !== 'anchor') {
+    const R = this.rules;
+    if (Math.abs(i.heel) > R.capsizeHeel && this.id !== 'hold' && this.id !== 'anchor') {
       this.fail('capsize');
       return 'capsize';
     }
-    const turn = this.watchTurns(i.twaDeg, i.autoTrim || i.sheet <= GYBE_SHEET);
+    const turn = this.watchTurns(i.twaDeg, i.autoTrim || i.sheet <= R.gybeSheet);
     let ev: DrillEvent = null;
     switch (this.id) {
       case 'hold': {
         const a = Math.abs(i.twaDeg);
-        if (a >= BEAM_MIN && a <= BEAM_MAX && i.speed > HOLD_MIN_SPEED) this.held += i.dt;
+        if (a >= R.beamMin && a <= R.beamMax && i.speed > HOLD_MIN_SPEED) this.held += i.dt;
         else this.held = 0;
-        if (this.held >= HOLD_TIME) this.status = 'done';
+        if (this.held >= this.holdTime) this.status = 'done';
         break;
       }
       case 'gybe':
@@ -114,7 +147,7 @@ export class Drill {
         } else if (turn === want) ev = 'wildGybe';
         else if (turn) ev = 'wrongTurn';
         if (this.turns >= this.turnsNeeded) this.status = 'done';
-        else if (this.id === 'slalom' && i.elapsed > SLALOM_LIMIT) {
+        else if (this.id === 'slalom' && i.elapsed > this.limit) {
           this.fail('timeout');
           ev = 'timeout';
         }
@@ -122,7 +155,7 @@ export class Drill {
       }
       case 'anchor': {
         const a = this.anchor!;
-        if (Math.hypot(a.x - i.x, a.y - i.y) <= this.boatLength && i.speed < STOP_SPEED) this.status = 'done';
+        if (Math.hypot(a.x - i.x, a.y - i.y) <= this.boatLength && i.speed < R.stopSpeed) this.status = 'done';
         break;
       }
     }

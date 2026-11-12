@@ -3,8 +3,9 @@
 import type { LandMask } from './landMask';
 import { t, tMaybe } from '../i18n';
 import { getEdition } from './edition';
-import { getArea, type AreaId } from './area';
-import { DRILL_IDS, type DrillId } from './drills';
+import { AREAS, getArea, type AreaId } from './area';
+import { DEFAULT_RULES, DRILL_IDS, type DrillGoals, type DrillId, type DrillRules } from './drills';
+import gamesConfig from '../../content/minigames.json';
 
 export type Level = 'easy' | 'medium' | 'hard';
 
@@ -26,7 +27,7 @@ export type Mission =
   | { id: string; kind: 'regatta'; title: string; boat: string; at: string; buoys: 2 | 3 }
   | { id: string; kind: 'fishing'; title: string; boat: string; at: string; targetKg: number }
   | { id: string; kind: 'free'; title: string; boat: string; from: string }
-  | { id: string; kind: 'drill'; title: string; boat: string; from: string; drill: DrillId };
+  | { id: string; kind: 'drill'; title: string; boat: string; from: string; drill: DrillId; goals?: DrillGoals; distance?: number };
 
 /** The kinds of mission, as the menu shows them first. */
 export const MISSION_KINDS: { id: MissionKind; title: string; description: string }[] = [
@@ -385,41 +386,140 @@ export interface MiniGame {
   mission: (boats: { id: string; name: string }[]) => Mission;
 }
 
-export const MINIGAMES: MiniGame[] = [
-  {
-    id: 'downwind',
-    area: 'tejo',
-    boat: 'falua',
-    mission: () => ({ id: 'mini-downwind', kind: 'run', title: t('mini.downwind'), boat: 'falua', from: 'Lisboa', dir: 'downwind', distance: getEdition().runDistance }),
-  },
-  {
-    id: 'upwind',
-    area: 'tejo',
-    boat: 'falua',
-    mission: () => ({ id: 'mini-upwind', kind: 'run', title: t('mini.upwind'), boat: 'falua', from: 'Lisboa', dir: 'upwind', distance: getEdition().runDistance }),
-  },
-  { id: 'passengers', area: 'tejo', boat: 'catraio', mission: (b) => ({ ...makeMission('transport', 'lisboa-almada', 'catraio', b), title: t('mini.passengers') }) },
-  {
-    id: 'whales',
-    area: 'azores',
-    boat: 'baleeiro',
-    mission: () => ({ id: 'mini-whales', kind: 'whaling', title: t('mini.whales'), boat: 'baleeiro', from: 'Horta', watch: true }),
-  },
-  {
-    id: 'seaweed',
-    area: 'aveiro',
-    boat: 'moliceiro',
-    mission: () => ({ id: 'mini-seaweed', kind: 'seaweed', title: t('mini.seaweed'), boat: 'moliceiro', at: 'Torreira', count: getEdition().trashCount }),
-  },
-  { id: 'busy', area: 'tejo', boat: 'fragata', mission: (b) => ({ ...makeMission('transport', 'almada-lisboa-busy', 'fragata', b), title: t('mini.busy') }) },
-  { id: 'fishing', area: 'tejo', boat: 'muleta', mission: (b) => ({ ...makeMission('fishing', 'seixal', 'muleta', b), title: t('mini.fishing') }) },
-  { id: 'supplies', area: 'tejo', boat: 'canoa', mission: (b) => ({ ...makeMission('supply', 'bugio-muleta', 'canoa', b), title: t('mini.supplies') }) },
-];
+// --- The drills and mini-games, as set in content/minigames.json (see content/README.md).
 
-/** The drills: short exercises in the basics, before the mini-games (open water off Lisbon). */
-export const DRILLS: MiniGame[] = DRILL_IDS.map((id) => ({
-  id: `drill-${id}`,
-  area: 'tejo' as AreaId,
-  boat: 'baleeiro',
-  mission: () => ({ id: `drill-${id}`, kind: 'drill' as const, title: t(`drill.${id}`), boat: 'baleeiro', from: 'Lisboa', drill: id }),
-}));
+export interface DrillEntry {
+  id: string;
+  drill: DrillId;
+  show?: boolean;
+  area: string;
+  boat: string;
+  from: string;
+  /** Hold: seconds on the beam reach. Slalom: the time limit. */
+  seconds?: number;
+  /** Gybes or tacks to make. */
+  turns?: number;
+  /** Anchor: how far the anchor spot is, m. */
+  distance?: number;
+}
+export interface GameEntry {
+  id: string;
+  type: 'run' | 'transport' | 'whales' | 'seaweed' | 'fishing' | 'supply';
+  show?: boolean;
+  area: string;
+  boat: string;
+  from?: string;
+  to?: string;
+  at?: string;
+  direction?: 'downwind' | 'upwind';
+  distance?: number;
+  busy?: boolean;
+  count?: number;
+  kg?: number;
+  meet?: { lat: number; lon: number };
+  meetBoat?: string;
+}
+export interface GamesConfig {
+  drills: DrillEntry[];
+  drillRules?: { beamFromDeg?: number; beamToDeg?: number; capsizeHeelDeg?: number; gybeSheetMax?: number; stopSpeedKnots?: number };
+  minigames: GameEntry[];
+}
+
+const GAME_FIELDS: Record<GameEntry['type'], (keyof GameEntry)[]> = {
+  run: ['from', 'direction', 'distance'],
+  transport: ['from', 'to'],
+  whales: ['from'],
+  seaweed: ['at', 'count'],
+  fishing: ['at', 'kg'],
+  supply: ['from', 'meet', 'meetBoat'],
+};
+
+/**
+ * Mistakes in the drills and mini-games file, as sentences (empty when all is well): unknown
+ * areas, boats, ports or kinds, missing fields, missing titles in the texts.
+ */
+export function checkGames(cfg: GamesConfig, boats: string[], hasText: (key: string) => boolean): string[] {
+  const out: string[] = [];
+  const areas = Object.keys(AREAS);
+  const ids = new Set<string>();
+  const port = (area: string, name: string | undefined) => !!name && !!AREAS[area as AreaId] && (AREAS[area as AreaId].ports.includes(name) || AREAS[area as AreaId].extraPlaces.some((p) => p.name === name));
+  const common = (e: { id: string; area: string; boat: string }, what: string, textKey: string) => {
+    if (!e.id) out.push(`A ${what} has no "id".`);
+    if (ids.has(`${what}:${e.id}`)) out.push(`Two ${what}s have the id "${e.id}".`);
+    ids.add(`${what}:${e.id}`);
+    if (!areas.includes(e.area)) out.push(`${what} "${e.id}": unknown area "${e.area}" (one of ${areas.join(', ')}).`);
+    if (!boats.includes(e.boat)) out.push(`${what} "${e.id}": unknown boat "${e.boat}" (one of ${boats.join(', ')}).`);
+    for (const k of [textKey, `${textKey}.desc`]) if (!hasText(k)) out.push(`${what} "${e.id}": no text "${k}" in content/texts/pt.txt.`);
+  };
+  for (const d of cfg.drills ?? []) {
+    common(d, 'drill', `drill.${d.id}`);
+    if (!(DRILL_IDS as string[]).includes(d.drill)) out.push(`drill "${d.id}": unknown kind "${d.drill}" (one of ${DRILL_IDS.join(', ')}).`);
+    if (!port(d.area, d.from)) out.push(`drill "${d.id}": "${d.from}" is not a port of ${d.area}.`);
+  }
+  for (const g of cfg.minigames ?? []) {
+    common(g, 'mini-game', `mini.${g.id}`);
+    const need = GAME_FIELDS[g.type];
+    if (!need) {
+      out.push(`mini-game "${g.id}": unknown type "${g.type}" (one of ${Object.keys(GAME_FIELDS).join(', ')}).`);
+      continue;
+    }
+    for (const k of need) if (g[k] === undefined) out.push(`mini-game "${g.id}" (${g.type}) needs "${k}".`);
+    for (const k of ['from', 'at'] as const) if (g[k] !== undefined && !port(g.area, g[k])) out.push(`mini-game "${g.id}": "${g[k]}" is not a port of ${g.area}.`);
+    if (g.direction !== undefined && g.direction !== 'downwind' && g.direction !== 'upwind') out.push(`mini-game "${g.id}": "direction" is "downwind" or "upwind".`);
+    if (g.meetBoat !== undefined && !boats.includes(g.meetBoat)) out.push(`mini-game "${g.id}": unknown boat "${g.meetBoat}".`);
+  }
+  return out;
+}
+
+const CONFIG = gamesConfig as GamesConfig;
+const R = CONFIG.drillRules ?? {};
+/** The rules all drills share. */
+export const DRILL_RULES: DrillRules = {
+  beamMin: R.beamFromDeg ?? DEFAULT_RULES.beamMin,
+  beamMax: R.beamToDeg ?? DEFAULT_RULES.beamMax,
+  capsizeHeel: R.capsizeHeelDeg !== undefined ? (R.capsizeHeelDeg * Math.PI) / 180 : DEFAULT_RULES.capsizeHeel,
+  gybeSheet: R.gybeSheetMax ?? DEFAULT_RULES.gybeSheet,
+  stopSpeed: R.stopSpeedKnots !== undefined ? R.stopSpeedKnots * 0.514444 : DEFAULT_RULES.stopSpeed,
+};
+
+/** The drills, in the file's order (those with "show": false left out). */
+export const DRILLS: MiniGame[] = CONFIG.drills
+  .filter((d) => d.show !== false)
+  .map((d) => ({
+    id: `drill-${d.id}`,
+    area: d.area as AreaId,
+    boat: d.boat,
+    mission: () => ({
+      id: `drill-${d.id}`,
+      kind: 'drill' as const,
+      title: t(`drill.${d.id}`),
+      boat: d.boat,
+      from: d.from,
+      drill: d.drill,
+      goals: { seconds: d.drill === 'hold' ? d.seconds : undefined, limit: d.drill === 'slalom' ? d.seconds : undefined, turns: d.turns },
+      distance: d.distance,
+    }),
+  }));
+
+function gameMission(g: GameEntry): Mission {
+  const base = { id: `mini-${g.id}`, title: t(`mini.${g.id}`), boat: g.boat };
+  switch (g.type) {
+    case 'run':
+      return { ...base, kind: 'run', from: g.from!, dir: g.direction ?? 'downwind', distance: g.distance ?? getEdition().runDistance };
+    case 'transport':
+      return { ...base, kind: 'transport', from: g.from!, to: g.to!, busy: g.busy };
+    case 'whales':
+      return { ...base, kind: 'whaling', from: g.from!, watch: true };
+    case 'seaweed':
+      return { ...base, kind: 'seaweed', at: g.at!, count: g.count ?? getEdition().trashCount };
+    case 'fishing':
+      return { ...base, kind: 'fishing', at: g.at!, targetKg: g.kg ?? FISHING_TARGET_KG };
+    case 'supply':
+      return { ...base, kind: 'supply', from: g.from!, meet: g.meet!, meetBoat: g.meetBoat! };
+  }
+}
+
+/** The mini-games, in the file's order (those with "show": false left out). */
+export const MINIGAMES: MiniGame[] = CONFIG.minigames
+  .filter((g) => g.show !== false && GAME_FIELDS[g.type])
+  .map((g) => ({ id: g.id, area: g.area as AreaId, boat: g.boat, mission: () => gameMission(g) }));

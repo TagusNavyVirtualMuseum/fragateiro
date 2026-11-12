@@ -76,7 +76,7 @@ rivers (narrow channels such as Pasaia's would become unsailable) and the hills 
 look wrong, so the challenges are shortened instead.
 
 In the museum edition the menu starts with five drills to learn the basics, all with the Baleeiro
-in open water off Lisbon, in real time (`src/world/drills.ts`, `DRILLS` in `missions.ts`):
+in open water off Lisbon, in real time (rules in `src/world/drills.ts`):
 hold a beam reach for 30 s; two controlled gybes (the sheet hauled in as the stern crosses
 the wind; heeling past 30° is a capsize); two tacks; four tacks within 2:00 up a zigzag of
 buoys; and stopping within one boat length of an anchor spot. Then come eight mini-games, each with its boat (an area elsewhere
@@ -85,15 +85,16 @@ down- or upwind, the wind set along the open river), passengers with the Catraio
 Almada), whale watching with the Baleeiro (Azores), seaweed with the Moliceiro (Ria de
 Aveiro: gather the floating moliço), cargo with the Fragata through the busy crossing,
 fishing with the Muleta, and supplies with the Canoa; last, free sailing, where the area, the boat and the port are
-chosen. They are `MINIGAMES` in
-`src/world/missions.ts`.
+chosen. The drills and mini-games, their order, boats, ports and numbers are set in
+`content/minigames.json` (see `content/README.md`).
 
 ### Languages
 
-The site and the game are in Portuguese, French and English. The switch is at the top of the
-landing page and in the game's settings; the choice is remembered. `?lang=pt|fr|en` in the URL
-forces one. Texts live in `src/i18n/{pt,fr,en}.ts` (a test checks that all three have the same
-keys); use `t('key')` in code and `data-i18n="key"` in HTML.
+The site and the game are in Portuguese (the default), French and English. The switch is at the
+top of the landing page and in the game's settings; the choice is remembered. `?lang=pt|fr|en`
+in the URL forces one. The texts are plain text files, `content/texts/{pt,fr,en}.txt`, one
+`key = text` per line, so they can be revised without the code (see `content/README.md`; a test
+checks that all three have the same keys); use `t('key')` in code and `data-i18n="key"` in HTML.
 
 ## Run it
 
