@@ -1,5 +1,13 @@
 name: Test and deploy
 
+# Builds the game and publishes only the built files (dist/: no source code).
+# - If the repository variable SITE_REPO is set (e.g. TagusNavyVirtualMuseum/fragateiro-site),
+#   the built game is pushed to that public repository's gh-pages branch, which GitHub Pages
+#   serves; this repository can then be private. It needs the secret SITE_DEPLOY_KEY (the
+#   private half of a deploy key with write access on SITE_REPO) or SITE_TOKEN (a fine-grained
+#   token with "Contents: read and write" on SITE_REPO). See docs/PUBLISHING.md.
+# - Otherwise it is published with this repository's own GitHub Pages (as before).
+
 on:
   push:
     branches: [main]
@@ -28,12 +36,25 @@ jobs:
       - run: npm test
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && vars.SITE_REPO == ''
         with:
           path: dist
+      - name: Publish the built game to the site repository
+        if: github.event_name != 'pull_request' && vars.SITE_REPO != ''
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          external_repository: ${{ vars.SITE_REPO }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
+          deploy_key: ${{ secrets.SITE_DEPLOY_KEY }}
+          personal_token: ${{ secrets.SITE_TOKEN }}
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: '41898282+github-actions[bot]@users.noreply.github.com'
+          full_commit_message: Publish the game (built files only)
 
   deploy:
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && vars.SITE_REPO == ''
     needs: build
     runs-on: ubuntu-latest
     environment:
