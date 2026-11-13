@@ -1,8 +1,12 @@
 name: Test
 
-# Development: every push and pull request is tested and built. Nothing is published; the
-# built game is kept for 14 days as a download ("game" under the run's Artifacts), to try it
-# before publishing. Publishing is a separate, manual step: publish.yml.
+# Development: every push and pull request is tested and built. Nothing goes on the public
+# site (that is a separate, manual step: publish.yml).
+# Each push to main also goes on a private test site, if Cloudflare is set up (the variable
+# CLOUDFLARE_PROJECT, the secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID): a Cloudflare
+# Pages preview at https://preview.<project>.pages.dev, which Cloudflare Access keeps to the
+# people allowed in. See docs/PUBLISHING.md. The built game is also kept for 14 days as a
+# download ("game" under the run's Artifacts).
 
 on:
   push:
@@ -32,3 +36,29 @@ jobs:
           name: game
           path: dist
           retention-days: 14
+      # The private test site. The project is made the first time (its production branch is
+      # never used: every push is a preview, which Cloudflare Access protects).
+      - name: Create the Cloudflare Pages project (first time only)
+        if: github.event_name != 'pull_request' && vars.CLOUDFLARE_PROJECT != ''
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create ${{ vars.CLOUDFLARE_PROJECT }} --production-branch=production
+      - name: Put it on the private test site
+        id: preview
+        if: github.event_name != 'pull_request' && vars.CLOUDFLARE_PROJECT != ''
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PROJECT }} --branch=preview --commit-dirty=true
+      - name: Say where
+        if: steps.preview.outcome == 'success'
+        env:
+          PROJECT: ${{ vars.CLOUDFLARE_PROJECT }}
+          URL: ${{ steps.preview.outputs.deployment-url }}
+        run: |
+          echo "### Test site" >> "$GITHUB_STEP_SUMMARY"
+          echo "Latest: https://preview.$PROJECT.pages.dev — this version: $URL" >> "$GITHUB_STEP_SUMMARY"
