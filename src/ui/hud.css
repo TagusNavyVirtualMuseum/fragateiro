@@ -288,3 +288,69 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
 .mission-card.minigame img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
 .mission-card.minigame strong { padding: 6px 10px 0; font-size: 16px; }
 .mission-card.minigame .desc { padding: 2px 10px 10px; }
+
+/* ---- Layout: directions on the view, a thin helm strip ------------------------------------
+   The destination's tag sits on the destination, or at the edge of the view pointing to it; the
+   top shows only a one-line progress strip and short messages, as text over the view; the clock
+   is in the compass panel. Sheets (all at once) and rudder share one thin strip at the bottom. */
+.banner { top: 16px; width: min(560px, calc(100vw - 680px)); min-width: 280px; justify-items: center; gap: 4px; }
+.banner .nav {
+  display: block; width: auto; max-width: 100%; margin: 0; padding: 5px 16px; border-radius: 18px;
+  font-family: 'IM Fell English', serif; font-size: 18px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.banner .warning, .banner .toast {
+  background: none; border: 0; box-shadow: none; padding: 0 6px; margin: 0; text-align: center;
+  font-family: 'IM Fell English', serif; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 2px rgba(0, 0, 0, 0.9);
+}
+.banner .warning { color: #ffd9a0; font-size: 18px; }
+.banner .toast { color: #fff3d6; font-size: 22px; }
+
+.target-tag {
+  position: absolute; left: 0; top: 0; z-index: 1; pointer-events: none; display: flex; align-items: center; gap: 6px;
+  padding: 4px 8px 4px 12px; border-radius: 16px; background: var(--parchment); color: #2b1a0c;
+  border: 1px solid var(--brass-dark); box-shadow: inset 0 0 8px rgba(120, 80, 30, 0.35), 0 3px 10px rgba(0, 0, 0, 0.35);
+}
+.target-tag .tag-text { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
+.target-tag .tag-text strong { font-family: 'IM Fell English', serif; font-weight: 400; font-size: 18px; }
+.target-tag .tag-text span { font-size: 14px; font-variant-numeric: tabular-nums; }
+.target-tag .tag-arrow { width: 22px; height: 22px; flex: none; }
+.target-tag .tag-arrow svg { display: block; width: 100%; height: 100%; fill: #b0281c; }
+
+.helm {
+  display: flex; align-items: center; gap: 10px; width: 480px; padding: 8px 12px;
+  bottom: 16px; left: 50%; transform: translateX(-50%);
+}
+.helm .helm-label { font-family: 'IM Fell English', serif; font-size: 16px; color: var(--brass); white-space: nowrap; cursor: help; }
+.helm .sheet-all { flex: 1.3; min-width: 60px; }
+.helm .sheet-auto { flex: 1.3; color: var(--muted); font-style: italic; font-size: 13px; white-space: nowrap; }
+.helm .helm-divider { width: 1px; align-self: stretch; background: var(--brass-dark); margin: 2px 0; }
+.helm .rudder-bar { flex: 1; min-width: 50px; }
+.hud .helm button.hold { padding: 6px 10px; min-width: 38px; font-size: 14px; }
+.options .sheets-each { margin-top: 10px; }
+.map-toggle { display: none; }
+
+@media (max-width: 900px) {
+  .helm { left: 12px; right: 12px; bottom: 12px; width: auto; transform: none; gap: 8px; padding: 8px 10px; }
+  .helm .helm-label { font-size: 14px; }
+  .hud .helm button.hold { padding: 8px 6px; min-width: 36px; }
+  .helm .helm-divider { display: none; }
+  .helm .sheet-all { min-width: 40px; }
+  .helm .rudder-bar { min-width: 30px; }
+  .instruments { top: 12px !important; right: 12px; bottom: auto !important; width: 96px !important; padding: 6px !important; }
+  .instruments .wind-key, .instruments .readout dl { display: none; }
+  .instruments .compass { width: 64px; height: 64px; margin-bottom: 0; }
+  .instruments .readout .big { font-size: 18px; }
+  .instruments .readout .drift { display: none; }
+  .instruments .tscale { font-size: 11px; margin-top: 0; }
+  .settings-toggle { top: 66px !important; left: 12px !important; right: auto !important; bottom: auto !important; width: 46px; height: 46px; padding: 0 !important; border-radius: 50% !important; }
+  .settings-toggle small { display: none; }
+  .map-toggle { display: grid; place-items: center; position: absolute; top: 12px; left: 12px; width: 46px; height: 46px; padding: 0; border-radius: 50% !important; color: var(--brass); pointer-events: auto; }
+  .info.show { display: block !important; top: 12px; left: 66px; right: 120px; width: auto; z-index: 2; }
+  .info.show .map-slot { display: block; }
+  .banner { top: 12px; left: 66px !important; right: 116px; width: auto !important; min-width: 0; transform: none; }
+  .banner .nav { font-size: 15px; padding: 4px 12px; }
+  .banner .warning { font-size: 15px; }
+  .banner .toast { font-size: 17px; }
+  .target-tag .tag-text strong { font-size: 15px; }
+  .target-tag .tag-text span { font-size: 12px; }
+}

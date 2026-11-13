@@ -4,7 +4,7 @@ import { getEdition } from '../world/edition';
 import './hud.css';
 import { groupsInMode, rad2deg, toKnots, type BoatSpec, type Controls, type ForceReport, type BoatState, type TrueWind } from '../physics';
 import { CAMERA_VIEWS, DISTANCE_RANGE, type CameraView } from '../engine/cameraRig';
-import { languageSwitch, t, tMaybe } from '../i18n';
+import { getLang, languageSwitch, t, tMaybe } from '../i18n';
 
 export interface HudCallbacks {
   onBoat(id: string): void;
@@ -36,7 +36,20 @@ export interface Navigation {
   title?: string;
   /** Nothing to sail to (a drill): the title, a hint in `name`, and the clock. */
   noTarget?: boolean;
+  /**
+   * Where the destination is on the screen (CSS pixels from the top left of the view), and
+   * whether it is in front of the camera; the destination's tag sits there, or at the edge of
+   * the screen on its side.
+   */
+  screen?: { x: number; y: number; front: boolean };
 }
+
+/** "3,1 km" / "450 m", in the page's language. */
+function distanceText(m: number): string {
+  const f = new Intl.NumberFormat(getLang(), { maximumFractionDigits: 1, minimumFractionDigits: 1 });
+  return m < 1000 ? `${Math.round(m / 10) * 10} m` : `${f.format(m / 1000)} km`;
+}
+const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s) % 60).padStart(2, '0')}`;
 
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, html?: string): HTMLElementTagNameMap[K] {
@@ -70,6 +83,16 @@ export class SailingHud {
   private readonly compassApparent: SVGGElement;
   private readonly compassTarget: SVGGElement;
   private readonly nav = el('div', 'nav');
+  /** The destination's tag: on the destination, or at the screen edge pointing to it. */
+  private readonly tag = el('div', 'target-tag');
+  private readonly tagText = el('div', 'tag-text');
+  private readonly tagArrow = el('div', 'tag-arrow');
+  /** The sailing clock, shown in the instruments panel. */
+  private elapsed: number | null = null;
+  /** One slider for all the sheets of the mode (each sail on its own in the settings panel). */
+  private readonly sheetAll = el('input');
+  private readonly sheetAuto = el('span', 'sheet-auto');
+  private groups: string[] = [];
   private readonly rudderBar = el('div', 'rudder-bar');
   private readonly rudderNeedle = el('div', 'rudder-needle');
   private readonly warning = el('div', 'warning');
@@ -111,7 +134,16 @@ export class SailingHud {
     // The top-left panel holds only the chart; everything else is in the settings panel.
     info.append(this.mapSlot);
     const header = el('div', 'settings-header');
-    header.append(el('h1', '', `<a href="../../" title="${t('hud.allGames')}">⟵</a> ${t(getArea().id === 'tejo' ? 'hud.title' : `hud.title.${getArea().id}`)}`), this.missionRow, this.boatBar, this.modeBar, this.about, this.settingsSlot);
+    header.append(
+      el('h1', '', `<a href="../../" title="${t('hud.allGames')}">⟵</a> ${t(getArea().id === 'tejo' ? 'hud.title' : `hud.title.${getArea().id}`)}`),
+      this.missionRow,
+      this.boatBar,
+      this.modeBar,
+      this.about,
+      el('h2', 'sheets-each', t('hud.sheetsEach')),
+      this.sheets,
+      this.settingsSlot,
+    );
     for (const b of boats) {
       const btn = el('button', '', b.name);
       btn.dataset.id = b.id;
@@ -142,15 +174,33 @@ export class SailingHud {
     banner.append(this.nav, this.warning, this.toastBox);
     this.toastBox.hidden = true;
 
-    // --- Bottom centre: one panel for the sheets and the rudder (touch-friendly)
+    // The destination's tag (placed every frame).
+    this.tag.append(this.tagText, this.tagArrow);
+    this.tagArrow.innerHTML = '<svg viewBox="-12 -12 24 24"><path d="M0,-10 L8,5 L0,1 L-8,5Z"/></svg>';
+    this.tag.hidden = true;
+
+    // --- Bottom centre: a thin strip for the sheets (all at once) and the rudder.
     const helm = el('section', 'panel helm');
-    helm.append(el('h2', '', `${t('hud.sheets')} <small class="keys-hint">${t('hud.sheetsKeys')}</small><small class="touch-hint">${t('hud.sheetsTouch')}</small>`), this.sheets);
-    this.rudderLeft = el('button', 'hold', t('hud.port'));
-    this.rudderRight = el('button', 'hold', t('hud.starboard'));
+    this.sheetAll.type = 'range';
+    this.sheetAll.min = '0';
+    this.sheetAll.max = '1';
+    this.sheetAll.step = '0.01';
+    this.sheetAll.className = 'sheet-all';
+    this.sheetAll.addEventListener('input', () => {
+      for (const g of this.groups) cb.onSheet(g, Number(this.sheetAll.value));
+    });
+    this.sheetAll.addEventListener('change', () => this.sheetAll.blur());
+    this.sheetAuto.textContent = t('hud.sheetsAuto');
+    const sheetsLabel = el('span', 'helm-label', t('hud.sheets'));
+    sheetsLabel.title = `${t('hud.sheetsKeys')} · ${t('sheet.in')} ◂ ▸ ${t('sheet.out')}`;
+    this.rudderLeft = el('button', 'hold', '◀');
+    this.rudderLeft.title = `${t('hud.port')} (A, ←)`;
+    this.rudderRight = el('button', 'hold', '▶');
+    this.rudderRight.title = `${t('hud.starboard')} (D, →)`;
     this.rudderBar.append(this.rudderNeedle);
-    const helmRow = el('div', 'helm-row');
-    helmRow.append(this.rudderLeft, this.rudderBar, this.rudderRight);
-    helm.append(el('h2', '', `${t('hud.rudder')} <small class="keys-hint">${t('hud.rudderKeys')}</small><small class="touch-hint">${t('hud.rudderTouch')}</small>`), helmRow);
+    const rudderLabel = el('span', 'helm-label', t('hud.rudder'));
+    rudderLabel.title = t('hud.rudderKeys');
+    helm.append(sheetsLabel, this.sheetAll, this.sheetAuto, el('span', 'helm-divider'), rudderLabel, this.rudderLeft, this.rudderBar, this.rudderRight);
 
     // --- Bottom right: wind and view options
     const opts = el('section', 'panel options');
@@ -263,7 +313,15 @@ export class SailingHud {
     };
     this.opts = opts;
 
-    root.append(info, inst, banner, helm, opts, toggle);
+    // Phones: the chart opens from a round button (it has no room of its own).
+    const mapToggle = el('button', 'panel map-toggle', '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2Z M9 4v14 M15 6v14" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>');
+    mapToggle.title = t('hud.mapTitle');
+    mapToggle.onclick = () => {
+      info.classList.toggle('show');
+      mapToggle.blur();
+    };
+
+    root.append(info, inst, banner, this.tag, helm, opts, toggle, mapToggle);
   }
 
   private camOutputs!: { distOut: HTMLOutputElement; heightOut: HTMLOutputElement };
@@ -350,11 +408,14 @@ export class SailingHud {
 
     this.sheets.replaceChildren();
     this.sliders.clear();
+    this.groups = groupsInMode(spec, mode.id);
+    this.sheetAll.hidden = this.easy;
+    this.sheetAuto.hidden = !this.easy;
     if (this.easy) {
       this.sheets.append(el('p', 'easy-note', t('hud.easyNote')));
       return;
     }
-    for (const g of groupsInMode(spec, mode.id)) {
+    for (const g of this.groups) {
       const label = el('label', 'sheet');
       const input = el('input');
       input.type = 'range';
@@ -370,27 +431,71 @@ export class SailingHud {
     }
   }
 
+  /**
+   * The directions: the destination's tag on the view, and a one-line strip at the top only
+   * when there is progress to show (the catch, the pieces picked up, a drill's count).
+   */
   private updateNav(state: BoatState, nav: Navigation | null): void {
-    this.nav.hidden = !nav;
-    this.compassTarget.setAttribute('visibility', nav && !nav.noTarget ? 'visible' : 'hidden');
-    if (!nav) return;
-    if (nav.noTarget) {
-      const secs = Math.floor(nav.elapsed);
-      const time = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
-      this.nav.innerHTML = `<strong>${nav.title ?? ''}</strong><span>${nav.name}</span><span>${t('nav.time', { time })}</span>`;
+    this.compassTarget.setAttribute('visibility', nav && !nav.noTarget && !nav.arrived ? 'visible' : 'hidden');
+    this.elapsed = nav ? nav.elapsed : null;
+    const line = !nav ? '' : nav.arrived ? `${t('nav.arrived', { name: nav.name })} · ${clock(nav.elapsed)}` : nav.noTarget ? `${nav.title ?? ''}` : (nav.title ?? '');
+    this.nav.hidden = !line;
+    if (this.nav.textContent !== line) this.nav.textContent = line;
+    if (nav && nav.noTarget && !nav.arrived) this.nav.title = nav.name;
+    const showTag = !!nav && !nav.noTarget && !nav.arrived;
+    this.tag.hidden = !showTag;
+    if (!nav || !showTag) return;
+    this.compassTarget.setAttribute('transform', `rotate(${nav.bearing})`);
+    const name = nav.name.charAt(0).toUpperCase() + nav.name.slice(1);
+    const text = `<strong>${name}</strong><span>${distanceText(nav.distance)}</span>`;
+    if (this.tagText.innerHTML !== text) this.tagText.innerHTML = text;
+    this.placeTag(state, nav);
+  }
+
+  /** Put the tag on the destination, or at the edge of the view on its side, pointing to it. */
+  private placeTag(state: BoatState, nav: Navigation): void {
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    // Keep clear of the panels: the chart and compass at the top, the helm strip at the bottom.
+    const phone = W <= 900;
+    const box = { left: phone ? 8 : 24, right: W - (phone ? 8 : 24), top: phone ? 150 : 110, bottom: H - (phone ? 90 : 100) };
+    let x: number;
+    let y: number;
+    let inView = false;
+    if (nav.screen) {
+      ({ x, y } = nav.screen);
+      // (Behind the camera, the game gives a point far off in the destination's direction.)
+      // (Far destinations sit on the horizon, high on the screen: they count as in view down to
+      // just under the top panels.)
+      inView = nav.screen.front && x > box.left && x < box.right && y > 30 && y < box.bottom;
+    } else {
+      // No projection: use the bearing relative to the bow (ahead is up).
+      const rel = ((nav.bearing - rad2deg(state.heading) + 540) % 360) - 180;
+      x = W / 2 + Math.sin((rel * Math.PI) / 180) * W;
+      y = H / 2 - Math.cos((rel * Math.PI) / 180) * H;
+    }
+    const tw = this.tag.offsetWidth || 120;
+    const th = this.tag.offsetHeight || 44;
+    if (inView) {
+      // Next to the destination, the arrow pointing at it: above it, or under it when it is high
+      // on the screen (on the horizon), so the tag never hides it.
+      const below = y - th - 34 < box.top;
+      this.tag.classList.add('on-target');
+      this.tag.style.transform = `translate(${Math.round(Math.min(box.right - tw, Math.max(box.left, x - tw / 2)))}px, ${Math.round(below ? y + 26 : y - th - 34)}px)`;
+      this.tagArrow.style.transform = below ? 'rotate(0deg)' : 'rotate(180deg)';
       return;
     }
-    const heading = (rad2deg(state.heading) + 360) % 360;
-    let rel = ((nav.bearing - heading + 540) % 360) - 180;
-    const side = Math.abs(rel) < 3 ? t('nav.deadAhead') : t('nav.toSide', { deg: Math.abs(rel).toFixed(0), side: t(rel > 0 ? 'nav.starboard' : 'nav.port') });
-    const km = nav.distance / 1000;
-    const secs = Math.floor(nav.elapsed);
-    const time = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
-    this.nav.innerHTML = nav.arrived
-      ? `<strong>${t('nav.arrived', { name: nav.name })}</strong><span>${t('nav.sailingTime', { time })}</span>`
-      : `<strong>${nav.title ?? t('nav.to', { name: nav.name })}</strong><span>${nav.title ? `${nav.name}: ` : ''}${km < 1 ? `${Math.round(nav.distance)} m` : `${km.toFixed(2)} km`} · ${(nav.distance / 1852).toFixed(2)} nm</span>` +
-        `<span>${t('nav.bearing', { deg: Math.round(nav.bearing) })} · ${side}</span><span>${t('nav.time', { time })}</span>`;
-    this.compassTarget.setAttribute('transform', `rotate(${nav.bearing})`);
+    this.tag.classList.remove('on-target');
+    // From the centre of the view towards the destination, stopped at the edge of the box.
+    const cx = W / 2;
+    const cy = H / 2;
+    const dx = x - cx;
+    const dy = y - cy;
+    const k = Math.min(dx ? (dx > 0 ? box.right - tw / 2 - cx : box.left + tw / 2 - cx) / dx : Infinity, dy ? (dy > 0 ? box.bottom - th / 2 - cy : box.top + th / 2 - cy) / dy : Infinity);
+    const px = cx + dx * k;
+    const py = cy + dy * k;
+    this.tag.style.transform = `translate(${Math.round(px - tw / 2)}px, ${Math.round(py - th / 2)}px)`;
+    this.tagArrow.style.transform = `rotate(${(Math.atan2(dx, -dy) * 180) / Math.PI}deg)`;
   }
 
   /** Panel where a game can put a map. */
@@ -436,7 +541,7 @@ export class SailingHud {
     const drift = this.easy ? '' : `<span class="drift" title="${t('ro.drift')}">${t('ro.driftShort')} ${toKnots(Math.abs(state.v)).toFixed(1)} ${state.v >= 0 ? '→' : '←'}</span>`;
     this.readout.innerHTML = `
       <div class="big">${toKnots(Math.hypot(state.u, state.v)).toFixed(1)}<small> kn</small>${drift}</div>
-      <div class="tscale" title="${t('ro.timeTitle')}">${this.timeScale === 1 ? t('ro.realTime') : t('ro.timeX', { n: this.timeScale })}</div>
+      <div class="tscale" title="${t('ro.timeTitle')}">${this.timeScale === 1 ? t('ro.realTime') : t('ro.timeX', { n: this.timeScale })}${this.elapsed !== null ? ` · ${clock(this.elapsed)}` : ''}</div>
       <dl>
         <dt>${t('ro.heading')}</dt><dd>${heading.toFixed(0)}°</dd>
         <dt>${t('ro.pointOfSail')}</dt><dd>${pointOfSail}${twa >= 36 ? `, ${tack}` : ''}</dd>
@@ -448,6 +553,9 @@ export class SailingHud {
     this.rudderNeedle.style.left = `${50 + controls.rudder * 45}%`;
     for (const [g, input] of this.sliders) {
       if (document.activeElement !== input) input.value = String(controls.sheets[g] ?? 0.5);
+    }
+    if (document.activeElement !== this.sheetAll && this.groups.length) {
+      this.sheetAll.value = String(this.groups.reduce((sum, g) => sum + (controls.sheets[g] ?? 0.5), 0) / this.groups.length);
     }
     const luffing = report.sails.filter((s) => s.active && s.luffing).length;
     const msg = paused

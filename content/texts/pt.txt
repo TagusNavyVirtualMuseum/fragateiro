@@ -86,6 +86,9 @@ hud.settingsTitle = Vento, câmara e velocidade do jogo
 
 # --- Escotas e leme
 hud.sheets = Escotas
+hud.sheetsEach = Escotas, vela a vela
+hud.sheetsAuto = a tripulação caça
+hud.mapTitle = Mapa
 hud.sheetsKeys = W/S ou ↑/↓
 hud.sheetsTouch = ou arraste ↑↓ na vista
 hud.rudder = Leme

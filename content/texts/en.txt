@@ -86,6 +86,9 @@ hud.settingsTitle = Wind, camera and game speed
 
 # --- Sheets and rudder
 hud.sheets = Sheets
+hud.sheetsEach = Sheets, sail by sail
+hud.sheetsAuto = the crew trims
+hud.mapTitle = Chart
 hud.sheetsKeys = W/S or ↑/↓
 hud.sheetsTouch = or drag ↑↓ on the view
 hud.rudder = Rudder
