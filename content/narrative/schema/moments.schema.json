@@ -1,0 +1,15 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "moments.schema.json",
+ "title": "Moments the game reports to the narrator",
+ "type": "object",
+ "required": ["version", "moments"],
+ "properties": {
+  "version": {"const": 1},
+  "status": {"type": "string"},
+  "moments": {"type": "array", "items": {
+   "type": "object", "required": ["id", "when"],
+   "properties": {"id": {"type": "string"}, "when": {"type": "string"}}
+  }}
+ }
+}

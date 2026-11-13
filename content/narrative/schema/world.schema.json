@@ -1,0 +1,21 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "world.schema.json",
+ "title": "What the game contains, for the narrative tool",
+ "type": "object",
+ "required": ["game", "commit", "area_names", "ports", "landmarks", "boats", "activities"],
+ "properties": {
+  "game": {"type": "string"},
+  "commit": {"type": "string", "description": "the game commit this list was built from"},
+  "area_names": {"type": "object", "additionalProperties": {"type": "string"}},
+  "map_files": {"type": "object"},
+  "ports": {"type": "object", "description": "area id to its port names"},
+  "extra_places": {"type": "array", "items": {"type": "string"}},
+  "map_places": {"type": "object"},
+  "seamarks": {"type": "object"},
+  "landmarks": {"type": "array"},
+  "landmark_info": {"type": "object"},
+  "boats": {"type": "array"},
+  "activities": {"type": "array"}
+ }
+}

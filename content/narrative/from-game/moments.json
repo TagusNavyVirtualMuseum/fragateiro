@@ -1,0 +1,138 @@
+{
+ "version": 1,
+ "status": "proposed: the game does not emit these yet",
+ "moments": [
+  {
+   "id": "start",
+   "when": "mission starts"
+  },
+  {
+   "id": "tack",
+   "when": "tack_side changes with the wind passing the bow"
+  },
+  {
+   "id": "gybe",
+   "when": "tack_side changes with the wind passing the stern"
+  },
+  {
+   "id": "gybe_controlled",
+   "when": "gybe with sheets at most 0.5 as the stern crosses"
+  },
+  {
+   "id": "gybe_uncontrolled",
+   "when": "gybe with sheets above 0.5"
+  },
+  {
+   "id": "enter_irons",
+   "when": "point_of_sail in_irons and u < 0.5 m/s for 3 s"
+  },
+  {
+   "id": "out_of_irons",
+   "when": "after enter_irons: abs(twa_deg) > 45 and u > 0.8 m/s"
+  },
+  {
+   "id": "luffing_start",
+   "when": "luffing_fraction > 0.5 for 5 s on a steady heading"
+  },
+  {
+   "id": "luffing_stop",
+   "when": "luffing_fraction < 0.2 for 3 s after luffing_start"
+  },
+  {
+   "id": "heel_warning",
+   "when": "heel_ratio > 0.7"
+  },
+  {
+   "id": "capsize",
+   "when": "heel_ratio >= 1"
+  },
+  {
+   "id": "gust",
+   "when": "true wind speed up 30 % within 5 s"
+  },
+  {
+   "id": "wind_shift",
+   "when": "true wind direction moves 10° within 5 s"
+  },
+  {
+   "id": "point_of_sail_change",
+   "when": "point_of_sail band changes and holds 5 s"
+  },
+  {
+   "id": "steady_leg",
+   "when": "heading within 10° and point_of_sail unchanged for 20 s"
+  },
+  {
+   "id": "near_vessel",
+   "when": "another boat within 3 boat lengths or time_to_contact < 15 s"
+  },
+  {
+   "id": "collision",
+   "when": "collision reported by the mission"
+  },
+  {
+   "id": "aground",
+   "when": "aground flag set"
+  },
+  {
+   "id": "refloat",
+   "when": "aground flag cleared"
+  },
+  {
+   "id": "approach_target",
+   "when": "distance_to_target under the mission's approach distance"
+  },
+  {
+   "id": "arrive",
+   "when": "mission goal reached (dock, mark, buoy rounded, alongside, catch)"
+  },
+  {
+   "id": "timer_warning",
+   "when": "15 s left on a timed task"
+  },
+  {
+   "id": "timer_end",
+   "when": "time limit reached"
+  },
+  {
+   "id": "mission_end",
+   "when": "mission over, any outcome"
+  },
+  {
+   "id": "whale_surface",
+   "when": "whale surfaces"
+  },
+  {
+   "id": "whale_close",
+   "when": "within 22 m of the whale from astern"
+  },
+  {
+   "id": "whale_sounds",
+   "when": "whale sees the boat and dives"
+  },
+  {
+   "id": "whale_leaves",
+   "when": "whale dives after breathing, or mission ends"
+  },
+  {
+   "id": "net_out",
+   "when": "muleta switches to lateral fishing"
+  },
+  {
+   "id": "catch",
+   "when": "fish caught over a shoal"
+  },
+  {
+   "id": "alongside",
+   "when": "within 35 m of the boat at anchor and under 1.5 kn"
+  },
+  {
+   "id": "pickup",
+   "when": "seaweed or rubbish picked up"
+  },
+  {
+   "id": "near_place",
+   "when": "the boat passes within a few hundred metres of a named place or landmark; written near_place:<name>"
+  }
+ ]
+}

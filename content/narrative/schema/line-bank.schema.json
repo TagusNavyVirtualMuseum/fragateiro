@@ -1,0 +1,52 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "line-bank.schema.json",
+ "title": "Line bank for one mini-game",
+ "type": "object",
+ "required": ["version", "minigame", "variant", "languages", "cast", "lines"],
+ "properties": {
+  "version": {"const": 1},
+  "minigame": {"type": "string", "description": "id in content/minigames.json"},
+  "variant": {"type": "string", "description": "narrator variant, e.g. historical-1925 or guide"},
+  "languages": {"type": "array", "items": {"enum": ["pt", "en", "fr"]}, "contains": {"const": "pt"}},
+  "cast": {"type": "array", "items": {
+   "type": "object", "required": ["id", "name"],
+   "properties": {
+    "id": {"type": "string"},
+    "name": {"type": "object", "additionalProperties": {"type": "string"}},
+    "fictional": {"type": "boolean"},
+    "voice": {"type": "string"}
+   }}},
+  "lines": {"type": "array", "items": {"$ref": "#/$defs/line"}},
+  "credits": {"type": "array", "items": {
+   "type": "object", "required": ["id", "title"],
+   "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "licence": {"type": "string"}, "url": {"type": "string"}}
+  }}
+ },
+ "$defs": {
+  "line": {
+   "type": "object",
+   "required": ["id", "trigger", "delivery", "speaker", "text"],
+   "properties": {
+    "id": {"type": "string"},
+    "beat": {"type": "string"},
+    "trigger": {"type": "string", "description": "a moment id from from-game/moments.json, or near_place:<name>"},
+    "delivery": {"enum": ["cue", "story", "reflection", "leg", "curiosity"]},
+    "speaker": {"type": "string", "description": "a cast id"},
+    "when": {"type": "object", "properties": {
+     "boats": {"type": "array", "items": {"type": "string"}},
+     "areas": {"type": "array", "items": {"type": "string"}},
+     "places": {"type": "array", "items": {"type": "string"}}
+    }, "additionalProperties": false},
+    "text": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}},
+    "audio": {"type": "object", "additionalProperties": {
+     "type": "object", "required": ["file", "seconds"],
+     "properties": {"file": {"type": "string"}, "seconds": {"type": "number"}}
+    }},
+    "fictional": {"type": "boolean"},
+    "sources": {"type": "array", "items": {"type": "string"}},
+    "reviewed": {"const": true}
+   }
+  }
+ }
+}
