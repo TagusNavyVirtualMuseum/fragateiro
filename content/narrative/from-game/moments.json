@@ -1,6 +1,6 @@
 {
  "version": 1,
- "status": "proposed: the game does not emit these yet",
+ "status": "emitted by the game (src/world/moments.ts and games/sailing/main.ts), except: gybe_controlled, gybe_uncontrolled, capsize, gust, wind_shift, near_vessel, timer_warning, timer_end",
  "moments": [
   {
    "id": "start",
@@ -40,7 +40,7 @@
   },
   {
    "id": "heel_warning",
-   "when": "heel_ratio > 0.7"
+   "when": "heel over 0.45 rad (26°), as the instruments warn"
   },
   {
    "id": "capsize",
@@ -80,7 +80,7 @@
   },
   {
    "id": "approach_target",
-   "when": "distance_to_target under the mission's approach distance"
+   "when": "distance_to_target under 300 m (again for each new goal)"
   },
   {
    "id": "arrive",
@@ -120,7 +120,7 @@
   },
   {
    "id": "catch",
-   "when": "fish caught over a shoal"
+   "when": "the catch passes half the target (the net is filling)"
   },
   {
    "id": "alongside",
@@ -132,7 +132,7 @@
   },
   {
    "id": "near_place",
-   "when": "the boat passes within a few hundred metres of a named place or landmark; written near_place:<name>"
+   "when": "the boat passes within 800 m of a named place; written near_place:<name>"
   }
  ]
 }
