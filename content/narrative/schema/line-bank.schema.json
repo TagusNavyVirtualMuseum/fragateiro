@@ -161,7 +161,9 @@
       "story",
       "reflection",
       "leg",
-      "curiosity"
+      "curiosity",
+      "ack",
+      "trivia"
      ]
     },
     "speaker": {
@@ -235,6 +237,21 @@
     },
     "concept": {
      "type": "string"
+    },
+    "expects": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "for a cue that asks the player to do something: the moments that show it was done; the narrator then plays an ack line"
+    },
+    "within": {
+     "type": "number",
+     "description": "seconds to wait for an expected moment (default 15)"
+    },
+    "topic": {
+     "type": "string",
+     "description": "for trivia: boat, place, fish, work, people…"
     }
    }
   }

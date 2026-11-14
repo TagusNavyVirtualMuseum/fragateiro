@@ -1,8 +1,20 @@
 {
  "version": 1,
- "languages": ["pt", "en", "fr"],
+ "languages": [
+  "pt",
+  "en",
+  "fr"
+ ],
  "default_language": "pt",
- "deliveries": ["cue", "story", "reflection", "leg", "curiosity"],
+ "deliveries": [
+  "cue",
+  "story",
+  "reflection",
+  "leg",
+  "curiosity",
+  "ack",
+  "trivia"
+ ],
  "game": "https://github.com/TagusNavyVirtualMuseum/fragateiro",
  "tool": "https://github.com/maclopes/sailnarratives"
 }

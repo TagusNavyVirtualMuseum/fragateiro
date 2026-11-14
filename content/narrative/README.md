@@ -69,8 +69,17 @@ The file name is the mini-game's `id` in `content/minigames.json`. A line bank f
 - `trigger` is a moment id from `from-game/moments.json`, or `near_place:<name>` with a name from
   `from-game/world.json`.
 - `delivery` says when it may play: `cue` (short, may play during a manoeuvre), `story` (only
-  when sailing is calm), `reflection` (right after a manoeuvre), `leg` (a pool for long steady
-  legs, played in turn), `curiosity` (a card in the end-of-mission logbook).
+  when sailing is calm), `reflection` (right after a manoeuvre), `leg` (the story continued in
+  quiet moments, in order), `trivia` (facts about the boats, the region, the fish and the jobs,
+  for quiet moments once the story has nothing left), `ack` (a short reply such as "Isso!" when
+  the player does what a cue asked), `curiosity` (a card in the end-of-mission logbook).
+- A cue that asks for an action lists in `expects` the moments that show it was done (for
+  example `sheet_in`, `trim_good`); if one comes within `within` seconds (default 15), the
+  narrator answers with an `ack` line of the same speaker. If it does not come, nothing more is
+  said.
+- Quiet moments: after a random 10–20 s of calm without talk, the narrator plays the next `leg`
+  line, or a `trivia` line when the story has nothing left; never during a difficult moment.
+  `idle` and `ack` are the triggers of trivia and ack lines.
 - `when` (optional) limits a line to some of the mini-game's boats, areas or places. Lines
   without `when` play in every option. An option without its own lines uses only the general
   ones.

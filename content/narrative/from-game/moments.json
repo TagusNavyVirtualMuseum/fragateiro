@@ -133,6 +133,34 @@
   {
    "id": "near_place",
    "when": "the boat passes within a few hundred metres of a named place or landmark; written near_place:<name>"
+  },
+  {
+   "id": "sheet_in",
+   "when": "sheets hauled in by at least 0.2 within 3 s"
+  },
+  {
+   "id": "sheet_out",
+   "when": "sheets eased by at least 0.2 within 3 s"
+  },
+  {
+   "id": "trim_good",
+   "when": "trim error below 0.1 for 2 s after being above 0.25"
+  },
+  {
+   "id": "head_up",
+   "when": "turning towards the wind by at least 20° within 5 s"
+  },
+  {
+   "id": "bear_away",
+   "when": "turning away from the wind by at least 20° within 5 s"
+  },
+  {
+   "id": "idle",
+   "when": "the narrator's own: a random 10–20 s of calm without talk (story continues, then trivia)"
+  },
+  {
+   "id": "ack",
+   "when": "the narrator's own: the player did what the last cue asked"
   }
  ]
 }
