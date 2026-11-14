@@ -386,3 +386,27 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
   .options.open { top: 12px !important; left: 66px !important; right: 12px !important; bottom: 76px !important; width: auto !important; max-height: none !important; z-index: 3; }
   .hud .options .settings-close { width: 44px; height: 44px; font-size: 20px; }
 }
+
+/* ---- Small commands by the helm: fishing, reef, anchor (round icon buttons). On a computer
+   they close the strip; on a phone they sit just above its right end. --------------------- */
+.helm .helm-tools { display: flex; gap: 6px; padding-left: 10px; border-left: 1px solid var(--brass-dark); }
+.hud .helm .tool { width: 34px; height: 34px; min-width: 0; padding: 0; border-radius: 50%; display: grid; place-items: center; color: #3b2312; }
+.hud .helm .tool.active { color: var(--parchment); }
+.hud .helm .tool:disabled { opacity: 0.35; }
+.helm { width: 580px; }
+@media (max-width: 900px) {
+  .helm { width: auto; }
+  .helm .helm-tools { position: absolute; right: 0; bottom: calc(100% + 6px); padding: 0; border: 0; gap: 6px; }
+  .hud .helm .tool { width: 32px; height: 32px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45); }
+  .hud .helm .tool svg { width: 18px; height: 18px; }
+  .caption { bottom: 124px; }
+}
+/* Phones on their side: little height, so everything a little smaller. */
+@media (max-width: 900px) and (max-height: 500px) {
+  .instruments { width: 84px !important; }
+  .instruments .compass { width: 52px; height: 52px; }
+  .helm { left: 50%; right: auto; width: min(560px, calc(100vw - 140px)); transform: translateX(-50%); bottom: 8px; padding: 6px 10px; }
+  .helm .helm-tools { position: static; padding-left: 8px; border-left: 1px solid var(--brass-dark); }
+  .caption { bottom: 66px; width: min(560px, calc(100vw - 240px)); font-size: 14px; }
+  .banner { right: 108px; }
+}

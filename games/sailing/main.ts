@@ -100,6 +100,7 @@ let lastSeen: { x: number; y: number } | null = null;
 let drill: Drill | null = null;
 let drillMarks: { x: number; y: number }[] = [];
 let drillClock = false;
+let landscapeHinted = false;
 /** Narration (content/narrative): the narrator of this mini-game, and the moments it hears. */
 let narrationMode: NarrationMode = loadNarrationMode();
 let narrator: Narrator | null = null;
@@ -141,6 +142,11 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onCameraHeight: (h) => cameraRig.setElevation(h),
   onTimeScale: (k) => (timeScale = k),
   onTimeOfDay: (id) => setTimeOfDay(id as TimeOfDay),
+  onFish: () => {
+    // Between sailing and the mode with the net out.
+    const net = spec.modes.find((m) => m.net);
+    if (net) setMode(sim.mode.net ? spec.modes.find((m) => !m.net)!.id : net.id);
+  },
   onNarration: (mode) => {
     narrationMode = mode as NarrationMode;
     saveNarrationMode(narrationMode);
@@ -406,8 +412,9 @@ async function startMission(m: Mission, l: Level): Promise<void> {
   if (m.boat !== spec.id) await switchBoat(m.boat);
   requiredBoat = m.kind === 'free' ? null : m.boat;
   const levelName = LEVELS.find((x) => x.id === l)!.name;
-  // Drills run in real time; other missions go back to the edition's clock.
-  if (m.kind === 'drill' || drillClock) {
+  // Drills run in real time; mini-games start at the edition's clock (3×; the player can change
+  // it in the settings); other missions keep the clock chosen.
+  if (m.kind === 'drill' || drillClock || m.id.startsWith('mini-')) {
     drillClock = m.kind === 'drill';
     timeScale = drillClock ? 1 : EDITION.timeScale;
     hud.setTimeScale(timeScale);
@@ -547,6 +554,11 @@ async function startMission(m: Mission, l: Level): Promise<void> {
     }
   }
   startNarration(m);
+  // Phones held upright: the game is better sideways (said once, when the first mission starts).
+  if (!landscapeHinted && matchMedia('(pointer: coarse) and (orientation: portrait) and (max-width: 900px)').matches) {
+    landscapeHinted = true;
+    hud.toast(t('hud.landscape'), 6);
+  }
   hud.setMission(m.title, levelName, m.kind === 'free', requiredBoat, l === 'easy');
   if (m.kind === 'free') run = null;
   hud.setBoat(spec, sim.controls);
@@ -608,9 +620,7 @@ function startNarration(m: Mission): void {
   if (!bank) return;
   const places = [('from' in m && m.from) || '', ('to' in m && m.to) || '', ('at' in m && m.at) || ''].filter(Boolean);
   narrator = new Narrator(bank, { lang: getLang(), playtest: narrationMode === 'test', boat: m.boat, area: AREA.id, places });
-  // Lines exist but none is approved yet: say how to hear them (the playtest setting).
-  if (!narrator.count && bank.lines.length) {
-    hud.toast(t('narr.notApproved', { n: bank.lines.length }), 10);
+  if (!narrator.count) {
     narrator = null;
     return;
   }

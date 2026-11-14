@@ -33,7 +33,11 @@ export class TouchControls {
 
   private down(e: PointerEvent): void {
     if (e.pointerType !== 'touch') return;
-    this.el.setPointerCapture(e.pointerId);
+    try {
+      this.el.setPointerCapture(e.pointerId);
+    } catch {
+      // the pointer is already gone: nothing to capture
+    }
     this.points.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (this.points.size === 1) {
       this.start = { x: e.clientX, y: e.clientY };

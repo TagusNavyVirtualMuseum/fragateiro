@@ -26,7 +26,7 @@ export interface Edition {
 }
 
 export const EDITIONS: Record<EditionId, Edition> = {
-  museum: { id: 'museum', regattaLength: 350, trashCount: 6, trashRadius: 800, transferTime: 12, supplyStart: 900, maxRoute: 4000, runDistance: 800, whaleDistance: 1200, timeScale: 5 },
+  museum: { id: 'museum', regattaLength: 350, trashCount: 6, trashRadius: 800, transferTime: 12, supplyStart: 900, maxRoute: 4000, runDistance: 800, whaleDistance: 1200, timeScale: 3 },
   home: { id: 'home', regattaLength: 600, trashCount: 12, trashRadius: 1600, transferTime: 25, supplyStart: null, maxRoute: Infinity, runDistance: 1500, whaleDistance: 2500, timeScale: 3 },
 };
 

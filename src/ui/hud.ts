@@ -22,6 +22,8 @@ export interface HudCallbacks {
   onMissions(): void;
   onTimeOfDay(id: string): void;
   onNarration(mode: string): void;
+  /** Toggle the fishing mode (boats with a net: the Muleta). */
+  onFish(): void;
 }
 
 export interface Navigation {
@@ -94,6 +96,7 @@ export class SailingHud {
   private readonly sheetAll = el('input');
   private readonly sheetAuto = el('span', 'sheet-auto');
   private groups: string[] = [];
+  private fishBtn!: HTMLButtonElement;
   private readonly rudderBar = el('div', 'rudder-bar');
   private readonly rudderNeedle = el('div', 'rudder-needle');
   private readonly warning = el('div', 'warning');
@@ -202,6 +205,23 @@ export class SailingHud {
     const rudderLabel = el('span', 'helm-label', t('hud.rudder'));
     rudderLabel.title = t('hud.rudderKeys');
     helm.append(sheetsLabel, this.sheetAll, this.sheetAuto, el('span', 'helm-divider'), rudderLabel, this.rudderLeft, this.rudderBar, this.rudderRight);
+    // Small commands by the helm: fishing (boats with a net), reefing and the anchor (coming).
+    const tools = el('div', 'helm-tools');
+    const tool = (cls: string, svg: string, title: string) => {
+      const b = el('button', `tool ${cls}`, `<svg viewBox="0 0 24 24" width="20" height="20">${svg}</svg>`);
+      b.title = title;
+      b.setAttribute('aria-label', title);
+      tools.append(b);
+      return b;
+    };
+    this.fishBtn = tool('fish', '<path d="M2.5 12c3.2-5 9.5-6.2 14.5-2l4.5-3.2v10.4L17 14c-5 4.2-11.3 3-14.5-2Z" fill="currentColor"/><circle cx="7.5" cy="11" r="1.3" fill="#2b1a0c"/>', `${t('tool.fish')} (M)`);
+    this.fishBtn.onclick = () => {
+      this.fishBtn.blur();
+      cb.onFish();
+    };
+    tool('reef', '<path d="M7 3v18M7 4l11 15H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 13h6.5M7 16h8.7" stroke="currentColor" stroke-width="1.6" stroke-dasharray="1.6 1.4"/>', `${t('tool.reef')} · ${t('tool.soon')}`).disabled = true;
+    tool('anchor', '<circle cx="12" cy="5" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v14M8 11h8M4.5 14.5C5.5 18.5 8.5 21 12 21s6.5-2.5 7.5-6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>', `${t('tool.anchor')} · ${t('tool.soon')}`).disabled = true;
+    helm.append(tools);
 
     // --- Bottom right: wind and view options
     const opts = el('section', 'panel options');
@@ -431,6 +451,9 @@ export class SailingHud {
       }
     }
     const mode = spec.modes.find((m) => m.id === controls.mode) ?? spec.modes[0];
+    // The fishing button only for boats with a net, lit while the net is out.
+    this.fishBtn.hidden = !spec.modes.some((m) => m.net);
+    this.fishBtn.classList.toggle('active', !!mode.net);
     // Boat descriptions live on the main page; here only how to use a mode.
     this.about.textContent = spec.modes.length > 1 ? (tMaybe(`modeDesc.${spec.id}.${mode.id}`) ?? mode.description) : '';
     this.about.hidden = spec.modes.length <= 1;

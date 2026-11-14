@@ -47,8 +47,10 @@ export class CameraRig {
         this.onChange?.();
       }
     });
+    // (Not with a finger: on phones and tablets dragging the view steers and trims the sails.)
     camera.getScene().onPointerObservable.add((info) => {
-      if (info.type === PointerEventTypes.POINTERMOVE && info.event.buttons > 0 && this.view !== 'free') {
+      const touch = (info.event as PointerEvent).pointerType === 'touch';
+      if (info.type === PointerEventTypes.POINTERMOVE && info.event.buttons > 0 && !touch && this.view !== 'free') {
         this.view = 'free';
         this.onChange?.();
       }
