@@ -76,7 +76,7 @@ describe('editions', () => {
     expect(m.trashRadius).toBeLessThan(h.trashRadius);
     expect(m.transferTime).toBeLessThan(h.transferTime);
     expect(m.maxRoute).toBeLessThan(h.maxRoute);
-    expect(m.timeScale).toBeGreaterThan(h.timeScale);
+    expect(m.timeScale).toBe(3); // the mini-games start at ×3, like the home edition
   });
 
   it('a supply run takes the transfer time it is given', () => {
