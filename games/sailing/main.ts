@@ -25,6 +25,9 @@ import { Traffic } from '../../src/engine/traffic';
 import { CourseView } from '../../src/engine/courseView';
 import { MissionMenu } from '../../src/ui/missionMenu';
 import { Drill, slalomBuoys } from '../../src/world/drills';
+import { Narrator, type Caption } from '../../src/world/narrator';
+import { MomentDetector } from '../../src/world/moments';
+import { bankFor, loadNarrationMode, saveNarrationMode, type NarrationMode } from '../../src/world/narrativeBanks';
 import gamesConfig from '../../content/minigames.json';
 import { DRILLS, DRILL_RULES, LEVELS, checkGames, type GamesConfig, MINIGAMES, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
 import { FishingGround } from '../../src/world/fishing';
@@ -97,6 +100,15 @@ let lastSeen: { x: number; y: number } | null = null;
 let drill: Drill | null = null;
 let drillMarks: { x: number; y: number }[] = [];
 let drillClock = false;
+/** Narration (content/narrative): the narrator of this mini-game, and the moments it hears. */
+let narrationMode: NarrationMode = loadNarrationMode();
+let narrator: Narrator | null = null;
+let moments: MomentDetector | null = null;
+/** For moments the mission reports: the net, the catch, the goal's name, the whale. */
+let lastNet = false;
+let halfCatch = false;
+let lastGoal = '';
+let whaleUp = false;
 /** A busy crossing is on (crowd, gusts and wind shifts). */
 let busy = false;
 /** Game time of the last collision (one penalty per contact). */
@@ -129,6 +141,16 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onCameraHeight: (h) => cameraRig.setElevation(h),
   onTimeScale: (k) => (timeScale = k),
   onTimeOfDay: (id) => setTimeOfDay(id as TimeOfDay),
+  onNarration: (mode) => {
+    narrationMode = mode as NarrationMode;
+    saveNarrationMode(narrationMode);
+    // Applies to the mission under way at once (it starts the narration over).
+    if (run && !missionDone) startNarration(mission);
+    else if (narrationMode === 'off') {
+      narrator = null;
+      hud.caption(null);
+    }
+  },
   onMissions: () => {
     paused = true;
     menu.show();
@@ -139,7 +161,7 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
     trafficOn = on;
     traffic?.setVisible(on);
   },
-}, { fromDeg: wind.fromDeg, speed: wind.speed, gusty });
+}, { fromDeg: wind.fromDeg, speed: wind.speed, gusty, narration: narrationMode });
 // Phones and tablets: gestures on the 3D view steer and trim; the camera keeps its views
 // (buttons) but does not orbit with one finger.
 const touch = new TouchControls(canvas, {
@@ -524,6 +546,7 @@ async function startMission(m: Mission, l: Level): Promise<void> {
       }
     }
   }
+  startNarration(m);
   hud.setMission(m.title, levelName, m.kind === 'free', requiredBoat, l === 'easy');
   if (m.kind === 'free') run = null;
   hud.setBoat(spec, sim.controls);
@@ -568,9 +591,48 @@ function failDrill(why: string): void {
   menu.showFailed(mission, level, why, () => void startMission(mission, level));
 }
 
+/**
+ * The narrator for a mini-game that has a line bank (content/narrative/from-tool/lines), unless
+ * narration is off. Places named in its lines are watched for `near_place`.
+ */
+function startNarration(m: Mission): void {
+  narrator = null;
+  moments = null;
+  hud.caption(null);
+  lastNet = false;
+  halfCatch = false;
+  lastGoal = '';
+  whaleUp = false;
+  const game = /^mini-([a-z0-9]+)/.exec(m.id)?.[1];
+  const bank = game && narrationMode !== 'off' ? bankFor(game) : null;
+  if (!bank) return;
+  const places = [('from' in m && m.from) || '', ('to' in m && m.to) || '', ('at' in m && m.at) || ''].filter(Boolean);
+  narrator = new Narrator(bank, { lang: getLang(), playtest: narrationMode === 'test', boat: m.boat, area: AREA.id, places });
+  // Lines exist but none is approved yet: say how to hear them (the playtest setting).
+  if (!narrator.count && bank.lines.length) {
+    hud.toast(t('narr.notApproved', { n: bank.lines.length }), 10);
+    narrator = null;
+    return;
+  }
+  const watch = narrator.placesToWatch.map((n) => mask.meta.places.find((p) => p.name === n)).filter((p): p is NonNullable<typeof p> => !!p);
+  moments = new MomentDetector(watch.map((p) => ({ name: p.name, x: p.x, y: p.y })));
+  narrator.report('start', time);
+}
+
+/** A moment the mission itself reports (catch, pickup, alongside, the whale…). */
+function moment(id: string): void {
+  narrator?.report(id, time);
+}
+
 function finishMission(): void {
   if (!run) return;
   missionDone = true;
+  // The narrator's last words and the logbook go on the result panel.
+  moment('arrive');
+  moment('mission_end');
+  const closing: Caption[] = narrator?.flush() ?? [];
+  const logbook = narrator ? { closing, curiosities: narrator.logbook, credits: narrator.credits } : undefined;
+  hud.caption(null);
   const t = run.elapsed(sim.state.time);
   const before = readBest(mission.id, level);
   const record = before === null || t < before;
@@ -582,7 +644,7 @@ function finishMission(): void {
     }
   }
   paused = true;
-  menu.showResult(mission, level, t, before, record, () => void startMission(mission, level));
+  menu.showResult(mission, level, t, before, record, () => void startMission(mission, level), logbook);
 }
 
 /**
@@ -637,6 +699,8 @@ function collide(): void {
     s.v = 0;
     if (run && !missionDone && s.time - lastHit > 4) {
       run.penalty += COLLISION_PENALTY;
+      moment('collision');
+      moments?.trouble();
       hud.toast(t('collision.toast', { s: COLLISION_PENALTY }), 3);
     }
     lastHit = s.time;
@@ -761,6 +825,11 @@ async function main(): Promise<void> {
         } else if (drill.status === 'failed') failDrill(t(`drill.fail.${drill.failure}`));
       } else if (fishing && run && !missionDone) {
         fishing.update(netSweep(), dt * timeScale);
+        // The net filling: over half the catch.
+        if (mission.kind === 'fishing' && !halfCatch && fishing.caught >= mission.targetKg / 2) {
+          halfCatch = true;
+          moment('catch');
+        }
         if (mission.kind === 'fishing' && fishing.caught >= mission.targetKg) {
           run.finishedAt = sim.state.time;
           finishMission();
@@ -768,7 +837,14 @@ async function main(): Promise<void> {
       } else if (hunt && run && !missionDone) {
         const ev = hunt.update(sim.state, sim.state.time, gameDt);
         if (hunt.visible) lastSeen = { x: hunt.whale.x, y: hunt.whale.y };
-        if (ev === 'fright') hud.toast(t('whale.fright'));
+        if (ev === 'fright') {
+          hud.toast(t('whale.fright'));
+          moment('whale_sounds');
+        }
+        if (hunt.visible && !whaleUp) moment('whale_surface');
+        if (!hunt.visible && whaleUp) moment('whale_leaves');
+        whaleUp = hunt.visible;
+        if (ev === 'struck') moment('whale_close');
         if (ev === 'struck') {
           run.finishedAt = sim.state.time;
           hud.toast(t(mission.kind === 'whaling' && mission.watch ? 'whale.watched' : 'whale.struck'));
@@ -776,6 +852,7 @@ async function main(): Promise<void> {
         }
       } else if (trash && run && !missionDone) {
         const got = trash.update(sim.state.x, sim.state.y, sim.state.time);
+        if (got.length) moment('pickup');
         if (got.length) hud.toast(t(mission.kind === 'seaweed' ? 'seaweed.got' : 'trash.got', { n: trash.picked, total: trash.items.length }), 3);
         if (trash.left === 0) {
           run.finishedAt = sim.state.time;
@@ -788,6 +865,7 @@ async function main(): Promise<void> {
           run.finishedAt = st.time;
           finishMission();
         } else if (was !== 'home' && supply.phase === 'home' && mission.kind === 'supply') hud.toast(t('supply.loaded', { port: mission.from }));
+        if (was !== 'alongside' && supply.phase === 'alongside') moment('alongside');
       } else if (run && !missionDone && run.update(sim.state.x, sim.state.y, sim.state.time)) finishMission();
       collide();
     }
@@ -953,6 +1031,31 @@ async function main(): Promise<void> {
     water.update(time, camera.target, camera.position);
     // Keep the water out of the hull, so open holds stay dry.
     water.setHull({ ...view.hullProfile, x: s.x, y: s.y, heading: s.heading, heave: view.waterlineHeight });
+    // Narration: the sailing moments, and the caption to show.
+    if (narrator && moments && run && !missionDone && !paused) {
+      if (!!sim.mode.net !== lastNet) {
+        lastNet = !!sim.mode.net;
+        if (lastNet) moment('net_out');
+      }
+      if (nav && nav.name !== lastGoal) {
+        lastGoal = nav.name;
+        moments.newTarget();
+      }
+      const found = moments.update({
+        twaDeg: sim.report.trueWindAngleDeg,
+        speed: Math.hypot(s.u, s.v),
+        luffing: set.length ? set.filter((x) => x.luffing).length / set.length : 0,
+        heel: s.heel,
+        heading: s.heading,
+        aground,
+        distanceToTarget: nav && !nav.noTarget ? nav.distance : null,
+        x: s.x,
+        y: s.y,
+        dt,
+      });
+      for (const id of found) narrator.report(id, time);
+    }
+    hud.caption(narrator && !paused && !missionDone ? narrator.update(time, moments?.calm() ?? true) : null);
     hud.update(s, sim.controls, sim.report, w, paused, aground, nav);
     scene.render();
   });

@@ -21,6 +21,7 @@ export interface HudCallbacks {
   onTraffic(on: boolean): void;
   onMissions(): void;
   onTimeOfDay(id: string): void;
+  onNarration(mode: string): void;
 }
 
 export interface Navigation {
@@ -118,7 +119,7 @@ export class SailingHud {
     root: HTMLElement,
     boats: BoatSpec[],
     private readonly cb: HudCallbacks,
-    wind: { fromDeg: number; speed: number; gusty: boolean },
+    wind: { fromDeg: number; speed: number; gusty: boolean; narration?: string },
   ) {
     root.classList.add('hud');
 
@@ -229,6 +230,11 @@ export class SailingHud {
         <option value="5">${t('opts.tsN', { n: 5 })}</option>
         <option value="10">${t('opts.tsN', { n: 10 })}</option>
       </select></label>
+      <label>${t('opts.narration')} <select name="narration">
+        <option value="on">${t('narr.on')}</option>
+        <option value="test">${t('narr.test')}</option>
+        <option value="off">${t('narr.off')}</option>
+      </select></label>
       <label class="lang-row">${t('opts.language')} <span class="lang-slot"></span></label>
       <p class="keys">${t('opts.keys')}</p>`;
     const dir = opts.querySelector<HTMLInputElement>('[name=dir]')!;
@@ -295,6 +301,9 @@ export class SailingHud {
       }
       cb.onTimeOfDay(tod.value);
     });
+    const narration = opts.querySelector<HTMLSelectElement>('[name=narration]')!;
+    narration.value = wind.narration ?? 'on';
+    narration.addEventListener('change', () => cb.onNarration(narration.value));
     const windVisible = opts.querySelector<HTMLInputElement>('[name=windVisible]')!;
     windVisible.addEventListener('change', () => cb.onWindVisible(windVisible.checked));
 
@@ -305,6 +314,12 @@ export class SailingHud {
     // The settings panel (boats, mission, wind, view) starts closed and opens from the button
     // or the J key.
     opts.prepend(header);
+    // A close button inside the panel (on a phone the panel covers the ⚙ button).
+    const close = el('button', 'settings-close', '✕');
+    close.title = t('hud.close');
+    close.setAttribute('aria-label', t('hud.close'));
+    close.onclick = () => this.toggleSettings(false);
+    opts.prepend(close);
     const toggle = el('button', 'panel settings-toggle', `⚙ <small>J</small>`);
     toggle.title = t('hud.settingsTitle');
     toggle.onclick = () => {
@@ -321,7 +336,8 @@ export class SailingHud {
       mapToggle.blur();
     };
 
-    root.append(info, inst, banner, this.tag, helm, opts, toggle, mapToggle);
+    this.captionBox.hidden = true;
+    root.append(info, inst, banner, this.tag, this.captionBox, helm, opts, toggle, mapToggle);
   }
 
   private camOutputs!: { distOut: HTMLOutputElement; heightOut: HTMLOutputElement };
@@ -350,6 +366,19 @@ export class SailingHud {
     this.camOutputs.distOut.textContent = `${Math.round(distance)} m`;
     this.camOutputs.heightOut.textContent = `${Math.round(elevation)}°`;
     this.camHeightLabel.hidden = view === 'top' || view === 'free';
+  }
+
+  /** The narrator's line on screen (speaker and words), or none. */
+  private readonly captionBox = el('div', 'caption');
+  private captionId = '';
+  caption(c: { id: string; speaker: string; text: string; delivery: string } | null): void {
+    const id = c ? c.id : '';
+    if (id === this.captionId) return;
+    this.captionId = id;
+    this.captionBox.hidden = !c;
+    if (!c) return;
+    this.captionBox.className = `caption ${c.delivery}`;
+    this.captionBox.replaceChildren(el('span', 'speaker', c.speaker), el('span', 'words', c.text));
   }
 
   /** A short message under the instruments, for a few seconds. */
@@ -438,7 +467,7 @@ export class SailingHud {
   private updateNav(state: BoatState, nav: Navigation | null): void {
     this.compassTarget.setAttribute('visibility', nav && !nav.noTarget && !nav.arrived ? 'visible' : 'hidden');
     this.elapsed = nav ? nav.elapsed : null;
-    const line = !nav ? '' : nav.arrived ? `${t('nav.arrived', { name: nav.name })} · ${clock(nav.elapsed)}` : nav.noTarget ? `${nav.title ?? ''}` : (nav.title ?? '');
+    const line = !nav ? '' : nav.arrived ? (nav.title ?? `${t('nav.arrived', { name: nav.name })} · ${clock(nav.elapsed)}`) : nav.noTarget ? `${nav.title ?? ''}` : (nav.title ?? '');
     this.nav.hidden = !line;
     if (this.nav.textContent !== line) this.nav.textContent = line;
     if (nav && nav.noTarget && !nav.arrived) this.nav.title = nav.name;
