@@ -1,4 +1,5 @@
 // Free sailing on the Tagus: switch between the Falua and the Muleta.
+import { setupApp } from '../../src/ui/app';
 import { BOATS, GustyWind, SailboatSim, defaultControls, deg2rad, groupsInMode, type BoatSpec } from '../../src/physics';
 import { BOAT_VISUALS, LITE_URLS } from '../../src/engine/boatVisuals';
 import { TrashView } from '../../src/engine/trashView';
@@ -39,6 +40,9 @@ import { Minimap } from '../../src/ui/minimap';
 import { findDestinations, freeRun, sailableHeading, type Destination } from '../../src/world/destinations';
 import { hullAfloat, type LandMask } from '../../src/world/landMask';
 import type { Terrain } from '../../src/world/terrain';
+
+// Installable as an app, with an offline copy (public/manifest.webmanifest, public/sw.js).
+setupApp('../../');
 
 const RUDDER_RATE = 1.6; // full travel per second
 const RUDDER_RETURN = 1.2;
@@ -630,6 +634,10 @@ function startNarration(m: Mission): void {
 }
 
 /** A moment the mission itself reports (catch, pickup, alongside, the whale…). */
+/** Last time (real s) the trim error was worked out, and its value (for trim_good). */
+let lastTrimAt = -Infinity;
+let trimError: number | undefined;
+
 function moment(id: string): void {
   narrator?.report(id, time);
 }
@@ -1051,7 +1059,18 @@ async function main(): Promise<void> {
         lastGoal = nav.name;
         moments.newTarget();
       }
+      // Sheets and trim, for the moments that answer an instruction ("haul in the sheet").
+      const sheetVals = Object.values(sim.controls.sheets);
+      const sheetsMean = sheetVals.length ? sheetVals.reduce((x, y) => x + y, 0) / sheetVals.length : undefined;
+      if (time - lastTrimAt > 0.5) {
+        lastTrimAt = time;
+        const best = sim.bestSheets();
+        const keys = Object.keys(best).filter((k) => k in sim.controls.sheets);
+        trimError = keys.length ? keys.reduce((x, k) => x + Math.abs((sim.controls.sheets[k] ?? 0) - (best[k] ?? 0)), 0) / keys.length : undefined;
+      }
       const found = moments.update({
+        sheets: sheetsMean,
+        trimError,
         twaDeg: sim.report.trueWindAngleDeg,
         speed: Math.hypot(s.u, s.v),
         luffing: set.length ? set.filter((x) => x.luffing).length / set.length : 0,
