@@ -354,3 +354,35 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
   .target-tag .tag-text strong { font-size: 15px; }
   .target-tag .tag-text span { font-size: 12px; }
 }
+
+/* ---- Narration: the narrator's line, as a subtitle above the helm strip; the logbook ------- */
+.caption {
+  position: absolute; left: 50%; bottom: 86px; transform: translateX(-50%); z-index: 1; pointer-events: none;
+  width: min(640px, calc(100vw - 32px)); padding: 8px 16px; border-radius: 8px; text-align: center;
+  background: rgba(30, 18, 8, 0.78); color: #fff3d6; border: 1px solid var(--brass-dark);
+  font-family: 'EB Garamond', Georgia, serif; font-size: 18px; line-height: 1.35;
+}
+.caption .speaker { display: block; font-family: 'IM Fell English', serif; font-size: 14px; color: var(--brass); letter-spacing: 0.04em; }
+.caption.cue .words { font-size: 20px; font-style: italic; }
+.result .logbook { text-align: left; margin: 10px 0 4px; display: grid; gap: 6px; }
+.result .logbook p { margin: 0; line-height: 1.4; }
+.result .logbook .closing strong { display: block; font-family: 'IM Fell English', serif; font-weight: 400; color: var(--brass); }
+.result .logbook .curiosity { color: var(--parchment); font-size: 14px; }
+.result .logbook .sources { color: var(--muted); font-size: 12px; }
+.hud .result:has(.logbook) { max-width: 560px; }
+@media (max-width: 900px) {
+  .caption { bottom: 80px; font-size: 15px; padding: 6px 10px; }
+  .caption .speaker { font-size: 12px; }
+  .caption.cue .words { font-size: 17px; }
+}
+
+/* The settings panel's close button (top right inside it); on a phone the panel leaves the
+   round chart and settings buttons visible. */
+.hud .options .settings-close {
+  position: sticky; top: 0; float: right; z-index: 1; width: 36px; height: 36px; padding: 0; margin: -4px -4px 0 8px;
+  border-radius: 50%; font-size: 18px; line-height: 1;
+}
+@media (max-width: 900px) {
+  .options.open { top: 12px !important; left: 66px !important; right: 12px !important; bottom: 76px !important; width: auto !important; max-height: none !important; z-index: 3; }
+  .hud .options .settings-close { width: 44px; height: 44px; font-size: 20px; }
+}

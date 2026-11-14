@@ -267,7 +267,16 @@ export class MissionMenu {
   }
 
   /** End of a mission: the time, the best time, and what next. */
-  showResult(mission: Mission, level: Level, time: number, best: number | null, record: boolean, onAgain: () => void): void {
+  showResult(
+    mission: Mission,
+    level: Level,
+    time: number,
+    best: number | null,
+    record: boolean,
+    onAgain: () => void,
+    /** The narrator's closing words, the curiosities heard (the logbook) and the sources. */
+    logbook?: { closing: { speaker: string; text: string }[]; curiosities: { speaker: string; text: string }[]; credits: string[] },
+  ): void {
     const levelName = LEVELS.find((l) => l.id === level)!.name;
     const panel = this.panel(record ? t('result.record') : mission.kind === 'fishing' ? t('result.full') : t('result.done'));
     panel.classList.add('result');
@@ -276,6 +285,20 @@ export class MissionMenu {
       el('div', 'result-time', formatTime(time)),
       el('p', 'result-best', best !== null && !record ? t('result.best', { time: formatTime(best) }) : t('result.clock')),
     );
+    if (logbook && (logbook.closing.length || logbook.curiosities.length)) {
+      const book = el('div', 'logbook');
+      for (const c of logbook.closing) {
+        const p = el('p', 'closing');
+        p.append(el('strong', '', c.speaker), document.createTextNode(c.text));
+        book.append(p);
+      }
+      if (logbook.curiosities.length) {
+        book.append(el('h2', '', t('result.logbook')));
+        for (const c of logbook.curiosities) book.append(el('p', 'curiosity', c.text));
+      }
+      if (logbook.credits.length) book.append(el('p', 'sources', `${t('result.sources')}: ${logbook.credits.join(' · ')}`));
+      panel.append(book);
+    }
     const row = el('div', 'buttons');
     const again = el('button', '', t('result.again'));
     again.onclick = () => onAgain();

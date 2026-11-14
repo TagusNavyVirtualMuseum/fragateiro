@@ -76,3 +76,11 @@ If a number changes, change the matching text too (for example "30 s" in `drill.
 and `{…}`, and the mini-games file names real areas, boats and ports and has the fields its
 type needs. A mistake in `minigames.json` also shows in the game for a few seconds when it
 starts (and in the browser console).
+
+## Narration — `narrative/`
+
+The words the narrator says during the mini-games come from the narrative tool, in
+`narrative/from-tool/lines/<mini-game>.json`; see `narrative/README.md` for who writes what. They
+are not edited here: changes go through the tool. In the game, the setting *Narração* chooses
+between approved lines only (*Ligada*), also the lines not yet approved (*Ensaio*), or none.
+

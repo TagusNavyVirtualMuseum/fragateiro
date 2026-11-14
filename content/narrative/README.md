@@ -4,9 +4,13 @@ This folder is how the game (fragateiro) and the narrative tool
 ([sailnarratives](https://github.com/maclopes/sailnarratives)) talk to each other. Neither side
 reads the other's code; both read and write files here, following this contract.
 
-Nothing in the game uses this folder yet. The narration (captions, later voice) will be added
-behind a setting, one mini-game first, as described in the tool's
-`docs/game-integration-plan.md`.
+The game reads the line banks and shows the lines as captions (voice later), behind the setting
+*Narração* in the game's settings panel: *Ligada* plays approved lines only, *Ensaio* (playtest)
+also the lines not yet approved, *Desligada* none; or `?narration=on|test|off` in the address.
+A mini-game is narrated when `from-tool/lines/<its id>.json` exists. The narrator is
+`src/world/narrator.ts` (which line, when), the moments come from `src/world/moments.ts` and the
+mission (`games/sailing/main.ts`); the closing words, the curiosities and the sources are shown
+on the result panel at the end of the mission.
 
 ## Who owns what
 
