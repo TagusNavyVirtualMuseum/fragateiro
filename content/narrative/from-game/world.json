@@ -1,6 +1,6 @@
 {
  "game": "fragateiro",
- "commit": "6946a312bd6a25c97b0ef4bd2454805b673cb4d6",
+ "commit": "1d66225dd5f0e7c846ae02b2ede01f3833bd986f",
  "area_names": {
   "tejo": "Tagus",
   "arcachon": "Arcachon",
@@ -2936,6 +2936,27 @@
    ],
    "Almada": [
     "Cacilhas"
+   ]
+  },
+  "boat_words": [
+   "barco",
+   "barcos",
+   "boat",
+   "boats",
+   "embarcação",
+   "embarcações"
+  ],
+  "boats": {
+   "Vapor": [
+    "steamboat",
+    "steamer",
+    "steamship",
+    "barco a vapor",
+    "steam boat",
+    "passenger steamer",
+    "steam passenger boat",
+    "steam cargo boat",
+    "company steamer"
    ]
   }
  }
