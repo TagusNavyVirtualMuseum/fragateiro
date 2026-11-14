@@ -140,6 +140,7 @@ opts.narration = Narration
 narr.on = Activée
 narr.test = Essai (aussi les répliques à approuver)
 narr.off = Désactivée
+narr.notApproved = Cette mission a {n} répliques de narration pas encore approuvées. Pour les entendre : réglages (J) → Narration → Essai.
 result.logbook = Journal de bord
 result.sources = Sources
 cam.back = Derrière

@@ -140,6 +140,7 @@ opts.narration = Narração
 narr.on = Ligada
 narr.test = Ensaio (também as falas por aprovar)
 narr.off = Desligada
+narr.notApproved = Esta missão tem {n} falas de narração ainda por aprovar. Para as ouvir: definições (J) → Narração → Ensaio.
 result.logbook = Diário de bordo
 result.sources = Fontes
 cam.back = Atrás

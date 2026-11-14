@@ -144,7 +144,9 @@ const hud = new SailingHud(document.getElementById('hud')!, BOATS, {
   onNarration: (mode) => {
     narrationMode = mode as NarrationMode;
     saveNarrationMode(narrationMode);
-    if (narrationMode === 'off') {
+    // Applies to the mission under way at once (it starts the narration over).
+    if (run && !missionDone) startNarration(mission);
+    else if (narrationMode === 'off') {
       narrator = null;
       hud.caption(null);
     }
@@ -606,6 +608,12 @@ function startNarration(m: Mission): void {
   if (!bank) return;
   const places = [('from' in m && m.from) || '', ('to' in m && m.to) || '', ('at' in m && m.at) || ''].filter(Boolean);
   narrator = new Narrator(bank, { lang: getLang(), playtest: narrationMode === 'test', boat: m.boat, area: AREA.id, places });
+  // Lines exist but none is approved yet: say how to hear them (the playtest setting).
+  if (!narrator.count && bank.lines.length) {
+    hud.toast(t('narr.notApproved', { n: bank.lines.length }), 10);
+    narrator = null;
+    return;
+  }
   const watch = narrator.placesToWatch.map((n) => mask.meta.places.find((p) => p.name === n)).filter((p): p is NonNullable<typeof p> => !!p);
   moments = new MomentDetector(watch.map((p) => ({ name: p.name, x: p.x, y: p.y })));
   narrator.report('start', time);
