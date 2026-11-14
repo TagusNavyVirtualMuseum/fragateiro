@@ -86,6 +86,9 @@ hud.settingsTitle = Vent, caméra et vitesse du jeu
 
 # --- Écoutes et barre
 hud.sheets = Écoutes
+hud.sheetsEach = Écoutes, voile par voile
+hud.sheetsAuto = l’équipage règle
+hud.mapTitle = Carte
 hud.sheetsKeys = W/S ou ↑/↓
 hud.sheetsTouch = ou glissez ↑↓ sur la vue
 hud.rudder = Barre

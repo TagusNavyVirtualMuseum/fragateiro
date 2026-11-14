@@ -222,8 +222,10 @@ Heights: Copernicus GLO-30 DEM, © DLR e.V. 2010-2014 and © Airbus Defence and 
 
 ## Deploy
 
-Every push to `main` runs the tests, builds, and publishes to GitHub Pages
-(`.github/workflows/deploy.yml`). One-time setup: **Settings → Pages → Source: GitHub Actions**.
+Every push to `main` runs the tests and builds (`.github/workflows/deploy.yml`); nothing is
+published. The public site changes only when someone runs **Actions → Publish the game**
+(`.github/workflows/publish.yml`), which can publish to a separate public repository so this
+one can be private: see `docs/PUBLISHING.md`.
 The site is static, so `dist/` can also be copied to any web server.
 
 ## Credits

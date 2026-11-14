@@ -29,8 +29,9 @@ import gamesConfig from '../../content/minigames.json';
 import { DRILLS, DRILL_RULES, LEVELS, checkGames, type GamesConfig, MINIGAMES, MissionRun, bestTimeKey, buildCourse, makeMission, type Level, type Mission } from '../../src/world/missions';
 import { FishingGround } from '../../src/world/fishing';
 import { ShoalView } from '../../src/engine/shoalView';
-import { SailingHud, loadTimeOfDay } from '../../src/ui/hud';
+import { SailingHud, loadTimeOfDay, type Navigation } from '../../src/ui/hud';
 import { getLang, t, tMaybe } from '../../src/i18n';
+import { Matrix, Vector3 } from '@babylonjs/core';
 import { Minimap } from '../../src/ui/minimap';
 import { findDestinations, freeRun, sailableHeading, type Destination } from '../../src/world/destinations';
 import { hullAfloat, type LandMask } from '../../src/world/landMask';
@@ -816,7 +817,7 @@ async function main(): Promise<void> {
     if (hunt) minimap.draw(s.x, s.y, s.heading, (hunt.visible ? hunt.whale : lastSeen) ?? undefined, others, hunt.visible ? [hunt.whale] : [], 'shoals');
     else if (trash) minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, trash.items.filter((x) => x.pickedAt === null), 'trash');
     else minimap.draw(s.x, s.y, s.heading, goal ?? undefined, others, (drillMarks.length ? drillMarks : null) ?? run?.course?.buoys ?? fishing?.shoals.filter((x) => x.kg >= 5), fishing ? 'shoals' : 'buoys');
-    let nav = null;
+    let nav: Navigation | null = null;
     const toward = (g: { x: number; y: number }) => {
       const dx = g.x - s.x;
       const dy = g.y - s.y;
@@ -916,6 +917,22 @@ async function main(): Promise<void> {
         elapsed: (arrivedAt ?? s.time) - targetSince,
         arrived: arrivedAt !== null,
       };
+    }
+    // Where the destination is on the screen, for its tag.
+    if (nav && !nav.noTarget) {
+      const b = (nav.bearing * Math.PI) / 180;
+      const world = new Vector3(s.x + Math.sin(b) * nav.distance, 8, s.y + Math.cos(b) * nav.distance);
+      const v = Vector3.TransformCoordinates(world, camera.getViewMatrix());
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      if (v.z > 1) {
+        const p = Vector3.Project(world, Matrix.IdentityReadOnly, scene.getTransformMatrix(), camera.viewport.toGlobal(w, h));
+        nav.screen = { x: p.x, y: p.y, front: true };
+      } else {
+        // Behind the camera: a point far off in its direction (right and up on the screen).
+        const len = Math.hypot(v.x, v.y) || 1;
+        nav.screen = { x: w / 2 + (v.x / len) * w * 4, y: h / 2 - (v.y / len) * h * 4, front: false };
+      }
     }
     cameraRig.update(s.x, s.y, s.heading, dt);
     keepCameraAboveGround();

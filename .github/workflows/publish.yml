@@ -1,0 +1,75 @@
+name: Publish the game
+
+# Puts the current main (or the branch or tag chosen) on the public web site, only when someone
+# presses "Run workflow" (Actions -> Publish the game). It tests and builds the game, then
+# publishes only the built files (dist/: no source code):
+# - to the public site repository named in the variable SITE_REPO (its gh-pages branch, served by
+#   GitHub Pages), with the secret SITE_DEPLOY_KEY or SITE_TOKEN; this repository can be private;
+# - or, without SITE_REPO, with this repository's own GitHub Pages.
+# The variable PUBLISHERS (GitHub user names separated by spaces), if set, limits who may
+# publish. See docs/PUBLISHING.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: 'What this version brings (kept in the site repository history)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check who is publishing
+        if: vars.PUBLISHERS != ''
+        env:
+          PUBLISHERS: ${{ vars.PUBLISHERS }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          for p in $PUBLISHERS; do [ "$p" = "$ACTOR" ] && exit 0; done
+          echo "::error::$ACTOR may not publish (see the variable PUBLISHERS)"; exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        if: vars.SITE_REPO == ''
+        with:
+          path: dist
+      - name: Publish the built game to the site repository
+        if: vars.SITE_REPO != ''
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          external_repository: ${{ vars.SITE_REPO }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
+          deploy_key: ${{ secrets.SITE_DEPLOY_KEY }}
+          personal_token: ${{ secrets.SITE_TOKEN }}
+          user_name: 'github-actions[bot]'
+          user_email: '41898282+github-actions[bot]@users.noreply.github.com'
+          full_commit_message: "Publish the game (${{ github.ref_name }}, by ${{ github.actor }}) ${{ inputs.note }}"
+
+  pages:
+    if: vars.SITE_REPO == ''
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
