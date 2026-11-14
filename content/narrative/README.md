@@ -45,22 +45,24 @@ The file name is the mini-game's `id` in `content/minigames.json`. A line bank f
 ```json
 {
   "version": 1,
-  "minigame": "passengers",
-  "variant": "historical-1925",
+  "minigame": "fishing",
+  "variant": "historical",
   "languages": ["pt", "en"],
-  "cast": [{"id": "skipper", "name": {"pt": "Mestre Zé", "en": "Skipper Zé"}, "fictional": true}],
+  "cast": [{"id": "k1", "name": {"pt": "Arrais Joaquim", "en": "Arrais Joaquim"}, "fictional": true}],
   "lines": [{
-    "id": "passengers.setup.1",
+    "id": "fishing.b1.l1",
+    "beat": "setup",
     "trigger": "start",
     "delivery": "story",
-    "speaker": "skipper",
-    "when": {"boats": ["catraio"], "areas": ["tejo"]},
-    "text": {"pt": "…", "en": "…"},
-    "fictional": true,
-    "sources": ["…"],
-    "reviewed": true
+    "speaker": "k1",
+    "text": {"pt": "Largamos do Seixal. …", "en": "We leave Seixal. …"},
+    "fictional": false,
+    "sources": ["m-hist-pedrosa:…:p12"],
+    "status": "verified"
   }],
-  "credits": [{"id": "…", "title": "…", "licence": "…"}]
+  "missing": [],
+  "evidence": [{"id": "m-hist-pedrosa:…:p12", "source": "Pedrosa", "location": "1. Introdução", "paraphrase": "…"}],
+  "credits": [{"id": "m-hist-pedrosa", "title": "…", "licence": "copyright: cited and paraphrased"}]
 }
 ```
 
@@ -68,12 +70,17 @@ The file name is the mini-game's `id` in `content/minigames.json`. A line bank f
   `from-game/world.json`.
 - `delivery` says when it may play: `cue` (short, may play during a manoeuvre), `story` (only
   when sailing is calm), `reflection` (right after a manoeuvre), `leg` (a pool for long steady
-  legs), `curiosity` (a card in the end-of-mission logbook).
+  legs, played in turn), `curiosity` (a card in the end-of-mission logbook).
 - `when` (optional) limits a line to some of the mini-game's boats, areas or places. Lines
   without `when` play in every option. An option without its own lines uses only the general
   ones.
 - Every language listed in `languages` has a text for every line. Portuguese is the default.
-- Only reviewed lines are exported.
+- `status`: `verified` (every factual claim passed the tool's checks against its evidence, not
+  yet approved by the author) or `approved` (approved by the author). **The game plays only
+  approved lines**, except in a playtest mode. Lines that failed a check are never exported.
+- `sources` point to `evidence`: the passages each line rests on, paraphrased, never quoted
+  (most sources are under copyright). `credits` names the sources for the logbook or credits.
+- `missing` lists story parts (setup, close) that have no exported line yet.
 
 ## The game's side (`from-game/`)
 

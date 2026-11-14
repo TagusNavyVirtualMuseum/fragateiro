@@ -1,0 +1,162 @@
+{
+ "version": 1,
+ "minigame": "passengers",
+ "title": "Passengers with the Catraio",
+ "variant": "historical",
+ "languages": [
+  "pt",
+  "en"
+ ],
+ "cast": [
+  {
+   "id": "k1",
+   "name": {
+    "pt": "Tio Joaquim",
+    "en": "Tio Joaquim"
+   },
+   "role": "Catraeiro (invented, labelled fictional) who rows and sails a catraio carrying passengers between Lisbon and the south b",
+   "fictional": true
+  },
+  {
+   "id": "k2",
+   "name": {
+    "pt": "The passenger",
+    "en": "The passenger"
+   },
+   "role": "Passenger crossing to Almada (invented, labelled fictional), one of the people the small Tagus boats carried between the",
+   "fictional": true
+  }
+ ],
+ "lines": [
+  {
+   "id": "passengers.b3.l5",
+   "beat": "complication",
+   "trigger": "steady_leg",
+   "delivery": "story",
+   "speaker": "k2",
+   "text": {
+    "pt": "— Porque andamos aos ziguezagues? — Contra o vento não se vai a direito, menina. Vira-se de bordo, de um lado e do outro. Olhe as fragatas e as faluas: o rio está cheio.",
+    "en": "\"Why do we keep zigzagging?\" \"You can't sail straight into the wind, miss. We tack, one side then the other. Look at the fragatas and faluas: the river's full.\""
+   },
+   "fictional": false,
+   "sources": [
+    "m-auth-method:14",
+    "mmwdz16aqbi7n:9p6:p11",
+    "mmwdz16aqbi7n:9p6:p15",
+    "m-hist-getlisbon:29"
+   ],
+   "status": "verified",
+   "concept": "Bolina, zigzagging between close-hauled headings"
+  },
+  {
+   "id": "passengers.b3.l6",
+   "beat": "complication",
+   "trigger": "steady_leg",
+   "delivery": "story",
+   "speaker": "k2",
+   "text": {
+    "pt": "— E não podemos ir a direito? — Ao vento, não. Vai-se em ziguezague, à bolina de um bordo e do outro. Aquela falua também leva gente.",
+    "en": "\"Can't we just go straight?\" \"Not into the wind. We zigzag, close-hauled on one side, then the other. That falua carries people too.\""
+   },
+   "fictional": false,
+   "sources": [
+    "m-auth-method:14",
+    "mmwdz16aqbi7n:9p6:p15",
+    "m-hist-getlisbon:29",
+    "mmwdz16aqbi7n:9p6:p11"
+   ],
+   "status": "verified",
+   "concept": "Bolina, zigzagging between close-hauled headings"
+  },
+  {
+   "id": "passengers.b5.l10",
+   "beat": "turn",
+   "trigger": "out_of_irons",
+   "delivery": "reflection",
+   "speaker": "k2",
+   "text": {
+    "pt": "— Porque não larga isto? — É o rio que liga as duas margens, menina. — Então leve-me depressa: o meu irmão casa hoje.",
+    "en": "\"Why not give this up?\" \"It's the river that joins the two banks, miss.\" \"Then hurry: my brother marries today.\""
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-paisagem:3rd:p4",
+    "m-hist-getlisbon:c4d:p6",
+    "mmwdz16aqbi7n:9p6:p8"
+   ],
+   "status": "verified",
+   "concept": "Holding course after recovering"
+  }
+ ],
+ "missing": [
+  "setup",
+  "close"
+ ],
+ "evidence": [
+  {
+   "id": "m-auth-method:14",
+   "source": "Method doc",
+   "location": "[section: Foundations > Sailing concepts]",
+   "paraphrase": "Tacking: “virar de bordo” (en) — Tacking: turning through the wind to change sides while going upwind, zigzagging between two close-hauled headings."
+  },
+  {
+   "id": "mmwdz16aqbi7n:9p6:p11",
+   "source": "Barcos Tradicionais do Tejo e ",
+   "location": "Tipologias",
+   "paraphrase": "The river was the era's motorway, busy with varied craft: fragatas, varinos, faluas, cangueiros, botes, botes de fragata, botes de pinho, barcos de água acima, canoas and catraios. · place: Tagus estuary"
+  },
+  {
+   "id": "mmwdz16aqbi7n:9p6:p15",
+   "source": "Barcos Tradicionais do Tejo e ",
+   "location": "Pintura Decorativa",
+   "paraphrase": "Faluas formed a fairly regular network carrying passengers; a children's rhyme about a falua from Belém survives. · place: Belém · cargo: people"
+  },
+  {
+   "id": "m-hist-getlisbon:29",
+   "source": "getLISBON",
+   "location": "[section: Fragata]",
+   "paraphrase": "Falua: “falua” (pt-PT) — Medium-sized Tagus boat between a bote and a large fragata, doing similar cargo work and also carrying passengers."
+  },
+  {
+   "id": "m-hist-paisagem:3rd:p4",
+   "source": "Museu da Paisagem",
+   "location": "Travessia Fluvial Belém - Trafaria",
+   "paraphrase": "Historically the Tagus was the only road for national and intercontinental trade and linked the two banks; the crossing still carries this maritime heritage. · place: Tejo · cargo: trade"
+  },
+  {
+   "id": "m-hist-getlisbon:c4d:p6",
+   "source": "getLISBON",
+   "location": "Introduction",
+   "paraphrase": "River traffic linked the two banks, coast and interior, and mouth and Riba-Tejo, carrying goods and people and supporting fishing, until the mid-20th century. · place: Tejo, Riba-Tejo · when: until meados do séc. XX · cargo: goods and people"
+  },
+  {
+   "id": "mmwdz16aqbi7n:9p6:p8",
+   "source": "Barcos Tradicionais do Tejo e ",
+   "location": "Tipologias",
+   "paraphrase": "Before the bridge opened, boats carried people and goods and linked towns between Santarém and Cascais faster than other means. · place: between Santarém and Cascais · when: before 1966 · cargo: people and goods"
+  }
+ ],
+ "credits": [
+  {
+   "id": "m-auth-method",
+   "title": "Method doc: From text to minigame (Tagus boats game)",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "mmwdz16aqbi7n",
+   "title": "Barcos Tradicionais do Tejo e a Sua Colorida Pintura Decorativa - getLISBON",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "m-hist-getlisbon",
+   "title": "getLISBON, Breve história das embarcações do estuário do Tejo",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "m-hist-paisagem",
+   "title": "Museu da Paisagem, Belém–Trafaria",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  }
+ ],
+ "exportedAt": "2026-11-13T07:06:12.648Z"
+}

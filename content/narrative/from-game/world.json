@@ -1,6 +1,6 @@
 {
  "game": "fragateiro",
- "commit": "a0b31157b1b6015f02811b6920c7c1bf0d3dcab2",
+ "commit": "6946a312bd6a25c97b0ef4bd2454805b673cb4d6",
  "area_names": {
   "tejo": "Tagus",
   "arcachon": "Arcachon",
@@ -2878,5 +2878,65 @@
    "Simarsul",
    "VTS Alges"
   ]
+ },
+ "aliases": {
+  "areas": {
+   "tejo": [
+    "Tejo",
+    "Tagus",
+    "Rio Tejo",
+    "River Tagus",
+    "Estuário do Tejo",
+    "Tagus estuary",
+    "Baixo Tejo",
+    "Lower Tagus",
+    "Foz do Tejo",
+    "Tagus mouth"
+   ],
+   "medio": [
+    "Médio Tejo",
+    "Middle Tagus",
+    "Tejo",
+    "Tagus",
+    "Rio Tejo",
+    "Alto Tejo",
+    "Upper Tagus"
+   ],
+   "oeste": [
+    "Oeste"
+   ],
+   "aveiro": [
+    "Ria de Aveiro",
+    "Ria"
+   ],
+   "arcachon": [
+    "Bassin d'Arcachon",
+    "Arcachon Bay"
+   ],
+   "pasaia": [
+    "Pasaia",
+    "Pasajes",
+    "Pasaia bay"
+   ],
+   "azores": [
+    "Açores",
+    "Azores"
+   ],
+   "madeira": [
+    "Madeira"
+   ]
+  },
+  "places": {
+   "Lisboa": [
+    "Lisbon",
+    "Lisbonne"
+   ],
+   "Setúbal": [
+    "Setubal"
+   ],
+   "Almada": [
+    "Cacilhas"
+   ]
+  }
  }
 }

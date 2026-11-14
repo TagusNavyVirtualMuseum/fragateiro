@@ -1,4 +1,26 @@
 {
  "version": 1,
- "banks": []
+ "banks": [
+  {
+   "minigame": "fishing",
+   "variant": "historical",
+   "file": "lines/fishing.json",
+   "lines": 12,
+   "approved": 0
+  },
+  {
+   "minigame": "passengers",
+   "variant": "historical",
+   "file": "lines/passengers.json",
+   "lines": 3,
+   "approved": 0
+  },
+  {
+   "minigame": "supplies",
+   "variant": "historical",
+   "file": "lines/supplies.json",
+   "lines": 9,
+   "approved": 0
+  }
+ ]
 }

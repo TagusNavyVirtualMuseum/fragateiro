@@ -43,6 +43,9 @@ describe('content/narrative', () => {
         expect(contract.deliveries, where).toContain(line.delivery);
         expect(cast.has(line.speaker), `unknown speaker in ${where}`).toBe(true);
         for (const lang of bank.languages) expect(line.text[lang], `${lang} missing in ${where}`).toBeTruthy();
+        expect(['verified', 'approved'], where).toContain(line.status);
+        const evidence = new Set((bank.evidence ?? []).map((e: { id: string }) => e.id));
+        for (const s of line.sources ?? []) expect(evidence.has(s), `source ${s} has no evidence in ${where}`).toBe(true);
         for (const b of line.when?.boats ?? []) expect(boats.has(b), `unknown boat ${b} in ${where}`).toBe(true);
         for (const a of line.when?.areas ?? []) expect(areas.has(a), `unknown area ${a} in ${where}`).toBe(true);
         for (const p of line.when?.places ?? []) expect(places.has(p), `unknown place ${p} in ${where}`).toBe(true);

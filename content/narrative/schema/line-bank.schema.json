@@ -3,49 +3,239 @@
  "$id": "line-bank.schema.json",
  "title": "Line bank for one mini-game",
  "type": "object",
- "required": ["version", "minigame", "variant", "languages", "cast", "lines"],
+ "required": [
+  "version",
+  "minigame",
+  "variant",
+  "languages",
+  "cast",
+  "lines"
+ ],
  "properties": {
-  "version": {"const": 1},
-  "minigame": {"type": "string", "description": "id in content/minigames.json"},
-  "variant": {"type": "string", "description": "narrator variant, e.g. historical-1925 or guide"},
-  "languages": {"type": "array", "items": {"enum": ["pt", "en", "fr"]}, "contains": {"const": "pt"}},
-  "cast": {"type": "array", "items": {
-   "type": "object", "required": ["id", "name"],
-   "properties": {
-    "id": {"type": "string"},
-    "name": {"type": "object", "additionalProperties": {"type": "string"}},
-    "fictional": {"type": "boolean"},
-    "voice": {"type": "string"}
-   }}},
-  "lines": {"type": "array", "items": {"$ref": "#/$defs/line"}},
-  "credits": {"type": "array", "items": {
-   "type": "object", "required": ["id", "title"],
-   "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "licence": {"type": "string"}, "url": {"type": "string"}}
-  }}
+  "version": {
+   "const": 1
+  },
+  "minigame": {
+   "type": "string",
+   "description": "id in content/minigames.json"
+  },
+  "variant": {
+   "type": "string",
+   "description": "narrator variant, e.g. historical-1925 or guide"
+  },
+  "languages": {
+   "type": "array",
+   "items": {
+    "enum": [
+     "pt",
+     "en",
+     "fr"
+    ]
+   },
+   "contains": {
+    "const": "pt"
+   }
+  },
+  "cast": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "name"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "string"
+      }
+     },
+     "fictional": {
+      "type": "boolean"
+     },
+     "voice": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "lines": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/line"
+   }
+  },
+  "credits": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "title"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "title": {
+      "type": "string"
+     },
+     "licence": {
+      "type": "string"
+     },
+     "url": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "title": {
+   "type": "string"
+  },
+  "missing": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   },
+   "description": "story parts with no exported line yet (setup, close)"
+  },
+  "exportedAt": {
+   "type": "string"
+  },
+  "evidence": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "source"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "source": {
+      "type": "string"
+     },
+     "location": {
+      "type": "string"
+     },
+     "paraphrase": {
+      "type": "string"
+     }
+    }
+   },
+   "description": "the passages the lines rest on, paraphrased (never quoted); line sources point here"
+  }
  },
  "$defs": {
   "line": {
    "type": "object",
-   "required": ["id", "trigger", "delivery", "speaker", "text"],
+   "required": [
+    "id",
+    "trigger",
+    "delivery",
+    "speaker",
+    "text",
+    "status"
+   ],
    "properties": {
-    "id": {"type": "string"},
-    "beat": {"type": "string"},
-    "trigger": {"type": "string", "description": "a moment id from from-game/moments.json, or near_place:<name>"},
-    "delivery": {"enum": ["cue", "story", "reflection", "leg", "curiosity"]},
-    "speaker": {"type": "string", "description": "a cast id"},
-    "when": {"type": "object", "properties": {
-     "boats": {"type": "array", "items": {"type": "string"}},
-     "areas": {"type": "array", "items": {"type": "string"}},
-     "places": {"type": "array", "items": {"type": "string"}}
-    }, "additionalProperties": false},
-    "text": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}},
-    "audio": {"type": "object", "additionalProperties": {
-     "type": "object", "required": ["file", "seconds"],
-     "properties": {"file": {"type": "string"}, "seconds": {"type": "number"}}
-    }},
-    "fictional": {"type": "boolean"},
-    "sources": {"type": "array", "items": {"type": "string"}},
-    "reviewed": {"const": true}
+    "id": {
+     "type": "string"
+    },
+    "beat": {
+     "type": "string",
+     "description": "the part of the story: setup, complication, turn, close, leg, place, curiosity"
+    },
+    "trigger": {
+     "type": "string",
+     "description": "a moment id from from-game/moments.json, or near_place:<name>"
+    },
+    "delivery": {
+     "enum": [
+      "cue",
+      "story",
+      "reflection",
+      "leg",
+      "curiosity"
+     ]
+    },
+    "speaker": {
+     "type": "string",
+     "description": "a cast id"
+    },
+    "when": {
+     "type": "object",
+     "properties": {
+      "boats": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "areas": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "places": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     },
+     "additionalProperties": false
+    },
+    "text": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "string",
+      "minLength": 1
+     }
+    },
+    "audio": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "object",
+      "required": [
+       "file",
+       "seconds"
+      ],
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "seconds": {
+        "type": "number"
+       }
+      }
+     }
+    },
+    "fictional": {
+     "type": "boolean"
+    },
+    "sources": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "status": {
+     "enum": [
+      "verified",
+      "approved"
+     ],
+     "description": "verified: every claim passed the tool's checks, not yet approved by the author; approved: approved by the author. The game plays only approved lines unless it is in a playtest mode."
+    },
+    "concept": {
+     "type": "string"
+    }
    }
   }
  }

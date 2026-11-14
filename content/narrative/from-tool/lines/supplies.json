@@ -1,0 +1,362 @@
+{
+ "version": 1,
+ "minigame": "supplies",
+ "title": "Supplies with the Canoa",
+ "variant": "historical",
+ "languages": [
+  "pt",
+  "en"
+ ],
+ "cast": [
+  {
+   "id": "k1",
+   "name": {
+    "pt": "Manuel Rosa",
+    "en": "Manuel Rosa"
+   },
+   "role": "Invented skipper of a small canoa working out of Trafaria under sail and oars, carrying people and small goods across th",
+   "fictional": true
+  },
+  {
+   "id": "k2",
+   "name": {
+    "pt": "Ti Joaquim",
+    "en": "Ti Joaquim"
+   },
+   "role": "Invented master of a muleta, a documented Tagus fishing boat type. He stays out fishing and depends on boats from the ri",
+   "fictional": true
+  }
+ ],
+ "lines": [
+  {
+   "id": "supplies.b1.l1",
+   "beat": "setup",
+   "trigger": "start",
+   "delivery": "story",
+   "speaker": "k1",
+   "text": {
+    "pt": "Pão e água para a muleta do Ti Joaquim, que não sai do pesqueiro. Barcos como o meu levam gente e mercadoria pelo rio, à vela e a remos. Caça a vela, vamos.",
+    "en": "Bread and water for Ti Joaquim's muleta; he won't leave the fishing ground. Boats like mine carry people and goods on the river, by sail and oars. Sheet in the sail, let's go."
+   },
+   "fictional": false,
+   "sources": [
+    "mmwdz16aqbi7n:9p6:p13",
+    "m-hist-freire:jhq:p28",
+    "m-hist-getlisbon:c4d:p6",
+    "mmwdz14kpqwcc:azv:p6"
+   ],
+   "status": "verified",
+   "concept": "Getting under way: trimming the sail for the first leg out"
+  },
+  {
+   "id": "supplies.b1.l2",
+   "beat": "setup",
+   "trigger": "start",
+   "delivery": "story",
+   "speaker": "k1",
+   "text": {
+    "pt": "Tudo a bordo? A muleta não espera. É assim que se anda no Tejo: barcos a ligar as margens, com gente e carga, à vela e a remos. Caça mais um pouco.",
+    "en": "All aboard? The muleta won't wait. That's how the Tejo works: boats linking the banks, with people and cargo, by sail and oars. Sheet in a bit more."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-getlisbon:c4d:p6",
+    "mmwdz14kpqwcc:azv:p6",
+    "m-hist-freire:jhq:p28",
+    "mmwdz16aqbi7n:9p6:p13"
+   ],
+   "status": "verified",
+   "concept": "Getting under way: trimming the sail for the first leg out"
+  },
+  {
+   "id": "supplies.b2.l3",
+   "beat": "leg",
+   "trigger": "steady_leg",
+   "delivery": "leg",
+   "speaker": "k1",
+   "text": {
+    "pt": "Antigamente dizia-se barca a qualquer barco pequeno do rio. Depois os barcos foram mudando conforme o serviço e o caminho. Isto é uma canoa. Canoa, não bote. Mantém esse rumo.",
+    "en": "Once, any small river boat was called a barca. Then boats changed with their work and their route. This is a canoa. A canoa, not a bote. Hold that course."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-getlisbon:c4d:p1",
+    "m-hist-getlisbon:c4d:p4",
+    "m-hist-freire:jhq:p24",
+    "m-hist-getlisbon:c4d:p5",
+    "m-hist-getlisbon:c4d:p10",
+    "mmwdz16aqbi7n:9p6:p8",
+    "mmwdz16aqbi7n:9p6:p11"
+   ],
+   "status": "verified",
+   "concept": "Holding a steady course and point of sail"
+  },
+  {
+   "id": "supplies.b2.l5",
+   "beat": "leg",
+   "trigger": "steady_leg",
+   "delivery": "leg",
+   "speaker": "k1",
+   "text": {
+    "pt": "O rio é a estrada mais movimentada que há. Fragatas, varinos, faluas, catraios... e não os confundas. Liga as terras de Santarém a Cascais mais depressa que qualquer outro caminho.",
+    "en": "The river is the busiest road there is. Fragatas, varinos, faluas, catraios... and don't mix them up. It links the towns from Santarém to Cascais faster than any other way."
+   },
+   "fictional": false,
+   "sources": [
+    "mmwdz16aqbi7n:9p6:p11",
+    "mmwdz16aqbi7n:9p6:p8",
+    "m-hist-getlisbon:c4d:p1",
+    "m-hist-getlisbon:c4d:p4",
+    "m-hist-getlisbon:c4d:p5",
+    "m-hist-getlisbon:c4d:p10",
+    "m-hist-freire:jhq:p24"
+   ],
+   "status": "verified",
+   "concept": "Holding a steady course and point of sail"
+  },
+  {
+   "id": "supplies.b3.l6",
+   "beat": "complication",
+   "trigger": "approach_target",
+   "delivery": "cue",
+   "speaker": "k1",
+   "text": {
+    "pt": "Devagar. Acosta sem a abalroar.",
+    "en": "Easy. Come alongside, don't ram her."
+   },
+   "fictional": true,
+   "sources": [
+    "m-auth-method:19",
+    "m-hist-blk-portos:17"
+   ],
+   "status": "verified",
+   "concept": "Approach and dock: controlling speed to come alongside another boat"
+  },
+  {
+   "id": "supplies.b3.l7",
+   "beat": "complication",
+   "trigger": "approach_target",
+   "delivery": "cue",
+   "speaker": "k1",
+   "text": {
+    "pt": "Tira-lhe velocidade. Acosta de mansinho.",
+    "en": "Lose speed. Come alongside gently."
+   },
+   "fictional": true,
+   "sources": [
+    "m-auth-method:19",
+    "m-hist-blk-portos:17"
+   ],
+   "status": "verified",
+   "concept": "Approach and dock: controlling speed to come alongside another boat"
+  },
+  {
+   "id": "supplies.b5.l10",
+   "beat": "place",
+   "trigger": "near_place:Lisboa",
+   "delivery": "story",
+   "speaker": "k1",
+   "text": {
+    "pt": "Lá está Lisboa. Aqui as muletas descarregam peixe em quantidade. Os antigos contam de centenas de barcos a descarregar.",
+    "en": "There's Lisbon. Here the muletas unload fish in great quantity. The old accounts tell of hundreds of boats unloading."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-pedrosa:1tsz:p172"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "supplies.b6.l12",
+   "beat": "close",
+   "trigger": "mission_end",
+   "delivery": "story",
+   "speaker": "k1",
+   "text": {
+    "pt": "Cá está a Ribeira. Cargas e descargas o dia todo, e tudo se compra e vende. Daqui o peixe segue pela água até Santarém. A minha canoa é só um elo.",
+    "en": "Here's the Ribeira. Loading and unloading all day, and everything bought and sold. From here the fish goes on by water to Santarém. My canoa is just one link."
+   },
+   "fictional": false,
+   "sources": [
+    "mmwdz15icx6en:104",
+    "mmwdz15icx6en:106",
+    "mmwdz15icx6en:103",
+    "mmwdz15icx6en:102"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "supplies.b6.l13",
+   "beat": "close",
+   "trigger": "mission_end",
+   "delivery": "story",
+   "speaker": "k1",
+   "text": {
+    "pt": "Ribeira, finalmente. Barcos a carregar e a descarregar sem parar. Há peixe que segue por mar para fora do Reino, outro pela água para Santarém. Amanhã, outra viagem.",
+    "en": "Ribeira, at last. Boats loading and unloading nonstop. Some fish goes by sea out of the kingdom, some by water to Santarém. Tomorrow, another trip."
+   },
+   "fictional": false,
+   "sources": [
+    "mmwdz15icx6en:104",
+    "mmwdz15icx6en:106",
+    "mmwdz15icx6en:102",
+    "mmwdz15icx6en:103"
+   ],
+   "status": "verified"
+  }
+ ],
+ "missing": [],
+ "evidence": [
+  {
+   "id": "mmwdz16aqbi7n:9p6:p13",
+   "source": "Barcos Tradicionais do Tejo e ",
+   "location": "Tipologias",
+   "paraphrase": "Smaller boats carried people and goods such as fresh produce and groceries. · cargo: fresh produce, groceries, people"
+  },
+  {
+   "id": "m-hist-freire:jhq:p28",
+   "source": "Freire",
+   "location": "[page 2]",
+   "paraphrase": "All navigation was then done by sail and oars. · place: Tejo"
+  },
+  {
+   "id": "m-hist-getlisbon:c4d:p6",
+   "source": "getLISBON",
+   "location": "Introduction",
+   "paraphrase": "River traffic linked the two banks, coast and interior, and mouth and Riba-Tejo, carrying goods and people and supporting fishing, until the mid-20th century. · place: Tejo, Riba-Tejo · when: until meados do séc. XX · cargo: goods and people"
+  },
+  {
+   "id": "mmwdz14kpqwcc:azv:p6",
+   "source": "Cacilheiros no Rio Tejo",
+   "location": "Introduction",
+   "paraphrase": "River traffic linked the two banks, coast and interior, carrying goods and people and supporting fishing in the river and nearby coast until the mid-20th century. · place: Tejo, Riba-Tejo · when: until mid séc. XX · cargo: goods and people"
+  },
+  {
+   "id": "m-hist-getlisbon:c4d:p1",
+   "source": "getLISBON",
+   "location": "Introduction",
+   "paraphrase": "The generic term 'barca' was long used for any small river-traffic or fishing boat on the Tagus. · place: Tejo"
+  },
+  {
+   "id": "m-hist-getlisbon:c4d:p4",
+   "source": "getLISBON",
+   "location": "Introduction",
+   "paraphrase": "From the early 16th century barcas began to diversify according to their functions and the routes they sailed on the Tagus. · place: Tejo · when: séc. XVI"
+  },
+  {
+   "id": "m-hist-freire:jhq:p24",
+   "source": "Freire",
+   "location": "[page 2]",
+   "paraphrase": "Passenger transport used the catraio, caíque, bote, batel and canoa. · place: Tejo · cargo: passengers"
+  },
+  {
+   "id": "m-hist-getlisbon:c4d:p5",
+   "source": "getLISBON",
+   "location": "Introduction",
+   "paraphrase": "Going upriver, entering shallow creeks, carrying varied cargo and fishing in river and sea required boats with differing keels, flat bottoms, bows, masts and sails. · place: Tejo, esteiros · cargo: various goods"
+  },
+  {
+   "id": "m-hist-getlisbon:c4d:p10",
+   "source": "getLISBON",
+   "location": "Estaleiros e Tipologias",
+   "paraphrase": "Boat shapes, sizes and colours varied with function, route navigability and the style of each yard or town."
+  },
+  {
+   "id": "mmwdz16aqbi7n:9p6:p8",
+   "source": "Barcos Tradicionais do Tejo e ",
+   "location": "Tipologias",
+   "paraphrase": "Before the bridge opened, boats carried people and goods and linked towns between Santarém and Cascais faster than other means. · place: between Santarém and Cascais · when: before 1966 · cargo: people and goods"
+  },
+  {
+   "id": "mmwdz16aqbi7n:9p6:p11",
+   "source": "Barcos Tradicionais do Tejo e ",
+   "location": "Tipologias",
+   "paraphrase": "The river was the era's motorway, busy with varied craft: fragatas, varinos, faluas, cangueiros, botes, botes de fragata, botes de pinho, barcos de água acima, canoas and catraios. · place: Tagus estuary"
+  },
+  {
+   "id": "m-auth-method:19",
+   "source": "Method doc",
+   "location": "[section: Foundations > Sailing concepts]",
+   "paraphrase": "Approach and docking: “Approach and dock” (en) — Controlling speed to come alongside another boat or a quay."
+  },
+  {
+   "id": "m-hist-blk-portos:17",
+   "source": "mediotejo",
+   "location": "[section: main text]",
+   "paraphrase": "Approach and docking: “acostar” (pt-PT) — To come alongside or berth at a quay or bank."
+  },
+  {
+   "id": "m-hist-pedrosa:1tsz:p172",
+   "source": "Pedrosa",
+   "location": "[page 36]",
+   "paraphrase": "A 1730 description of Lisbon reports a huge quantity of fish unloaded by caravelles and muletes. · place: Lisbon · when: 1730 · cargo: fish"
+  },
+  {
+   "id": "mmwdz15icx6en:104",
+   "source": "BOOK Territorios da Lisboa Med",
+   "location": "[page 235, note 62]",
+   "paraphrase": "Ribeira (Lisbon waterfront market): “Ribeira” () — Lisbon's waterfront market zone where boats unloaded, goods were loaded and traded, and commerce went on all day."
+  },
+  {
+   "id": "mmwdz15icx6en:106",
+   "source": "BOOK Territorios da Lisboa Med",
+   "location": "[page 235, note 62]",
+   "paraphrase": "Ribeira (Lisbon waterfront market): “cargas e descargas” () — Loading and unloading of cargo at the waterfront, a constant daily activity of river and sea trade."
+  },
+  {
+   "id": "mmwdz15icx6en:103",
+   "source": "BOOK Territorios da Lisboa Med",
+   "location": "[page 235, note 61]",
+   "paraphrase": "Fish transport by water: “pela aauga” () — Carrying fish by water, i.e. river transport from Lisbon to Santarém and other places."
+  },
+  {
+   "id": "mmwdz15icx6en:102",
+   "source": "BOOK Territorios da Lisboa Med",
+   "location": "[page 235, note 61]",
+   "paraphrase": "Fish transport by water: “per mar pera fora do Reino” () — Transport of purchased fish by sea out of the kingdom, and from Lisbon to Santarém and elsewhere by water."
+  }
+ ],
+ "credits": [
+  {
+   "id": "mmwdz16aqbi7n",
+   "title": "Barcos Tradicionais do Tejo e a Sua Colorida Pintura Decorativa - getLISBON",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "m-hist-freire",
+   "title": "Freire, Os cais na Barquinha",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "m-hist-getlisbon",
+   "title": "getLISBON, Breve história das embarcações do estuário do Tejo",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "mmwdz14kpqwcc",
+   "title": "Cacilheiros no Rio Tejo, Lisboa   Portugal Memória",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "m-auth-method",
+   "title": "Method doc: From text to minigame (Tagus boats game)",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "m-hist-blk-portos",
+   "title": "mediotejo, Portos do Tejo e barcos d'água acima",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "m-hist-pedrosa",
+   "title": "Pedrosa, A Muleta e a Tartaranha (sec. XV-XX)",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "mmwdz15icx6en",
+   "title": "BOOK Territorios da Lisboa Medieval 3 225",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  }
+ ],
+ "exportedAt": "2026-11-13T07:21:28.811Z"
+}

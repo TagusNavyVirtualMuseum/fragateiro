@@ -3,12 +3,42 @@
  "$id": "index.schema.json",
  "title": "List of line banks",
  "type": "object",
- "required": ["version", "banks"],
+ "required": [
+  "version",
+  "banks"
+ ],
  "properties": {
-  "version": {"const": 1},
-  "banks": {"type": "array", "items": {
-   "type": "object", "required": ["minigame", "variant", "file"],
-   "properties": {"minigame": {"type": "string"}, "variant": {"type": "string"}, "file": {"type": "string", "description": "path relative to from-tool/"}}
-  }}
+  "version": {
+   "const": 1
+  },
+  "banks": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "minigame",
+     "variant",
+     "file"
+    ],
+    "properties": {
+     "minigame": {
+      "type": "string"
+     },
+     "variant": {
+      "type": "string"
+     },
+     "file": {
+      "type": "string",
+      "description": "path relative to from-tool/"
+     },
+     "lines": {
+      "type": "integer"
+     },
+     "approved": {
+      "type": "integer"
+     }
+    }
+   }
+  }
  }
 }

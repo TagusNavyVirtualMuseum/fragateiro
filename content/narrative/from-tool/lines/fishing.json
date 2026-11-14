@@ -1,0 +1,323 @@
+{
+ "version": 1,
+ "minigame": "fishing",
+ "title": "Fishing with the Muleta",
+ "variant": "historical",
+ "languages": [
+  "pt",
+  "en"
+ ],
+ "cast": [
+  {
+   "id": "k1",
+   "name": {
+    "pt": "Arrais Joaquim",
+    "en": "Arrais Joaquim"
+   },
+   "role": "Invented skipper (arrais) of a Seixal muleta in the 1880s, before the type disappeared. He fishes sideways with the tart",
+   "fictional": true
+  },
+  {
+   "id": "k2",
+   "name": {
+    "pt": "Manel",
+    "en": "Manel"
+   },
+   "role": "Invented youngest of the 5 or 6 crew aboard. He tends the net wings tied to the botalós.",
+   "fictional": true
+  }
+ ],
+ "lines": [
+  {
+   "id": "fishing.b1.l1",
+   "beat": "setup",
+   "trigger": "start",
+   "delivery": "story",
+   "speaker": "k1",
+   "text": {
+    "pt": "Largamos do Seixal. A muleta não corre atrás do peixe de proa. Vai atravessada ao vento e à corrente, a arrastar a tartaranha pelo costado.",
+    "en": "We leave Seixal. The muleta doesn't chase fish bow-first. She lies across wind and current, dragging the tartaranha from her side."
+   },
+   "fictional": false,
+   "sources": [
+    "mmwdz12sr2kq0:t59:p46",
+    "m-hist-pedrosa:1tsz:p1",
+    "mmwdz12sr2kq0:t59:p31"
+   ],
+   "status": "verified",
+   "concept": "Reading wind and current before setting out"
+  },
+  {
+   "id": "fishing.b1.l2",
+   "beat": "setup",
+   "trigger": "start",
+   "delivery": "story",
+   "speaker": "k1",
+   "text": {
+    "pt": "Olha o vento, olha a corrente, Manel. Aqui não se pesca de proa: a rede vai a barlavento e a muleta abate de lado.",
+    "en": "Watch the wind, watch the current, Manel. We don't fish bow-first here: the net goes to windward and the muleta drifts sideways."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-pedrosa:1tsz:p1",
+    "mmwdz12sr2kq0:t59:p46",
+    "mmwdz12sr2kq0:t59:p31"
+   ],
+   "status": "verified",
+   "concept": "Reading wind and current before setting out"
+  },
+  {
+   "id": "fishing.b2.l3",
+   "beat": "leg",
+   "trigger": "steady_leg",
+   "delivery": "leg",
+   "speaker": "k2",
+   "text": {
+    "pt": "Porque é que a rede vai a barlavento, arrais? Porque assim é que se faz, Manel. Lança-se a barlavento e a muleta abate de lado, atravessada ao vento e à corrente.",
+    "en": "Why does the net go to windward, skipper? Because that's how it's done, Manel. It's cast to windward and the muleta drifts sideways, across wind and current."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-pedrosa:1tsz:p1",
+    "m-hist-pedrosa:1tsz:p2",
+    "m-hist-pedrosa:1tsz:p111",
+    "mmwdz12sr2kq0:t59:p46"
+   ],
+   "status": "verified",
+   "concept": "Holding a steady drift across wind and current"
+  },
+  {
+   "id": "fishing.b2.l4",
+   "beat": "leg",
+   "trigger": "steady_leg",
+   "delivery": "leg",
+   "speaker": "k2",
+   "text": {
+    "pt": "E estes paus compridos, à proa e à popa? São os botalós, Manel. Neles se armam as velas e se amarram as asas da rede.",
+    "en": "And these long poles, fore and aft? They're the botalós, Manel. The sails are set on them and the net wings are tied to them."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-pedrosa:1tsz:p2",
+    "m-hist-pedrosa:1tsz:p1",
+    "m-hist-pedrosa:1tsz:p111",
+    "mmwdz12sr2kq0:t59:p46"
+   ],
+   "status": "verified",
+   "concept": "Holding a steady drift across wind and current"
+  },
+  {
+   "id": "fishing.b3.l6",
+   "beat": "place",
+   "trigger": "near_place:Seixal",
+   "delivery": "story",
+   "speaker": "k1",
+   "text": {
+    "pt": "Ali está o Seixal. É cá que as muletas estão registadas, mas o peixe vai-se buscar lá fora, ao Entre-Cabos.",
+    "en": "There's Seixal. That's where the muletas are registered, but the fish are fetched out there, in the Entre-Cabos."
+   },
+   "fictional": false,
+   "sources": [
+    "mmwdz12sr2kq0:t59:p46",
+    "m-hist-pedrosa:1tsz:p1"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "fishing.b3.l7",
+   "beat": "place",
+   "trigger": "near_place:Seixal",
+   "delivery": "story",
+   "speaker": "k1",
+   "text": {
+    "pt": "O Seixal, Manel. Terra de muletas, registadas aqui e no Barreiro. Mas a pesca faz-se no Entre-Cabos, entre o Raso e o Espichel.",
+    "en": "Seixal, Manel. Muleta country, registered here and in Barreiro. But the fishing is done in the Entre-Cabos, between Raso and Espichel."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-pedrosa:1tsz:p1",
+    "mmwdz12sr2kq0:t59:p46"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "fishing.b4.l8",
+   "beat": "complication",
+   "trigger": "luffing_start",
+   "delivery": "cue",
+   "speaker": "k1",
+   "text": {
+    "pt": "Caça essas velas, deixa-a atravessar!",
+    "en": "Trim sails, let her lie across!"
+   },
+   "fictional": true,
+   "sources": [],
+   "status": "verified",
+   "concept": "Sail trim to balance wind and current forces"
+  },
+  {
+   "id": "fishing.b4.l9",
+   "beat": "complication",
+   "trigger": "luffing_start",
+   "delivery": "cue",
+   "speaker": "k1",
+   "text": {
+    "pt": "Caça a vela, atravessa-a outra vez.",
+    "en": "Trim the sail, across again."
+   },
+   "fictional": true,
+   "sources": [],
+   "status": "verified",
+   "concept": "Sail trim to balance wind and current forces"
+  },
+  {
+   "id": "fishing.b5.l10",
+   "beat": "turn",
+   "trigger": "luffing_stop",
+   "delivery": "reflection",
+   "speaker": "k1",
+   "text": {
+    "pt": "Vês, Manel? As velas equilibram o vento e a corrente. Assim ela abate de lado e arrasta a rede pelo costado.",
+    "en": "See, Manel? The sails balance wind and current. That way she drifts sideways and drags the net from her side."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-pedrosa:1tsz:p2",
+    "m-hist-pedrosa:1tsz:p1"
+   ],
+   "status": "verified",
+   "concept": "Balancing sails to hold a sideways drift"
+  },
+  {
+   "id": "fishing.b6.l12",
+   "beat": "close",
+   "trigger": "catch",
+   "delivery": "story",
+   "speaker": "k2",
+   "text": {
+    "pt": "Rede cheia, arrais! Agora percebo: a rede vai a barlavento e nós abatemos de lado, atravessados ao vento e à corrente. O arrais só diz: Para casa.",
+    "en": "Full net, skipper! Now I get it: the net goes to windward and we drift sideways, across wind and current. The skipper only says: Home."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-pedrosa:1tsz:p1",
+    "mmwdz12sr2kq0:t59:p31"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "fishing.b6.l13",
+   "beat": "close",
+   "trigger": "catch",
+   "delivery": "story",
+   "speaker": "k2",
+   "text": {
+    "pt": "Olha o peixe, arrais! Então é por isso que a muleta pesca de lado, com a tartaranha. Joaquim acena, sem mais palavras, e aponta a casa.",
+    "en": "Look at the fish, skipper! So that's why the muleta fishes from the side, with the tartaranha. Joaquim nods, without another word, and heads for home."
+   },
+   "fictional": false,
+   "sources": [
+    "mmwdz12sr2kq0:t59:p31",
+    "m-hist-pedrosa:1tsz:p1"
+   ],
+   "status": "verified"
+  },
+  {
+   "id": "fishing.b7.l15",
+   "beat": "curiosity",
+   "trigger": "net_out",
+   "delivery": "curiosity",
+   "speaker": "k1",
+   "text": {
+    "pt": "Facto documentado: a palavra tartaranha dava nome à rede de arrasto e ao barco que a usava. Em 1891, Baldaque da Silva registou uma só muleta. A rede durou, tolerada, até cerca de 1920, e foi o batel que substituiu a muleta.",
+    "en": "Documented fact: the word 'tartaranha' named the drag net and the boat that used it. In 1891 Baldaque da Silva recorded a single muleta. The net lasted, tolerated, until about 1920, and the batel replaced the muleta."
+   },
+   "fictional": false,
+   "sources": [
+    "m-hist-pedrosa:33",
+    "m-hist-pedrosa:1tsz:p136",
+    "m-hist-pedrosa:1tsz:p137",
+    "mmwdz12sr2kq0:t59:p32",
+    "m-hist-pedrosa:1tsz:p135"
+   ],
+   "status": "verified",
+   "concept": "Lateral trawling"
+  }
+ ],
+ "missing": [],
+ "evidence": [
+  {
+   "id": "mmwdz12sr2kq0:t59:p46",
+   "source": "Embarcações do Rio Tejo",
+   "location": "2.2",
+   "paraphrase": "Muletas are registered at south-bank ports such as Barreiro and Seixal but fish in the Embocadura waters called Entre-Cabos. · place: Barreiro, Seixal, Entre-Cabos (Raso e Espichel)"
+  },
+  {
+   "id": "m-hist-pedrosa:1tsz:p1",
+   "source": "Pedrosa",
+   "location": "1. Introdução",
+   "paraphrase": "The muleta, emblem of Seixal and Barreiro, trawled sideways: the net (tartaranha) was cast windward and the boat drifted across wind and current. · place: Seixal; Barreiro"
+  },
+  {
+   "id": "mmwdz12sr2kq0:t59:p31",
+   "source": "Embarcações do Rio Tejo",
+   "location": "Mar da Palha (5)",
+   "paraphrase": "Muleta and batel boats trawled from the side using the tartaranha net. · place: Tagus estuary"
+  },
+  {
+   "id": "m-hist-pedrosa:1tsz:p2",
+   "source": "Pedrosa",
+   "location": "1. Introdução",
+   "paraphrase": "Baldaque da Silva described the muleta's sails as arranged to balance forces by wind and current direction, with two long poles (botalós) fore and aft to set sails and tie net wings. · who: A. A. Baldaque da Silva · when: 1891"
+  },
+  {
+   "id": "m-hist-pedrosa:1tsz:p111",
+   "source": "Pedrosa",
+   "location": "[page 23]",
+   "paraphrase": "The muleta fished with the tartaranha net in the Tagus and Sado estuaries and at sea between Cabo da Roca and Setúbal. · place: Tejo and Sado estuaries; sea between Cabo da Roca and Setúbal"
+  },
+  {
+   "id": "m-hist-pedrosa:33",
+   "source": "Pedrosa",
+   "location": "[page 6]",
+   "paraphrase": "Tartaranha net and boat: “tartaranhas” (pt-PT) — A drag net, and by semantic extension the boat fishing with it; also a boat type of the Tagus."
+  },
+  {
+   "id": "m-hist-pedrosa:1tsz:p136",
+   "source": "Pedrosa",
+   "location": "[page 29]",
+   "paraphrase": "Baldaque da Silva recorded that by 1891 only one muleta remained. · who: Baldaque da Silva · when: 1891"
+  },
+  {
+   "id": "m-hist-pedrosa:1tsz:p137",
+   "source": "Pedrosa",
+   "location": "[page 29]",
+   "paraphrase": "Tartaranha nets continued to be tolerated until their final extinction around 1920. · when: c. 1920"
+  },
+  {
+   "id": "mmwdz12sr2kq0:t59:p32",
+   "source": "Embarcações do Rio Tejo",
+   "location": "Mar da Palha (5)",
+   "paraphrase": "The batel replaced the muleta when the muleta became extinct."
+  },
+  {
+   "id": "m-hist-pedrosa:1tsz:p135",
+   "source": "Pedrosa",
+   "location": "[page 29]",
+   "paraphrase": "From the late 19th century, smaller boats (batel, bote, bateira) also trawled with the tartaranha net; the name muleta was often applied loosely to any boat fishing with it. · when: late 19th century"
+  }
+ ],
+ "credits": [
+  {
+   "id": "mmwdz12sr2kq0",
+   "title": "Embarcações do Rio Tejo",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  },
+  {
+   "id": "m-hist-pedrosa",
+   "title": "Pedrosa, A Muleta e a Tartaranha (sec. XV-XX)",
+   "licence": "copyright, unknown licence: cited and paraphrased"
+  }
+ ],
+ "exportedAt": "2026-11-13T07:23:34.208Z"
+}
