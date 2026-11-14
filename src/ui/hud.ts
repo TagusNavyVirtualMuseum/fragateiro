@@ -1,4 +1,5 @@
 // On-screen display for the sailing games: plain HTML/CSS on top of the 3D canvas.
+import { canFullscreen, canInstall, install, isFullscreen, isInstalled, isIos, onInstallChange, toggleFullscreen } from './app';
 import { getArea } from '../world/area';
 import { getEdition } from '../world/edition';
 import './hud.css';
@@ -235,6 +236,7 @@ export class SailingHud {
         <option value="test">${t('narr.test')}</option>
         <option value="off">${t('narr.off')}</option>
       </select></label>
+      <div class="buttons app-row"></div>
       <label class="lang-row">${t('opts.language')} <span class="lang-slot"></span></label>
       <p class="keys">${t('opts.keys')}</p>`;
     const dir = opts.querySelector<HTMLInputElement>('[name=dir]')!;
@@ -301,6 +303,25 @@ export class SailingHud {
       }
       cb.onTimeOfDay(tod.value);
     });
+    // Full screen, and installing the game as an app (src/ui/app.ts).
+    const appRow = opts.querySelector<HTMLDivElement>('.app-row')!;
+    const fillAppRow = () => {
+      appRow.replaceChildren();
+      if (canFullscreen()) {
+        const fs = el('button', '', t(isFullscreen() ? 'opts.fullscreenOff' : 'opts.fullscreen'));
+        fs.onclick = () => void toggleFullscreen();
+        appRow.append(fs);
+      }
+      if (canInstall()) {
+        const inst = el('button', '', t('opts.install'));
+        inst.onclick = () => void install();
+        appRow.append(inst);
+      } else if (isIos() && !isInstalled()) appRow.append(el('small', '', t('opts.installIos')));
+      appRow.style.display = appRow.childElementCount ? '' : 'none';
+    };
+    fillAppRow();
+    onInstallChange(fillAppRow);
+    document.addEventListener('fullscreenchange', fillAppRow);
     const narration = opts.querySelector<HTMLSelectElement>('[name=narration]')!;
     narration.value = wind.narration ?? 'on';
     narration.addEventListener('change', () => cb.onNarration(narration.value));

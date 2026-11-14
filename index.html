@@ -64,10 +64,18 @@
       .area h3 { font-family: 'IM Fell English', Georgia, serif; font-weight: 400; font-size: 21px; margin: 0 0 4px; }
       .area p { margin: 0; font-size: 14px; }
     </style>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <meta name="theme-color" content="#14324a" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <script type="module">
       import '@fontsource/eb-garamond/latin-400.css';
       import '@fontsource/im-fell-english/latin-400.css';
       import { languageSwitch, t, translatePage } from './src/i18n';
+      import { setupApp } from './src/ui/app';
+      setupApp('./');
       translatePage();
       document.title = t('land.pageTitle');
       document.getElementById('lang').replaceWith(languageSwitch());

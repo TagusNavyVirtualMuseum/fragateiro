@@ -22,7 +22,21 @@ export interface MomentInput {
   y: number;
   /** Real seconds since the last step. */
   dt: number;
+  /** Mean sheet setting, 0 hauled in … 1 let out (for sheet_in, sheet_out). */
+  sheets?: number;
+  /** How far the sheets are from the best trim, 0 = best (for trim_good). */
+  trimError?: number;
 }
+
+/** Sheets moved this much within SHEET_WINDOW s report sheet_in or sheet_out. */
+export const SHEET_STEP = 0.2;
+export const SHEET_WINDOW = 3;
+/** Turning this much towards or away from the wind within TURN_WINDOW s: head_up, bear_away, degrees. */
+export const TURN_STEP = 20;
+export const TURN_WINDOW = 5;
+/** Trim error above TRIM_BAD, then below TRIM_GOOD for 2 s: trim_good. */
+export const TRIM_BAD = 0.25;
+export const TRIM_GOOD = 0.1;
 
 /** The point-of-sail bands (as the instruments name them). */
 export function pointOfSail(twaDeg: number): string {
@@ -64,6 +78,11 @@ export class MomentDetector {
   private wasAground = false;
   private approached = false;
   private readonly nearDone = new Set<string>();
+  // Actions that answer an instruction: recent sheets and wind angles, and the trim.
+  private sheetHist: { t: number; v: number }[] = [];
+  private twaHist: { t: number; v: number }[] = [];
+  private trimWasBad = false;
+  private trimGoodFor = 0;
   /** Real seconds of the last manoeuvre or trouble (for "calm"). */
   private lastBusy = -Infinity;
 
@@ -174,6 +193,27 @@ export class MomentDetector {
       out.push('approach_target');
     }
 
+    // Actions that answer an instruction (a cue's "expects").
+    if (i.sheets !== undefined) {
+      const m = this.change(this.sheetHist, i.sheets, SHEET_WINDOW, SHEET_STEP);
+      if (m) out.push(m < 0 ? 'sheet_in' : 'sheet_out');
+    }
+    const turn = this.change(this.twaHist, Math.abs(i.twaDeg), TURN_WINDOW, TURN_STEP);
+    if (turn) out.push(turn < 0 ? 'head_up' : 'bear_away');
+    if (i.trimError !== undefined) {
+      if (i.trimError > TRIM_BAD) {
+        this.trimWasBad = true;
+        this.trimGoodFor = 0;
+      } else if (this.trimWasBad && i.trimError < TRIM_GOOD) {
+        this.trimGoodFor += i.dt;
+        if (this.trimGoodFor >= 2) {
+          out.push('trim_good');
+          this.trimWasBad = false;
+          this.trimGoodFor = 0;
+        }
+      } else this.trimGoodFor = 0;
+    }
+
     // Passing a named place.
     for (const p of this.places) {
       if (this.nearDone.has(p.name) || Math.hypot(p.x - i.x, p.y - i.y) > NEAR_PLACE) continue;
@@ -181,6 +221,21 @@ export class MomentDetector {
       out.push(`near_place:${p.name}`);
     }
     return out;
+  }
+
+  /**
+   * A value that moved by at least `step` within `window` seconds: its sign (-1 down, 1 up), and
+   * the history restarts so one move is reported once; 0 otherwise.
+   */
+  private change(hist: { t: number; v: number }[], v: number, window: number, step: number): number {
+    hist.push({ t: this.t, v });
+    while (hist.length && hist[0].t < this.t - window) hist.shift();
+    const lo = Math.min(...hist.map((h) => h.v)), hi = Math.max(...hist.map((h) => h.v));
+    let sign = 0;
+    if (v - hi <= -step) sign = -1;
+    else if (v - lo >= step) sign = 1;
+    if (sign) hist.splice(0, hist.length, { t: this.t, v });
+    return sign;
   }
 
   /** Mark something the mission reports (a collision…) as trouble, for `calm`. */

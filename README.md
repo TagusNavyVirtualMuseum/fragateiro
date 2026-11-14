@@ -220,6 +220,16 @@ npm install --no-save geotiff@3.0.5 && node scripts/fetch-heights.mjs --area arc
 Heights: Copernicus GLO-30 DEM, © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH
 2014-2018, provided under COPERNICUS by the European Union and ESA.
 
+## As an app, full screen, offline
+
+The built game can be installed: Chrome, Edge and Android offer **Install** (also in the game's
+settings, ⚙), iPhone and iPad **Share → Add to Home Screen**. The installed game opens full screen,
+without the browser's bars, and keeps a copy of itself on the device, so it also starts without a
+network (models and maps are kept once they have been loaded). In a browser, the settings have a
+**Full screen** button. Files: `public/manifest.webmanifest`, `public/sw.js` (the offline copy;
+change `VERSION` to force a fresh copy), `public/icons/`, `src/ui/app.ts`. For a museum kiosk,
+Chrome can also be started with `--kiosk <address of the game>`.
+
 ## Deploy
 
 Every push to `main` runs the tests and builds (`.github/workflows/deploy.yml`); nothing is
