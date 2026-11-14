@@ -142,6 +142,7 @@ opts.ts1 = 1× temps réel
 opts.tsN = {n}× plus vite
 opts.keys = J : ce panneau · M : changer de mode · B : changer de bateau · N : son · P : pause · R : recommencer
 opts.language = Langue
+opts.version = Version
 opts.narration = Narration
 narr.on = Activée
 narr.test = Essai (aussi les répliques à approuver)

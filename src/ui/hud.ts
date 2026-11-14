@@ -2,6 +2,9 @@
 import { getArea } from '../world/area';
 import { getEdition } from '../world/edition';
 import './hud.css';
+
+/** The commit and day this build was made (vite.config.ts), to tell versions apart. */
+declare const __BUILD__: string;
 import { groupsInMode, rad2deg, toKnots, type BoatSpec, type Controls, type ForceReport, type BoatState, type TrueWind } from '../physics';
 import { CAMERA_VIEWS, DISTANCE_RANGE, type CameraView } from '../engine/cameraRig';
 import { getLang, languageSwitch, t, tMaybe } from '../i18n';
@@ -256,7 +259,8 @@ export class SailingHud {
         <option value="off">${t('narr.off')}</option>
       </select></label>
       <label class="lang-row">${t('opts.language')} <span class="lang-slot"></span></label>
-      <p class="keys">${t('opts.keys')}</p>`;
+      <p class="keys">${t('opts.keys')}</p>
+      <p class="build">${t('opts.version')} ${__BUILD__}</p>`;
     const dir = opts.querySelector<HTMLInputElement>('[name=dir]')!;
     const speed = opts.querySelector<HTMLInputElement>('[name=speed]')!;
     const gusty = opts.querySelector<HTMLInputElement>('[name=gusty]')!;

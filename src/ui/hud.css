@@ -410,3 +410,4 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
   .caption { bottom: 66px; width: min(560px, calc(100vw - 240px)); font-size: 14px; }
   .banner { right: 108px; }
 }
+.options .build { color: var(--muted); font-size: 11px; margin: 6px 0 0; }
