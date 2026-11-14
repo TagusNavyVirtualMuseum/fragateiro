@@ -633,11 +633,11 @@ function startNarration(m: Mission): void {
   narrator.report('start', time);
 }
 
-/** A moment the mission itself reports (catch, pickup, alongside, the whale…). */
 /** Last time (real s) the trim error was worked out, and its value (for trim_good). */
 let lastTrimAt = -Infinity;
 let trimError: number | undefined;
 
+/** A moment the mission itself reports (catch, pickup, alongside, the whale…). */
 function moment(id: string): void {
   narrator?.report(id, time);
 }

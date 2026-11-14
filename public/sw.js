@@ -1,8 +1,9 @@
 // Keeps a copy of the game on the device, so the installed app also starts offline (a museum
 // without network). Pages: from the network when there is one, else the copy. Everything else
 // (scripts, models, maps, sounds): the copy when there is one, else the network, and kept.
-// A new build changes the files' names, so new files are fetched; old ones go with the version.
-const VERSION = 'fragateiro-v1';
+// Each build registers this file with its own version (sw.js?v=…, src/ui/app.ts): the copy of
+// the previous version is deleted when the new one takes over, so old files never pile up.
+const VERSION = `fragateiro-${new URL(self.location.href).searchParams.get('v') || 'dev'}`;
 const START = ['./', './index.html', './games/sailing/index.html', './manifest.webmanifest', './icons/icon-192.png'];
 
 self.addEventListener('install', (e) => {

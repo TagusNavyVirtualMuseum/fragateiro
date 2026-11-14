@@ -1,6 +1,9 @@
 // The game as an app: installable (manifest and offline copy, public/manifest.webmanifest and
 // public/sw.js) and full screen. Browser APIs only; nothing here is needed to play.
 
+/** The commit and day this build was made (vite.config.ts). */
+declare const __BUILD__: string;
+
 let installPrompt: (Event & { prompt(): Promise<void> }) | null = null;
 const listeners = new Set<() => void>();
 
@@ -8,7 +11,8 @@ const listeners = new Set<() => void>();
 export function setupApp(rootPath: string): void {
   if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register(`${rootPath}sw.js`, { scope: rootPath }).catch(() => {
+      // The build in the address: a new version installs a new worker with a fresh copy.
+      navigator.serviceWorker.register(`${rootPath}sw.js?v=${encodeURIComponent(__BUILD__.split(' ')[0])}`, { scope: rootPath }).catch(() => {
         // not available (private window, file://): the game works without it
       });
     });
