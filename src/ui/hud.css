@@ -375,3 +375,14 @@ button.loading { animation: boat-loading 0.9s ease-in-out infinite alternate; cu
   .caption .speaker { font-size: 12px; }
   .caption.cue .words { font-size: 17px; }
 }
+
+/* The settings panel's close button (top right inside it); on a phone the panel leaves the
+   round chart and settings buttons visible. */
+.hud .options .settings-close {
+  position: sticky; top: 0; float: right; z-index: 1; width: 36px; height: 36px; padding: 0; margin: -4px -4px 0 8px;
+  border-radius: 50%; font-size: 18px; line-height: 1;
+}
+@media (max-width: 900px) {
+  .options.open { top: 12px !important; left: 66px !important; right: 12px !important; bottom: 76px !important; width: auto !important; max-height: none !important; z-index: 3; }
+  .hud .options .settings-close { width: 44px; height: 44px; font-size: 20px; }
+}

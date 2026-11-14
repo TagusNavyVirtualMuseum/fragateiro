@@ -89,6 +89,7 @@ hud.sheets = Sheets
 hud.sheetsEach = Sheets, sail by sail
 hud.sheetsAuto = the crew trims
 hud.mapTitle = Chart
+hud.close = Close
 hud.sheetsKeys = W/S or ↑/↓
 hud.sheetsTouch = or drag ↑↓ on the view
 hud.rudder = Rudder

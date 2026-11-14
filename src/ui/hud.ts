@@ -314,6 +314,12 @@ export class SailingHud {
     // The settings panel (boats, mission, wind, view) starts closed and opens from the button
     // or the J key.
     opts.prepend(header);
+    // A close button inside the panel (on a phone the panel covers the ⚙ button).
+    const close = el('button', 'settings-close', '✕');
+    close.title = t('hud.close');
+    close.setAttribute('aria-label', t('hud.close'));
+    close.onclick = () => this.toggleSettings(false);
+    opts.prepend(close);
     const toggle = el('button', 'panel settings-toggle', `⚙ <small>J</small>`);
     toggle.title = t('hud.settingsTitle');
     toggle.onclick = () => {
